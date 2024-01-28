@@ -9,10 +9,10 @@ Open CLI at apis folder & run command
 -s is startup project(create dbcontext instance at design time)
 -p is migrations assembly project 
 ```
-dotnet ef migrations add NewMigration -s WebAPI -p Infrastructures
+dotnet ef migrations add NewMigration
 ```
 
 2. apply the change
 ```
-dotnet ef database update -s WebAPI -p Infrastructures
+dotnet ef database update
 ```
