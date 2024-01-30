@@ -109,6 +109,7 @@ namespace KidProEdu.API
             builder.Services.AddSingleton<ICurrentTime, CurrentTime>();
             #endregion
 
+            builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();

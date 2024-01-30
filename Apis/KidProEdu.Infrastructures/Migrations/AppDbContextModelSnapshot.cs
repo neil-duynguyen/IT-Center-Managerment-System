@@ -70,25 +70,32 @@ namespace KidProEdu.Infrastructures.Migrations
                             Id = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a51"),
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
                             IsDeleted = false,
-                            Name = "Staff"
+                            Name = "Manager"
                         },
                         new
                         {
                             Id = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"),
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
                             IsDeleted = false,
-                            Name = "Manager"
+                            Name = "Staff"
                         },
                         new
                         {
                             Id = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a53"),
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
                             IsDeleted = false,
-                            Name = "Parent"
+                            Name = "Teacher"
                         },
                         new
                         {
                             Id = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a54"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
+                            IsDeleted = false,
+                            Name = "Parent"
+                        },
+                        new
+                        {
+                            Id = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a55"),
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
                             IsDeleted = false,
                             Name = "Children"
@@ -104,7 +111,16 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Avata")
+                    b.Property<string>("Avatar")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BankAccountName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BankAccountNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BankName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("CreatedBy")
@@ -113,7 +129,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("DeleteBy")
@@ -123,7 +139,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
@@ -131,7 +146,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GenderType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -143,7 +157,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OPT")
+                    b.Property<string>("OTP")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
@@ -151,10 +165,15 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -171,15 +190,43 @@ namespace KidProEdu.Infrastructures.Migrations
                         {
                             Id = new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca82"),
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
-                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1989),
+                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1976),
                             Email = "duynguyen@gmail.com",
-                            FullName = "Nguyen Van Duy",
-                            GenderType = "Name",
+                            FullName = "NguyenVanDuy",
                             IsDeleted = false,
                             PasswordHash = "e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7",
                             Phone = "0975844775",
                             RoleId = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a50"),
-                            UserName = "DuyNguyen"
+                            Status = "Enable",
+                            UserName = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca83"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
+                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1985),
+                            Email = "dunghoang@gmail.com",
+                            FullName = "HoangQuocDung",
+                            IsDeleted = false,
+                            PasswordHash = "e8392925a98c9c22795d1fc5d0dfee5b9a6943f6b768ec5a2a0c077e5ed119cf",
+                            Phone = "0975844796",
+                            RoleId = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a51"),
+                            Status = "Enable",
+                            UserName = "Manager"
+                        },
+                        new
+                        {
+                            Id = new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca84"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
+                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979),
+                            Email = "linhchi@gmail.com",
+                            FullName = "LinhChi",
+                            IsDeleted = false,
+                            PasswordHash = "dfd48f36338aa36228ebb9e204bba6b4e18db0b623e25c458901edc831fb18e9",
+                            Phone = "0356724796",
+                            RoleId = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"),
+                            Status = "Enable",
+                            UserName = "Staff"
                         });
                 });
 

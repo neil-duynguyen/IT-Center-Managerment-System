@@ -1,4 +1,5 @@
-﻿using KidProEdu.Application.Interfaces;
+﻿using AutoMapper;
+using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.UserViewModels;
@@ -9,18 +10,20 @@ namespace KidProEdu.Application.Services
 {
     public class UserService : IUserService
     {
+        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentTime _currentTime;
         private readonly IConfiguration _configuration;
 
-        public UserService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IConfiguration configuration)
+        public UserService(IMapper mapper, IUnitOfWork unitOfWork, ICurrentTime currentTime, IConfiguration configuration)
         {
+            _mapper = mapper;
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
             _configuration = configuration;
         }
 
-        public async Task<LoginViewModel> LoginAsync(UserLoginDTO userObject)
+        public async Task<LoginViewModel> LoginAsync(UserLoginViewModel userObject)
         {
             var user = await _unitOfWork.UserRepository.GetUserByUserNameAndPasswordHash(userObject.UserName, userObject.Password.Hash());
             if (user == null)
@@ -30,18 +33,13 @@ namespace KidProEdu.Application.Services
 
             var token = user.GenerateJsonWebToken(_configuration["AppSettings:SecretKey"]);
 
-            return new LoginViewModel
-            {
-                Id = user.Id,
-                Username = user.UserName,
-                FullName = user.FullName,
-                Email = user.Email,
-                Token = token,
-                Role = user.Role.Name
-            };
+            var userViewModel = _mapper.Map<LoginViewModel>(user);
+            userViewModel.Token = token;
+
+            return userViewModel;
         }
 
-        public async Task CreateAccountAsync(CreateAccount userObject)
+        public async Task<bool> CreateAccountAsync(CreateUserViewModel userObject)
         {
             // check username exited
             var isExited = await _unitOfWork.UserRepository.CheckUserNameExited(userObject.UserName);
@@ -51,22 +49,25 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Username exited please try again");
             }
 
-            var newUser = new User
-            {
-                RoleId = userObject.RoleId,
-                UserName = userObject.UserName,
-                PasswordHash = new String("123").Hash(),
-                FullName = userObject.FullName,
-                GenderType = userObject.GenderType,
-                Email = userObject.Email,
-                Phone = userObject.Phone,
-                Address = userObject.Address,
-                CreationDate = _currentTime.GetCurrentTime(),
-                IsDeleted = false
-            };
+            /* var newUser = new User
+             {
+                 RoleId = userObject.RoleId,
+                 UserName = userObject.UserName,
+                 PasswordHash = new String("123").Hash(),
+                 FullName = userObject.FullName,
+                 GenderType = userObject.GenderType,
+                 Email = userObject.Email,
+                 Phone = userObject.Phone,
+                 Address = userObject.Address,
+                 CreationDate = _currentTime.GetCurrentTime(),
+             };*/
+
+            var newUser = _mapper.Map<User>(userObject);
+            newUser.PasswordHash = newUser.PasswordHash.Hash();
 
             await _unitOfWork.UserRepository.AddAsync(newUser);
-            await _unitOfWork.SaveChangeAsync();
+
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
     }
 }

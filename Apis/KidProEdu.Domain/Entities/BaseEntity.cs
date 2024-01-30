@@ -22,6 +22,6 @@ namespace KidProEdu.Domain.Entities
 
         public Guid? DeleteBy { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

@@ -18,11 +18,11 @@ namespace KidProEdu.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginAsync(UserLoginDTO loginObject)
+        public async Task<IActionResult> LoginAsync(UserLoginViewModel loginObject)
         {
             try
             {
-                var result = (await _userService.LoginAsync(loginObject));
+                var result = await _userService.LoginAsync(loginObject);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -32,12 +32,11 @@ namespace KidProEdu.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccountAsync(CreateAccount loginObject)
+        public async Task<IActionResult> CreateAccountAsync(CreateUserViewModel loginObject)
         {
             try
-            {
-                await _userService.CreateAccountAsync(loginObject);
-                return Ok();
+            {               
+                return Ok(await _userService.CreateAccountAsync(loginObject));
             }
             catch (Exception ex)
             {
@@ -45,5 +44,15 @@ namespace KidProEdu.WebAPI.Controllers
             }
             
         }
+
+
+
+
+
+
+
+
+
+
     }
 }
