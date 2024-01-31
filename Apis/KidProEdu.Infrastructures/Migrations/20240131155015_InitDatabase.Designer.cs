@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240129154031_IntiDatabase")]
-    partial class IntiDatabase
+    [Migration("20240131155015_InitDatabase")]
+    partial class InitDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -171,7 +171,7 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RoleId")
+                    b.Property<Guid?>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -237,9 +237,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.HasOne("KidProEdu.Domain.Entities.Role", "Role")
                         .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoleId");
 
                     b.Navigation("Role");
                 });

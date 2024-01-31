@@ -168,7 +168,7 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RoleId")
+                    b.Property<Guid?>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -234,9 +234,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.HasOne("KidProEdu.Domain.Entities.Role", "Role")
                         .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoleId");
 
                     b.Navigation("Role");
                 });
