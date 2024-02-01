@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Enums
 {
-    internal enum StatusEnums
+    public enum StatusOfClass
     {
     }
 }

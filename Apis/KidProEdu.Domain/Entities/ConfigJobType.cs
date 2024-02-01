@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KidProEdu.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    internal class ConfigJobType
+    public class ConfigJobType : BaseEntity
     {
+        public JobType JobType { get; set; }
+        public int MinSlot { get; set; }
     }
 }
+

@@ -5,11 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
-{ 
-    public class ConfigTheme : BaseEntity
+{
+    internal class TypeDate
     {
-        public string ColorCode { get; set; }
-        public string BlurCode { get; set; }
-
     }
 }

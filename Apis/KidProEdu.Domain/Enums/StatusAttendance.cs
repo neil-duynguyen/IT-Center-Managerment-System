@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Enums
 {
-    internal enum StatusEnums
+
+    public enum StatusAttendance
     {
+        Attend = 1,
+        Absent = 2,
     }
 }

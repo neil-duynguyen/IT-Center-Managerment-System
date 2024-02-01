@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    internal class ConfigWifi
+
+    public class ConfigWifi : BaseEntity
     {
+        public string NameWifi { get; set; }
+        public string WifiIpv4 { get; set; }
+
     }
 }
