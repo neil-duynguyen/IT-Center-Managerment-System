@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KidProEdu.Domain.Entities
+namespace KidProEdu.Domain.Enums
 {
-    internal class Lession
+    public enum StatusOfLocationTrainingProgram
     {
+        Active = 1,
+        Inactive = 2
     }
 }

@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    internal class Location
+    public class Location : BaseEntity
     {
+        public string? Name { get; set; }
+        public string? Address { get; set; }
+
+        public IList<User> Users { get; set; }
+        public IList<LocationTrainingProgram> LocationTrainingPrograms { get; set;}
     }
 }

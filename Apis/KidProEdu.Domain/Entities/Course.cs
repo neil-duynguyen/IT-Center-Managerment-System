@@ -25,6 +25,6 @@ namespace KidProEdu.Domain.Entities
         public IList<TrainingProgramCourse> TrainingProgramCourse { get; set; }
         public IList<SemesterCourse> SemesterCourse { get; set; }
         public IList<Class> Class { get; set; }
-        public IList<Lession> Lession { get; set; }
+        public IList<Lesson> Lesson { get; set; }
     }
 }
