@@ -11,7 +11,5 @@ namespace KidProEdu.Domain.Entities
     {
         public string?  Name { get; set; }
         public StatusOfRoom? Status {  get; set; }
-
-        public IList<ScheduleRoom> ScheduleRooms { get; set; }
     }
 }

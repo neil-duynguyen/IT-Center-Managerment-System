@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    internal class Semester
+    public class Semester : BaseEntity
     {
+        public string SemesterName { get; set; }
+        public DateTime? StartDate { get; set; }
     }
 }

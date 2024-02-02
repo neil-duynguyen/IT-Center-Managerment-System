@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    internal class TrainingProgramCategory
+    public class TrainingProgramCategory : BaseEntity
     {
+        public string Name { get; set; }
+        public string LearningAge { get; set; }
+        public string Description { get; set; }
     }
 }

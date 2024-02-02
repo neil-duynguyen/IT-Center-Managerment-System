@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    internal class TrainingProgramCourse
+    public class TrainingProgramCourse : BaseEntity
     {
+        public string Name { get; set; }
+        public Guid TrainingProgramId { get; set; }
+        public Guid CourseId { get; set; }
+        public virtual ICollection<TrainingProgram> TrainingProgram { get; set; }
+        public virtual ICollection<Course> Courses { get; set; }
     }
 }

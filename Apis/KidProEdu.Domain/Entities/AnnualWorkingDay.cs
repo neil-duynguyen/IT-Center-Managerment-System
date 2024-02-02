@@ -11,10 +11,8 @@ namespace KidProEdu.Domain.Entities
 
     public class AnnualWorkingDay : BaseEntity
     {
-        [ForeignKey("TypeDate")]
-        public Guid TypeDateId { get; set; }
         public DateTime Date { get; set; }
         public ShiftType ShiftType { get; set; }
-        public virtual TypeDate TypeDate { get; set; }
+        public TypeDate TypeDate { get; set; }
     }
 }

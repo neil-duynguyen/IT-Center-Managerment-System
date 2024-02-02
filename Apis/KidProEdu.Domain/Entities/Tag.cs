@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    internal class Tag
+    public class Tag : BaseEntity
     {
+        public string TagName { get; set; }
+        public string Description { get; set; }
     }
 }

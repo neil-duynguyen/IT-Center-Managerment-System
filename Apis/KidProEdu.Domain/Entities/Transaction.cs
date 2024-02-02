@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    internal class Transaction
+    public class Transaction : BaseEntity
     {
+        
     }
 }

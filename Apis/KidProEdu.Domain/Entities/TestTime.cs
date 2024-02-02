@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    internal class TestTime
+    public class TestTime : BaseEntity
     {
     }
 }
