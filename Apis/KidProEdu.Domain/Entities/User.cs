@@ -30,6 +30,6 @@ namespace KidProEdu.Domain.Entities
         public string? BankName { get; set; }
         public string Status { get; set; } = "Enable";
         public virtual Role? Role { get; set; }
-
+        public IList<AdviseRequest> AdviseRequests { get; set; }
     }
 }

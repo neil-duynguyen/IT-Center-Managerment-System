@@ -9,7 +9,8 @@ namespace KidProEdu.Domain.Entities
 {
     public class Room : BaseEntity
     {
-        public string?  Name { get; set; }
+        public string? Name { get; set; }
         public StatusOfRoom? Status {  get; set; }
+        public ICollection<ScheduleRoom> ScheduleRooms { get; set; }
     }
 }

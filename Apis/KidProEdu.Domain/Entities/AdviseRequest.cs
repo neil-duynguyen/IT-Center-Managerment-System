@@ -12,7 +12,7 @@ namespace KidProEdu.Domain.Entities
         public string Phone { get; set; }
         public string Address { get; set; }
         public string CourseName { get; set; }
-        public bool IsTested { get; set; }
+        public bool? IsTested { get; set; }
         public virtual User? User { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace KidProEdu.Domain.Entities
 
     public class AnnualWorkingDay : BaseEntity
     {
-        public DateTime Date { get; set; }
+        public DateTime Day { get; set; }
         public ShiftType ShiftType { get; set; }
         public TypeDate TypeDate { get; set; }
     }

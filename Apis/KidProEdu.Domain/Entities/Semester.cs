@@ -10,5 +10,6 @@ namespace KidProEdu.Domain.Entities
     {
         public string SemesterName { get; set; }
         public DateTime? StartDate { get; set; }
+        public IList<SemesterCourse> SemesterCourses { get; set; }
     }
 }

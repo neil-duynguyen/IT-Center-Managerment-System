@@ -11,5 +11,6 @@ namespace KidProEdu.Domain.Entities
         public string Name { get; set; }
         public string LearningAge { get; set; }
         public string Description { get; set; }
+        public IList<TrainingProgram> TrainingPrograms { get; set; }
     }
 }

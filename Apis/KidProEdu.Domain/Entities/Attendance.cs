@@ -16,7 +16,7 @@ namespace KidProEdu.Domain.Entities
         public DateTime Date { get; set; }
         public Guid ChildrenId { get; set; }
         public StatusAttendance StatusAttendance { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
         public virtual Schedule Schedule { get; set; }
     }
 }
