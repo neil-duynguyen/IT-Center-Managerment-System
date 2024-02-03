@@ -8,7 +8,6 @@ namespace KidProEdu.Domain.Enums
 {
     public enum ShiftType
     {
-        Full = 1,
-        Part = 2,
+
     }
 }

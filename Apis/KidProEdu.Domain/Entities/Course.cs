@@ -20,11 +20,11 @@ namespace KidProEdu.Domain.Entities
         public int Discount { get; set; }
         public string Level { get; set; }
         public string EntryPoint { get; set; }
-        public IList<Prerequisite> Prerequisite { get; set; }
-        public IList<Rating> Rating { get; set; }
-        public IList<TrainingProgramCourse> TrainingProgramCourse { get; set; }
+        public IList<Prerequisite> Prerequisites { get; set; }
+        public IList<Rating> Ratings { get; set; }
+        public IList<TrainingProgramCourse> TrainingProgramCourses { get; set; }
        // public IList<SemesterCourse> SemesterCourse { get; set; }
-        public IList<Class> Class { get; set; }
-        public IList<Lesson> Lesson { get; set; }
+        public IList<Class> Classes { get; set; }
+        public IList<Lesson> Lessons { get; set; }
     }
 }
