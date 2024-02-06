@@ -64,10 +64,32 @@ namespace KidProEdu.Application.Services
 
             var newUser = _mapper.Map<User>(userObject);
             newUser.PasswordHash = newUser.PasswordHash.Hash();
+            newUser.Status = Domain.Enums.StatusUser.Enable;
 
             await _unitOfWork.UserRepository.AddAsync(newUser);
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
+        }
+
+        public async Task<UserViewModel> GetUserById(Guid id)
+        {
+            var findUser = await _unitOfWork.UserRepository.GetByIdAsync(id);
+
+            return findUser != null ? _mapper.Map<UserViewModel>(findUser) : throw new Exception();
+        }
+
+        public async Task<List<UserViewModel>> GetAllUser()
+        {
+            var user = _unitOfWork.UserRepository.GetAllAsync().Result.Where(x => x.Status.ToString().Equals("Enable"));
+
+            return _mapper.Map<List<UserViewModel>>(user);
+        }
+
+        public async Task<List<UserViewModel>> GetUserByRoleId(Guid Id)
+        {
+            var user = _unitOfWork.UserRepository.GetAllAsync().Result.Where(x => x.RoleId == Id && x.IsDeleted == false);
+
+            return _mapper.Map<List<UserViewModel>>(user);
         }
     }
 }

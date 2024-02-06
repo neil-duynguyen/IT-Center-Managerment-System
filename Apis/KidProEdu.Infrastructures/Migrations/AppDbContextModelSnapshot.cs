@@ -737,6 +737,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("EntryPoint")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -767,6 +770,68 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("KidProEdu.Domain.Entities.Discount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DiscountName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DiscountValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModificationBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Discount");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Document", b =>
@@ -1898,6 +1963,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -2122,9 +2190,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<Guid?>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -2150,7 +2217,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             PasswordHash = "e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7",
                             Phone = "0975844775",
                             RoleId = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a50"),
-                            Status = "Enable",
+                            Status = 0,
                             UserName = "Admin"
                         },
                         new
@@ -2164,7 +2231,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             PasswordHash = "e8392925a98c9c22795d1fc5d0dfee5b9a6943f6b768ec5a2a0c077e5ed119cf",
                             Phone = "0975844796",
                             RoleId = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a51"),
-                            Status = "Enable",
+                            Status = 0,
                             UserName = "Manager"
                         },
                         new
@@ -2178,7 +2245,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             PasswordHash = "dfd48f36338aa36228ebb9e204bba6b4e18db0b623e25c458901edc831fb18e9",
                             Phone = "0356724796",
                             RoleId = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"),
-                            Status = "Enable",
+                            Status = 0,
                             UserName = "Staff"
                         });
                 });
@@ -2289,6 +2356,17 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired();
 
                     b.Navigation("ConfigJobType");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("KidProEdu.Domain.Entities.Discount", b =>
+                {
+                    b.HasOne("KidProEdu.Domain.Entities.User", "User")
+                        .WithMany("Discounts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -2668,6 +2746,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("Classes");
 
                     b.Navigation("Contracts");
+
+                    b.Navigation("Discounts");
 
                     b.Navigation("Enrollments");
 

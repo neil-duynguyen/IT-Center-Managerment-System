@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KidProEdu.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -28,7 +29,7 @@ namespace KidProEdu.Domain.Entities
         public string? BankAccountNumber { get; set; }
         public string? BankAccountName { get; set; }
         public string? BankName { get; set; }
-        public string Status { get; set; } = "Enable";
+        public StatusUser Status { get; set; }
         public virtual Role? Role { get; set; }
         public IList<AdviseRequest> AdviseRequests { get; set; }
         public IList<Feedback> Feedbacks { get; set; }
@@ -41,5 +42,6 @@ namespace KidProEdu.Domain.Entities
         public IList<Contract> Contracts { get; set; }
         public IList<Request> Requests { get; set; }
         public IList<Installment> Installments { get; set; }
+        public IList<Discount> Discounts { get; set; }
     }
 }

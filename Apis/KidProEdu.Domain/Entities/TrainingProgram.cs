@@ -14,6 +14,7 @@ namespace KidProEdu.Domain.Entities
         public string TrainingProgramCode { get; set; }
         public string TrainingProgramName { get; set; }
         public double Price { get; set; }
+        public string? Image { get; set; }
         public virtual TrainingProgramCategory TrainingProgramCategory { get; set;}
         public ICollection<TrainingProgramCourse> TrainingProgramCourses { get; set; }
     }
