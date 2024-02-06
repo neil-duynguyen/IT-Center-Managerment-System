@@ -6,6 +6,7 @@ namespace KidProEdu.Application
     {
         public IRoleRepository RoleRepository { get; }
         public IUserRepository UserRepository { get; }
+        public ITagRepository TagRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
