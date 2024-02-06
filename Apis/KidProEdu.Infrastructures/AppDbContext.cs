@@ -15,6 +15,47 @@ namespace KidProEdu.Infrastructures
 
         public DbSet<Role> Role { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<AdviseRequest> AdviseRequests { get; set; }
+        public DbSet<AnnualWorkingDay> AnnualWorkingDays { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<BlogTag> BlogsTag { get; set; }
+        public DbSet<CategoryEquipment> CategoryEquipment { get; set; }
+        public DbSet<Certificate> Certificates { get; set; }
+        public DbSet<Children> Childrens { get; set; }
+        public DbSet<Class> Classes { get; set; }
+        public DbSet<ConfigDay> ConfigDays { get; set; }
+        public DbSet<ConfigJobType> ConfigJobTypes { get; set; }
+        public DbSet<ConfigSystem> ConfigSystems { get; set; }
+        public DbSet<ConfigTheme> ConfigThemes { get; set; }
+        public DbSet<Contract> Contracts { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<Equipment> Equipment { get; set; }
+        public DbSet<Feedback> Feedbacks { get;set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<LocationTrainingProgram> LocationTrainingPrograms { get; set; }
+        public DbSet<Notification> Notification { get; set; }
+        public DbSet<NotificationUser> NotificationUsers { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
+        public DbSet<Request> Requests { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<ScheduleRoom> ScheduleRooms { get; set; }
+        public DbSet<Score> Scores { get; set; }
+        public DbSet<Semester> Semesters { get; set; }
+        public DbSet<SemesterCourse> SemesterCourses { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<TestTime> TestTimes { get; set; }
+        public DbSet<TrainingProgram> TrainingPrograms { get; set; }
+        public DbSet<TrainingProgramCategory> TrainingProgramCategories { get; set; }
+        public DbSet<TrainingProgramCourse> TrainingProgramCourses { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Installment> Installments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -80,6 +121,30 @@ namespace KidProEdu.Infrastructures
                     DateOfBirth = new DateTime(2001 - 11 - 11),
                     CreationDate = new DateTime(2024 - 01 - 15),
                 });
+
+            builder.Entity<Enrollment>()
+                .HasOne(x => x.Class)
+                .WithMany(x => x.Enrollments)
+                .HasForeignKey(x => x.ClassId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+            
+            builder.Entity<Enrollment>()
+                .HasOne(x => x.Children)
+                .WithMany(x => x.Enrollments)
+                .HasForeignKey(x => x.ChildrenId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<ScheduleRoom>()
+                .HasOne(x => x.Room)
+                .WithMany(x => x.ScheduleRooms)
+                .HasForeignKey(x => x.RoomId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<ScheduleRoom>()
+                .HasOne(x => x.Schedule)
+                .WithMany(x => x.ScheduleRooms)
+                .HasForeignKey(x => x.ScheduleId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
         }
 

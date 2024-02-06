@@ -9,7 +9,7 @@ Open CLI at apis folder & run command
 -s is startup project(create dbcontext instance at design time)
 -p is migrations assembly project 
 ```
-dotnet ef migrations add NewMigration
+dotnet ef migrations add InitMigration
 ```
 
 2. apply the change

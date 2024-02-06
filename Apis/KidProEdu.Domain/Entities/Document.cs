@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    public class File : BaseEntity
+    public class Document : BaseEntity
     {
         [ForeignKey("Lesson")]
         public Guid LessonId { get; set; }

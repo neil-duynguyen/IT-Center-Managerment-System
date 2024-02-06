@@ -11,13 +11,11 @@ namespace KidProEdu.Domain.Entities
     {
         [ForeignKey("Class")]
         public Guid ClassId { get; set; }
-        [ForeignKey("Room")]
-        public Guid RoomId { get; set; }
         public string Slot { get; set; }
         public Guid ChildrenId { get; set; }
         public TimeSpan StartSlot { get; set; }
         public TimeSpan EndSlot { get; set; }
         public virtual Class Class { get; set; }
-        public virtual Room Room { get; set; }
+        public IList<ScheduleRoom> ScheduleRooms { get; set; }
     }
 }

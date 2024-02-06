@@ -5,13 +5,13 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apis", "Apis", "{84CC01CE-751F-4956-9FEC-42E1C3720923}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KidProEdu.Application", "Apis\KidProEdu.Application\KidProEdu.Application.csproj", "{17689BE8-D268-4A6F-8F5E-3796C70594D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KidProEdu.Application", "Apis\KidProEdu.Application\KidProEdu.Application.csproj", "{17689BE8-D268-4A6F-8F5E-3796C70594D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KidProEdu.Domain", "Apis\KidProEdu.Domain\KidProEdu.Domain.csproj", "{6BCB1472-635E-451F-B681-6153EB77822E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KidProEdu.Domain", "Apis\KidProEdu.Domain\KidProEdu.Domain.csproj", "{6BCB1472-635E-451F-B681-6153EB77822E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KidProEdu.Infrastructures", "Apis\KidProEdu.Infrastructures\KidProEdu.Infrastructures.csproj", "{64172329-DF66-49D9-98D7-E42119017ABF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KidProEdu.Infrastructures", "Apis\KidProEdu.Infrastructures\KidProEdu.Infrastructures.csproj", "{64172329-DF66-49D9-98D7-E42119017ABF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KidProEdu.API", "Apis\KidProEdu.API\KidProEdu.API.csproj", "{06409220-C35B-469F-B263-75ED4FB2BD28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KidProEdu.API", "Apis\KidProEdu.API\KidProEdu.API.csproj", "{06409220-C35B-469F-B263-75ED4FB2BD28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

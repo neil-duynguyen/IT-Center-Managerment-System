@@ -19,6 +19,6 @@ namespace KidProEdu.Domain.Entities
 
         public virtual Course Course { get; set; }
         public IList<Question> Questions { get; set; }
-        public IList<File> Files { get; set; }
+        public IList<Document> Documents { get; set; }
     }
 }

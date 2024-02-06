@@ -10,5 +10,6 @@ namespace KidProEdu.Domain.Entities
     {
         public string TagName { get; set; }
         public string Description { get; set; }
+        public IList<BlogTag> BlogTags { get; set; }
     }
 }

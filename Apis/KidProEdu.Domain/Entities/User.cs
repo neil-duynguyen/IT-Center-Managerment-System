@@ -31,5 +31,15 @@ namespace KidProEdu.Domain.Entities
         public string Status { get; set; } = "Enable";
         public virtual Role? Role { get; set; }
         public IList<AdviseRequest> AdviseRequests { get; set; }
+        public IList<Feedback> Feedbacks { get; set; }
+        public IList<Class> Classes { get; set; }
+        public IList<Children> Childrens { get; set; }
+        public IList<Enrollment> Enrollments { get; set; }
+        public IList<NotificationUser> NotificationUsers { get; set; }
+        public IList<Blog> Blogs { get; set; }
+        public IList<Skill> Skills { get; set; }
+        public IList<Contract> Contracts { get; set; }
+        public IList<Request> Requests { get; set; }
+        public IList<Installment> Installments { get; set; }
     }
 }

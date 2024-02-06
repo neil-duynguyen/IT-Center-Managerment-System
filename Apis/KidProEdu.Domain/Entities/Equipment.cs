@@ -22,7 +22,6 @@ namespace KidProEdu.Domain.Entities
         public StatusOfEquipment? Status {  get; set; }
         public DateTime? WarrantyDate { get; set; }
 
-        public virtual Order Order { get; set; }
         public virtual CategoryEquipment CategoryEquipment { get; set; }
         public virtual Class Class { get; set; }
     }
