@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class RoleController : ControllerBase
     {
@@ -15,7 +15,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = ("Admin"))]
+        //[Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> GetRole()
         {
             return Ok(await _roleService.GetRole());

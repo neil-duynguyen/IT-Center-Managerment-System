@@ -21,6 +21,7 @@ namespace KidProEdu.Domain.Entities
         public string Level { get; set; }
         public string? EntryPoint { get; set; }
         public string? Prerequisite { get; set; }
+        public string? Image { get; set; }
         public IList<Rating> Ratings { get; set; }
         public IList<TrainingProgramCourse> TrainingProgramCourses { get; set; }
         public IList<SemesterCourse> SemesterCourses { get; set; }

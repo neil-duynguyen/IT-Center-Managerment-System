@@ -155,6 +155,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Level = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EntryPoint = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Prerequisite = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -422,7 +423,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     BankAccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BankAccountName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BankName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -486,6 +487,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     TrainingProgramCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TrainingProgramName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -721,6 +723,38 @@ namespace KidProEdu.Infrastructures.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Contracts_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Discount",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DiscountName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DiscountType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DiscountValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModificationBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeleteBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Discount", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Discount_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -1222,9 +1256,9 @@ namespace KidProEdu.Infrastructures.Migrations
                 columns: new[] { "Id", "Address", "Avatar", "BankAccountName", "BankAccountNumber", "BankName", "CreatedBy", "CreationDate", "DateOfBirth", "DeleteBy", "DeletionDate", "Email", "FullName", "GenderType", "IsDeleted", "LocationId", "ModificationBy", "ModificationDate", "OTP", "PasswordHash", "Phone", "RoleId", "Status", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca82"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1976), null, null, "duynguyen@gmail.com", "NguyenVanDuy", null, false, null, null, null, null, "e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7", "0975844775", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a50"), "Enable", "Admin" },
-                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca83"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1985), null, null, "dunghoang@gmail.com", "HoangQuocDung", null, false, null, null, null, null, "e8392925a98c9c22795d1fc5d0dfee5b9a6943f6b768ec5a2a0c077e5ed119cf", "0975844796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a51"), "Enable", "Manager" },
-                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca84"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979), null, null, "linhchi@gmail.com", "LinhChi", null, false, null, null, null, null, "dfd48f36338aa36228ebb9e204bba6b4e18db0b623e25c458901edc831fb18e9", "0356724796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"), "Enable", "Staff" }
+                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca82"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1976), null, null, "duynguyen@gmail.com", "NguyenVanDuy", null, false, null, null, null, null, "e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7", "0975844775", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a50"), 0, "Admin" },
+                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca83"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1985), null, null, "dunghoang@gmail.com", "HoangQuocDung", null, false, null, null, null, null, "e8392925a98c9c22795d1fc5d0dfee5b9a6943f6b768ec5a2a0c077e5ed119cf", "0975844796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a51"), 0, "Manager" },
+                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca84"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979), null, null, "linhchi@gmail.com", "LinhChi", null, false, null, null, null, null, "dfd48f36338aa36228ebb9e204bba6b4e18db0b623e25c458901edc831fb18e9", "0356724796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"), 0, "Staff" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1280,6 +1314,11 @@ namespace KidProEdu.Infrastructures.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Contracts_UserId",
                 table: "Contracts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Discount_UserId",
+                table: "Discount",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -1457,6 +1496,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
             migrationBuilder.DropTable(
                 name: "Contracts");
+
+            migrationBuilder.DropTable(
+                name: "Discount");
 
             migrationBuilder.DropTable(
                 name: "Documents");

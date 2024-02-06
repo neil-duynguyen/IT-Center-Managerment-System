@@ -7,5 +7,8 @@ namespace KidProEdu.Application.Interfaces
     {
         public Task<bool> CreateAccountAsync(CreateUserViewModel userObject);
         public Task<LoginViewModel> LoginAsync(UserLoginViewModel userObject);
+        public Task<UserViewModel> GetUserById(Guid id);
+        public Task<List<UserViewModel>> GetAllUser();
+        public Task<List<UserViewModel>> GetUserByRoleId(Guid Id);
     }
 }

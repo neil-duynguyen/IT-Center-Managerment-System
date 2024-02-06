@@ -91,6 +91,7 @@ namespace KidProEdu.Infrastructures
                     Email = "duynguyen@gmail.com",
                     Phone = "0975844775",
                     DateOfBirth = new DateTime(1997 - 01 - 20),
+                    Status = Domain.Enums.StatusUser.Enable,
                     CreationDate = new DateTime(2024 - 01 - 15),
                 });
 
@@ -105,6 +106,7 @@ namespace KidProEdu.Infrastructures
                     Email = "dunghoang@gmail.com",
                     Phone = "0975844796",
                     DateOfBirth = new DateTime(1999 - 04 - 10),
+                    Status = Domain.Enums.StatusUser.Enable,
                     CreationDate = new DateTime(2024 - 01 - 15),
                 });
 
@@ -119,6 +121,7 @@ namespace KidProEdu.Infrastructures
                     Email = "linhchi@gmail.com",
                     Phone = "0356724796",
                     DateOfBirth = new DateTime(2001 - 11 - 11),
+                    Status = Domain.Enums.StatusUser.Enable,
                     CreationDate = new DateTime(2024 - 01 - 15),
                 });
 
