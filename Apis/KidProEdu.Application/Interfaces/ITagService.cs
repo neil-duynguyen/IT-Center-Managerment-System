@@ -12,6 +12,9 @@ namespace KidProEdu.Application.Interfaces
     public interface ITagService
     {
         Task<List<Tag>> GetTags();
-        //ask<bool> CreateTag(string roleView);
+        Task<bool> CreateTag(CreateTagViewModel createTagViewModel);
+        Task<bool> UpdateTag(UpdateTagViewModel updateTagViewModel);
+        Task<Tag> GetTagById(Guid tagId);
+        Task<bool> DeleteTag(Guid tagId);
     }
 }
