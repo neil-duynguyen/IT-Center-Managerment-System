@@ -17,8 +17,4 @@
     <ProjectReference Include="..\KidProEdu.Domain\KidProEdu.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validations\" />
-  </ItemGroup>
-
 </Project>
