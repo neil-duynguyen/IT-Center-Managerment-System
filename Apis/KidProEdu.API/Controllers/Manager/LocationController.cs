@@ -4,7 +4,7 @@ using KidProEdu.Application.ViewModels.TagViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KidProEdu.API.Controllers
+namespace KidProEdu.API.Controllers.Manager
 {
     [Route("api/[controller]/")]
     [ApiController]

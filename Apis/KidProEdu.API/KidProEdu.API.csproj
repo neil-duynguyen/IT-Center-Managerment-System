@@ -33,4 +33,10 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Children\" />
+    <Folder Include="Controllers\Parent\" />
+    <Folder Include="Controllers\Staff\" />
+  </ItemGroup>
+
 </Project>

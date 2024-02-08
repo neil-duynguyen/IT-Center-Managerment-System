@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KidProEdu.API.Controllers
+namespace KidProEdu.API.Controllers.Manager
 {
     [Route("api/[controller]/")]
     [ApiController]
@@ -32,9 +32,9 @@ namespace KidProEdu.API.Controllers
             var tag = await _tagService.GetTagById(id);
             if (tag == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
-            return Ok(tag); 
+            return Ok(tag);
         }
 
         [HttpPost]
@@ -86,7 +86,7 @@ namespace KidProEdu.API.Controllers
         public async Task<IActionResult> DeleteTag(Guid tagId)
         {
             try
-            {               
+            {
                 var result = await _tagService.DeleteTag(tagId);
                 if (result)
                 {

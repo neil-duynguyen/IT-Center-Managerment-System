@@ -82,19 +82,13 @@ namespace KidProEdu.Application.Services
 
         public async Task<bool> UpdateTag(UpdateTagViewModel updateTagViewModel)
         {
-            var tag2 = await _unitOfWork.TagRepository.GetByIdAsync(updateTagViewModel.Id);
-            if (tag2 == null)
-            {
-                throw new Exception("Không tìm thấy tag");
-            }
-
             var validator = new UpdateTagViewModelValidator();
             var validationResult = validator.Validate(updateTagViewModel);
             if (!validationResult.IsValid)
             {
                 foreach (var error in validationResult.Errors)
                 {
-                    throw new Exception(error.ErrorMessage);
+                    throw new Exception(error.ErrorMessage.ToString());
                 }
             }
 

@@ -90,18 +90,10 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var location = await _unitOfWork.LocationRepository.GetByIdAsync(updateLocationViewModel.Id);
-            if (location == null)
+            var location = await _unitOfWork.LocationRepository.GetLocationByName(updateLocationViewModel.Name);
+            if (!location.IsNullOrEmpty())
             {
-                throw new Exception("Không tìm thấy vị trí");
-            }
-            else
-            {
-                var location2 = await _unitOfWork.LocationRepository.GetLocationByName(updateLocationViewModel.Name);
-                if (location2 != null)
-                {
-                    throw new Exception("Tên đã tồn tại");
-                }
+                throw new Exception("Tên đã tồn tại");
             }
 
             var mapper = _mapper.Map<Location>(updateLocationViewModel);
