@@ -1,8 +1,6 @@
 ﻿using KidProEdu.Application.Interfaces;
-using KidProEdu.Application.Services;
+using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.TagViewModels;
-using KidProEdu.Application.ViewModels.UserViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,47 +8,47 @@ namespace KidProEdu.API.Controllers
 {
     [Route("api/[controller]/")]
     [ApiController]
-    public class TagController : ControllerBase
+    public class LocationController : ControllerBase
     {
-        private readonly ITagService _tagService;
-        public TagController(ITagService tagService)
+        private readonly ILocationService _locationService;
+        public LocationController(ILocationService locationService)
         {
-            _tagService = tagService;
+            _locationService = locationService;
         }
 
-        [HttpGet("Tags")]
+        [HttpGet("Locations")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> Tags()
+        public async Task<IActionResult> Locations()
         {
-            return Ok(await _tagService.GetTags());
+            return Ok(await _locationService.GetLocations());
         }
 
         [HttpGet("{id}")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> Tag(Guid id)
+        public async Task<IActionResult> Location(Guid id)
         {
-            var tag = await _tagService.GetTagById(id);
-            if (tag == null)
+            var location = await _locationService.GetLocationById(id);
+            if (location == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
-            return Ok(tag); 
+            return Ok(location);
         }
 
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PostTag(CreateTagViewModel createTagViewModel)
+        public async Task<IActionResult> PostLocation(CreateLocationViewModel createLocationViewModel)
         {
             try
             {
-                var result = await _tagService.CreateTag(createTagViewModel);
+                var result = await _locationService.CreateLocation(createLocationViewModel);
                 if (result)
                 {
-                    return Ok("Tag đã được tạo thành công.");
+                    return Ok("Vị trí đã được tạo thành công.");
                 }
                 else
                 {
-                    return BadRequest("Tag đã được tạo thất bại.");
+                    return BadRequest("Vị trí đã được tạo thất bại.");
                 }
             }
             catch (Exception ex)
@@ -61,14 +59,14 @@ namespace KidProEdu.API.Controllers
 
         [HttpPut]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PutTag(UpdateTagViewModel updateTagViewModel)
+        public async Task<IActionResult> PutLocation(UpdateLocationViewModel updateLocationViewModel)
         {
             try
             {
-                var result = await _tagService.UpdateTag(updateTagViewModel);
+                var result = await _locationService.UpdateLocation(updateLocationViewModel);
                 if (result)
                 {
-                    return Ok("Tag đã được cập nhật thành công.");
+                    return Ok("Vị trí đã được cập nhật thành công.");
                 }
                 else
                 {
@@ -83,14 +81,14 @@ namespace KidProEdu.API.Controllers
 
         [HttpDelete]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> DeleteTag(Guid tagId)
+        public async Task<IActionResult> DeleteLocation(Guid id)
         {
             try
-            {               
-                var result = await _tagService.DeleteTag(tagId);
+            {
+                var result = await _locationService.DeleteLocation(id);
                 if (result)
                 {
-                    return Ok("Tag đã được xóa thành công.");
+                    return Ok("Vị trí đã được xóa thành công.");
                 }
                 else
                 {

@@ -10,5 +10,6 @@ namespace KidProEdu.Application.Repositories
 
     public interface ITagRepository : IGenericRepository<Tag>
     {
+        Task<List<Tag>> GetTagByTagName(string tagName);
     }
 }
