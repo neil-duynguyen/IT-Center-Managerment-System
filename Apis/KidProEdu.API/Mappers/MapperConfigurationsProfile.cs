@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.RoleViewModels;
@@ -21,6 +22,8 @@ namespace KidProEdu.API.Mappers
             CreateMap<UpdateTagViewModel, Tag>().ReverseMap();
             CreateMap<CreateLocationViewModel, Location>().ReverseMap();
             CreateMap<UpdateLocationViewModel, Location>().ReverseMap();
+            CreateMap<CreateCategoryEquipmentViewModel, CategoryEquipment>().ReverseMap();
+            CreateMap<UpdateCategoryEquipmentViewModel, CategoryEquipment>().ReverseMap();
         }
     }
 }

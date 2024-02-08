@@ -13,16 +13,18 @@ namespace Infrastructures
         private readonly IRoleRepository _roleRepository;
         private readonly ITagRepository _tagRepository;
         private readonly ILocationRepository _locationRepository;
+        private readonly ICategoryEquipmentRepository _categoryEquipmentRepository;
 
 
-
-        public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository, ILocationRepository locationRepository)
+        public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
+            ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _tagRepository = tagRepository;
             _locationRepository = locationRepository;
+            _categoryEquipmentRepository = categoryEquipmentRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -31,6 +33,8 @@ namespace Infrastructures
         public ITagRepository TagRepository => _tagRepository;
 
         public ILocationRepository LocationRepository => _locationRepository;
+
+        public ICategoryEquipmentRepository CategoryEquipmentRepository => _categoryEquipmentRepository;
 
         public async Task<int> SaveChangeAsync()
         {

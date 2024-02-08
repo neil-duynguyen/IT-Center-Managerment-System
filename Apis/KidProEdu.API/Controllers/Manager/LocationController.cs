@@ -70,7 +70,7 @@ namespace KidProEdu.API.Controllers.Manager
                 }
                 else
                 {
-                    return BadRequest("Tag đã được cập nhật thất bại.");
+                    return BadRequest("Vị trí đã được cập nhật thất bại.");
                 }
             }
             catch (Exception ex)
@@ -92,7 +92,7 @@ namespace KidProEdu.API.Controllers.Manager
                 }
                 else
                 {
-                    return BadRequest("Tag đã được xóa thất bại.");
+                    return BadRequest("Vị trí đã được xóa thất bại.");
                 }
             }
             catch (Exception ex)

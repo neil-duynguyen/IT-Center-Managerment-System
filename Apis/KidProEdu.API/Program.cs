@@ -103,6 +103,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
             builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+            builder.Services.AddScoped<ICategoryEquipmentRepository, CategoryEquipmentRepository>();
             #endregion
 
             #region DIService
@@ -112,6 +113,7 @@ namespace KidProEdu.API
             builder.Services.AddSingleton<ICurrentTime, CurrentTime>();
             builder.Services.AddScoped<ITagService, TagService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
+            builder.Services.AddScoped<ICategoryEquipmentService, CategoryEquipmentService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));

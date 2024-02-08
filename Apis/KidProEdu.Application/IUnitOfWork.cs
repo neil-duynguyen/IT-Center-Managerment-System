@@ -9,6 +9,7 @@ namespace KidProEdu.Application
         public IUserRepository UserRepository { get; }
         public ITagRepository TagRepository { get; }
         public ILocationRepository LocationRepository { get; }
+        public ICategoryEquipmentRepository CategoryEquipmentRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
