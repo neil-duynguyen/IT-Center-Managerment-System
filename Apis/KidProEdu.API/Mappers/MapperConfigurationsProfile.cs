@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
@@ -18,6 +19,8 @@ namespace KidProEdu.API.Mappers
             CreateMap<User, UserViewModel>().ReverseMap();
             CreateMap<CreateTagViewModel, Tag>().ReverseMap();
             CreateMap<UpdateTagViewModel, Tag>().ReverseMap();
+            CreateMap<CreateLocationViewModel, Location>().ReverseMap();
+            CreateMap<UpdateLocationViewModel, Location>().ReverseMap();
         }
     }
 }

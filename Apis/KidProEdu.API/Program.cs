@@ -11,6 +11,7 @@ using Infrastructures.Repositories;
 using KidProEdu.Application;
 using Microsoft.OpenApi.Models;
 using Infrastructures;
+using KidProEdu.Application.IRepositories;
 
 namespace KidProEdu.API
 {
@@ -101,6 +102,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
+            builder.Services.AddScoped<ILocationRepository, LocationRepository>();
             #endregion
 
             #region DIService
@@ -109,6 +111,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IClaimsService, ClaimsService>();
             builder.Services.AddSingleton<ICurrentTime, CurrentTime>();
             builder.Services.AddScoped<ITagService, TagService>();
+            builder.Services.AddScoped<ILocationService, LocationService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));

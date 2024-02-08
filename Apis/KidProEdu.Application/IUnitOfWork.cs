@@ -1,4 +1,5 @@
-﻿using KidProEdu.Application.Repositories;
+﻿using KidProEdu.Application.IRepositories;
+using KidProEdu.Application.Repositories;
 
 namespace KidProEdu.Application
 {
@@ -7,6 +8,7 @@ namespace KidProEdu.Application
         public IRoleRepository RoleRepository { get; }
         public IUserRepository UserRepository { get; }
         public ITagRepository TagRepository { get; }
+        public ILocationRepository LocationRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

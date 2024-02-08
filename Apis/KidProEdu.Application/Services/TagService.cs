@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Tags;
+using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
@@ -63,7 +64,7 @@ namespace KidProEdu.Application.Services
             else
             {
                 _unitOfWork.TagRepository.SoftRemove(result);
-                return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa Tag thất ba");
+                return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa Tag thất bại");
             }
         }
 
@@ -81,6 +82,12 @@ namespace KidProEdu.Application.Services
 
         public async Task<bool> UpdateTag(UpdateTagViewModel updateTagViewModel)
         {
+            var tag2 = await _unitOfWork.TagRepository.GetByIdAsync(updateTagViewModel.Id);
+            if (tag2 == null)
+            {
+                throw new Exception("Không tìm thấy tag");
+            }
+
             var validator = new UpdateTagViewModelValidator();
             var validationResult = validator.Validate(updateTagViewModel);
             if (!validationResult.IsValid)
