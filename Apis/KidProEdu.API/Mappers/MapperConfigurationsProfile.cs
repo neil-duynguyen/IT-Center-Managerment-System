@@ -3,6 +3,7 @@ using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.RoleViewModels;
+using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.SemesterViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
@@ -31,6 +32,9 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<CreateSemesterViewModel, Semester>().ReverseMap();
             CreateMap<UpdateSemesterViewModel, Semester>().ReverseMap();
+
+            CreateMap<CreateRoomViewModel, Room>().ReverseMap();
+            CreateMap<UpdateRoomViewModel, Room>().ReverseMap();
         }
     }
 }

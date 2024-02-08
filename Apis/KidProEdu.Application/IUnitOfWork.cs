@@ -11,6 +11,8 @@ namespace KidProEdu.Application
         public ILocationRepository LocationRepository { get; }
         public ICategoryEquipmentRepository CategoryEquipmentRepository { get; }
         public ISemesterRepository SemesterRepository { get; }
+        public IRoomRepository RoomRepository { get; }
+
         public Task<int> SaveChangeAsync();
     }
 }
