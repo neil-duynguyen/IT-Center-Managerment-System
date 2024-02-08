@@ -104,6 +104,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ITagRepository, TagRepository>();
             builder.Services.AddScoped<ILocationRepository, LocationRepository>();
             builder.Services.AddScoped<ICategoryEquipmentRepository, CategoryEquipmentRepository>();
+            builder.Services.AddScoped<ISemesterRepository, SemesterRepository>();
             #endregion
 
             #region DIService
@@ -114,6 +115,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ITagService, TagService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddScoped<ICategoryEquipmentService, CategoryEquipmentService>();
+            builder.Services.AddScoped<ISemesterService, SemesterService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));
