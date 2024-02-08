@@ -23,7 +23,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<Tag>> GetTagByTagName(string tagName)
         {
             var tags = await _dbContext.Tags
-                .Where(x => x.TagName.ToLower() == tagName.ToLower())
+                .Where(x => x.TagName.ToLower() == tagName.ToLower() && x.IsDeleted == false)
                 .ToListAsync();
 
             return tags;

@@ -63,7 +63,7 @@ namespace KidProEdu.Application.Services
             else
             {
                 _unitOfWork.TagRepository.SoftRemove(result);
-                return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xoá Tag thất bại");
+                return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa Tag thất ba");
             }
         }
 
@@ -75,7 +75,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<Tag>> GetTags()
         {
-            var tags = await _unitOfWork.TagRepository.GetAllAsync();
+            var tags = _unitOfWork.TagRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
             return tags;
         }
 

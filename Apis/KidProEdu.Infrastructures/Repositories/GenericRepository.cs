@@ -18,11 +18,11 @@ namespace Infrastructures.Repositories
             _timeService = timeService;
             _claimsService = claimsService;
         }
-        public Task<List<TEntity>> GetAllAsync() => _dbSet.Where(x => x.IsDeleted == false).ToListAsync();
+        public Task<List<TEntity>> GetAllAsync() => _dbSet.ToListAsync();
 
         public async Task<TEntity?> GetByIdAsync(Guid id)
         {
-            var result = await _dbSet.Where(x => x.IsDeleted == false).FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
             // todo should throw exception when not found
             return result;
         }
