@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KidProEdu.API.Controllers
+namespace KidProEdu.API.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
