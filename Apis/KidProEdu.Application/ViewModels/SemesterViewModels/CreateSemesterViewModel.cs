@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KidProEdu.Domain.Entities
+namespace KidProEdu.Application.ViewModels.SemesterViewModels
 {
-    public class Semester : BaseEntity
+    public class CreateSemesterViewModel
     {
         public string SemesterName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public IList<SemesterCourse> SemesterCourses { get; set; }
     }
 }
