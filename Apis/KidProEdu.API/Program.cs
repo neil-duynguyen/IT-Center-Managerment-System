@@ -95,7 +95,8 @@ namespace KidProEdu.API
 
             //Connection DB
             builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Development")));
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("Development"),
+                        builder => builder.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
 
 
             #region DIRepository
@@ -130,6 +131,16 @@ namespace KidProEdu.API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+
+            if (app.Environment.IsProduction())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "KidProEdu API v1");
+                    c.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseCors(MyAllowSpecificOrigins);
