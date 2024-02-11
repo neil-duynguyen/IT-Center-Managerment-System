@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
+using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.RoleViewModels;
@@ -35,6 +36,9 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<CreateRoomViewModel, Room>().ReverseMap();
             CreateMap<UpdateRoomViewModel, Room>().ReverseMap();
+
+            CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
+            CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
         }
     }
 }
