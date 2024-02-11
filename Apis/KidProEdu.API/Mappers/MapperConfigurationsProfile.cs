@@ -7,6 +7,7 @@ using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.SemesterViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
+using KidProEdu.Application.ViewModels.TrainingProgramCategoryViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
 
@@ -39,6 +40,9 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
+
+            CreateMap<CreateTrainingProgramCategoryViewModel, TrainingProgramCategory>().ReverseMap();
+            CreateMap<UpdateTrainingProgramCategoryViewModel, TrainingProgramCategory>().ReverseMap();
         }
     }
 }
