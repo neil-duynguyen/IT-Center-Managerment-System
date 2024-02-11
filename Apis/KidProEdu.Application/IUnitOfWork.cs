@@ -14,6 +14,7 @@ namespace KidProEdu.Application
         public IRoomRepository RoomRepository { get; }
         public IEquipmentRepository EquipmentRepository { get; }
         public ITrainingProgramCategoryRepository TrainingProgramCategoryRepository { get; }
+        public IBlogRepository BlogRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
