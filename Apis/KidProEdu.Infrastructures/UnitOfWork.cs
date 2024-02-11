@@ -19,11 +19,12 @@ namespace Infrastructures
         private readonly IEquipmentRepository _equipmentRepository;
         private readonly ITrainingProgramCategoryRepository _trainingProgramCategoryRepository;
         private readonly IBlogRepository _blogRepository;
+        private readonly IBlogTagRepository _blogTagRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
             , ISemesterRepository semesterRepository, IRoomRepository roomRepository, IEquipmentRepository equipmentRepository
-            , ITrainingProgramCategoryRepository trainingProgramCategoryRepository, IBlogRepository blogRepository)
+            , ITrainingProgramCategoryRepository trainingProgramCategoryRepository, IBlogRepository blogRepository, IBlogTagRepository blogTagRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -36,6 +37,7 @@ namespace Infrastructures
             _equipmentRepository = equipmentRepository;
             _trainingProgramCategoryRepository = trainingProgramCategoryRepository;
             _blogRepository = blogRepository;
+            _blogTagRepository = blogTagRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -56,6 +58,8 @@ namespace Infrastructures
         public ITrainingProgramCategoryRepository TrainingProgramCategoryRepository => _trainingProgramCategoryRepository;
 
         public IBlogRepository BlogRepository => _blogRepository;
+
+        public IBlogTagRepository BlogTagRepository => _blogTagRepository;
 
         public async Task<int> SaveChangeAsync()
         {

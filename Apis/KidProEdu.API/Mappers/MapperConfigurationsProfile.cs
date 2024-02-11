@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KidProEdu.Application.ViewModels.BlogTagViewModels;
 using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
@@ -47,6 +48,9 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<CreateBlogViewModel, Blog>().ReverseMap();
             CreateMap<UpdateBlogViewModel, Blog>().ReverseMap();
+
+            CreateMap<CreateBlogTagViewModel, BlogTag>().ReverseMap();
+            CreateMap<UpdateBlogTagViewModel, BlogTag>().ReverseMap();
 
         }
     }
