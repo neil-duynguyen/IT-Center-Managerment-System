@@ -107,6 +107,10 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ICategoryEquipmentRepository, CategoryEquipmentRepository>();
             builder.Services.AddScoped<ISemesterRepository, SemesterRepository>();
             builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+            builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+            builder.Services.AddScoped<ITrainingProgramCategoryRepository, TrainingProgramCategoryRepository>();
+            builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+            builder.Services.AddScoped<IBlogTagRepository, BlogTagRepository>();
             builder.Services.AddScoped<IChildrenRepository, ChildrenRepository>();
             #endregion
 
@@ -120,6 +124,10 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ICategoryEquipmentService, CategoryEquipmentService>();
             builder.Services.AddScoped<ISemesterService, SemesterService>();
             builder.Services.AddScoped<IRoomService, RoomService>();
+            builder.Services.AddScoped<IEquipmentService, EquipmentService>();
+            builder.Services.AddScoped<ITrainingProgramCategoryService, TrainingProgramCategoryService>();
+            builder.Services.AddScoped<IBlogService, BlogService>();
+            builder.Services.AddScoped<IBlogTagService, BlogTagService>();
             builder.Services.AddScoped<IChildrenService, ChildrenService>();
             #endregion
 
