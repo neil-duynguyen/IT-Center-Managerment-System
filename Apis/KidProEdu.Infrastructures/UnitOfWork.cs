@@ -16,10 +16,11 @@ namespace Infrastructures
         private readonly ICategoryEquipmentRepository _categoryEquipmentRepository;
         private readonly ISemesterRepository _semesterRepository;
         private readonly IRoomRepository _roomRepository;
+        private readonly IChildrenRepository _childrenRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
-            , ISemesterRepository semesterRepository, IRoomRepository roomRepository)
+            , ISemesterRepository semesterRepository, IRoomRepository roomRepository, IChildrenRepository childrenRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -29,6 +30,7 @@ namespace Infrastructures
             _categoryEquipmentRepository = categoryEquipmentRepository;
             _semesterRepository = semesterRepository;
             _roomRepository = roomRepository;
+            _childrenRepository = childrenRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -43,6 +45,8 @@ namespace Infrastructures
         public ISemesterRepository SemesterRepository => _semesterRepository;
 
         public IRoomRepository RoomRepository => _roomRepository;
+
+        public IChildrenRepository ChildrenRepository => _childrenRepository;
 
         public async Task<int> SaveChangeAsync()
         {

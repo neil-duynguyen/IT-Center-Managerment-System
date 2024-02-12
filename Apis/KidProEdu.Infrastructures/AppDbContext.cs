@@ -64,9 +64,7 @@ namespace KidProEdu.Infrastructures
                new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A51"), Name = "Manager", CreationDate = new DateTime(2024 - 01 - 15)},
                new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A52"), Name = "Staff", CreationDate = new DateTime(2024 - 01 - 15) },
                new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A53"), Name = "Teacher", CreationDate = new DateTime(2024 - 01 - 15) },
-               new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A54"), Name = "Parent", CreationDate = new DateTime(2024 - 01 - 15) },
-               new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A55"), Name = "Children", CreationDate = new DateTime(2024 - 01 - 15) }
-               );
+               new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A54"), Name = "Parent", CreationDate = new DateTime(2024 - 01 - 15) });
 
 
             var userAdmin = "Admin";
@@ -78,7 +76,6 @@ namespace KidProEdu.Infrastructures
             var hashPasswordStaff = "Staff@123";
             var hashPasswordTeacher = "Teacher@123";                     
             var hashPasswordParent = "Parent@123";
-            var hashPasswordChildren = "Children@123";
 
             builder.Entity<User>().HasData(
                 new User
