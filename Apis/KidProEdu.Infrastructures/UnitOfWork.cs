@@ -25,8 +25,8 @@ namespace Infrastructures
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
             , ISemesterRepository semesterRepository, IRoomRepository roomRepository, IEquipmentRepository equipmentRepository
-            , ITrainingProgramCategoryRepository trainingProgramCategoryRepository, IBlogRepository blogRepository, IBlogTagRepository blogTagRepository)
-            , ISemesterRepository semesterRepository, IRoomRepository roomRepository, IChildrenRepository childrenRepository)
+            , ITrainingProgramCategoryRepository trainingProgramCategoryRepository, IBlogRepository blogRepository, IBlogTagRepository blogTagRepository
+            , IChildrenRepository childrenRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
