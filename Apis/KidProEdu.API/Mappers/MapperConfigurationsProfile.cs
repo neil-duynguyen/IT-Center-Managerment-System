@@ -2,6 +2,7 @@
 using KidProEdu.Application.ViewModels.BlogTagViewModels;
 using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
+using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LoginViewModel;
@@ -39,6 +40,9 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<CreateRoomViewModel, Room>().ReverseMap();
             CreateMap<UpdateRoomViewModel, Room>().ReverseMap();
+
+            CreateMap<CreateChildrenViewModel, Children>().ReverseMap();
+            CreateMap<UpdateChildrenViewModel, Children>().ReverseMap();
 
             CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
