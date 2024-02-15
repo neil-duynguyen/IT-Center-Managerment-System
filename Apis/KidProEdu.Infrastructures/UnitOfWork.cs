@@ -16,10 +16,17 @@ namespace Infrastructures
         private readonly ICategoryEquipmentRepository _categoryEquipmentRepository;
         private readonly ISemesterRepository _semesterRepository;
         private readonly IRoomRepository _roomRepository;
+        private readonly IEquipmentRepository _equipmentRepository;
+        private readonly ITrainingProgramCategoryRepository _trainingProgramCategoryRepository;
+        private readonly IBlogRepository _blogRepository;
+        private readonly IBlogTagRepository _blogTagRepository;
+        private readonly IChildrenRepository _childrenRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
-            , ISemesterRepository semesterRepository, IRoomRepository roomRepository)
+            , ISemesterRepository semesterRepository, IRoomRepository roomRepository, IEquipmentRepository equipmentRepository
+            , ITrainingProgramCategoryRepository trainingProgramCategoryRepository, IBlogRepository blogRepository, IBlogTagRepository blogTagRepository
+            , IChildrenRepository childrenRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -29,6 +36,11 @@ namespace Infrastructures
             _categoryEquipmentRepository = categoryEquipmentRepository;
             _semesterRepository = semesterRepository;
             _roomRepository = roomRepository;
+            _equipmentRepository = equipmentRepository;
+            _trainingProgramCategoryRepository = trainingProgramCategoryRepository;
+            _blogRepository = blogRepository;
+            _blogTagRepository = blogTagRepository;
+            _childrenRepository = childrenRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -43,6 +55,16 @@ namespace Infrastructures
         public ISemesterRepository SemesterRepository => _semesterRepository;
 
         public IRoomRepository RoomRepository => _roomRepository;
+
+        public IEquipmentRepository EquipmentRepository => _equipmentRepository;
+
+        public ITrainingProgramCategoryRepository TrainingProgramCategoryRepository => _trainingProgramCategoryRepository;
+
+        public IBlogRepository BlogRepository => _blogRepository;
+
+        public IBlogTagRepository BlogTagRepository => _blogTagRepository;
+
+        public IChildrenRepository ChildrenRepository => _childrenRepository;
 
         public async Task<int> SaveChangeAsync()
         {

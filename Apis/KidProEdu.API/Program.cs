@@ -95,7 +95,8 @@ namespace KidProEdu.API
 
             //Connection DB
             builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Development")));
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("Development"),
+                        builder => builder.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
 
 
             #region DIRepository
@@ -106,6 +107,11 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ICategoryEquipmentRepository, CategoryEquipmentRepository>();
             builder.Services.AddScoped<ISemesterRepository, SemesterRepository>();
             builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+            builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+            builder.Services.AddScoped<ITrainingProgramCategoryRepository, TrainingProgramCategoryRepository>();
+            builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+            builder.Services.AddScoped<IBlogTagRepository, BlogTagRepository>();
+            builder.Services.AddScoped<IChildrenRepository, ChildrenRepository>();
             #endregion
 
             #region DIService
@@ -118,6 +124,11 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ICategoryEquipmentService, CategoryEquipmentService>();
             builder.Services.AddScoped<ISemesterService, SemesterService>();
             builder.Services.AddScoped<IRoomService, RoomService>();
+            builder.Services.AddScoped<IEquipmentService, EquipmentService>();
+            builder.Services.AddScoped<ITrainingProgramCategoryService, TrainingProgramCategoryService>();
+            builder.Services.AddScoped<IBlogService, BlogService>();
+            builder.Services.AddScoped<IBlogTagService, BlogTagService>();
+            builder.Services.AddScoped<IChildrenService, ChildrenService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));
@@ -130,6 +141,16 @@ namespace KidProEdu.API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+
+            if (app.Environment.IsProduction())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "KidProEdu API v1");
+                    c.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseCors(MyAllowSpecificOrigins);
