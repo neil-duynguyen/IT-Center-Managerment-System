@@ -61,7 +61,7 @@ namespace KidProEdu.API.Controllers.Manager
         {
             try
             {
-                var result = await _semesterService.UpdateSemester(updateSemesterViewModel);
+                var result = await _semesterService.UpdateSemester(updateSemesterViewModel, x => x.SemesterName, x => x.StartDate);
                 if (result)
                 {
                     return Ok("Semester đã được cập nhật thành công.");

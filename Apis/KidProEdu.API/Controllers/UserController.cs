@@ -87,7 +87,7 @@ namespace KidProEdu.WebAPI.Controllers
             }
         }
 
-        [HttpPut()]
+        [HttpPut("ChangePassword")]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel changePasswordViewModel)
         {
             try

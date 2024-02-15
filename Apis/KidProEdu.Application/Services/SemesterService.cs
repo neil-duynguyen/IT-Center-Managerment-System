@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
+using AutoMapper.Internal;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Semesters;
 using KidProEdu.Application.ViewModels.SemesterViewModels;
@@ -7,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,13 +43,13 @@ namespace KidProEdu.Application.Services
             }
 
             var semester = await _unitOfWork.SemesterRepository.GetSemesterBySemesterName(createSemesterViewModel.SemesterName);
-            if (!semester.IsNullOrEmpty())
+            if (semester != null)
             {
                 throw new Exception("Tên đã tồn tại");
             }
 
             semester = await _unitOfWork.SemesterRepository.GetSemesterByStartDate(createSemesterViewModel.StartDate);
-            if (!semester.IsNullOrEmpty())
+            if (semester != null)
             {
                 throw new Exception("Ngày bắt đầu đã tồn tại");
             }
@@ -82,7 +85,7 @@ namespace KidProEdu.Application.Services
             return semesters;
         }
 
-        public async Task<bool> UpdateSemester(UpdateSemesterViewModel updateSemesterViewModel)
+        public async Task<bool> UpdateSemester(UpdateSemesterViewModel updateSemesterViewModel, params Expression<Func<Semester, object>>[] uniqueProperties)
         {
             var validator = new UpdateSemesterViewModelValidator();
             var validationResult = validator.Validate(updateSemesterViewModel);
@@ -94,20 +97,30 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var semester = await _unitOfWork.SemesterRepository.GetSemesterBySemesterName(updateSemesterViewModel.SemesterName);
-            if (!semester.IsNullOrEmpty())
+            foreach (var property in uniqueProperties)
+            {
+                var semester = await _unitOfWork.SemesterRepository.GetSemesterByProperty(updateSemesterViewModel, property);
+                if (semester != null && semester.Id != updateSemesterViewModel.Id)
+                {
+                    throw new Exception($"{property.GetMember().Name} đã tồn tại");
+                }
+            }
+
+            /*var semester = await _unitOfWork.SemesterRepository.GetSemesterBySemesterName(updateSemesterViewModel.SemesterName);
+            if (semester != null && semester.Id != updateSemesterViewModel.Id)
             {
                 throw new Exception("Tên đã tồn tại");
             }
-            
+
             semester = await _unitOfWork.SemesterRepository.GetSemesterByStartDate(updateSemesterViewModel.StartDate);
-            if (!semester.IsNullOrEmpty())
+            if (semester != null && semester.Id != updateSemesterViewModel.Id)
             {
                 throw new Exception("Ngày bắt đầu đã tồn tại");
-            }
+            }*/
 
-            var mapper = _mapper.Map<Semester>(updateSemesterViewModel);
-            _unitOfWork.SemesterRepository.Update(mapper);
+            var existingSemester = await _unitOfWork.SemesterRepository.GetByIdAsync(updateSemesterViewModel.Id) ?? throw new Exception("Không tìm thấy học kỳ");
+            //var mapper = _mapper.Map<Semester>(updateSemesterViewModel);
+            _unitOfWork.SemesterRepository.Update(_mapper.Map(updateSemesterViewModel, existingSemester));
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật Semester thất bại");
         }
     }

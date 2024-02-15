@@ -96,8 +96,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<UserViewModel> ChangePassword(ChangePasswordViewModel changePasswordViewModel)
         {
-            var user = await _unitOfWork.UserRepository.GetByIdAsync(changePasswordViewModel.id);
-            //Guid id = _claimsService.GetCurrentUserId;
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(changePasswordViewModel.id) ?? throw new Exception("Không tìm thấy người dùng");
 
             user.PasswordHash = (changePasswordViewModel.newPasswordHash).Hash();
 
