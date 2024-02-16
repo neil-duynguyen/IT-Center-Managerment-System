@@ -7,6 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\Children\**" />
+    <Compile Remove="Controllers\Parent\**" />
+    <Compile Remove="Controllers\Staff\**" />
+    <Content Remove="Controllers\Children\**" />
+    <Content Remove="Controllers\Parent\**" />
+    <Content Remove="Controllers\Staff\**" />
+    <EmbeddedResource Remove="Controllers\Children\**" />
+    <EmbeddedResource Remove="Controllers\Parent\**" />
+    <EmbeddedResource Remove="Controllers\Staff\**" />
+    <None Remove="Controllers\Children\**" />
+    <None Remove="Controllers\Parent\**" />
+    <None Remove="Controllers\Staff\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
@@ -31,12 +46,6 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\Children\" />
-    <Folder Include="Controllers\Parent\" />
-    <Folder Include="Controllers\Staff\" />
   </ItemGroup>
 
 </Project>
