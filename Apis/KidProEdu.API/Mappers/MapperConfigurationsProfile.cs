@@ -11,6 +11,7 @@ using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.SemesterViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Application.ViewModels.TrainingProgramCategoryViewModels;
+using KidProEdu.Application.ViewModels.TrainingProgramViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
 
@@ -55,6 +56,9 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<CreateBlogTagViewModel, BlogTag>().ReverseMap();
             CreateMap<UpdateBlogTagViewModel, BlogTag>().ReverseMap();
+
+            CreateMap<CreateTrainingProgramViewModel, TrainingProgram>().ReverseMap();
+            CreateMap<UpdateTrainingProgramViewModel, TrainingProgram>().ReverseMap();
 
         }
     }
