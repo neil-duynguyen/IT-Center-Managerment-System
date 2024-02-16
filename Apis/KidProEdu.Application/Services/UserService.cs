@@ -14,13 +14,15 @@ namespace KidProEdu.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentTime _currentTime;
         private readonly IConfiguration _configuration;
+        private readonly IClaimsService _claimsService;
 
-        public UserService(IMapper mapper, IUnitOfWork unitOfWork, ICurrentTime currentTime, IConfiguration configuration)
+        public UserService(IMapper mapper, IUnitOfWork unitOfWork, ICurrentTime currentTime, IConfiguration configuration, IClaimsService claimsService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
             _configuration = configuration;
+            _claimsService = claimsService;
         }
 
         public async Task<LoginViewModel> LoginAsync(UserLoginViewModel userObject)
@@ -91,5 +93,18 @@ namespace KidProEdu.Application.Services
 
             return _mapper.Map<List<UserViewModel>>(user);
         }
+
+        public async Task<UserViewModel> ChangePassword(ChangePasswordViewModel changePasswordViewModel)
+        {
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(changePasswordViewModel.id) ?? throw new Exception("Không tìm thấy người dùng");
+
+            user.PasswordHash = (changePasswordViewModel.newPasswordHash).Hash();
+
+            _unitOfWork.UserRepository.Update(user);
+
+            return await _unitOfWork.SaveChangeAsync() > 0 ? _mapper.Map<UserViewModel>(user) : throw new Exception("Thay đổi mật khẩu không thành công");
+
+        }
+
     }
 }

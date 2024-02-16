@@ -3,6 +3,7 @@ using KidProEdu.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace KidProEdu.Application.Interfaces
     {
         Task<List<Semester>> GetSemesters();
         Task<bool> CreateSemester(CreateSemesterViewModel createSemesterViewModel);
-        Task<bool> UpdateSemester(UpdateSemesterViewModel updateSemesterViewModel);
+        Task<bool> UpdateSemester(UpdateSemesterViewModel updateSemesterViewModel, params Expression<Func<Semester, object>>[] uniqueProperties);
         Task<Semester> GetSemesterById(Guid semesterId);
         Task<bool> DeleteSemester(Guid semesterId);
     }
