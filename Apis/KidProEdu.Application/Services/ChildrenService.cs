@@ -39,7 +39,7 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var mapper = _mapper.Map<Children>(createChildrenViewModel);
+            var mapper = _mapper.Map<ChildrenProfile>(createChildrenViewModel);
             await _unitOfWork.ChildrenRepository.AddAsync(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo trẻ thất bại.");
         }
@@ -56,7 +56,7 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var mapper = _mapper.Map<Children>(updateChildrenViewModel);
+            var mapper = _mapper.Map<ChildrenProfile>(updateChildrenViewModel);
             _unitOfWork.ChildrenRepository.Update(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trẻ thất bại.");
         }
@@ -71,7 +71,7 @@ namespace KidProEdu.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<Children>> GetChildrens()
+        public Task<List<ChildrenProfile>> GetChildrens()
         {
             throw new NotImplementedException();
         }

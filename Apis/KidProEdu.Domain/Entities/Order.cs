@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    public class Blog : BaseEntity
+    public class Order : BaseEntity
     {
         [ForeignKey("UserAccount")]
         public Guid UserId { get; set; }
-        public string Content { get; set; }
-        public string? Image { get; set; }
-        public string Title { get; set; }
+        public DateTime OrderDate { get; set; }
+        public double TotalAmount { get; set; }
+        public StatusPayment PaymentStatus { get; set; }
         public virtual UserAccount UserAccount { get; set; }
-        public IList<BlogTag> BlogTags { get; set; }
+        public IList<OrderDetail> OrderDetails { get; set; }
+        public IList<Transaction> Transactions { get; set; }
     }
 }

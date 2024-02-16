@@ -22,9 +22,9 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<Role, RoleViewModel>().ReverseMap();
 
-            CreateMap<User, LoginViewModel>().ReverseMap();
-            CreateMap<User, CreateUserViewModel>().ReverseMap();
-            CreateMap<User, UserViewModel>().ReverseMap();
+            CreateMap<UserAccount, LoginViewModel>().ReverseMap();
+            CreateMap<UserAccount, CreateUserViewModel>().ReverseMap();
+            CreateMap<UserAccount, UserViewModel>().ReverseMap();
 
             CreateMap<CreateTagViewModel, Tag>().ReverseMap();
             CreateMap<UpdateTagViewModel, Tag>().ReverseMap();
@@ -41,8 +41,8 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateRoomViewModel, Room>().ReverseMap();
             CreateMap<UpdateRoomViewModel, Room>().ReverseMap();
 
-            CreateMap<CreateChildrenViewModel, Children>().ReverseMap();
-            CreateMap<UpdateChildrenViewModel, Children>().ReverseMap();
+            CreateMap<CreateChildrenViewModel, ChildrenProfile>().ReverseMap();
+            CreateMap<UpdateChildrenViewModel, ChildrenProfile>().ReverseMap();
 
             CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();

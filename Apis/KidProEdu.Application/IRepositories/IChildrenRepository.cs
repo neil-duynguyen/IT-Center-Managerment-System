@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.IRepositories
 {
-    public interface IChildrenRepository : IGenericRepository<Children>
+    public interface IChildrenRepository : IGenericRepository<ChildrenProfile>
     {
     }
 }

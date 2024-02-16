@@ -8,7 +8,7 @@ namespace KidProEdu.Application.Utils
 {
     public static class GenerateJsonWebTokenString
     {
-        public static string GenerateJsonWebToken(this User user, string secretKey)
+        public static string GenerateJsonWebToken(this UserAccount user, string secretKey)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));

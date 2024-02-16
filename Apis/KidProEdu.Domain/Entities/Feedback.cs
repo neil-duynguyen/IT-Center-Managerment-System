@@ -9,14 +9,14 @@ namespace KidProEdu.Domain.Entities
 {
     public class Feedback : BaseEntity
     {
-        [ForeignKey("User")]
+        [ForeignKey("UserAccount")]
         public Guid UserId { get; set; }
         public Guid RecipientId { get; set; }
         [ForeignKey("Class")]
         public Guid? ClassId { get; set; }
         public string? Messages {  get; set; }
         public string? Stars { get; set; }
-        public virtual User User { get; set; }
+        public virtual UserAccount UserAccount { get; set; }
 
         public virtual Class? Class { get; set; }
         

@@ -62,7 +62,7 @@ namespace KidProEdu.Application.Services
                  CreationDate = _currentTime.GetCurrentTime(),
              };*/
 
-            var newUser = _mapper.Map<User>(userObject);
+            var newUser = _mapper.Map<UserAccount>(userObject);
             newUser.PasswordHash = newUser.PasswordHash.Hash();
             newUser.Status = Domain.Enums.StatusUser.Enable;
 

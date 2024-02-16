@@ -11,7 +11,7 @@ namespace KidProEdu.Application.Interfaces
 {
     public interface IChildrenService
     {
-        Task<List<Children>> GetChildrens();
+        Task<List<ChildrenProfile>> GetChildrens();
         Task<bool> CreateChildren(CreateChildrenViewModel createChildrenViewModel);
         Task<bool> UpdateChildren(UpdateChildrenViewModel updateChildrenViewModel);
         Task<Location> GetChildrenById(Guid childrenId);

@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 namespace KidProEdu.Domain.Entities
 {
 
-    public class Children : BaseEntity
+    public class ChildrenProfile : BaseEntity
     {
-        [ForeignKey("User")]
+        [ForeignKey("UserAccount")]
         public Guid UserId { get; set; }
         public string FullName { get; set; }
         public string BirthDay { get; set; }
         public string Image { get; set; }
         public string SpecialSkill { get; set; }
-        public virtual User User { get; set; }
+        public virtual UserAccount UserAccount { get; set; }
         public IList<Score> Scores { get; set; }
-        public IList<Certificate> Certificates { get; set; }
+        public IList<ChildrenCertificate> ChildrenCertificates { get; set; }
         public IList<Enrollment> Enrollments { get; set; }
 
     }

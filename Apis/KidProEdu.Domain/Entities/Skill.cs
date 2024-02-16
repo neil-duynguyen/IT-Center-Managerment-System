@@ -10,10 +10,10 @@ namespace KidProEdu.Domain.Entities
 {
     public class Skill : BaseEntity
     {
-        [ForeignKey("User")]
+        [ForeignKey("UserAccount")]
         public Guid UserId { get; set; }
         public string SkillName { get; set; }
         public double Level { get; set; } 
-        public virtual User User { get; set; }
+        public virtual UserAccount UserAccount { get; set; }
     }
 }

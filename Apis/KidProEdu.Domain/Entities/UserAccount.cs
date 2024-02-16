@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    public class User : BaseEntity
+    public class UserAccount : BaseEntity
     {
         [ForeignKey("Role")]
         
@@ -34,7 +34,7 @@ namespace KidProEdu.Domain.Entities
         public IList<AdviseRequest> AdviseRequests { get; set; }
         public IList<Feedback> Feedbacks { get; set; }
         public IList<Class> Classes { get; set; }
-        public IList<Children> Childrens { get; set; }
+        public IList<ChildrenProfile> ChildrenProfile { get; set; }
         public IList<Enrollment> Enrollments { get; set; }
         public IList<NotificationUser> NotificationUsers { get; set; }
         public IList<Blog> Blogs { get; set; }

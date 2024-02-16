@@ -9,6 +9,6 @@ namespace KidProEdu.Domain.Entities
     public class Role : BaseEntity
     {
         public required string Name { get; set; }
-        public IList<User> Users { get; set; }
+        public IList<UserAccount> UserAccount { get; set; }
     }
 }

@@ -17,7 +17,6 @@ namespace KidProEdu.Domain.Entities
         public string Description { get; set; }
         public int DurationTotal { get; set; }
         public string Syllabus { get; set; }
-        public int? Discount { get; set; }
         public string Level { get; set; }
         public string? EntryPoint { get; set; }
         public string? Prerequisite { get; set; }
@@ -27,5 +26,8 @@ namespace KidProEdu.Domain.Entities
         public IList<SemesterCourse> SemesterCourses { get; set; }
         public IList<Class> Classes { get; set; }
         public IList<Lesson> Lessons { get; set; }
+        public IList<Score>  Scores { get; set; }
+        public IList<OrderDetail> OrderDetails { get; set; }
+        public Certificate Certificate { get; set; }
     }
 }

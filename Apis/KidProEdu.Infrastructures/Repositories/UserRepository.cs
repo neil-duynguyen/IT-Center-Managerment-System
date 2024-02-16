@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructures.Repositories
 {
-    public class UserRepository : GenericRepository<User>, IUserRepository
+    public class UserRepository : GenericRepository<UserAccount>, IUserRepository
     {
         private readonly AppDbContext _dbContext;
 
@@ -23,7 +23,7 @@ namespace Infrastructures.Repositories
 
         public Task<bool> CheckUserNameExited(string username) => _dbContext.Users.AnyAsync(u => u.UserName == username);
 
-        public async Task<User> GetUserByUserNameAndPasswordHash(string username, string passwordHash)
+        public async Task<UserAccount> GetUserByUserNameAndPasswordHash(string username, string passwordHash)
         {
             var user = await _dbContext.Users.Include(u => u.Role)
                 .FirstOrDefaultAsync(record => record.UserName == username

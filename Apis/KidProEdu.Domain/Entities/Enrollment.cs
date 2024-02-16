@@ -11,13 +11,13 @@ namespace KidProEdu.Domain.Entities
     {
         [ForeignKey("Class")]
         public Guid ClassId { get; set; }
-        [ForeignKey("Children")]
-        public Guid ChildrenId { get; set;}
+        [ForeignKey("ChildrenProfile")]
+        public Guid ChildrenProfileId { get; set;}
         public DateTime? RegisterDate { get; set; }
         public double? Price { get; set; }
         public Guid UserId { get; set; }
 
         public virtual Class Class { get; set; }
-        public virtual Children Children { get; set; }
+        public virtual ChildrenProfile ChildrenProfile { get; set; }
     }
 }

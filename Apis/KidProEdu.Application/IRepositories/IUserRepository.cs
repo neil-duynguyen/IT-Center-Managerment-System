@@ -2,9 +2,9 @@
 
 namespace KidProEdu.Application.Repositories
 {
-    public interface IUserRepository : IGenericRepository<User>
+    public interface IUserRepository : IGenericRepository<UserAccount>
     {
-        Task<User> GetUserByUserNameAndPasswordHash(string username, string passwordHash);
+        Task<UserAccount> GetUserByUserNameAndPasswordHash(string username, string passwordHash);
 
         Task<bool> CheckUserNameExited(string username);
     }

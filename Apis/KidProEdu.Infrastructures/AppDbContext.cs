@@ -14,7 +14,7 @@ namespace KidProEdu.Infrastructures
         }
 
         public DbSet<Role> Role { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserAccount> Users { get; set; }
         public DbSet<AdviseRequest> AdviseRequests { get; set; }
         public DbSet<AnnualWorkingDay> AnnualWorkingDays { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
@@ -22,7 +22,7 @@ namespace KidProEdu.Infrastructures
         public DbSet<BlogTag> BlogsTag { get; set; }
         public DbSet<CategoryEquipment> CategoryEquipment { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
-        public DbSet<Children> Childrens { get; set; }
+        public DbSet<ChildrenProfile> Childrens { get; set; }
         public DbSet<Class> Classes { get; set; }
         public DbSet<ConfigDay> ConfigDays { get; set; }
         public DbSet<ConfigJobType> ConfigJobTypes { get; set; }
@@ -77,8 +77,8 @@ namespace KidProEdu.Infrastructures
             var hashPasswordTeacher = "Teacher@123";                     
             var hashPasswordParent = "Parent@123";
 
-            builder.Entity<User>().HasData(
-                new User
+            builder.Entity<UserAccount>().HasData(
+                new UserAccount
                 {
                     Id = new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca82"),
                     RoleId = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A50"),
@@ -92,8 +92,8 @@ namespace KidProEdu.Infrastructures
                     CreationDate = new DateTime(2024 - 01 - 15),
                 });
 
-            builder.Entity<User>().HasData(
-                new User
+            builder.Entity<UserAccount>().HasData(
+                new UserAccount
                 {
                     Id = new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca83"),
                     RoleId = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A51"),
@@ -107,8 +107,8 @@ namespace KidProEdu.Infrastructures
                     CreationDate = new DateTime(2024 - 01 - 15),
                 });
 
-            builder.Entity<User>().HasData(
-                new User
+            builder.Entity<UserAccount>().HasData(
+                new UserAccount
                 {
                     Id = new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca84"),
                     RoleId = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A52"),
@@ -129,9 +129,9 @@ namespace KidProEdu.Infrastructures
                 .OnDelete(DeleteBehavior.ClientSetNull);
             
             builder.Entity<Enrollment>()
-                .HasOne(x => x.Children)
+                .HasOne(x => x.ChildrenProfile)
                 .WithMany(x => x.Enrollments)
-                .HasForeignKey(x => x.ChildrenId)
+                .HasForeignKey(x => x.ChildrenProfileId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<ScheduleRoom>()
@@ -144,8 +144,29 @@ namespace KidProEdu.Infrastructures
                 .HasOne(x => x.Schedule)
                 .WithMany(x => x.ScheduleRooms)
                 .HasForeignKey(x => x.ScheduleId)
+                .OnDelete(DeleteBehavior.ClientSetNull);        
+
+            builder.Entity<ChildrenCertificate>()
+                .HasOne(x => x.ChildrenProfile)
+                .WithMany(x => x.ChildrenCertificates)
+                .HasForeignKey(x => x.ChildrenProfileId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            builder.Entity<ChildrenCertificate>()
+                .HasOne(x => x.Certificate)
+                .WithMany(x => x.ChildrenCertificates)
+                .HasForeignKey(x => x.CertificateId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<Course>()
+               .HasOne(p => p.Certificate)
+               .WithOne(x => x.Course)
+               .HasForeignKey<Certificate>(x => x.CourseId);
+
+            builder.Entity<TrainingProgram>()
+               .HasOne(p => p.Certificate)
+               .WithOne(x => x.TrainingProgram)
+               .HasForeignKey<Certificate>(x => x.TrainingProgramId);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

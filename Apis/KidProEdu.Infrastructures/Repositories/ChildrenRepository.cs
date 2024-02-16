@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Infrastructures.Repositories
 {
-    public class ChildrenRepository : GenericRepository<Children>, IChildrenRepository
+    public class ChildrenRepository : GenericRepository<ChildrenProfile>, IChildrenRepository
     {
         public ChildrenRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService) : base(context, timeService, claimsService)
         {

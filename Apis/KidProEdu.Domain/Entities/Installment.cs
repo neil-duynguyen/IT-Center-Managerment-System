@@ -9,7 +9,7 @@ namespace KidProEdu.Domain.Entities
 {
     public class Installment : BaseEntity
     {
-        [ForeignKey("User")]
+        [ForeignKey("UserAccount")]
         public Guid? UserId { get; set; }
         public Guid TraningProgramId { get; set; }
         public DateTime StartDate { get; set; }
@@ -18,6 +18,6 @@ namespace KidProEdu.Domain.Entities
         public string NotPaid { get; set; }
         public double TotalPrice { get; set; }
         public double CurrentPrice { get; set; }
-        public virtual User? User { get; set; }
+        public virtual UserAccount? UserAccount { get; set; }
     }
 }

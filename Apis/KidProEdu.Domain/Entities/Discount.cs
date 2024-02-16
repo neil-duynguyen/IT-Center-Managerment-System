@@ -17,7 +17,7 @@ namespace KidProEdu.Domain.Entities
         public DateTime EndDate { get; set; }
         public StatusDiscount Status { get; set; } = StatusDiscount.Active;
         public string Description { get; set; }
-        public virtual User User { get; set; }
+        public virtual UserAccount User { get; set; }
 
     }
 }

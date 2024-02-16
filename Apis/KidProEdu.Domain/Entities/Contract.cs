@@ -11,7 +11,7 @@ namespace KidProEdu.Domain.Entities
 
     public class Contract : BaseEntity
     {
-        [ForeignKey("User")]
+        [ForeignKey("UserAccount")]
         public Guid UserId { get; set; }
 
         [ForeignKey("ConfigJobType")]
@@ -22,7 +22,7 @@ namespace KidProEdu.Domain.Entities
         public string Job { get; set; }
         public string File { get; set; }
         public StatusOfContract StatusOfContract { get; set; }
-        public virtual User User { get; set; }
+        public virtual UserAccount UserAccount { get; set; }
         public virtual ConfigJobType ConfigJobType { get; set; }
 
     }

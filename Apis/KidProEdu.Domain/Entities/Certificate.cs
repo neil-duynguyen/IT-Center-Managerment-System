@@ -9,10 +9,12 @@ namespace KidProEdu.Domain.Entities
 {
     public class Certificate : BaseEntity
     {
-        [ForeignKey("Children")]
-        public Guid ChildrenId { get; set; }
+        public Guid? CourseId { get; set; }
+        public Guid? TrainingProgramId { get; set; }
         public string Code { get; set; }
         public string Url { get; set; }
-        public virtual Children Children { get; set; }
+        public IList<ChildrenCertificate> ChildrenCertificates { get; set; }
+        public virtual Course? Course { get; set; }
+        public virtual TrainingProgram? TrainingProgram { get; set; }
     }
 }

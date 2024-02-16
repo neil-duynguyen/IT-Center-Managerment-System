@@ -13,7 +13,7 @@ namespace KidProEdu.Domain.Entities
         public Guid? RoomId { get; set; }
         [ForeignKey("Schedule")]
         public Guid? ScheduleId { get; set; }
-        public virtual Room Room { get; set; }
-        public virtual Schedule Schedule { get; set; }
+        public virtual Room? Room { get; set; }
+        public virtual Schedule? Schedule { get; set; }
     }
 }

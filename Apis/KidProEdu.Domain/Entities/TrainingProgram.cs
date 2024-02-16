@@ -17,5 +17,6 @@ namespace KidProEdu.Domain.Entities
         public string? Image { get; set; }
         public virtual TrainingProgramCategory TrainingProgramCategory { get; set;}
         public ICollection<TrainingProgramCourse> TrainingProgramCourses { get; set; }
+        public Certificate Certificate { get; set; }
     }
 }

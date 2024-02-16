@@ -11,10 +11,10 @@ namespace KidProEdu.Domain.Entities
     {
         [ForeignKey("Notification")]
         public Guid NotificationId { get; set; }
-        [ForeignKey("User")]
+        [ForeignKey("UserAccount")]
         public Guid UserId { get; set; }
 
         public virtual Notification Notification { get; set; }
-        public virtual User User { get; set; }
+        public virtual UserAccount UserAccount { get; set; }
     }
 }

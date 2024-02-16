@@ -9,11 +9,12 @@ namespace KidProEdu.Domain.Entities
 {
     public class Score : BaseEntity
     {
-        public Double FinalExam { get; set; }
+        public double FinalExam { get; set; }
         public Guid CourseId { get; set; }
         public Guid SemesterId { get; set; }
-        [ForeignKey("Children")]
-        public Guid ChildrenId { get; set; }
-        public virtual Children Children { get; set; }
+        [ForeignKey("ChildrenProfile")]
+        public Guid ChildrenProfileId { get; set; }
+        public virtual ChildrenProfile Children { get; set; }
+        public virtual Course Course { get; set;}
     }
 }
