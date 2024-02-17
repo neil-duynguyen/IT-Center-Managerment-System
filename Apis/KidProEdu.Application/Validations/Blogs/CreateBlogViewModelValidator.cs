@@ -16,6 +16,7 @@ namespace KidProEdu.Application.Validations.Blogs
         {
             RuleFor(x => x.UserId).NotEmpty().WithMessage("Người dùng không được để trống.");
             RuleFor(x => x.Content).NotEmpty().WithMessage("Nội dung không được để trống.");
+            RuleFor(x => x.Title).NotEmpty().WithMessage("Tiêu đề không được để trống.");
         }
 
 

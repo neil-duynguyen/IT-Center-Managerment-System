@@ -10,5 +10,7 @@ namespace KidProEdu.Application.ViewModels.BlogViewModels
     {
         public Guid UserId { get; set; }
         public string Content { get; set; }
+        public string? Image { get; set; }
+        public string Title { get; set; }
     }
 }
