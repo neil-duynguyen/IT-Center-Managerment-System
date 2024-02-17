@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Tags;
+using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Domain.Entities;
@@ -51,7 +52,7 @@ namespace KidProEdu.Application.Services
 
             var mapper = _mapper.Map<Tag>(createTagViewModel);
             await _unitOfWork.TagRepository.AddAsync(mapper);
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo Tag thất bại");
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo gắn thẻ thất bại");
 
         }
 
@@ -60,11 +61,11 @@ namespace KidProEdu.Application.Services
             var result = await _unitOfWork.TagRepository.GetByIdAsync(tagId);
 
             if (result == null)
-                throw new Exception("Không tìm thấy Tag này");
+                throw new Exception("Không tìm thấy gắn thẻ này");
             else
             {
                 _unitOfWork.TagRepository.SoftRemove(result);
-                return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa Tag thất bại");
+                return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa gắn thẻ thất bại");
             }
         }
 
@@ -92,15 +93,26 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var tag = await _unitOfWork.TagRepository.GetTagByTagName(updateTagViewModel.TagName);
-            if (!tag.IsNullOrEmpty())
+            var tag = await _unitOfWork.TagRepository.GetByIdAsync(updateTagViewModel.Id);
+            if (tag == null)
             {
-                throw new Exception("Tên đã tồn tại");
+                throw new Exception("Không tìm thấy gắn thẻ");
             }
 
-            var mapper = _mapper.Map<Tag>(updateTagViewModel);
-            _unitOfWork.TagRepository.Update(mapper);
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật Tag thất bại");
+            var existingTag = await _unitOfWork.TagRepository.GetTagByTagName(updateTagViewModel.TagName);
+            if (!existingTag.IsNullOrEmpty())
+            {
+                if (existingTag.FirstOrDefault().Id != updateTagViewModel.Id)
+                {
+                    throw new Exception("Tên đã tồn tại");
+                }
+            }
+
+            tag.TagName = updateTagViewModel.TagName;
+            tag.Description = updateTagViewModel.Description;
+
+            _unitOfWork.TagRepository.Update(tag);
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật gắn thẻ thất bại");
         }
     }
 }

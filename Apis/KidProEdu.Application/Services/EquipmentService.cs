@@ -95,20 +95,39 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var equipment = await _unitOfWork.EquipmentRepository.GetEquipmentByName(updateEquipmentViewModel.Name);
-            if (!equipment.IsNullOrEmpty())
+            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(updateEquipmentViewModel.Id);
+            if (equipment == null)
             {
-                throw new Exception("Tên đã tồn tại");
+                throw new Exception("Không tìm thấy thiết bị");
             }
 
-            var equipment2 = await _unitOfWork.EquipmentRepository.GetEquipmentByCode(updateEquipmentViewModel.Code);
-            if (!equipment2.IsNullOrEmpty())
+            var existingEquipment = await _unitOfWork.EquipmentRepository.GetEquipmentByName(updateEquipmentViewModel.Name);
+            if (!existingEquipment.IsNullOrEmpty())
             {
-                throw new Exception("Code đã tồn tại");
+                if (existingEquipment.FirstOrDefault().Id != equipment.Id)
+                {
+                    throw new Exception("Tên đã tồn tại");
+                }
             }
 
-            var mapper = _mapper.Map<Equipment>(updateEquipmentViewModel);
-            _unitOfWork.EquipmentRepository.Update(mapper);
+            var existingEquipment2 = await _unitOfWork.EquipmentRepository.GetEquipmentByCode(updateEquipmentViewModel.Code);
+            if (!existingEquipment2.IsNullOrEmpty())
+            {
+                if (existingEquipment2.FirstOrDefault().Id != equipment.Id)
+                {
+                    throw new Exception("Code đã tồn tại");
+                }
+            }
+
+            equipment.Name = updateEquipmentViewModel.Name;
+            equipment.CategoryEquipmentId = updateEquipmentViewModel.CategoryEquipmentId;
+            equipment.Status = updateEquipmentViewModel.Status;
+            equipment.Price = updateEquipmentViewModel.Price;
+            equipment.WarrantyDate = updateEquipmentViewModel.WarrantyDate;
+            equipment.Code = updateEquipmentViewModel.Code;
+            equipment.RoomId = updateEquipmentViewModel.RoomId;
+
+            _unitOfWork.EquipmentRepository.Update(equipment);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật thiết bị thất bại");
         }
     }

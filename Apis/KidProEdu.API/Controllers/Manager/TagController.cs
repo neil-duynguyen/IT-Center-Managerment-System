@@ -46,11 +46,11 @@ namespace KidProEdu.API.Controllers.Manager
                 var result = await _tagService.CreateTag(createTagViewModel);
                 if (result)
                 {
-                    return Ok("Tag đã được tạo thành công.");
+                    return Ok("Gắn thẻ đã được tạo thành công.");
                 }
                 else
                 {
-                    return BadRequest("Tag đã được tạo thất bại.");
+                    return BadRequest("Gắn thẻ đã được tạo thất bại.");
                 }
             }
             catch (Exception ex)
@@ -68,11 +68,11 @@ namespace KidProEdu.API.Controllers.Manager
                 var result = await _tagService.UpdateTag(updateTagViewModel);
                 if (result)
                 {
-                    return Ok("Tag đã được cập nhật thành công.");
+                    return Ok("Gắn thẻ đã được cập nhật thành công.");
                 }
                 else
                 {
-                    return BadRequest("Tag đã được cập nhật thất bại.");
+                    return BadRequest("Gắn thẻ đã được cập nhật thất bại.");
                 }
             }
             catch (Exception ex)
@@ -90,11 +90,11 @@ namespace KidProEdu.API.Controllers.Manager
                 var result = await _tagService.DeleteTag(tagId);
                 if (result)
                 {
-                    return Ok("Tag đã được xóa thành công.");
+                    return Ok("Gắn thẻ đã được xóa thành công.");
                 }
                 else
                 {
-                    return BadRequest("Tag đã được xóa thất bại.");
+                    return BadRequest("Gắn thẻ đã được xóa thất bại.");
                 }
             }
             catch (Exception ex)

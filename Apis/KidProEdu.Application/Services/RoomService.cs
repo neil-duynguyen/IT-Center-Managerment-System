@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Locations;
 using KidProEdu.Application.Validations.Rooms;
+using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Domain.Entities;
@@ -88,14 +89,25 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var result = await _unitOfWork.RoomRepository.GetRoomByName(updateRoomViewModel.Name);
-            if (!result.IsNullOrEmpty())
+            var room = await _unitOfWork.RoomRepository.GetByIdAsync(updateRoomViewModel.Id);
+            if (room == null)
             {
-                throw new Exception("Tên đã tồn tại");
+                throw new Exception("Không tìm thấy phòng");
             }
 
-            var mapper = _mapper.Map<Room>(updateRoomViewModel);
-            _unitOfWork.RoomRepository.Update(mapper);
+            var existingRoom = await _unitOfWork.RoomRepository.GetRoomByName(updateRoomViewModel.Name);
+            if (!existingRoom.IsNullOrEmpty())
+            {
+                if (existingRoom.FirstOrDefault().Id != updateRoomViewModel.Id)
+                {
+                    throw new Exception("Tên đã tồn tại");
+                }
+            }
+
+            room.Name = updateRoomViewModel.Name;
+            room.Status = updateRoomViewModel.Status;
+
+            _unitOfWork.RoomRepository.Update(room);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật phòng thất bại");
         }
     }

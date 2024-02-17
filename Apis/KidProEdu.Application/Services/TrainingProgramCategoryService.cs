@@ -89,14 +89,26 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var trainingProgramCategory = await _unitOfWork.TrainingProgramCategoryRepository.GetTrainingProgramCategoryByName(updateTrainingProgramCategoryViewModel.Name);
-            if (!trainingProgramCategory.IsNullOrEmpty())
+            var trainingProgramCategory = await _unitOfWork.TrainingProgramCategoryRepository.GetByIdAsync(updateTrainingProgramCategoryViewModel.Id);
+            if (trainingProgramCategory == null)
             {
-                throw new Exception("Tên đã tồn tại");
+                throw new Exception("Không tìm thấy chương trình đào tạo");
             }
 
-            var mapper = _mapper.Map<TrainingProgramCategory>(updateTrainingProgramCategoryViewModel);
-            _unitOfWork.TrainingProgramCategoryRepository.Update(mapper);
+            var existingTrainingProgramCategory = await _unitOfWork.TrainingProgramCategoryRepository.GetTrainingProgramCategoryByName(updateTrainingProgramCategoryViewModel.Name);
+            if (!existingTrainingProgramCategory.IsNullOrEmpty())
+            {
+                if (existingTrainingProgramCategory.FirstOrDefault().Id != updateTrainingProgramCategoryViewModel.Id)
+                {
+                    throw new Exception("Tên đã tồn tại");
+                }
+            }
+
+            trainingProgramCategory.Name = updateTrainingProgramCategoryViewModel.Name;
+            trainingProgramCategory.LearningAge = updateTrainingProgramCategoryViewModel.LearningAge;
+            trainingProgramCategory.Description = updateTrainingProgramCategoryViewModel.Description;
+
+            _unitOfWork.TrainingProgramCategoryRepository.Update(trainingProgramCategory);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật chương trình đào tạo thất bại");
         }
     }

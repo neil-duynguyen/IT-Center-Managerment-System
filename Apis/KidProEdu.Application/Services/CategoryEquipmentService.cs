@@ -91,14 +91,25 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var categoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetCategoryEquipmentByName(updateCategoryEquipmentViewModel.Name);
-            if (!categoryEquipment.IsNullOrEmpty())
+            var categoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(updateCategoryEquipmentViewModel.Id);
+            if (categoryEquipment == null)
             {
-                throw new Exception("Tên đã tồn tại");
+                throw new Exception("Không tìm thấy danh mục thiết bị");
             }
 
-            var mapper = _mapper.Map<CategoryEquipment>(updateCategoryEquipmentViewModel);
-            _unitOfWork.CategoryEquipmentRepository.Update(mapper);
+            var existingCategoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetCategoryEquipmentByName(updateCategoryEquipmentViewModel.Name);
+            if (!existingCategoryEquipment.IsNullOrEmpty())
+            {
+                if (existingCategoryEquipment.FirstOrDefault().Id != categoryEquipment.Id)
+                {
+                    throw new Exception("Tên đã tồn tại");
+                }
+            }
+
+            categoryEquipment.Name = updateCategoryEquipmentViewModel.Name;
+            categoryEquipment.Description = updateCategoryEquipmentViewModel.Description;
+
+            _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật danh mục thiết bị thất bại");
         }
     }

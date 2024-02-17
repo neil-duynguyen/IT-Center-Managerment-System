@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Locations;
 using KidProEdu.Application.Validations.Tags;
+using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Domain.Entities;
@@ -90,14 +91,26 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var location = await _unitOfWork.LocationRepository.GetLocationByName(updateLocationViewModel.Name);
-            if (!location.IsNullOrEmpty())
+            var location = await _unitOfWork.LocationRepository.GetByIdAsync(updateLocationViewModel.Id);
+            if (location == null)
             {
-                throw new Exception("Tên đã tồn tại");
+                throw new Exception("Không tìm thấy vị trí");
             }
 
-            var mapper = _mapper.Map<Location>(updateLocationViewModel);
-            _unitOfWork.LocationRepository.Update(mapper);
+
+            var existingLocation = await _unitOfWork.LocationRepository.GetLocationByName(updateLocationViewModel.Name);
+            if (!existingLocation.IsNullOrEmpty())
+            {
+                if (existingLocation.FirstOrDefault().Id != updateLocationViewModel.Id)
+                {
+                    throw new Exception("Tên đã tồn tại");
+                }
+            }
+
+            location.Name = updateLocationViewModel.Name;
+            location.Address = updateLocationViewModel.Address;
+
+            _unitOfWork.LocationRepository.Update(location);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật vị trí thất bại");
         }
         
