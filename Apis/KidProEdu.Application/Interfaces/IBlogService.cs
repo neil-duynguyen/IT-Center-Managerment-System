@@ -16,5 +16,6 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> UpdateBlog(UpdateBlogViewModel updateBlogViewModel);
         Task<Blog> GetBlogById(Guid id);
         Task<bool> DeleteBlog(Guid id);
+        Task<Blog> GetBlogWithUserByBlogId(Guid id);
     }
 }

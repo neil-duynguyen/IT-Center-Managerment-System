@@ -22,6 +22,18 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _blogService.GetBlogs());
         }
 
+        [HttpGet("BlogWithUser/{id}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> BlogWithUser(Guid id)
+        {
+            var blog = await _blogService.GetBlogWithUserByBlogId(id);
+            if (blog == null)
+            {
+                return NotFound();
+            }
+            return Ok(blog);
+        }
+
         [HttpGet("{id}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> Blog(Guid id)

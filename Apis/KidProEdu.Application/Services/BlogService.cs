@@ -70,6 +70,12 @@ namespace KidProEdu.Application.Services
             return results;
         }
 
+        public async Task<Blog> GetBlogWithUserByBlogId(Guid id)
+        {
+            var result = await _unitOfWork.BlogRepository.GetBlogWithUserByBlogId(id);
+            return result;
+        }
+
         public async Task<bool> UpdateBlog(UpdateBlogViewModel updateBlogViewModel)
         {
             var validator = new UpdateBlogViewModelValidator();

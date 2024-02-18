@@ -10,6 +10,7 @@ namespace KidProEdu.Application.IRepositories
 {
 
     public interface IBlogRepository : IGenericRepository<Blog>
-    {     
+    {
+        Task<Blog> GetBlogWithUserByBlogId(Guid id);
     }
 }
