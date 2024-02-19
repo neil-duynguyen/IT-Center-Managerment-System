@@ -98,6 +98,13 @@ namespace KidProEdu.Application.Services
         {
             var user = await _unitOfWork.UserRepository.GetByIdAsync(changePasswordViewModel.id) ?? throw new Exception("Không tìm thấy người dùng");
 
+            if (changePasswordViewModel.currentPassword != null)
+            {
+                if (!user.PasswordHash.Equals(changePasswordViewModel.currentPassword.Hash()))
+                    throw new Exception("Mật khẩu hiện tại không đúng");
+
+            }
+
             user.PasswordHash = (changePasswordViewModel.newPasswordHash).Hash();
 
             _unitOfWork.UserRepository.Update(user);

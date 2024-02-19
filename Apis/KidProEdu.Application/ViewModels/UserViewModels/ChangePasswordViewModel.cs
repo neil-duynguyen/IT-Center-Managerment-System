@@ -9,6 +9,7 @@ namespace KidProEdu.Application.ViewModels.UserViewModels
     public class ChangePasswordViewModel
     {
         public Guid id { get; set; }
+        public string? currentPassword { get; set; }
         public string newPasswordHash { get; set; } 
     }
 }
