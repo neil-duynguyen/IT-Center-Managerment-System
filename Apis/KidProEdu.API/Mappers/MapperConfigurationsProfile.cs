@@ -6,6 +6,8 @@ using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LoginViewModel;
+using KidProEdu.Application.ViewModels.NotificationUserViewModels;
+using KidProEdu.Application.ViewModels.NotificationViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.SemesterViewModels;
@@ -60,6 +62,10 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<CreateTrainingProgramViewModel, TrainingProgram>().ReverseMap();
             CreateMap<UpdateTrainingProgramViewModel, TrainingProgram>().ReverseMap();
+
+            CreateMap<CreateNotificationViewModel, Notification>()
+                .ForMember(dest => dest.NotificationUser, opt => opt.MapFrom(src => src.CreateNotificationUserViewModels)).ReverseMap();
+            CreateMap<CreateNotificationUserViewModel, NotificationUser>().ReverseMap();
 
         }
     }
