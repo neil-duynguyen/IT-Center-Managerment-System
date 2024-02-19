@@ -18,7 +18,8 @@ namespace KidProEdu.Application
         public IBlogTagRepository BlogTagRepository { get; }
         public IChildrenRepository ChildrenRepository { get; }
         public ITrainingProgramRepository TrainingProgramRepository { get; }
-
+        public INotificationRepository NotificationRepository { get; }
+        public INotificationUserRepository NotificationUserRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
