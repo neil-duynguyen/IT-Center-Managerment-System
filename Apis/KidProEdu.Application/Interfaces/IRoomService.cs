@@ -12,10 +12,10 @@ namespace KidProEdu.Application.Interfaces
 
     public interface IRoomService
     {
-        Task<List<Room>> GetRooms();
+        Task<List<RoomViewModel>> GetRooms();
         Task<bool> CreateRoom(CreateRoomViewModel createRoomViewModel);
         Task<bool> UpdateRoom(UpdateRoomViewModel updateRoomViewModel);
-        Task<Room> GetRoomById(Guid roomId);
+        Task<RoomViewModel> GetRoomById(Guid roomId);
         Task<bool> DeleteRoom(Guid roomId);
     }
 }

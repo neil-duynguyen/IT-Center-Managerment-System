@@ -65,16 +65,18 @@ namespace KidProEdu.Application.Services
             }
         }
 
-        public async Task<Room> GetRoomById(Guid roomId)
+        public async Task<RoomViewModel> GetRoomById(Guid roomId)
         {
             var result = await _unitOfWork.RoomRepository.GetByIdAsync(roomId);
-            return result;
+            var mapper = _mapper.Map<RoomViewModel>(result);
+            return mapper;
         }
 
-        public async Task<List<Room>> GetRooms()
+        public async Task<List<RoomViewModel>> GetRooms()
         {
             var results = _unitOfWork.RoomRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
-            return results;
+            var mapper = _mapper.Map<List<RoomViewModel>>(results);
+            return mapper;
         }
 
         public async Task<bool> UpdateRoom(UpdateRoomViewModel updateRoomViewModel)
