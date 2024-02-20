@@ -19,7 +19,6 @@ namespace KidProEdu.Infrastructures
         public DbSet<AnnualWorkingDay> AnnualWorkingDays { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Blog> Blogs { get; set; }
-        public DbSet<BlogTag> BlogsTag { get; set; }
         public DbSet<CategoryEquipment> CategoryEquipment { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<ChildrenProfile> Childrens { get; set; }
@@ -167,6 +166,14 @@ namespace KidProEdu.Infrastructures
                .HasOne(p => p.Certificate)
                .WithOne(x => x.TrainingProgram)
                .HasForeignKey<Certificate>(x => x.TrainingProgramId);
+
+            builder.Entity<Blog>()
+                .HasMany(p => p.Tags)
+                .WithMany(x => x.Blogs);
+
+            builder.Entity<Tag>()
+                .HasMany(p => p.Blogs)
+                .WithMany(x => x.Tags);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

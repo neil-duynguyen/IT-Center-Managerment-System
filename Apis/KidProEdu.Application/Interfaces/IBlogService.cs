@@ -11,11 +11,11 @@ namespace KidProEdu.Application.Interfaces
 
     public interface IBlogService
     {
-        Task<List<Blog>> GetBlogs();
+        Task<List<BlogViewModel>> GetBlogs();
         Task<bool> CreateBlog(CreateBlogViewModel createBlogViewModel);
         Task<bool> UpdateBlog(UpdateBlogViewModel updateBlogViewModel);
-        Task<Blog> GetBlogById(Guid id);
+        Task<BlogViewModel> GetBlogById(Guid id);
         Task<bool> DeleteBlog(Guid id);
-        Task<Blog> GetBlogWithUserByBlogId(Guid id);
+        Task<List<BlogViewModel>> GetBlogWithUserByBlogId(Guid id);
     }
 }
