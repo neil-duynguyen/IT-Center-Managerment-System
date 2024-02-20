@@ -24,17 +24,14 @@ namespace KidProEdu.Infrastructures.Repositories
             _dbContext = context;
         }
 
-        public async Task<Blog> GetBlogWithUserByBlogId(Guid id)
+        public override async Task<List<Blog>> GetAllAsync()
         {
+            return await _dbSet.Include(x => x.Tags).Include(x => x.UserAccount).Where(x => !x.IsDeleted).ToListAsync();
+        }
 
-
-            var blog = await _dbContext.Blogs
-                .Where(x => x.Id == id && !x.IsDeleted)
-                .Include(x => x.UserAccount)
-                .Include(x => x.BlogTags)
-                .FirstAsync();
-            return blog;
-
+        public override async Task<Blog> GetByIdAsync(Guid id)
+        {
+            return await _dbSet.Include(x => x.Tags).Include(x => x.UserAccount).Where(x => !x.IsDeleted).FirstAsync(x => x.Id == id);
         }
     }
 }

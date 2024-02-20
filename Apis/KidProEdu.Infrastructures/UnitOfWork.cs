@@ -19,15 +19,17 @@ namespace Infrastructures
         private readonly IEquipmentRepository _equipmentRepository;
         private readonly ITrainingProgramCategoryRepository _trainingProgramCategoryRepository;
         private readonly IBlogRepository _blogRepository;
-        private readonly IBlogTagRepository _blogTagRepository;
         private readonly IChildrenRepository _childrenRepository;
         private readonly ITrainingProgramRepository _trainingProgramRepository;
+        private readonly INotificationRepository _notificationRepository;
+        private readonly INotificationUserRepository _notificationUserRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
             , ISemesterRepository semesterRepository, IRoomRepository roomRepository, IEquipmentRepository equipmentRepository
-            , ITrainingProgramCategoryRepository trainingProgramCategoryRepository, IBlogRepository blogRepository, IBlogTagRepository blogTagRepository
-            , IChildrenRepository childrenRepository, ITrainingProgramRepository trainingProgramRepository)
+            , ITrainingProgramCategoryRepository trainingProgramCategoryRepository, IBlogRepository blogRepository
+            , IChildrenRepository childrenRepository, ITrainingProgramRepository trainingProgramRepository, INotificationRepository notificationRepository
+            , INotificationUserRepository notificationUserRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -40,9 +42,10 @@ namespace Infrastructures
             _equipmentRepository = equipmentRepository;
             _trainingProgramCategoryRepository = trainingProgramCategoryRepository;
             _blogRepository = blogRepository;
-            _blogTagRepository = blogTagRepository;
             _childrenRepository = childrenRepository;
             _trainingProgramRepository = trainingProgramRepository;
+            _notificationRepository = notificationRepository;
+            _notificationUserRepository = notificationUserRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -64,11 +67,13 @@ namespace Infrastructures
 
         public IBlogRepository BlogRepository => _blogRepository;
 
-        public IBlogTagRepository BlogTagRepository => _blogTagRepository;
-
         public IChildrenRepository ChildrenRepository => _childrenRepository;
 
         public ITrainingProgramRepository TrainingProgramRepository => _trainingProgramRepository;
+
+        public INotificationRepository NotificationRepository => _notificationRepository;
+
+        public INotificationUserRepository NotificationUserRepository => _notificationUserRepository;
 
         public async Task<int> SaveChangeAsync()
         {

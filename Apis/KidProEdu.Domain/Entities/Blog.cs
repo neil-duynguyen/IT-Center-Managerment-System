@@ -16,6 +16,6 @@ namespace KidProEdu.Domain.Entities
         public string? Image { get; set; }
         public string Title { get; set; }
         public virtual UserAccount UserAccount { get; set; }
-        public IList<BlogTag> BlogTags { get; set; }
+        public IList<Tag> Tags { get; set; }
     }
 }

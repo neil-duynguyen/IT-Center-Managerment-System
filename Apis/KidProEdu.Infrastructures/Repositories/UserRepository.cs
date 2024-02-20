@@ -1,4 +1,3 @@
-﻿
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Repositories;
 using KidProEdu.Application.ViewModels.TrainingProgramViewModels;
@@ -35,9 +34,17 @@ namespace Infrastructures.Repositories
             {
                 throw new Exception("UserName & password is not correct");
             }
-
-
             return user;
+        }
+
+        public override async Task<List<UserAccount>> GetAllAsync()
+        {
+            return await _dbSet.Include(x => x.Role).Where(x => !x.IsDeleted).ToListAsync();
+        }
+
+        public override async Task<UserAccount> GetByIdAsync(Guid id)
+        {
+            return await _dbSet.Include(x => x.Role).Where(x => !x.IsDeleted).FirstAsync(x => x.Id == id);
         }
 
         public async Task<UserAccount> GetUserAccountByProperty(UpdateUserViewModel updateUserViewModel, Expression<Func<UserAccount, object>> property)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace KidProEdu.Application.IRepositories
 {
 
-    public interface IBlogRepository : IGenericRepository<Blog>
+    public interface INotificationUserRepository : IGenericRepository<NotificationUser>
     {
     }
 }

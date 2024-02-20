@@ -15,10 +15,10 @@ namespace KidProEdu.Application
         public IEquipmentRepository EquipmentRepository { get; }
         public ITrainingProgramCategoryRepository TrainingProgramCategoryRepository { get; }
         public IBlogRepository BlogRepository { get; }
-        public IBlogTagRepository BlogTagRepository { get; }
         public IChildrenRepository ChildrenRepository { get; }
         public ITrainingProgramRepository TrainingProgramRepository { get; }
-
+        public INotificationRepository NotificationRepository { get; }
+        public INotificationUserRepository NotificationUserRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

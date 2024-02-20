@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.ViewModels.BlogViewModels
 {
-    public class CreateBlogViewModel
+    public class BlogViewModel
     {
+        public Guid Id { get; set; }
         public Guid UserId { get; set; }
+        public string Author { get; set; }
         public string Content { get; set; }
         public string? Image { get; set; }
         public string Title { get; set; }
-        public ICollection<Guid> TagIds { get; set; }
+        public IList<string> Tags { get; set; }
     }
 }

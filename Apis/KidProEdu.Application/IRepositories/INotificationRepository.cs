@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 namespace KidProEdu.Application.IRepositories
 {
 
-    public interface IBlogTagRepository : IGenericRepository<BlogTag>
+    public interface INotificationRepository : IGenericRepository<Notification>
     {
-        Task<List<BlogTag>> GetBlogTagByBlogId(Guid id);
     }
 }

@@ -18,9 +18,9 @@ namespace Infrastructures.Repositories
             _timeService = timeService;
             _claimsService = claimsService;
         }
-        public Task<List<TEntity>> GetAllAsync() => _dbSet.ToListAsync();
+        public virtual Task<List<TEntity>> GetAllAsync() => _dbSet.ToListAsync();
 
-        public async Task<TEntity?> GetByIdAsync(Guid id)
+        public virtual async Task<TEntity?> GetByIdAsync(Guid id)
         {
             var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
             // todo should throw exception when not found

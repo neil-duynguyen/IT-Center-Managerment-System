@@ -29,7 +29,7 @@ namespace KidProEdu.Domain.Entities
         public string? BankAccountNumber { get; set; }
         public string? BankAccountName { get; set; }
         public string? BankName { get; set; }
-        public StatusUser Status { get; set; }
+        public StatusUser Status { get; set; } = StatusUser.Enable;
         public virtual Role? Role { get; set; }
         public IList<AdviseRequest> AdviseRequests { get; set; }
         public IList<Feedback> Feedbacks { get; set; }

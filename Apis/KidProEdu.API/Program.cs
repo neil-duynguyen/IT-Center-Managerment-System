@@ -12,6 +12,7 @@ using KidProEdu.Application;
 using Microsoft.OpenApi.Models;
 using Infrastructures;
 using KidProEdu.Application.IRepositories;
+using KidProEdu.Application.Hubs;
 
 namespace KidProEdu.API
 {
@@ -28,6 +29,7 @@ namespace KidProEdu.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSignalR();
 
             //CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -38,6 +40,7 @@ namespace KidProEdu.API
                                   {
                                       policy.WithOrigins("*"
                                                           )
+                                                            .AllowAnyOrigin()
                                                             .AllowAnyHeader()
                                                             .AllowAnyMethod();
 
@@ -110,9 +113,10 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
             builder.Services.AddScoped<ITrainingProgramCategoryRepository, TrainingProgramCategoryRepository>();
             builder.Services.AddScoped<IBlogRepository, BlogRepository>();
-            builder.Services.AddScoped<IBlogTagRepository, BlogTagRepository>();
             builder.Services.AddScoped<IChildrenRepository, ChildrenRepository>();
             builder.Services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+            builder.Services.AddScoped<INotificationUserRepository, NotificationUserRepository>();
             #endregion
 
             #region DIService
@@ -128,9 +132,10 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IEquipmentService, EquipmentService>();
             builder.Services.AddScoped<ITrainingProgramCategoryService, TrainingProgramCategoryService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
-            builder.Services.AddScoped<IBlogTagService, BlogTagService>();
             builder.Services.AddScoped<IChildrenService, ChildrenService>();
             builder.Services.AddScoped<ITrainingProgramService, TrainingProgramService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<INotificationUserService, NotificationUserService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));
@@ -156,6 +161,8 @@ namespace KidProEdu.API
             }
 
             app.UseCors(MyAllowSpecificOrigins);
+
+            app.UseRouting();
 
             app.UseHttpsRedirection();
 
