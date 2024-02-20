@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using KidProEdu.Application.Hubs;
 using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Validations.Equipments;
+using KidProEdu.Application.Validations.Notifications;
+using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.NotificationUserViewModels;
 using KidProEdu.Application.ViewModels.NotificationViewModels;
 using KidProEdu.Domain.Entities;
@@ -34,6 +38,15 @@ namespace KidProEdu.Application.Services
         {
             try
             {
+                var validator = new CreateNotificationViewModelValidator();
+                var validationResult = validator.Validate(createNotificationViewModel);
+                if (!validationResult.IsValid)
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        throw new Exception(error.ErrorMessage);
+                    }
+                }
                 createNotificationViewModel.Id = Guid.NewGuid();
                 createNotificationViewModel.Date = DateTime.Now;
                 createNotificationViewModel.Message = createNotificationViewModel.Message;
@@ -70,6 +83,11 @@ namespace KidProEdu.Application.Services
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<List<Notification>> GetNotifications()
+        {
+            return _unitOfWork.NotificationRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList(); ;
         }
     }
 }
