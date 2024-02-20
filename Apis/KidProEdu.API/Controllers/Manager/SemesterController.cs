@@ -79,11 +79,11 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpDelete]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> DeleteSemester(Guid SemesterId)
+        public async Task<IActionResult> DeleteSemester(Guid id)
         {
             try
             {
-                var result = await _semesterService.DeleteSemester(SemesterId);
+                var result = await _semesterService.DeleteSemester(id);
                 if (result)
                 {
                     return Ok("Semester đã được xóa thành công.");

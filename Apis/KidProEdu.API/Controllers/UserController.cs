@@ -1,7 +1,8 @@
-using KidProEdu.Application.Interfaces;
+﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography.Xml;
 
 
 namespace KidProEdu.WebAPI.Controllers
@@ -100,6 +101,70 @@ namespace KidProEdu.WebAPI.Controllers
             }
         }
 
+        [HttpPut]
+        public async Task<IActionResult> PutUser(UpdateUserViewModel updateUserViewModel)
+        {
+            try
+            {
+                var result = await _userService.UpdateUser(updateUserViewModel, x => x.UserName, x => x.Email, x => x.Phone);
+                if (result)
+                {
+                    return Ok("User đã được cập nhật thành công.");
+                }
+                else
+                {
+                    return BadRequest("User đã được cập nhật thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            try
+            {
+                var result = await _userService.DeleteUser(id);
+                if (result)
+                {
+                    return Ok("User đã được xóa thành công.");
+                }
+                else
+                {
+                    return BadRequest("User đã được xóa thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpPut("ChangeStatus")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> ChangeStatusUser(Guid[] ids)
+        {
+            try
+            {
+                var result = await _userService.ChangeStatusUser(ids);
+                if (result)
+                {
+                    return Ok("User cập nhật trạng thái thành công.");
+                }
+                else
+                {
+                    return BadRequest("User cập nhật trạng thái thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
     }

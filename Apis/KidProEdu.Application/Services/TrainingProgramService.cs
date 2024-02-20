@@ -93,8 +93,8 @@ namespace KidProEdu.Application.Services
 
             foreach (var property in uniqueProperties)
             {
-                var TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetTrainingProgramByProperty(updateTrainingProgramViewModel, property);
-                if (TrainingProgram != null && TrainingProgram.Id != updateTrainingProgramViewModel.Id)
+                var trainingProgram = await _unitOfWork.TrainingProgramRepository.GetTrainingProgramByProperty(updateTrainingProgramViewModel, property);
+                if (trainingProgram != null && trainingProgram.Id != updateTrainingProgramViewModel.Id)
                 {
                     throw new Exception($"{property.GetMember().Name} đã tồn tại");
                 }
