@@ -15,7 +15,7 @@ namespace KidProEdu.Application.Validations.TrainingPrograms
             RuleFor(x => x.TrainingProgramCode).NotEmpty().WithMessage("Mã chương trình không được để trống.")
                 .MaximumLength(50).WithMessage("Mã chương trình không quá 50 ký tự.");
             RuleFor(x => x.TrainingProgramName).NotEmpty().WithMessage("Tên không được để trống.")
-                    .MaximumLength(50).WithMessage("Tên chương trình không quá 50 ký tự.");
+                    .MaximumLength(255).WithMessage("Tên chương trình không quá 255 ký tự.");
             RuleFor(x => x.Price).NotNull().WithMessage("Giá không được để trống.")
                     .GreaterThanOrEqualTo(0).WithMessage("Giá chương trình không thể là số âm.");
             RuleFor(x => x.TrainingProgramCategoryId).NotEmpty().WithMessage("Id loại chương trình không được để trống.");

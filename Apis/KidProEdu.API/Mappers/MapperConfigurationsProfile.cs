@@ -26,6 +26,7 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<UserAccount, LoginViewModel>().ReverseMap();
             CreateMap<UserAccount, CreateUserViewModel>().ReverseMap();
+            CreateMap<UserAccount, UpdateUserViewModel>().ReverseMap();
             CreateMap<UserViewModel, UserAccount>().ReverseMap().ForMember(des => des.RoleName, src => src.MapFrom(x => x.Role.Name));
 
             CreateMap<CreateTagViewModel, Tag>().ReverseMap();
