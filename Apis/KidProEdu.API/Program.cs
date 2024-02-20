@@ -113,7 +113,6 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
             builder.Services.AddScoped<ITrainingProgramCategoryRepository, TrainingProgramCategoryRepository>();
             builder.Services.AddScoped<IBlogRepository, BlogRepository>();
-            builder.Services.AddScoped<IBlogTagRepository, BlogTagRepository>();
             builder.Services.AddScoped<IChildrenRepository, ChildrenRepository>();
             builder.Services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
@@ -133,7 +132,6 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IEquipmentService, EquipmentService>();
             builder.Services.AddScoped<ITrainingProgramCategoryService, TrainingProgramCategoryService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
-            builder.Services.AddScoped<IBlogTagService, BlogTagService>();
             builder.Services.AddScoped<IChildrenService, ChildrenService>();
             builder.Services.AddScoped<ITrainingProgramService, TrainingProgramService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();

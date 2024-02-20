@@ -40,8 +40,22 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var mapper = _mapper.Map<Blog>(createBlogViewModel);
-            await _unitOfWork.BlogRepository.AddAsync(mapper);
+            var blogObj = _mapper.Map<Blog>(createBlogViewModel);
+
+            IList<Tag> tags = new List<Tag>();
+
+            if (createBlogViewModel.TagIds.Count != 0)
+            {
+                foreach (var tag in createBlogViewModel.TagIds)
+                {
+                    tags.Add(await _unitOfWork.TagRepository.GetByIdAsync(tag));
+                }
+                //gán listTag vào Blog
+                blogObj.Tags = tags;
+            }
+
+           
+            await _unitOfWork.BlogRepository.AddAsync(blogObj);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo bài viết thất bại");
         }
 
@@ -58,22 +72,27 @@ namespace KidProEdu.Application.Services
             }
         }
 
-        public async Task<Blog> GetBlogById(Guid id)
+        public async Task<BlogViewModel> GetBlogById(Guid id)
         {
             var result = await _unitOfWork.BlogRepository.GetByIdAsync(id);
-            return result;
+
+            return _mapper.Map<BlogViewModel>(result);
         }
 
-        public async Task<List<Blog>> GetBlogs()
+        public async Task<List<BlogViewModel>> GetBlogs()
         {
-            var results = _unitOfWork.BlogRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
-            return results;
+            var results = await _unitOfWork.BlogRepository.GetAllAsync();
+
+            var mapper = _mapper.Map<List<BlogViewModel>>(results);
+
+            return mapper;
         }
 
-        public async Task<Blog> GetBlogWithUserByBlogId(Guid id)
+        public async Task<List<BlogViewModel>> GetBlogWithUserByBlogId(Guid id)
         {
-            var result = await _unitOfWork.BlogRepository.GetBlogWithUserByBlogId(id);
-            return result;
+            var result = _unitOfWork.BlogRepository.GetAllAsync().Result.Where(x => x.UserId == id).ToList();
+
+            return _mapper.Map<List<BlogViewModel>>(result);
         }
 
         public async Task<bool> UpdateBlog(UpdateBlogViewModel updateBlogViewModel)

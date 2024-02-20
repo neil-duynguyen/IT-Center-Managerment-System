@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using KidProEdu.Application.ViewModels.BlogTagViewModels;
 using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
@@ -27,7 +26,7 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<UserAccount, LoginViewModel>().ReverseMap();
             CreateMap<UserAccount, CreateUserViewModel>().ReverseMap();
-            CreateMap<UserAccount, UserViewModel>().ReverseMap();
+            CreateMap<UserViewModel, UserAccount>().ReverseMap().ForMember(des => des.RoleName, src => src.MapFrom(x => x.Role.Name));
 
             CreateMap<CreateTagViewModel, Tag>().ReverseMap();
             CreateMap<UpdateTagViewModel, Tag>().ReverseMap();
@@ -54,11 +53,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateTrainingProgramCategoryViewModel, TrainingProgramCategory>().ReverseMap();
             CreateMap<UpdateTrainingProgramCategoryViewModel, TrainingProgramCategory>().ReverseMap();
 
+            CreateMap<BlogViewModel, Blog>().ReverseMap().ForMember(des => des.Tags, src => src.MapFrom(x => x.Tags.Select(x => x.TagName)))
+                                                          .ForMember(des => des.Author, src => src.MapFrom(x => x.UserAccount.FullName));
             CreateMap<CreateBlogViewModel, Blog>().ReverseMap();
             CreateMap<UpdateBlogViewModel, Blog>().ReverseMap();
-
-            CreateMap<CreateBlogTagViewModel, BlogTag>().ReverseMap();
-            CreateMap<UpdateBlogTagViewModel, BlogTag>().ReverseMap();
 
             CreateMap<CreateTrainingProgramViewModel, TrainingProgram>().ReverseMap();
             CreateMap<UpdateTrainingProgramViewModel, TrainingProgram>().ReverseMap();

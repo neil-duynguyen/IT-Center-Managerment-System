@@ -9,7 +9,7 @@ namespace KidProEdu.Domain.Entities
     public class Tag : BaseEntity
     {
         public string TagName { get; set; }
-        public string Description { get; set; }
-        public IList<BlogTag> BlogTags { get; set; }
+        public string? Description { get; set; }
+        public IList<Blog> Blogs { get; set; }
     }
 }

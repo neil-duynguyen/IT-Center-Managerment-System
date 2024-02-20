@@ -89,7 +89,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<UserViewModel>> GetUserByRoleId(Guid Id)
         {
-            var user = _unitOfWork.UserRepository.GetAllAsync().Result.Where(x => x.RoleId == Id && x.IsDeleted == false);
+            var user = _unitOfWork.UserRepository.GetAllAsync().Result.Where(x => x.RoleId == Id && x.Status.ToString().Equals("Enable"));
 
             return _mapper.Map<List<UserViewModel>>(user);
         }
