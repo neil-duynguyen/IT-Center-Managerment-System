@@ -23,13 +23,14 @@ namespace Infrastructures
         private readonly ITrainingProgramRepository _trainingProgramRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly INotificationUserRepository _notificationUserRepository;
+        private readonly IRatingRepository _ratingRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
             , ISemesterRepository semesterRepository, IRoomRepository roomRepository, IEquipmentRepository equipmentRepository
             , ITrainingProgramCategoryRepository trainingProgramCategoryRepository, IBlogRepository blogRepository
             , IChildrenRepository childrenRepository, ITrainingProgramRepository trainingProgramRepository, INotificationRepository notificationRepository
-            , INotificationUserRepository notificationUserRepository)
+            , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -46,6 +47,7 @@ namespace Infrastructures
             _trainingProgramRepository = trainingProgramRepository;
             _notificationRepository = notificationRepository;
             _notificationUserRepository = notificationUserRepository;
+            _ratingRepository = ratingRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -74,6 +76,8 @@ namespace Infrastructures
         public INotificationRepository NotificationRepository => _notificationRepository;
 
         public INotificationUserRepository NotificationUserRepository => _notificationUserRepository;
+
+        public IRatingRepository RatingRepository => _ratingRepository;
 
         public async Task<int> SaveChangeAsync()
         {

@@ -7,17 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\Children\**" />
-    <Compile Remove="Controllers\Parent\**" />
     <Compile Remove="Controllers\Staff\**" />
-    <Content Remove="Controllers\Children\**" />
-    <Content Remove="Controllers\Parent\**" />
     <Content Remove="Controllers\Staff\**" />
-    <EmbeddedResource Remove="Controllers\Children\**" />
-    <EmbeddedResource Remove="Controllers\Parent\**" />
     <EmbeddedResource Remove="Controllers\Staff\**" />
-    <None Remove="Controllers\Children\**" />
-    <None Remove="Controllers\Parent\**" />
     <None Remove="Controllers\Staff\**" />
   </ItemGroup>
 

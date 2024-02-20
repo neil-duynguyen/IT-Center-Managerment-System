@@ -7,6 +7,7 @@ using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.NotificationUserViewModels;
 using KidProEdu.Application.ViewModels.NotificationViewModels;
+using KidProEdu.Application.ViewModels.RatingViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.SemesterViewModels;
@@ -66,6 +67,10 @@ namespace KidProEdu.API.Mappers
                 .ForMember(dest => dest.NotificationUser, opt => opt.MapFrom(src => src.CreateNotificationUserViewModels)).ReverseMap();
             CreateMap<CreateNotificationUserViewModel, NotificationUser>().ReverseMap();
 
+            CreateMap<Rating, RatingViewModel>()
+                .ForMember(des => des.CourseName, src => src.MapFrom(x => x.Course.Name)).ReverseMap();
+            CreateMap<CreateRatingViewModel, Rating>().ReverseMap();
+            CreateMap<UpdateRatingViewModel, Rating>().ReverseMap();
         }
     }
 }
