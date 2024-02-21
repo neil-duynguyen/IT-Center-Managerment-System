@@ -6,12 +6,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Enums
 {
-    public enum TypeDate
+    public enum CourseType
     {
-        Normal = 1,
-        Saturday = 2,
-        Sunday = 3,
-        Holiday = 4,
     }
-
 }

@@ -1,5 +1,4 @@
-﻿using KidProEdu.Application.ViewModels.TrainingProgramViewModels;
-using KidProEdu.Application.ViewModels.UserViewModels;
+﻿using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
 using System.Linq.Expressions;
 

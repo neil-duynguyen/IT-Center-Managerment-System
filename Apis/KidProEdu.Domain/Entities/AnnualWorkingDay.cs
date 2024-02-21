@@ -13,6 +13,6 @@ namespace KidProEdu.Domain.Entities
     {
         public DateTime Day { get; set; }
         public ShiftType ShiftType { get; set; }
-        public TypeDate TypeDate { get; set; }
+        public DateType TypeDate { get; set; }
     }
 }

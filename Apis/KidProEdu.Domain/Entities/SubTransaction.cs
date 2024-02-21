@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    public class Transaction : BaseEntity
+    public class SubTransaction : BaseEntity
     {
-        [ForeignKey("Order")]
-        public Guid OrderId { get; set; }
+        [ForeignKey("Transaction")]
+        public Guid TransactionId { get; set; }
+        public string Name { get; set; }
         public string BankingAccountNumber { get; set; }
         public string BankingNumber { get; set; }
         public string BankName { get; set; }
@@ -20,8 +21,7 @@ namespace KidProEdu.Domain.Entities
         public string Message { get; set; }
         public string PayType { get; set; }
         public DateTime PayDate { get; set; }
-        public StatusTransaction StatusTransaction { get; set; }
-        public virtual Order Order { get; set; }
-        public IList<SubTransaction> SubTransactions { get; set; }
+        public StatusSubTransaction StatusSubTransaction { get; set; }
+        public virtual Transaction Transaction { get; set; }
     }
 }

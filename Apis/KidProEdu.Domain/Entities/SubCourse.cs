@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-
-    public class Course : BaseEntity
+    public class SubCourse : BaseEntity
     {
+        [ForeignKey("Course")]
+        public Guid CourseId { get;set; }
         public string CourseCode { get; set; }
         public double Price { get; set; }
         public string Name { get; set; }
@@ -22,13 +23,6 @@ namespace KidProEdu.Domain.Entities
         public string? Prerequisite { get; set; }
         public string? Image { get; set; }
         public CourseType courseType { get; set; }
-        public IList<Rating> Ratings { get; set; }
-        public IList<SemesterCourse> SemesterCourses { get; set; }
-        public IList<Class> Classes { get; set; }
-        public IList<Lesson> Lessons { get; set; }
-        public IList<Score> Scores { get; set; }
-        public IList<OrderDetail> OrderDetails { get; set; }
-        public IList<SubCourse> SubCourses { get; set; }
-        public Certificate Certificate { get; set; }
+        public virtual Course Course { get; set; }
     }
 }

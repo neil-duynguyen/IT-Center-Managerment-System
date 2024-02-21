@@ -1,6 +1,5 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Repositories;
-using KidProEdu.Application.ViewModels.TrainingProgramViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Infrastructures;

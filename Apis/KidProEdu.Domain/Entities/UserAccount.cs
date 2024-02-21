@@ -12,13 +12,10 @@ namespace KidProEdu.Domain.Entities
     public class UserAccount : BaseEntity
     {
         [ForeignKey("Role")]
-        
-        public Guid? RoleId { get; set; }
+        public Guid RoleId { get; set; }
         public string UserName { get; set; }
-
         public string PasswordHash { get; set; }
         public string FullName { get; set; }
-        
         public string? GenderType { get; set; }
         public string? Email { get; set; }
         public string Phone { get; set; }
@@ -30,7 +27,7 @@ namespace KidProEdu.Domain.Entities
         public string? BankAccountName { get; set; }
         public string? BankName { get; set; }
         public StatusUser Status { get; set; } = StatusUser.Enable;
-        public virtual Role? Role { get; set; }
+        public virtual Role Role { get; set; }
         public IList<AdviseRequest> AdviseRequests { get; set; }
         public IList<Feedback> Feedbacks { get; set; }
         public IList<Class> Classes { get; set; }
@@ -41,7 +38,6 @@ namespace KidProEdu.Domain.Entities
         public IList<Skill> Skills { get; set; }
         public IList<Contract> Contracts { get; set; }
         public IList<Request> Requests { get; set; }
-        public IList<Installment> Installments { get; set; }
-        public IList<Discount> Discounts { get; set; }
+        public IList<Division> Divisions { get; set; }
     }
 }

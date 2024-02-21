@@ -2,10 +2,8 @@
 using AutoMapper.Execution;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
-using KidProEdu.Application.Validations.TrainingPrograms;
 using KidProEdu.Application.Validations.Users;
 using KidProEdu.Application.ViewModels.LoginViewModel;
-using KidProEdu.Application.ViewModels.TrainingProgramViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.Extensions.Configuration;

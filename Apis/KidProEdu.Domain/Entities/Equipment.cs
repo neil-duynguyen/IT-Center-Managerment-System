@@ -13,13 +13,13 @@ namespace KidProEdu.Domain.Entities
         [ForeignKey("CategoryEquipment")]
         public Guid CategoryEquipmentId { get; set; }
         [ForeignKey("Room")]
-        public Guid RoomId { get; set; }
+        public Guid? RoomId { get; set; }
         public string? Name { get; set; }
         public string? Code { get; set; }
         public double? Price { get; set; }
         public StatusOfEquipment? Status {  get; set; }
         public DateTime? WarrantyDate { get; set; }
         public virtual CategoryEquipment CategoryEquipment { get; set; }
-        public virtual Room Room { get; set; }
+        public virtual Room? Room { get; set; }
     }
 }

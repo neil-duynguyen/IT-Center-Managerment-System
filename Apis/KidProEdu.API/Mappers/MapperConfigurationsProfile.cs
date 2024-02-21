@@ -12,8 +12,6 @@ using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.SemesterViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
-using KidProEdu.Application.ViewModels.TrainingProgramCategoryViewModels;
-using KidProEdu.Application.ViewModels.TrainingProgramViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
 
@@ -50,18 +48,13 @@ namespace KidProEdu.API.Mappers
             CreateMap<UpdateChildrenViewModel, ChildrenProfile>().ReverseMap();
 
             CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
-            CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
-
-            CreateMap<CreateTrainingProgramCategoryViewModel, TrainingProgramCategory>().ReverseMap();
-            CreateMap<UpdateTrainingProgramCategoryViewModel, TrainingProgramCategory>().ReverseMap();
+            CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();         
 
             CreateMap<BlogViewModel, Blog>().ReverseMap().ForMember(des => des.Tags, src => src.MapFrom(x => x.Tags.Select(x => x.TagName)))
                                                           .ForMember(des => des.Author, src => src.MapFrom(x => x.UserAccount.FullName));
             CreateMap<CreateBlogViewModel, Blog>().ReverseMap();
             CreateMap<UpdateBlogViewModel, Blog>().ReverseMap();
 
-            CreateMap<CreateTrainingProgramViewModel, TrainingProgram>().ReverseMap();
-            CreateMap<UpdateTrainingProgramViewModel, TrainingProgram>().ReverseMap();
 
             CreateMap<CreateNotificationViewModel, Notification>()
                 .ForMember(dest => dest.NotificationUser, opt => opt.MapFrom(src => src.CreateNotificationUserViewModels)).ReverseMap();

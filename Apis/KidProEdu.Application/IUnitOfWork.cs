@@ -13,10 +13,8 @@ namespace KidProEdu.Application
         public ISemesterRepository SemesterRepository { get; }
         public IRoomRepository RoomRepository { get; }
         public IEquipmentRepository EquipmentRepository { get; }
-        public ITrainingProgramCategoryRepository TrainingProgramCategoryRepository { get; }
         public IBlogRepository BlogRepository { get; }
         public IChildrenRepository ChildrenRepository { get; }
-        public ITrainingProgramRepository TrainingProgramRepository { get; }
         public INotificationRepository NotificationRepository { get; }
         public INotificationUserRepository NotificationUserRepository { get; }
         public IRatingRepository RatingRepository { get; }

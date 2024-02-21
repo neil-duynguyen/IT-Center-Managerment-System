@@ -111,10 +111,8 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ISemesterRepository, SemesterRepository>();
             builder.Services.AddScoped<IRoomRepository, RoomRepository>();
             builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
-            builder.Services.AddScoped<ITrainingProgramCategoryRepository, TrainingProgramCategoryRepository>();
             builder.Services.AddScoped<IBlogRepository, BlogRepository>();
             builder.Services.AddScoped<IChildrenRepository, ChildrenRepository>();
-            builder.Services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<INotificationUserRepository, NotificationUserRepository>();
             builder.Services.AddScoped<IRatingRepository, RatingRepository>();
@@ -131,10 +129,8 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ISemesterService, SemesterService>();
             builder.Services.AddScoped<IRoomService, RoomService>();
             builder.Services.AddScoped<IEquipmentService, EquipmentService>();
-            builder.Services.AddScoped<ITrainingProgramCategoryService, TrainingProgramCategoryService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
             builder.Services.AddScoped<IChildrenService, ChildrenService>();
-            builder.Services.AddScoped<ITrainingProgramService, TrainingProgramService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<INotificationUserService, NotificationUserService>();
             builder.Services.AddScoped<IRatingService, RatingService>();

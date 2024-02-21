@@ -29,13 +29,14 @@ namespace KidProEdu.Infrastructures
         public DbSet<ConfigTheme> ConfigThemes { get; set; }
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<SubCourse> SubCourse { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Equipment> Equipment { get; set; }
         public DbSet<Feedback> Feedbacks { get;set; }
         public DbSet<Document> Documents { get; set; }
+        public DbSet<Division> Division { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Location> Locations { get; set; }
-        public DbSet<LocationTrainingProgram> LocationTrainingPrograms { get; set; }
         public DbSet<Notification> Notification { get; set; }
         public DbSet<NotificationUser> NotificationUsers { get; set; }
         public DbSet<Question> Questions { get; set; }
@@ -49,12 +50,9 @@ namespace KidProEdu.Infrastructures
         public DbSet<SemesterCourse> SemesterCourses { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<TestTime> TestTimes { get; set; }
-        public DbSet<TrainingProgram> TrainingPrograms { get; set; }
-        public DbSet<TrainingProgramCategory> TrainingProgramCategories { get; set; }
-        public DbSet<TrainingProgramCourse> TrainingProgramCourses { get; set; }
+        public DbSet<TestTime> TestTimes { get; set; }   
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<Installment> Installments { get; set; }
+        public DbSet<SubTransaction> SubTransaction { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -121,6 +119,44 @@ namespace KidProEdu.Infrastructures
                     CreationDate = new DateTime(2024 - 01 - 15),
                 });
 
+            builder.Entity<Slot>().HasData(
+                new Slot
+                {
+                    Id = new Guid("85dd1d22-518b-4949-bf99-46d173caf3fe"),
+                    Name = "Slot1",
+                    StartTime = new TimeSpan(7, 0, 0),
+                    EndTime = new TimeSpan(9, 15, 0)
+                },
+                new Slot
+                {
+                    Id = new Guid("dd5e5665-6522-4625-8d87-a807d856a318"),
+                    Name = "Slot2",
+                    StartTime = new TimeSpan(9, 30, 0),
+                    EndTime = new TimeSpan(11, 45, 0)
+                },
+                new Slot
+                {
+                    Id = new Guid("d42e7c30-ffd4-4a09-ac73-1d175f89a200"),
+                    Name = "Slot3",
+                    StartTime = new TimeSpan(12, 30, 0),
+                    EndTime = new TimeSpan(14, 45, 0)
+                },
+                new Slot
+                {
+                    Id = new Guid("2758033d-7eef-41d6-a6ca-b9586fe3749d"),
+                    Name = "Slot4",
+                    StartTime = new TimeSpan(15, 0, 0),
+                    EndTime = new TimeSpan(17, 15, 0)
+                },
+                new Slot
+                {
+                    Id = new Guid("2c22f784-57ee-476c-a630-7c080b721db5"),
+                    Name = "Slot5",
+                    StartTime = new TimeSpan(19, 00, 0),
+                    EndTime = new TimeSpan(21, 15, 0)
+                }
+                );
+
             builder.Entity<Enrollment>()
                 .HasOne(x => x.Class)
                 .WithMany(x => x.Enrollments)
@@ -162,10 +198,10 @@ namespace KidProEdu.Infrastructures
                .WithOne(x => x.Course)
                .HasForeignKey<Certificate>(x => x.CourseId);
 
-            builder.Entity<TrainingProgram>()
-               .HasOne(p => p.Certificate)
-               .WithOne(x => x.TrainingProgram)
-               .HasForeignKey<Certificate>(x => x.TrainingProgramId);
+            builder.Entity<Slot>()
+               .HasOne(p => p.Schedule)
+               .WithOne(x => x.Slot)
+               .HasForeignKey<Schedule>(x => x.SlotId);
 
             builder.Entity<Blog>()
                 .HasMany(p => p.Tags)
@@ -174,6 +210,14 @@ namespace KidProEdu.Infrastructures
             builder.Entity<Tag>()
                 .HasMany(p => p.Blogs)
                 .WithMany(x => x.Tags);
+
+            builder.Entity<UserAccount>()
+                .HasMany(p => p.Divisions)
+                .WithMany(x => x.UserAccounts);
+
+            builder.Entity<Division>()
+                .HasMany(p => p.UserAccounts)
+                .WithMany(x => x.Divisions);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -12,6 +12,5 @@ namespace KidProEdu.Domain.Entities
         public string? Address { get; set; }
 
         public IList<UserAccount> UserAccount { get; set; }
-        public IList<LocationTrainingProgram> LocationTrainingPrograms { get; set;}
     }
 }
