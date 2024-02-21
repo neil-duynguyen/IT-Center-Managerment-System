@@ -4,6 +4,7 @@ using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.DivisionViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
+using KidProEdu.Application.ViewModels.LessonViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.NotificationUserViewModels;
@@ -69,6 +70,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<Division, DivisionViewModel>().ReverseMap();
             CreateMap<CreateDivisionViewModel, Division>().ReverseMap();
             CreateMap<UpdateDivisionViewModel, Division>().ReverseMap();
+
+            CreateMap<Lesson, LessonViewModel>().ReverseMap();
+            CreateMap<CreateLessonViewModel, Lesson>().ReverseMap();
+            CreateMap<UpdateLessonViewModel, Lesson>().ReverseMap();
         }
     }
 }
