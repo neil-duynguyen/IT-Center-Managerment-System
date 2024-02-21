@@ -174,6 +174,7 @@ namespace KidProEdu.API
 
             app.UseAuthorization();
 
+            app.MapHub<NotificationHub>("/notificationHub");
 
             app.MapControllers();
 
