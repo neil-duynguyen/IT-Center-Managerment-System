@@ -35,7 +35,7 @@ namespace KidProEdu.Application.Services
             // Xác định ngày bắt đầu của năm học
             DateTime startDate = new DateTime(_currentTime.GetCurrentTime().Year, 1, 1);
 
-            if (_unitOfWork.SemesterRepository.GetSemesterByStartDate(startDate) != null)
+            if ((await _unitOfWork.SemesterRepository.GetSemesterByStartDate(startDate)) != null)
                 throw new Exception("Tạo thất bại, học kỳ trong năm học này đã được tạo");
 
             // Tính độ dài của mỗi học kỳ (3 tháng)
