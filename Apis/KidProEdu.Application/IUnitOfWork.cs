@@ -18,6 +18,7 @@ namespace KidProEdu.Application
         public INotificationRepository NotificationRepository { get; }
         public INotificationUserRepository NotificationUserRepository { get; }
         public IRatingRepository RatingRepository { get; }
+        public IDivisionRepository DivisionRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

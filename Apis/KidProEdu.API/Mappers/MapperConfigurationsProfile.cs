@@ -2,6 +2,7 @@
 using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
+using KidProEdu.Application.ViewModels.DivisionViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LoginViewModel;
@@ -64,6 +65,10 @@ namespace KidProEdu.API.Mappers
                 .ForMember(des => des.CourseName, src => src.MapFrom(x => x.Course.Name)).ReverseMap();
             CreateMap<CreateRatingViewModel, Rating>().ReverseMap();
             CreateMap<UpdateRatingViewModel, Rating>().ReverseMap();
+
+            CreateMap<Division, DivisionViewModel>().ReverseMap();
+            CreateMap<CreateDivisionViewModel, Division>().ReverseMap();
+            CreateMap<UpdateDivisionViewModel, Division>().ReverseMap();
         }
     }
 }

@@ -116,6 +116,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<INotificationUserRepository, NotificationUserRepository>();
             builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+            builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
             #endregion
 
             #region DIService
@@ -134,6 +135,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<INotificationUserService, NotificationUserService>();
             builder.Services.AddScoped<IRatingService, RatingService>();
+            builder.Services.AddScoped<IDivisionService, DivisionService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));

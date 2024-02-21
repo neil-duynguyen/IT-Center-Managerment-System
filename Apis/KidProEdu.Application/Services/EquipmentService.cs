@@ -48,7 +48,7 @@ namespace KidProEdu.Application.Services
             }
 
             var equipment1 = await _unitOfWork.EquipmentRepository.GetEquipmentByCode(createEquipmentViewModel.Code);
-            if (!equipment.IsNullOrEmpty())
+            if (!equipment1.IsNullOrEmpty())
             {
                 throw new Exception("Code đã tồn tại");
             }
