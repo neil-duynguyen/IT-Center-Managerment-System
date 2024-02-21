@@ -9,6 +9,7 @@ using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.NotificationUserViewModels;
 using KidProEdu.Application.ViewModels.NotificationViewModels;
+using KidProEdu.Application.ViewModels.QuestionViewModels;
 using KidProEdu.Application.ViewModels.RatingViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
@@ -74,6 +75,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<Lesson, LessonViewModel>().ReverseMap();
             CreateMap<CreateLessonViewModel, Lesson>().ReverseMap();
             CreateMap<UpdateLessonViewModel, Lesson>().ReverseMap();
+            
+            CreateMap<QuestionViewModel, Question>().ReverseMap();
+            CreateMap<CreateQuestionViewModel, Question>().ReverseMap();
+            CreateMap<UpdateQuestionViewModel, Question>().ReverseMap();
         }
     }
 }
