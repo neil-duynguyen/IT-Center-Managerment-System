@@ -7,6 +7,7 @@ using KidProEdu.Application.Validations.Notifications;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.NotificationUserViewModels;
 using KidProEdu.Application.ViewModels.NotificationViewModels;
+using KidProEdu.Application.ViewModels.RatingViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -88,6 +89,15 @@ namespace KidProEdu.Application.Services
         public async Task<List<Notification>> GetNotifications()
         {
             return _unitOfWork.NotificationRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList(); ;
+        }
+
+        public async Task<List<NotificationWithUserViewModel>> GetNotificationsByUserId(Guid userId)
+        {
+            var results = await _unitOfWork.NotificationRepository.GetNotificationsByUserId(userId);
+
+            var mapper = _mapper.Map<List<NotificationWithUserViewModel>>(results);
+
+            return mapper;
         }
     }
 }

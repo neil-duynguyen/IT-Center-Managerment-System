@@ -24,6 +24,13 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _notificationService.GetNotifications());
         }
 
+        [HttpGet("Notifications/{userId}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> NotificationsByUserId(Guid userId)
+        {
+            return Ok(await _notificationService.GetNotificationsByUserId(userId));
+        }
+
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> PostNotification(CreateNotificationViewModel createNotificationViewModel)

@@ -13,6 +13,8 @@ namespace KidProEdu.Application.Interfaces
     public interface INotificationService
     {
         Task<List<Notification>> GetNotifications();
+
+        Task<List<NotificationWithUserViewModel>> GetNotificationsByUserId(Guid userId);
         Task<bool> CreateNotification(CreateNotificationViewModel createNotificationViewModel);
     }
 }
