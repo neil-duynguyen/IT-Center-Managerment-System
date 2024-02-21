@@ -35,11 +35,11 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PostSemester(CreateSemesterViewModel createSemesterViewModel)
+        public async Task<IActionResult> PostSemester()
         {
             try
             {
-                var result = await _semesterService.CreateSemester(createSemesterViewModel);
+                var result = await _semesterService.CreateSemester();
                 if (result)
                 {
                     return Ok("Semester đã được tạo thành công.");

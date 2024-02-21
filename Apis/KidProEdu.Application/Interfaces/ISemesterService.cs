@@ -12,7 +12,7 @@ namespace KidProEdu.Application.Interfaces
     public interface ISemesterService
     {
         Task<List<Semester>> GetSemesters();
-        Task<bool> CreateSemester(CreateSemesterViewModel createSemesterViewModel);
+        Task<bool> CreateSemester();
         Task<bool> UpdateSemester(UpdateSemesterViewModel updateSemesterViewModel, params Expression<Func<Semester, object>>[] uniqueProperties);
         Task<Semester> GetSemesterById(Guid semesterId);
         Task<bool> DeleteSemester(Guid semesterId);

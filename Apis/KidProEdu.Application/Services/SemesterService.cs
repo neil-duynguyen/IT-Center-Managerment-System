@@ -30,34 +30,65 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateSemester(CreateSemesterViewModel createSemesterViewModel)
+        public async Task<bool> CreateSemester()
         {
-            var validator = new CreateSemesterViewModelValidator();
-            var validationResult = validator.Validate(createSemesterViewModel);
-            if (!validationResult.IsValid)
+            // Xác định ngày bắt đầu của năm học
+            DateTime startDate = new DateTime(_currentTime.GetCurrentTime().Year, 1, 1);
+
+            if (_unitOfWork.SemesterRepository.GetSemesterByStartDate(startDate) != null)
+                throw new Exception("Tạo thất bại, học kỳ trong năm học này đã được tạo");
+
+            // Tính độ dài của mỗi học kỳ (3 tháng)
+            int semesterDurationMonths = 3;
+
+            // Tạo và thêm 4 học kỳ vào cơ sở dữ liệu
+            for (int i = 0; i < 4; i++)
             {
-                foreach (var error in validationResult.Errors)
+                // Xác định ngày bắt đầu và ngày kết thúc của học kỳ
+                DateTime semesterStartDate = startDate.AddMonths(i * semesterDurationMonths);
+                DateTime semesterEndDate = semesterStartDate.AddMonths(semesterDurationMonths).AddDays(-1);
+
+                string semesterPrefix;
+
+                // Xác định phần tiền tố của tên học kỳ dựa trên tháng bắt đầu
+                int month = semesterStartDate.Month;
+                if (month >= 1 && month <= 3)
                 {
-                    throw new Exception(error.ErrorMessage);
+                    semesterPrefix = "SP"; // Spring
                 }
+                else if (month >= 4 && month <= 6)
+                {
+                    semesterPrefix = "SU"; // Summer
+                }
+                else if (month >= 7 && month <= 9)
+                {
+                    semesterPrefix = "FA"; // Fall
+                }
+                else
+                {
+                    semesterPrefix = "WI"; // Winter
+                }
+
+                // Xác định phần số cuối của tên học kỳ từ năm
+                string yearSuffix = (startDate.Year % 100).ToString("00");
+
+                // Xác định tên của học kỳ
+                string semesterName = $"{semesterPrefix}{yearSuffix}";
+
+                // Tạo đối tượng Semester
+                var semester = new Semester
+                {
+                    SemesterName = semesterName,
+                    StartDate = semesterStartDate,
+                    EndDate = semesterEndDate
+                    // Các thông tin khác nếu cần
+                };
+
+                // Thêm đối tượng Semester vào cơ sở dữ liệu
+                await _unitOfWork.SemesterRepository.AddAsync(semester);
             }
 
-            var semester = await _unitOfWork.SemesterRepository.GetSemesterBySemesterName(createSemesterViewModel.SemesterName);
-            if (semester != null)
-            {
-                throw new Exception("Tên đã tồn tại");
-            }
-
-            semester = await _unitOfWork.SemesterRepository.GetSemesterByStartDate(createSemesterViewModel.StartDate);
-            if (semester != null)
-            {
-                throw new Exception("Ngày bắt đầu đã tồn tại");
-            }
-
-            var mapper = _mapper.Map<Semester>(createSemesterViewModel);
-            await _unitOfWork.SemesterRepository.AddAsync(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo Semester thất bại");
-
         }
 
         public async Task<bool> DeleteSemester(Guid semesterId)
@@ -81,7 +112,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<Semester>> GetSemesters()
         {
-            var semesters = _unitOfWork.SemesterRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
+            var semesters = _unitOfWork.SemesterRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();            
             return semesters;
         }
 
