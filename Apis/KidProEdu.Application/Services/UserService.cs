@@ -86,7 +86,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<UserViewModel>> GetAllUser()
         {
-            var user = _unitOfWork.UserRepository.GetAllAsync().Result.Where(x => x.Status.ToString().Equals("Enable"));
+            var user = _unitOfWork.UserRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate);
 
             return _mapper.Map<List<UserViewModel>>(user);
         }
@@ -147,8 +147,14 @@ namespace KidProEdu.Application.Services
         {
             var result = await _unitOfWork.UserRepository.GetByIdAsync(id);
 
-            if (result == null)
+            if (id == _claimsService.GetCurrentUserId)
+            {
+                throw new Exception("Không thể tự xóa bản thân");
+            }
+            else if (result == null)
+            {
                 throw new Exception("Không tìm thấy người dùng này");
+            }
             else
             {
                 _unitOfWork.UserRepository.SoftRemove(result);
@@ -160,13 +166,20 @@ namespace KidProEdu.Application.Services
         {
             foreach (var item in listId)
             {
-                var user = await _unitOfWork.UserRepository.GetByIdAsync(item);
+                if (item == _claimsService.GetCurrentUserId)
+                {
+                    continue;
+                }
+                else
+                {
+                    var user = await _unitOfWork.UserRepository.GetByIdAsync(item);
 
-                if (user.Status.ToString().Equals("Enable"))
-                    user.Status = Domain.Enums.StatusUser.Disable;
-                else user.Status = Domain.Enums.StatusUser.Enable;
+                    if (user.Status.ToString().Equals("Enable"))
+                        user.Status = Domain.Enums.StatusUser.Disable;
+                    else user.Status = Domain.Enums.StatusUser.Enable;
 
-                _unitOfWork.UserRepository.Update(user);
+                    _unitOfWork.UserRepository.Update(user);
+                }
             }
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trạng thái người dùng thất bại");
         }

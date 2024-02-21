@@ -54,7 +54,7 @@ namespace KidProEdu.Application.Services
                 blogObj.Tags = tags;
             }
 
-           
+
             await _unitOfWork.BlogRepository.AddAsync(blogObj);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo bài viết thất bại");
         }
@@ -81,7 +81,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<BlogViewModel>> GetBlogs()
         {
-            var results = await _unitOfWork.BlogRepository.GetAllAsync();
+            var results = _unitOfWork.BlogRepository.GetAllAsync().Result.OrderByDescending(x => x.CreationDate);
 
             var mapper = _mapper.Map<List<BlogViewModel>>(results);
 

@@ -76,7 +76,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<DivisionViewModel>> GetDivisions()
         {
-            var results = _unitOfWork.DivisionRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
+            var results = _unitOfWork.DivisionRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
 
             var mapper = _mapper.Map<List<DivisionViewModel>>(results);
 

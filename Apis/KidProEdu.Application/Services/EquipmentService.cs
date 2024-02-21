@@ -79,7 +79,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<Equipment>> GetEquipments()
         {
-            var results = _unitOfWork.EquipmentRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
+            var results = _unitOfWork.EquipmentRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
             return results;
         }
 

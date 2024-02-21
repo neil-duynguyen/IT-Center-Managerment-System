@@ -75,7 +75,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<Location>> GetLocations()
         {
-            var locations = _unitOfWork.LocationRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
+            var locations = _unitOfWork.LocationRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
             return locations;
         }
 

@@ -77,7 +77,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<LessonViewModel>> GetLessons()
         {
-            var results = _unitOfWork.LessonRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
+            var results = _unitOfWork.LessonRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
 
             var mapper = _mapper.Map<List<LessonViewModel>>(results);
 

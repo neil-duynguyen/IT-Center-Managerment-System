@@ -77,7 +77,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<Tag>> GetTags()
         {
-            var tags = _unitOfWork.TagRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
+            var tags = _unitOfWork.TagRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
             return tags;
         }
 

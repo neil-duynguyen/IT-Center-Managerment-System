@@ -73,7 +73,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<RatingViewModel>> GetRatings()
         {
-            var results = await _unitOfWork.RatingRepository.GetAllAsync();
+            var results = _unitOfWork.RatingRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
 
             var mapper = _mapper.Map<List<RatingViewModel>>(results);
 

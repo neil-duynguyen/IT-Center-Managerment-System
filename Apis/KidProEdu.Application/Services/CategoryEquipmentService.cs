@@ -75,7 +75,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<CategoryEquipment>> GetCategoryEquipments()
         {
-            var results = _unitOfWork.CategoryEquipmentRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
+            var results = _unitOfWork.CategoryEquipmentRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
             return results;
         }
 

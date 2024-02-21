@@ -87,7 +87,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<Notification>> GetNotifications()
         {
-            return _unitOfWork.NotificationRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList(); ;
+            return _unitOfWork.NotificationRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList(); ;
         }
     }
 }

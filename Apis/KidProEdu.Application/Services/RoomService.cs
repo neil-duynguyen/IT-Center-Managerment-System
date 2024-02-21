@@ -74,7 +74,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<RoomViewModel>> GetRooms()
         {
-            var results = _unitOfWork.RoomRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).ToList();
+            var results = _unitOfWork.RoomRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
             var mapper = _mapper.Map<List<RoomViewModel>>(results);
             return mapper;
         }
