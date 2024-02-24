@@ -29,7 +29,6 @@ namespace KidProEdu.Infrastructures
         public DbSet<ConfigTheme> ConfigThemes { get; set; }
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<SubCourse> SubCourse { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Equipment> Equipment { get; set; }
         public DbSet<Feedback> Feedbacks { get;set; }

@@ -17,6 +17,7 @@ namespace KidProEdu.Application.ViewModels.UserViewModels
         public string Phone { get; set; }
         
         public string Address { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public string? Avatar { get; set; }
         public Guid RoleId { get; set; }
     }
