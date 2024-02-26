@@ -158,7 +158,11 @@ namespace KidProEdu.API
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyAPI");
+                    c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+                });
             }
 
             if (app.Environment.IsProduction())
@@ -180,6 +184,8 @@ namespace KidProEdu.API
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseStaticFiles();
 
             app.MapHub<NotificationHub>("/notificationHub");
             /*app.UseEndpoints(endpoints =>
