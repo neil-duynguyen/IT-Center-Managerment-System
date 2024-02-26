@@ -25,6 +25,7 @@ namespace Infrastructures
         private readonly IDivisionRepository _divisionRepository;
         private readonly ILessonRepository _lessonRepository;
         private readonly IQuestionRepository _questionRepository;
+        private readonly IRequestRepository _requestRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -32,7 +33,7 @@ namespace Infrastructures
             , IBlogRepository blogRepository
             , IChildrenRepository childrenRepository, INotificationRepository notificationRepository
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
-            , ILessonRepository lessonRepository, IQuestionRepository questionRepository)
+            , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -51,6 +52,7 @@ namespace Infrastructures
             _divisionRepository = divisionRepository;
             _lessonRepository = lessonRepository;
             _questionRepository = questionRepository;
+            _requestRepository = requestRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -83,6 +85,8 @@ namespace Infrastructures
         public ILessonRepository LessonRepository => _lessonRepository;
 
         public IQuestionRepository QuestionRepository => _questionRepository;
+
+        public IRequestRepository RequestRepository => _requestRepository;
 
         public async Task<int> SaveChangeAsync()
         {

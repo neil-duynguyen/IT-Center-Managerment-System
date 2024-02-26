@@ -11,6 +11,7 @@ using KidProEdu.Application.ViewModels.NotificationUserViewModels;
 using KidProEdu.Application.ViewModels.NotificationViewModels;
 using KidProEdu.Application.ViewModels.QuestionViewModels;
 using KidProEdu.Application.ViewModels.RatingViewModels;
+using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.SemesterViewModels;
@@ -80,6 +81,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<QuestionViewModel, Question>().ReverseMap();
             CreateMap<CreateQuestionViewModel, Question>().ReverseMap();
             CreateMap<UpdateQuestionViewModel, Question>().ReverseMap();
+            
+            CreateMap<RequestViewModel, Request>().ReverseMap();
+            CreateMap<CreateRequestViewModel, Request>().ReverseMap();
+            CreateMap<UpdateRequestViewModel, Request>().ReverseMap();
         }
     }
 }
