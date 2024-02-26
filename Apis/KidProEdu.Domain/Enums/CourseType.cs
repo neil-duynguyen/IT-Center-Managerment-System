@@ -8,5 +8,7 @@ namespace KidProEdu.Domain.Enums
 {
     public enum CourseType
     {
+        Single = 0,
+        Spect = 1
     }
 }

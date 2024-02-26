@@ -26,6 +26,8 @@ namespace Infrastructures
         private readonly ILessonRepository _lessonRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly IRequestRepository _requestRepository;
+        private readonly ICourseRepository _courseRepository;
+        private readonly ISemesterCourseRepository _semesterCourseRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -34,6 +36,7 @@ namespace Infrastructures
             , IChildrenRepository childrenRepository, INotificationRepository notificationRepository
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository)
+            , ILessonRepository lessonRepository, IQuestionRepository questionRepository, ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -53,6 +56,8 @@ namespace Infrastructures
             _lessonRepository = lessonRepository;
             _questionRepository = questionRepository;
             _requestRepository = requestRepository;
+            _courseRepository = courseRepository;
+            _semesterCourseRepository = semesterCourseRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -87,6 +92,9 @@ namespace Infrastructures
         public IQuestionRepository QuestionRepository => _questionRepository;
 
         public IRequestRepository RequestRepository => _requestRepository;
+
+        public ICourseRepository CourseRepository => _courseRepository;
+        public ISemesterCourseRepository SemesterCourseRepository => _semesterCourseRepository;
 
         public async Task<int> SaveChangeAsync()
         {

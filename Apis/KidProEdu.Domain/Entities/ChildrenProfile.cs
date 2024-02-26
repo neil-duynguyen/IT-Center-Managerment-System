@@ -14,7 +14,7 @@ namespace KidProEdu.Domain.Entities
         public Guid UserId { get; set; }
         public string FullName { get; set; }
         public string BirthDay { get; set; }
-        public string Image { get; set; }
+        public string? Avatar { get; set; }
         public string? SpecialSkill { get; set; }
         public virtual UserAccount UserAccount { get; set; }
         public IList<Score> Scores { get; set; }

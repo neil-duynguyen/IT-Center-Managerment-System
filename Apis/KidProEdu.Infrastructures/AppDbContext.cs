@@ -2,6 +2,8 @@
 using KidProEdu.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using System.Reflection.Emit;
 
 namespace KidProEdu.Infrastructures
 {
@@ -29,7 +31,6 @@ namespace KidProEdu.Infrastructures
         public DbSet<ConfigTheme> ConfigThemes { get; set; }
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<SubCourse> SubCourse { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Equipment> Equipment { get; set; }
         public DbSet<Feedback> Feedbacks { get;set; }
@@ -218,6 +219,13 @@ namespace KidProEdu.Infrastructures
             builder.Entity<Division>()
                 .HasMany(p => p.UserAccounts)
                 .WithMany(x => x.Divisions);
+
+            builder.Entity<Course>()
+                .Property(c => c.ParentCode)
+                .HasConversion(
+                v => JsonConvert.SerializeObject(v), // Chuyển đổi ICollection<Guid>? thành chuỗi JSON khi lưu vào cơ sở dữ liệu
+                v => JsonConvert.DeserializeObject<ICollection<Guid>>(v) // Chuyển đổi chuỗi JSON thành ICollection<Guid>? khi đọc từ cơ sở dữ liệu
+        );
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
