@@ -9,7 +9,7 @@ namespace KidProEdu.Application.ViewModels.RequestViewModels
 {
     public class CreateRequestViewModel
     {
-        public string UserIds { get; set; }
+        //public Guid UserId { get; set; }
         public string? RequestDescription { get; set; }
         //public StatusOfRequest? Status { get; set; }
         public string RequestType { get; set; }

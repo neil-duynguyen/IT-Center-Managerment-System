@@ -4,6 +4,7 @@ using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Requests;
 using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 namespace KidProEdu.Application.Services
@@ -43,7 +44,9 @@ namespace KidProEdu.Application.Services
 
             var mapper = _mapper.Map<Request>(createRequestViewModel);
 
-            List<Guid> guids = SplitGuid.SplitGuids(createRequestViewModel.UserIds);
+            //List<Guid> guids = SplitGuid.SplitGuids(createRequestViewModel.UserIds);
+
+            mapper.UserId = _claimsService.GetCurrentUserId;
             mapper.Status = Domain.Enums.StatusOfRequest.Pending;
 
             await _unitOfWork.RequestRepository.AddAsync(mapper);
@@ -71,10 +74,10 @@ namespace KidProEdu.Application.Services
             return request;
         }
 
-        public async Task<List<Request>> GetRequests()
+        public async Task<List<RequestViewModel>> GetRequests()
         {
             var requests = _unitOfWork.RequestRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
-            return requests;
+            return _mapper.Map<List<RequestViewModel>>(requests);
         }
 
         public async Task<bool> UpdateRequest(UpdateRequestViewModel updateRequestViewModel)
@@ -89,26 +92,59 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var request = await _unitOfWork.RequestRepository.GetByIdAsync(updateRequestViewModel.Id);
-            if (request == null)
-            {
-                throw new Exception("Không tìm thấy yêu cầu");
-            }
+            var request = await _unitOfWork.RequestRepository.GetByIdAsync(updateRequestViewModel.Id)
+                ?? throw new Exception("Không tìm thấy yêu cầu");
 
-            var existingRequest = await _unitOfWork.RequestRepository.GetRequestByRequestType(updateRequestViewModel.RequestType);
+            /*var existingRequest = await _unitOfWork.RequestRepository.GetRequestByRequestType(updateRequestViewModel.RequestType);
             if (!existingRequest.IsNullOrEmpty())
             {
                 if (existingRequest.FirstOrDefault().Id != updateRequestViewModel.Id)
                 {
                     throw new Exception("Tên đã tồn tại");
                 }
-            }
+            }*/
+
+            if (request.Status != Domain.Enums.StatusOfRequest.Pending)
+                throw new Exception("Cập nhật yêu cầu thất bại, yêu cầu này đã được xử lý");
 
             /*Request.RequestName = updateRequestViewModel.RequestName;
             Request.Description = updateRequestViewModel.Description;*/
 
-            _unitOfWork.RequestRepository.Update(request);
+            var mapper = _mapper.Map(updateRequestViewModel, request);
+
+            _unitOfWork.RequestRepository.Update(mapper);
+
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật yêu cầu thất bại");
+        }
+
+        public async Task<bool> ChangeStatusRequest(ChangeStatusRequestViewModel changeStatusRequestViewModel)
+        {
+            var status = Domain.Enums.StatusOfRequest.Pending;
+
+            switch (changeStatusRequestViewModel.status)
+            {
+                case "Approved":
+                    status = Domain.Enums.StatusOfRequest.Approved;
+                    break;
+                case "Pending":
+                    status = Domain.Enums.StatusOfRequest.Pending;
+                    break;
+                case "Cancel":
+                    status = Domain.Enums.StatusOfRequest.Cancel;
+                    break;
+                default:
+                    throw new Exception("Trạng thái không có trong hệ thống");
+            }
+
+            foreach (var item in changeStatusRequestViewModel.ids)
+            {
+                var request = await _unitOfWork.RequestRepository.GetByIdAsync(item);
+                request.Status = status;
+
+                _unitOfWork.RequestRepository.Update(request);
+            }
+
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trạng thái yêu cầu thất bại");
         }
     }
 }

@@ -98,5 +98,27 @@ namespace KidProEdu.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("ChangeStatusRequest")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> ChangeStatusRequest(ChangeStatusRequestViewModel changeStatusRequestViewModel)
+        {
+            try
+            {
+                var result = await _requestService.ChangeStatusRequest(changeStatusRequestViewModel);
+                if (result)
+                {
+                    return Ok("Yêu cầu đã được cập nhật trạng thái thành công.");
+                }
+                else
+                {
+                    return BadRequest("Yêu cầu cập nhật trạng thái thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

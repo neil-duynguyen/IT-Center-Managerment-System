@@ -35,8 +35,8 @@ namespace Infrastructures
             , IBlogRepository blogRepository
             , IChildrenRepository childrenRepository, INotificationRepository notificationRepository
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
-            , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository)
-            , ILessonRepository lessonRepository, IQuestionRepository questionRepository, ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository)
+            , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
+            ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;

@@ -10,10 +10,11 @@ namespace KidProEdu.Application.Interfaces
 {
     public interface IRequestService
     {
-        Task<List<Request>> GetRequests();
+        Task<List<RequestViewModel>> GetRequests();
         Task<bool> CreateRequest(CreateRequestViewModel createRequestViewModel);
         Task<bool> UpdateRequest(UpdateRequestViewModel updateRequestViewModel);
         Task<Request> GetRequestById(Guid requestId);
         Task<bool> DeleteRequest(Guid requestId);
+        Task<bool> ChangeStatusRequest(ChangeStatusRequestViewModel changeStatusRequestViewModel);
     }
 }

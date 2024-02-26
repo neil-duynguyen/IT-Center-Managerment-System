@@ -12,11 +12,11 @@ namespace KidProEdu.Application.Validations.Requests
     {
         public UpdateRequestViewModelValidator() 
         {
-            RuleFor(x => x.Id).NotEmpty().WithMessage("Id yêu c không thể để trống");
+            RuleFor(x => x.Id).NotEmpty().WithMessage("Id yêu cầu không thể để trống");
             //RuleFor(x => x.UserId).NotEmpty().WithMessage("Id người gửi không thể để trống");
             RuleFor(x => x.RequestType).NotEmpty().WithMessage("Loại yêu cầu không thể để trống");
             RuleFor(x => x.LeaveDate).NotEmpty().WithMessage("Ngày yêu cầu nghỉ không thể để trống")
-                .GreaterThan(DateTime.UtcNow);
+                .GreaterThan(DateTime.UtcNow.Date).WithMessage("Ngày nghỉ yêu cầu phải sau hiện tại");
         }
     }
 }
