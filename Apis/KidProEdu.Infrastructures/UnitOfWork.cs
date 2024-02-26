@@ -25,6 +25,7 @@ namespace Infrastructures
         private readonly IDivisionRepository _divisionRepository;
         private readonly ILessonRepository _lessonRepository;
         private readonly IQuestionRepository _questionRepository;
+        private readonly IRequestRepository _requestRepository;
         private readonly ICourseRepository _courseRepository;
         private readonly ISemesterCourseRepository _semesterCourseRepository;
 
@@ -34,7 +35,8 @@ namespace Infrastructures
             , IBlogRepository blogRepository
             , IChildrenRepository childrenRepository, INotificationRepository notificationRepository
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
-            , ILessonRepository lessonRepository, IQuestionRepository questionRepository, ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository)
+            , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
+            ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -53,6 +55,7 @@ namespace Infrastructures
             _divisionRepository = divisionRepository;
             _lessonRepository = lessonRepository;
             _questionRepository = questionRepository;
+            _requestRepository = requestRepository;
             _courseRepository = courseRepository;
             _semesterCourseRepository = semesterCourseRepository;
         }
@@ -87,6 +90,8 @@ namespace Infrastructures
         public ILessonRepository LessonRepository => _lessonRepository;
 
         public IQuestionRepository QuestionRepository => _questionRepository;
+
+        public IRequestRepository RequestRepository => _requestRepository;
 
         public ICourseRepository CourseRepository => _courseRepository;
         public ISemesterCourseRepository SemesterCourseRepository => _semesterCourseRepository;
