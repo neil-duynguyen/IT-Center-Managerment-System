@@ -23,7 +23,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Room>> GetRoomByName(string name)
         {
-            var rooms = await _dbContext.Rooms
+            var rooms = await _dbContext.Room
                 .Where(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == false)
                 .ToListAsync();
 

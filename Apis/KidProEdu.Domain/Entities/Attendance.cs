@@ -14,9 +14,11 @@ namespace KidProEdu.Domain.Entities
         [ForeignKey("Schedule")]
         public Guid ScheduleId { get; set; }
         public DateTime Date { get; set; }
-        public Guid ChildrenId { get; set; }
+        [ForeignKey("ChildrenProfile")]
+        public Guid ChildrenProfileId { get; set; }
         public StatusAttendance StatusAttendance { get; set; }
         public string? Note { get; set; }
         public virtual Schedule Schedule { get; set; }
+        public virtual ChildrenProfile ChildrenProfile { get; set; }
     }
 }

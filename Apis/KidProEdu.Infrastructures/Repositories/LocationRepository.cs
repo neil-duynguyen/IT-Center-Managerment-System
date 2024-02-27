@@ -23,7 +23,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Location>> GetLocationByName(string name)
         {
-            var locations = await _dbContext.Locations
+            var locations = await _dbContext.Location
                 .Where(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == false)
                 .ToListAsync();
 

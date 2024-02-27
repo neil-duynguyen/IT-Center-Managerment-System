@@ -16,7 +16,6 @@ namespace KidProEdu.Domain.Entities
         [ForeignKey("Course")]
         public Guid CourseId { get; set; }
         public string ClassCode { get; set; }
-        public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public StatusOfClass StatusOfClass { get; set; }

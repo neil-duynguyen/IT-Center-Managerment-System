@@ -143,9 +143,6 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IDivisionService, DivisionService>();
             builder.Services.AddScoped<ILessonService, LessonService>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
-            builder.Services.AddScoped<ICourseService, CourseService>();
-            builder.Services.AddScoped<ISemesterCourseService, SemesterCourseService>();
-            builder.Services.AddScoped<IRequestService, RequestService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));

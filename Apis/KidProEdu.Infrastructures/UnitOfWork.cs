@@ -55,9 +55,6 @@ namespace Infrastructures
             _divisionRepository = divisionRepository;
             _lessonRepository = lessonRepository;
             _questionRepository = questionRepository;
-            _requestRepository = requestRepository;
-            _courseRepository = courseRepository;
-            _semesterCourseRepository = semesterCourseRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -88,13 +85,11 @@ namespace Infrastructures
         public IDivisionRepository DivisionRepository => _divisionRepository;
 
         public ILessonRepository LessonRepository => _lessonRepository;
-
-        public IQuestionRepository QuestionRepository => _questionRepository;
-
-        public IRequestRepository RequestRepository => _requestRepository;
-
         public ICourseRepository CourseRepository => _courseRepository;
         public ISemesterCourseRepository SemesterCourseRepository => _semesterCourseRepository;
+        public IRequestRepository RequestRepository => _requestRepository;
+
+        public IQuestionRepository QuestionRepository => _questionRepository;
 
         public async Task<int> SaveChangeAsync()
         {

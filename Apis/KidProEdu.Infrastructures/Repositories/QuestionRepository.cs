@@ -21,7 +21,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Question>> GetQuestionByTitle(string title)
         {
-            var questions = await _dbContext.Questions
+            var questions = await _dbContext.Question
                 .Where(x => x.Title.ToLower() == title.ToLower() && x.IsDeleted == false)
                 .ToListAsync();
 
