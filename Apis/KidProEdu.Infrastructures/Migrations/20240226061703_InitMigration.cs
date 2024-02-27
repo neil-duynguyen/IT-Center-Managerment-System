@@ -150,12 +150,13 @@ namespace KidProEdu.Infrastructures.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DurationTotal = table.Column<int>(type: "int", nullable: false),
-                    Syllabus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Level = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Syllabus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Level = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EntryPoint = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Prerequisite = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    courseType = table.Column<int>(type: "int", nullable: false),
+                    CourseType = table.Column<int>(type: "int", nullable: false),
+                    ParentCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -407,42 +408,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubCourse",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CourseCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DurationTotal = table.Column<int>(type: "int", nullable: false),
-                    Syllabus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Level = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EntryPoint = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Prerequisite = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    courseType = table.Column<int>(type: "int", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModificationBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeleteBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SubCourse", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SubCourse_Courses_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Courses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -528,8 +493,8 @@ namespace KidProEdu.Infrastructures.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    SemesterId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SemesterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -545,12 +510,14 @@ namespace KidProEdu.Infrastructures.Migrations
                         name: "FK_SemesterCourses_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SemesterCourses_Semesters_SemesterId",
                         column: x => x.SemesterId,
                         principalTable: "Semesters",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -678,7 +645,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BirthDay = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SpecialSkill = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -1588,11 +1555,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubCourse_CourseId",
-                table: "SubCourse",
-                column: "CourseId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SubTransaction_TransactionId",
                 table: "SubTransaction",
                 column: "TransactionId");
@@ -1686,9 +1648,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
             migrationBuilder.DropTable(
                 name: "Skills");
-
-            migrationBuilder.DropTable(
-                name: "SubCourse");
 
             migrationBuilder.DropTable(
                 name: "SubTransaction");

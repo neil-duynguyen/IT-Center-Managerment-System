@@ -73,5 +73,26 @@ namespace KidProEdu.Application.Services
 
             return listCourseViewModel;
         }
+
+        public async Task<bool> DeleteCourseAsync(Guid courseId)
+        {
+            var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(courseId);
+
+            if (getCourse == null) throw new Exception("Không tìm thấy Course");
+
+            _unitOfWork.CourseRepository.SoftRemove(getCourse);
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
+        }
+        
+        public async Task<bool> UpdateCourseAsync()
+        {
+            //check duplicate course name
+            /*var checkName = await _unitOfWork.CourseRepository.GetAllAsync();
+            if (checkName.FirstOrDefault(x => x.CourseType) == null)
+            { 
+                
+            }*/
+            return true;
+        }
     }
 }
