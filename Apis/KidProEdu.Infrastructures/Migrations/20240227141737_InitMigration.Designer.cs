@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240226061703_InitMigration")]
+    [Migration("20240227141737_InitMigration")]
     partial class InitMigration
     {
         /// <inheritdoc />
@@ -112,7 +112,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AdviseRequests");
+                    b.ToTable("AdviseRequest");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.AnnualWorkingDay", b =>
@@ -153,7 +153,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AnnualWorkingDays");
+                    b.ToTable("AnnualWorkingDay");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Attendance", b =>
@@ -162,7 +162,7 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ChildrenId")
+                    b.Property<Guid>("ChildrenProfileId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("CreatedBy")
@@ -200,9 +200,11 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChildrenProfileId");
+
                     b.HasIndex("ScheduleId");
 
-                    b.ToTable("Attendances");
+                    b.ToTable("Attendance");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Blog", b =>
@@ -250,7 +252,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Blogs");
+                    b.ToTable("Blog");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.CategoryEquipment", b =>
@@ -339,7 +341,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasIndex("CourseId")
                         .IsUnique();
 
-                    b.ToTable("Certificates");
+                    b.ToTable("Certificate");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ChildrenCertificate", b =>
@@ -432,7 +434,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Childrens");
+                    b.ToTable("ChildrenProfile");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Class", b =>
@@ -481,10 +483,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -500,7 +498,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Classes");
+                    b.ToTable("Class");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ConfigDay", b =>
@@ -544,7 +542,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ConfigDays");
+                    b.ToTable("ConfigDay");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ConfigJobType", b =>
@@ -582,7 +580,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ConfigJobTypes");
+                    b.ToTable("ConfigJobType");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ConfigSystem", b =>
@@ -638,7 +636,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ConfigSystems");
+                    b.ToTable("ConfigSystem");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ConfigTheme", b =>
@@ -678,7 +676,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ConfigThemes");
+                    b.ToTable("ConfigTheme");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Contract", b =>
@@ -741,7 +739,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Contracts");
+                    b.ToTable("Contract");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Course", b =>
@@ -798,7 +796,7 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ParentCode")
+                    b.Property<string>("ParentCourse")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Prerequisite")
@@ -812,7 +810,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Course");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Division", b =>
@@ -894,7 +892,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Document");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Enrollment", b =>
@@ -950,7 +948,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("UserAccountId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("Enrollment");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Equipment", b =>
@@ -1058,7 +1056,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedback");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Lesson", b =>
@@ -1110,7 +1108,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("Lesson");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Location", b =>
@@ -1148,7 +1146,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Location");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Notification", b =>
@@ -1228,7 +1226,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NotificationUsers");
+                    b.ToTable("NotificationUser");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Order", b =>
@@ -1387,7 +1385,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("LessionId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Question");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Rating", b =>
@@ -1441,7 +1439,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("UserAccountId");
 
-                    b.ToTable("Ratings");
+                    b.ToTable("Rating");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Request", b =>
@@ -1489,23 +1487,65 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("RequestDescription")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("RequestStatus")
+                        .HasColumnType("int");
+
                     b.Property<string>("RequestType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserAccountId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserAccountId");
 
-                    b.ToTable("Requests");
+                    b.ToTable("Request");
+                });
+
+            modelBuilder.Entity("KidProEdu.Domain.Entities.RequestUserAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModificationBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("RecieverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RequestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecieverId");
+
+                    b.HasIndex("RequestId");
+
+                    b.ToTable("RequestUserAccount");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Role", b =>
@@ -1616,7 +1656,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Room");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Schedule", b =>
@@ -1672,7 +1712,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasIndex("SlotId")
                         .IsUnique();
 
-                    b.ToTable("Schedules");
+                    b.ToTable("Schedule");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ScheduleRoom", b =>
@@ -1714,7 +1754,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("ScheduleId");
 
-                    b.ToTable("ScheduleRooms");
+                    b.ToTable("ScheduleRoom");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Score", b =>
@@ -1762,7 +1802,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Scores");
+                    b.ToTable("Score");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Semester", b =>
@@ -1804,7 +1844,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Semesters");
+                    b.ToTable("Semester");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.SemesterCourse", b =>
@@ -1846,7 +1886,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("SemesterId");
 
-                    b.ToTable("SemesterCourses");
+                    b.ToTable("SemesterCourse");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Skill", b =>
@@ -1890,7 +1930,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Skills");
+                    b.ToTable("Skill");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Slot", b =>
@@ -1982,80 +2022,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         });
                 });
 
-            modelBuilder.Entity("KidProEdu.Domain.Entities.SubTransaction", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
-                    b.Property<string>("BankName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BankingAccountNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BankingNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CourseName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ModificationBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PayDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PayType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StatusSubTransaction")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TransactionId");
-
-                    b.ToTable("SubTransaction");
-                });
-
             modelBuilder.Entity("KidProEdu.Domain.Entities.Tag", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2092,7 +2058,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Test", b =>
@@ -2184,7 +2150,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TestTimes");
+                    b.ToTable("TestTime");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Transaction", b =>
@@ -2240,21 +2206,21 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("PayDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PayType")
+                    b.Property<string>("ParentTransaction")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StatusTransaction")
+                    b.Property<DateTime>("PayDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PayType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transaction");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.UserAccount", b =>
@@ -2342,7 +2308,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
 
                     b.HasData(
                         new
@@ -2430,11 +2396,17 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Attendance", b =>
                 {
-                    b.HasOne("KidProEdu.Domain.Entities.Schedule", "Schedule")
-                        .WithMany()
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("KidProEdu.Domain.Entities.ChildrenProfile", "ChildrenProfile")
+                        .WithMany("Attendances")
+                        .HasForeignKey("ChildrenProfileId")
                         .IsRequired();
+
+                    b.HasOne("KidProEdu.Domain.Entities.Schedule", "Schedule")
+                        .WithMany("Attendances")
+                        .HasForeignKey("ScheduleId")
+                        .IsRequired();
+
+                    b.Navigation("ChildrenProfile");
 
                     b.Navigation("Schedule");
                 });
@@ -2683,11 +2655,26 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Request", b =>
                 {
-                    b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
+                    b.HasOne("KidProEdu.Domain.Entities.UserAccount", null)
                         .WithMany("Requests")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserAccountId");
+                });
+
+            modelBuilder.Entity("KidProEdu.Domain.Entities.RequestUserAccount", b =>
+                {
+                    b.HasOne("KidProEdu.Domain.Entities.Request", "Request")
+                        .WithMany("RequestUserAccounts")
+                        .HasForeignKey("RecieverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
+                        .WithMany("RequestUserAccounts")
+                        .HasForeignKey("RequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Request");
 
                     b.Navigation("UserAccount");
                 });
@@ -2775,17 +2762,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("UserAccount");
                 });
 
-            modelBuilder.Entity("KidProEdu.Domain.Entities.SubTransaction", b =>
-                {
-                    b.HasOne("KidProEdu.Domain.Entities.Transaction", "Transaction")
-                        .WithMany("SubTransactions")
-                        .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Transaction");
-                });
-
             modelBuilder.Entity("KidProEdu.Domain.Entities.Test", b =>
                 {
                     b.HasOne("KidProEdu.Domain.Entities.AdviseRequest", "AdviseRequest")
@@ -2840,6 +2816,8 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ChildrenProfile", b =>
                 {
+                    b.Navigation("Attendances");
+
                     b.Navigation("ChildrenCertificates");
 
                     b.Navigation("Enrollments");
@@ -2898,6 +2876,11 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("Transactions");
                 });
 
+            modelBuilder.Entity("KidProEdu.Domain.Entities.Request", b =>
+                {
+                    b.Navigation("RequestUserAccounts");
+                });
+
             modelBuilder.Entity("KidProEdu.Domain.Entities.Role", b =>
                 {
                     b.Navigation("UserAccount");
@@ -2912,6 +2895,8 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Schedule", b =>
                 {
+                    b.Navigation("Attendances");
+
                     b.Navigation("ScheduleRooms");
                 });
 
@@ -2924,11 +2909,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.Navigation("Schedule")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("KidProEdu.Domain.Entities.Transaction", b =>
-                {
-                    b.Navigation("SubTransactions");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.UserAccount", b =>
@@ -2948,6 +2928,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("Feedbacks");
 
                     b.Navigation("NotificationUsers");
+
+                    b.Navigation("RequestUserAccounts");
 
                     b.Navigation("Requests");
 

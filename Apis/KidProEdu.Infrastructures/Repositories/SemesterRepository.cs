@@ -24,7 +24,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<Semester> GetSemesterBySemesterName(string semesterName)
         {
-            var semesters = await _dbContext.Semesters
+            var semesters = await _dbContext.Semester
                 .Where(x => x.SemesterName.ToLower() == semesterName.ToLower() && x.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
@@ -33,7 +33,7 @@ namespace KidProEdu.Infrastructures.Repositories
         
         public async Task<Semester> GetSemesterByStartDate(DateTime startDate)
         {
-            var semesters = await _dbContext.Semesters
+            var semesters = await _dbContext.Semester
                 .Where(x => x.StartDate.Date == startDate.Date && x.IsDeleted == false)
                 .FirstOrDefaultAsync();
 

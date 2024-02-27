@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Enums
 {
-    public enum StatusSubTransaction
+    public enum PayType
     {
-        Successfully = 0,
-        Faild = 1
     }
 }

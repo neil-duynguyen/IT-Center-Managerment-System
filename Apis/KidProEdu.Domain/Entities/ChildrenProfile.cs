@@ -20,6 +20,6 @@ namespace KidProEdu.Domain.Entities
         public IList<Score> Scores { get; set; }
         public IList<ChildrenCertificate> ChildrenCertificates { get; set; }
         public IList<Enrollment> Enrollments { get; set; }
-
+        public IList<Attendance> Attendances { get; set; }
     }
 }

@@ -56,10 +56,10 @@ namespace KidProEdu.Application.Services
             {
                 var listCourse = new List<CourseViewModel>();
 
-                if (item.ParentCode.Count != 0)
+                if (item.ParentCourse.Count != 0)
                 {
                     
-                    foreach (var courseid in item.ParentCode)
+                    foreach (var courseid in item.ParentCourse)
                     {
                         var result = await _unitOfWork.CourseRepository.GetByIdAsync(courseid);
                         listCourse.Add(_mapper.Map<CourseViewModel>(result));
