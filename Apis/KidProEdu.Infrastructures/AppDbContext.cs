@@ -205,6 +205,18 @@ namespace KidProEdu.Infrastructures
                 .HasForeignKey(x => x.ChildrenProfileId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            builder.Entity<RequestUserAccount>()
+                .HasOne(x => x.UserAccount)
+                .WithMany(x => x.RequestUserAccounts)
+                .HasForeignKey(x => x.RecieverId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<RequestUserAccount>()
+                .HasOne(x => x.Request)
+                .WithMany(x => x.RequestUserAccounts)
+                .HasForeignKey(x => x.RequestId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
             builder.Entity<Course>()
                .HasOne(p => p.Certificate)
                .WithOne(x => x.Course)

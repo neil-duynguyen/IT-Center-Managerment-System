@@ -1484,14 +1484,14 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("RequestDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RequestStatus")
-                        .HasColumnType("int");
-
                     b.Property<string>("RequestType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("UserAccountId")
                         .HasColumnType("uniqueidentifier");
@@ -2659,16 +2659,14 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.RequestUserAccount", b =>
                 {
-                    b.HasOne("KidProEdu.Domain.Entities.Request", "Request")
-                        .WithMany("RequestUserAccounts")
-                        .HasForeignKey("RecieverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
                         .WithMany("RequestUserAccounts")
+                        .HasForeignKey("RecieverId")
+                        .IsRequired();
+
+                    b.HasOne("KidProEdu.Domain.Entities.Request", "Request")
+                        .WithMany("RequestUserAccounts")
                         .HasForeignKey("RequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Request");

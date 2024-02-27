@@ -869,7 +869,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RequestDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RequestStatus = table.Column<int>(type: "int", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
                     RequestType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LeaveDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EquimentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -1241,17 +1241,15 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     table.PrimaryKey("PK_RequestUserAccount", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RequestUserAccount_Request_RecieverId",
-                        column: x => x.RecieverId,
-                        principalTable: "Request",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RequestUserAccount_User_RequestId",
+                        name: "FK_RequestUserAccount_Request_RequestId",
                         column: x => x.RequestId,
+                        principalTable: "Request",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RequestUserAccount_User_RecieverId",
+                        column: x => x.RecieverId,
                         principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
