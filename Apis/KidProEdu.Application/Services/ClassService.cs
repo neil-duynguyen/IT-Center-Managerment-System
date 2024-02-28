@@ -127,7 +127,7 @@ namespace KidProEdu.Application.Services
                 //"Pending" => Domain.Enums.StatusOfClass.Pending,
                 "Cancel" => Domain.Enums.StatusOfClass.Cancel,
                 "Expired" => Domain.Enums.StatusOfClass.Expired,
-                _ => throw new Exception("Trạng thái không có trong hệ thống"),
+                _ => throw new Exception("Trạng thái không được hỗ trợ"),
             };
 
             foreach (var item in changeStatusClassViewModel.ids)

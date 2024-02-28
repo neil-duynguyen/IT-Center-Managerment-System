@@ -11,12 +11,12 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
     public class ClassViewModel
     {
         public Guid Id { get; set; }
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
         public Guid CourseId { get; set; }
         public string ClassCode { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public StatusOfClass StatusOfClass { get; set; }
+        public string StatusOfClass { get; set; }
         public int MaxNumber { get; set; }
         public int ExpectedNumber { get; set; }
         public int ActualNumber { get; set; }
