@@ -15,6 +15,7 @@ using KidProEdu.Application.ViewModels.RatingViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
+using KidProEdu.Application.ViewModels.SemesterCourseViewModels;
 using KidProEdu.Application.ViewModels.SemesterViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
@@ -88,10 +89,9 @@ namespace KidProEdu.API.Mappers
             CreateMap<UpdateRequestViewModel, Request>().ReverseMap();
 
             CreateMap<CreateCourseViewModel, Course>().ReverseMap();
-            CreateMap<CourseViewModel, Course>().ReverseMap().ForMember(des => des.CourseType, src => src.MapFrom(x => x.CourseType != null ? (string)x.CourseType.ToString() : (string?)null));               
+            CreateMap<CourseViewModel, Course>().ReverseMap().ForMember(des => des.CourseType, src => src.MapFrom(x => x.CourseType != null ? (string)x.CourseType.ToString() : (string?)null));
 
-            CreateMap<CreateCourseViewModel, Course>().ReverseMap();
-            CreateMap<CourseViewModel, Course>().ReverseMap().ForMember(des => des.CourseType, src => src.MapFrom(x => x.CourseType != null ? (string)x.CourseType.ToString() : (string?)null));               
+            CreateMap<SemesterCourse, CreateSemesterCourseViewModel>().ReverseMap();
         }
     }
 }
