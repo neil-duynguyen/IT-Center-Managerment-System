@@ -55,6 +55,9 @@ namespace Infrastructures
             _divisionRepository = divisionRepository;
             _lessonRepository = lessonRepository;
             _questionRepository = questionRepository;
+            _requestRepository = requestRepository;
+            _courseRepository = courseRepository;
+            _semesterCourseRepository = semesterCourseRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;

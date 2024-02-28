@@ -56,7 +56,7 @@ namespace KidProEdu.Application.Services
             {
                 var listCourse = new List<CourseViewModel>();
 
-                if (item.ParentCourse.Count != 0)
+                if (item.ParentCourse != null)
                 {
                     
                     foreach (var courseid in item.ParentCourse)

@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.CourseViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers.Admin
@@ -29,6 +30,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpGet("Courses")]
+        /*[Authorize(Roles = ("Parent"))]*/
         public async Task<IActionResult> GetAllCourse()
         {
             return Ok(await _courseService.GetAllCourse());

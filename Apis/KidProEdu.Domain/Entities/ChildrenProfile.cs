@@ -13,6 +13,7 @@ namespace KidProEdu.Domain.Entities
         [ForeignKey("UserAccount")]
         public Guid UserId { get; set; }
         public string FullName { get; set; }
+        public string? GenderType { get; set; }
         public string BirthDay { get; set; }
         public string? Avatar { get; set; }
         public string? SpecialSkill { get; set; }
