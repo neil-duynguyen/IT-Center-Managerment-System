@@ -18,10 +18,9 @@ namespace KidProEdu.Domain.Entities
         public double Amount { get; set; }
         public string CourseName { get; set; }
         public string Message { get; set; }
-        public string PayType { get; set; }
+        public PayType PayType { get; set; }
         public DateTime PayDate { get; set; }
-        public StatusTransaction StatusTransaction { get; set; }
+        public ICollection<Guid> ParentTransaction { get; set; }
         public virtual Order Order { get; set; }
-        public IList<SubTransaction> SubTransactions { get; set; }
     }
 }

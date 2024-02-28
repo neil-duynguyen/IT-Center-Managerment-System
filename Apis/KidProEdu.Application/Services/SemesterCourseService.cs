@@ -53,5 +53,13 @@ namespace KidProEdu.Application.Services
             }
             return listCourse;
         }
+
+        public async Task<bool> UpdateCourseInSemester(CreateSemesterCourseViewModel createSemesterCourseView)
+        {
+            /*var findSemester = _unitOfWork.SemesterCourseRepository.GetAllAsync().Result.Where(x => x.SemesterId == createSemesterCourseView.SemesterId).ToList();*/
+
+            
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật thất bại.");
+        }
     }
 }

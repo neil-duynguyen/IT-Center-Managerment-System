@@ -143,8 +143,8 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IRatingService, RatingService>();
             builder.Services.AddScoped<IDivisionService, DivisionService>();
             builder.Services.AddScoped<ILessonService, LessonService>();
-            builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<ICourseService, CourseService>();
+            builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<ISemesterCourseService, SemesterCourseService>();
             builder.Services.AddScoped<IRequestService, RequestService>();
             builder.Services.AddScoped<IClassService, ClassService>();

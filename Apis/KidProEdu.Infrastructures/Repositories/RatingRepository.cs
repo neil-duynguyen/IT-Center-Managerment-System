@@ -23,7 +23,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Rating>> GetListRatingByCourseId(Guid CourseId)
         {
-            return await _dbContext.Ratings.Include(x => x.Course).Where(x => !x.IsDeleted && x.CourseId == CourseId).ToListAsync();
+            return await _dbContext.Rating.Include(x => x.Course).Where(x => !x.IsDeleted && x.CourseId == CourseId).ToListAsync();
         }
 
         public override async Task<List<Rating>> GetAllAsync()

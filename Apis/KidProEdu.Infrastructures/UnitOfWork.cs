@@ -90,14 +90,12 @@ namespace Infrastructures
         public IDivisionRepository DivisionRepository => _divisionRepository;
 
         public ILessonRepository LessonRepository => _lessonRepository;
-
-        public IQuestionRepository QuestionRepository => _questionRepository;
-
-        public IRequestRepository RequestRepository => _requestRepository;
-
         public ICourseRepository CourseRepository => _courseRepository;
 
         public ISemesterCourseRepository SemesterCourseRepository => _semesterCourseRepository;
+        public IRequestRepository RequestRepository => _requestRepository;
+
+        public IQuestionRepository QuestionRepository => _questionRepository;
 
         public IClassRepository ClassRepository => _classRepository;
 

@@ -22,7 +22,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Lesson>> GetLessonByName(string name)
         {
-            var lessons = await _dbContext.Lessons
+            var lessons = await _dbContext.Lesson
                 .Where(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == false)
                 .ToListAsync();
 
@@ -31,7 +31,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Lesson>> GetLessonsByCourseId(Guid CourseId)
         {
-            return await _dbContext.Lessons.Where(x => !x.IsDeleted && x.CourseId == CourseId).ToListAsync();
+            return await _dbContext.Lesson.Where(x => !x.IsDeleted && x.CourseId == CourseId).ToListAsync();
         }
     }
 }

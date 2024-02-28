@@ -46,8 +46,8 @@ namespace KidProEdu.Application.Services
 
             //List<Guid> guids = SplitGuid.SplitGuids(createRequestViewModel.UserIds);
 
-            mapper.UserId = _claimsService.GetCurrentUserId;
-            mapper.Status = Domain.Enums.StatusOfRequest.Pending;
+            /*mapper.UserId = _claimsService.GetCurrentUserId;
+            mapper.Status = Domain.Enums.StatusOfRequest.Pending;*/
 
             await _unitOfWork.RequestRepository.AddAsync(mapper);
 

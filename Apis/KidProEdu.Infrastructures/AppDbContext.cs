@@ -16,45 +16,44 @@ namespace KidProEdu.Infrastructures
         }
 
         public DbSet<Role> Role { get; set; }
-        public DbSet<UserAccount> Users { get; set; }
-        public DbSet<AdviseRequest> AdviseRequests { get; set; }
-        public DbSet<AnnualWorkingDay> AnnualWorkingDays { get; set; }
-        public DbSet<Attendance> Attendances { get; set; }
-        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<UserAccount> User { get; set; }
+        public DbSet<AdviseRequest> AdviseRequest { get; set; }
+        public DbSet<AnnualWorkingDay> AnnualWorkingDay { get; set; }
+        public DbSet<Attendance> Attendance { get; set; }
+        public DbSet<Blog> Blog { get; set; }
         public DbSet<CategoryEquipment> CategoryEquipment { get; set; }
-        public DbSet<Certificate> Certificates { get; set; }
-        public DbSet<ChildrenProfile> Childrens { get; set; }
-        public DbSet<Class> Classes { get; set; }
-        public DbSet<ConfigDay> ConfigDays { get; set; }
-        public DbSet<ConfigJobType> ConfigJobTypes { get; set; }
-        public DbSet<ConfigSystem> ConfigSystems { get; set; }
-        public DbSet<ConfigTheme> ConfigThemes { get; set; }
-        public DbSet<Contract> Contracts { get; set; }
-        public DbSet<Course> Courses { get; set; }
-        public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<Certificate> Certificate { get; set; }
+        public DbSet<ChildrenProfile> ChildrenProfile { get; set; }
+        public DbSet<Class> Class { get; set; }
+        public DbSet<ConfigDay> ConfigDay { get; set; }
+        public DbSet<ConfigJobType> ConfigJobType { get; set; }
+        public DbSet<ConfigSystem> ConfigSystem { get; set; }
+        public DbSet<ConfigTheme> ConfigTheme { get; set; }
+        public DbSet<Contract> Contract { get; set; }
+        public DbSet<Course> Course { get; set; }
+        public DbSet<Enrollment> Enrollment { get; set; }
         public DbSet<Equipment> Equipment { get; set; }
-        public DbSet<Feedback> Feedbacks { get;set; }
-        public DbSet<Document> Documents { get; set; }
+        public DbSet<Feedback> Feedback { get;set; }
+        public DbSet<Document> Document { get; set; }
         public DbSet<Division> Division { get; set; }
-        public DbSet<Lesson> Lessons { get; set; }
-        public DbSet<Location> Locations { get; set; }
+        public DbSet<Lesson> Lesson { get; set; }
+        public DbSet<Location> Location { get; set; }
         public DbSet<Notification> Notification { get; set; }
-        public DbSet<NotificationUser> NotificationUsers { get; set; }
-        public DbSet<Question> Questions { get; set; }
-        public DbSet<Rating> Ratings { get; set; }
-        public DbSet<Request> Requests { get; set; }
-        public DbSet<Room> Rooms { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
-        public DbSet<ScheduleRoom> ScheduleRooms { get; set; }
-        public DbSet<Score> Scores { get; set; }
-        public DbSet<Semester> Semesters { get; set; }
-        public DbSet<SemesterCourse> SemesterCourses { get; set; }
-        public DbSet<Skill> Skills { get; set; }
-        public DbSet<Tag> Tags { get; set; }
-        public DbSet<TestTime> TestTimes { get; set; }   
-        public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<SubTransaction> SubTransaction { get; set; }
-
+        public DbSet<NotificationUser> NotificationUser { get; set; }
+        public DbSet<Question> Question { get; set; }
+        public DbSet<Rating> Rating { get; set; }
+        public DbSet<Request> Request { get; set; }
+        public DbSet<Room> Room { get; set; }
+        public DbSet<Schedule> Schedule { get; set; }
+        public DbSet<ScheduleRoom> ScheduleRoom { get; set; }
+        public DbSet<Score> Score { get; set; }
+        public DbSet<Semester> Semester { get; set; }
+        public DbSet<SemesterCourse> SemesterCourse { get; set; }
+        public DbSet<Skill> Skill { get; set; }
+        public DbSet<Tag> Tag { get; set; }
+        public DbSet<TestTime> TestTime { get; set; }   
+        public DbSet<Transaction> Transaction { get; set; }
+        public DbSet<RequestUserAccount> RequestUserAccount { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Role>().HasData(
@@ -194,6 +193,30 @@ namespace KidProEdu.Infrastructures
                 .HasForeignKey(x => x.CertificateId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            builder.Entity<Attendance>()
+                .HasOne(x => x.Schedule)
+                .WithMany(x => x.Attendances)
+                .HasForeignKey(x => x.ScheduleId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<Attendance>()
+                .HasOne(x => x.ChildrenProfile)
+                .WithMany(x => x.Attendances)
+                .HasForeignKey(x => x.ChildrenProfileId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<RequestUserAccount>()
+                .HasOne(x => x.UserAccount)
+                .WithMany(x => x.RequestUserAccounts)
+                .HasForeignKey(x => x.RecieverId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<RequestUserAccount>()
+                .HasOne(x => x.Request)
+                .WithMany(x => x.RequestUserAccounts)
+                .HasForeignKey(x => x.RequestId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
             builder.Entity<Course>()
                .HasOne(p => p.Certificate)
                .WithOne(x => x.Course)
@@ -221,11 +244,16 @@ namespace KidProEdu.Infrastructures
                 .WithMany(x => x.Divisions);
 
             builder.Entity<Course>()
-                .Property(c => c.ParentCode)
+                .Property(c => c.ParentCourse)
                 .HasConversion(
                 v => JsonConvert.SerializeObject(v), // Chuyển đổi ICollection<Guid>? thành chuỗi JSON khi lưu vào cơ sở dữ liệu
-                v => JsonConvert.DeserializeObject<ICollection<Guid>>(v) // Chuyển đổi chuỗi JSON thành ICollection<Guid>? khi đọc từ cơ sở dữ liệu
-        );
+                v => JsonConvert.DeserializeObject<ICollection<Guid>>(v)); // Chuyển đổi chuỗi JSON thành ICollection<Guid>? khi đọc từ cơ sở dữ liệu
+                
+            builder.Entity<Transaction>()
+               .Property(c => c.ParentTransaction)
+               .HasConversion(
+               v => JsonConvert.SerializeObject(v), // Chuyển đổi ICollection<Guid>? thành chuỗi JSON khi lưu vào cơ sở dữ liệu
+               v => JsonConvert.DeserializeObject<ICollection<Guid>>(v)); // Chuyển đổi chuỗi JSON thành ICollection<Guid>? khi đọc từ cơ sở dữ liệu
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
