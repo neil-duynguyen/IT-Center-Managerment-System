@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240227145836_InitMigration")]
+    [Migration("20240228132016_InitMigration")]
     partial class InitMigration
     {
         /// <inheritdoc />
@@ -415,6 +415,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("GenderType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -489,7 +492,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int>("StatusOfClass")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -1496,12 +1499,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("UserAccountId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserAccountId");
 
                     b.ToTable("Request");
                 });
@@ -2308,7 +2306,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User");
+                    b.ToTable("UserAccount");
 
                     b.HasData(
                         new
@@ -2469,9 +2467,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
                         .WithMany("Classes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Course");
 
@@ -2651,13 +2647,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("UserAccount");
-                });
-
-            modelBuilder.Entity("KidProEdu.Domain.Entities.Request", b =>
-                {
-                    b.HasOne("KidProEdu.Domain.Entities.UserAccount", null)
-                        .WithMany("Requests")
-                        .HasForeignKey("UserAccountId");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.RequestUserAccount", b =>
@@ -2928,8 +2917,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("NotificationUsers");
 
                     b.Navigation("RequestUserAccounts");
-
-                    b.Navigation("Requests");
 
                     b.Navigation("Skills");
                 });
