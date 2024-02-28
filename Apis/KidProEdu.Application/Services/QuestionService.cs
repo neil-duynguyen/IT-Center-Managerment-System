@@ -34,8 +34,8 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var Question = await _unitOfWork.QuestionRepository.GetQuestionByTitle(createQuestionViewModel.Title);
-            if (!Question.IsNullOrEmpty())
+            var question = await _unitOfWork.QuestionRepository.GetQuestionByTitle(createQuestionViewModel.Title);
+            if (!question.IsNullOrEmpty())
             {
                 throw new Exception("Câu hỏi đã tồn tại");
             }
@@ -59,17 +59,17 @@ namespace KidProEdu.Application.Services
             }
         }
 
-        public async Task<Question> GetQuestionById(Guid QuestionId)
+        public async Task<Question> GetQuestionById(Guid questionId)
         {
-            var Question = await _unitOfWork.QuestionRepository.GetByIdAsync(QuestionId);
-            return Question;
+            var question = await _unitOfWork.QuestionRepository.GetByIdAsync(questionId);
+            return question;
         }
 
         public async Task<List<Question>> GetQuestions()
         {
-            var Questions = _unitOfWork.QuestionRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false)
+            var questions = _unitOfWork.QuestionRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false)
                 .OrderByDescending(x => x.CreationDate).ToList();
-            return Questions;
+            return questions;
         }
 
         public async Task<bool> UpdateQuestion(UpdateQuestionViewModel updateQuestionViewModel)

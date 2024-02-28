@@ -28,6 +28,7 @@ namespace Infrastructures
         private readonly IRequestRepository _requestRepository;
         private readonly ICourseRepository _courseRepository;
         private readonly ISemesterCourseRepository _semesterCourseRepository;
+        private readonly IClassRepository _classRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -36,7 +37,7 @@ namespace Infrastructures
             , IChildrenRepository childrenRepository, INotificationRepository notificationRepository
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
-            ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository)
+            ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -58,6 +59,7 @@ namespace Infrastructures
             _requestRepository = requestRepository;
             _courseRepository = courseRepository;
             _semesterCourseRepository = semesterCourseRepository;
+            _classRepository = classRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -94,7 +96,10 @@ namespace Infrastructures
         public IRequestRepository RequestRepository => _requestRepository;
 
         public ICourseRepository CourseRepository => _courseRepository;
+
         public ISemesterCourseRepository SemesterCourseRepository => _semesterCourseRepository;
+
+        public IClassRepository ClassRepository => _classRepository;
 
         public async Task<int> SaveChangeAsync()
         {

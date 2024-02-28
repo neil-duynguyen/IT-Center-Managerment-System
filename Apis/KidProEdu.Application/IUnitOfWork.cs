@@ -24,6 +24,7 @@ namespace KidProEdu.Application
         public IRequestRepository RequestRepository { get; }
         public ICourseRepository CourseRepository { get; }
         public ISemesterCourseRepository SemesterCourseRepository { get; }
+        public IClassRepository ClassRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
