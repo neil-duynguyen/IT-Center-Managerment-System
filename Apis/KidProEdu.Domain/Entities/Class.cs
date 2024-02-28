@@ -11,7 +11,7 @@ namespace KidProEdu.Domain.Entities
     public class Class : BaseEntity
     {
         [ForeignKey("UserAccount")]
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
 
         [ForeignKey("Course")]
         public Guid CourseId { get; set; }
@@ -22,7 +22,7 @@ namespace KidProEdu.Domain.Entities
         public int MaxNumber { get; set; }
         public int ExpectedNumber { get; set; }
         public int ActualNumber { get; set; }
-        public virtual UserAccount UserAccount { get; set; }
+        public virtual UserAccount? UserAccount { get; set; }
         public virtual Course Course { get; set; }
         public IList<Enrollment> Enrollments { get; set; }
         public IList<Feedback> Feedbacks { get; set; }
