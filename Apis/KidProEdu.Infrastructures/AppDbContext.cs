@@ -16,7 +16,7 @@ namespace KidProEdu.Infrastructures
         }
 
         public DbSet<Role> Role { get; set; }
-        public DbSet<UserAccount> User { get; set; }
+        public DbSet<UserAccount> UserAccount { get; set; }
         public DbSet<AdviseRequest> AdviseRequest { get; set; }
         public DbSet<AnnualWorkingDay> AnnualWorkingDay { get; set; }
         public DbSet<Attendance> Attendance { get; set; }
