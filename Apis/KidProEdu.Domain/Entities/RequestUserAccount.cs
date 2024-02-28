@@ -10,9 +10,9 @@ namespace KidProEdu.Domain.Entities
     public class RequestUserAccount : BaseEntity
     {
         [ForeignKey("UserAccount")]
-        public Guid RequestId { get; set; }
-        [ForeignKey("Request")]
         public Guid RecieverId { get; set; }
+        [ForeignKey("Request")]     
+        public Guid RequestId { get; set; }
         public virtual UserAccount UserAccount { get; set; }
         public virtual Request Request { get; set; }
     }

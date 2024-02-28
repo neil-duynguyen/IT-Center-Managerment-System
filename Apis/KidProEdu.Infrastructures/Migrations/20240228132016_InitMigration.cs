@@ -231,6 +231,33 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Request",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RequestDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
+                    RequestType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LeaveDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EquimentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ReceiverRefundId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModificationBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeleteBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Request", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
                 {
@@ -408,7 +435,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "UserAccount",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -438,14 +465,14 @@ namespace KidProEdu.Infrastructures.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_UserAccount", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Location_LocationId",
+                        name: "FK_UserAccount_Location_LocationId",
                         column: x => x.LocationId,
                         principalTable: "Location",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_User_Role_RoleId",
+                        name: "FK_UserAccount_Role_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Role",
                         principalColumn: "Id",
@@ -603,9 +630,9 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     table.PrimaryKey("PK_AdviseRequest", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AdviseRequest_User_UserId",
+                        name: "FK_AdviseRequest_UserAccount_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id");
                 });
 
@@ -630,9 +657,9 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     table.PrimaryKey("PK_Blog", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Blog_User_UserId",
+                        name: "FK_Blog_UserAccount_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -644,6 +671,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GenderType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BirthDay = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SpecialSkill = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -659,9 +687,9 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     table.PrimaryKey("PK_ChildrenProfile", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ChildrenProfile_User_UserId",
+                        name: "FK_ChildrenProfile_UserAccount_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -671,7 +699,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClassCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -698,11 +726,10 @@ namespace KidProEdu.Infrastructures.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Class_User_UserId",
+                        name: "FK_Class_UserAccount_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "UserAccount",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -736,9 +763,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Contract_User_UserId",
+                        name: "FK_Contract_UserAccount_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -760,9 +787,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DivisionUserAccount_User_UserAccountsId",
+                        name: "FK_DivisionUserAccount_UserAccount_UserAccountsId",
                         column: x => x.UserAccountsId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -792,9 +819,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_NotificationUser_User_UserId",
+                        name: "FK_NotificationUser_UserAccount_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -820,9 +847,9 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     table.PrimaryKey("PK_Order", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Order_User_UserId",
+                        name: "FK_Order_UserAccount_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -856,28 +883,20 @@ namespace KidProEdu.Infrastructures.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Rating_User_UserAccountId",
+                        name: "FK_Rating_UserAccount_UserAccountId",
                         column: x => x.UserAccountId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Request",
+                name: "RequestUserAccount",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RequestDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: true),
-                    RequestType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LeaveDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    EquimentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ReceiverRefundId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UserAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    RecieverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -888,11 +907,16 @@ namespace KidProEdu.Infrastructures.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Request", x => x.Id);
+                    table.PrimaryKey("PK_RequestUserAccount", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Request_User_UserAccountId",
-                        column: x => x.UserAccountId,
-                        principalTable: "User",
+                        name: "FK_RequestUserAccount_Request_RequestId",
+                        column: x => x.RequestId,
+                        principalTable: "Request",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RequestUserAccount_UserAccount_RecieverId",
+                        column: x => x.RecieverId,
+                        principalTable: "UserAccount",
                         principalColumn: "Id");
                 });
 
@@ -916,9 +940,9 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     table.PrimaryKey("PK_Skill", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Skill_User_UserId",
+                        name: "FK_Skill_UserAccount_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1076,9 +1100,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         principalTable: "Class",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Enrollment_User_UserAccountId",
+                        name: "FK_Enrollment_UserAccount_UserAccountId",
                         column: x => x.UserAccountId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id");
                 });
 
@@ -1109,9 +1133,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         principalTable: "Class",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Feedback_User_UserId",
+                        name: "FK_Feedback_UserAccount_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "UserAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1223,36 +1247,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RequestUserAccount",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RecieverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModificationBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeleteBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RequestUserAccount", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RequestUserAccount_Request_RequestId",
-                        column: x => x.RequestId,
-                        principalTable: "Request",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_RequestUserAccount_User_RecieverId",
-                        column: x => x.RecieverId,
-                        principalTable: "User",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Attendance",
                 columns: table => new
                 {
@@ -1340,7 +1334,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "User",
+                table: "UserAccount",
                 columns: new[] { "Id", "Address", "Avatar", "BankAccountName", "BankAccountNumber", "BankName", "CreatedBy", "CreationDate", "DateOfBirth", "DeleteBy", "DeletionDate", "Email", "FullName", "GenderType", "IsDeleted", "LocationId", "ModificationBy", "ModificationDate", "OTP", "PasswordHash", "Phone", "RoleId", "Status", "UserName" },
                 values: new object[,]
                 {
@@ -1506,11 +1500,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 column: "UserAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Request_UserAccountId",
-                table: "Request",
-                column: "UserAccountId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RequestUserAccount_RecieverId",
                 table: "RequestUserAccount",
                 column: "RecieverId");
@@ -1577,13 +1566,13 @@ namespace KidProEdu.Infrastructures.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_LocationId",
-                table: "User",
+                name: "IX_UserAccount_LocationId",
+                table: "UserAccount",
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_RoleId",
-                table: "User",
+                name: "IX_UserAccount_RoleId",
+                table: "UserAccount",
                 column: "RoleId");
         }
 
@@ -1720,7 +1709,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "Course");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "UserAccount");
 
             migrationBuilder.DropTable(
                 name: "Location");
