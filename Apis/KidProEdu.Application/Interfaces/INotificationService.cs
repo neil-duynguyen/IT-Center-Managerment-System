@@ -15,6 +15,6 @@ namespace KidProEdu.Application.Interfaces
         Task<List<Notification>> GetNotifications();
 
         Task<List<NotificationWithUserViewModel>> GetNotificationsByUserId(Guid userId);
-        Task<bool> CreateNotification(CreateNotificationViewModel createNotificationViewModel);
+        Task<bool> CreateNotification(CreateNotificationViewModel createNotificationViewModel, Guid[] userId);
     }
 }

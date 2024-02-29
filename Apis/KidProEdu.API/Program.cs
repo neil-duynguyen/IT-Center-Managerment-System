@@ -38,11 +38,12 @@ namespace KidProEdu.API
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("*"
+                                      policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173"
                                                           )
-                                                            .AllowAnyOrigin()
+                                                            //.AllowAnyOrigin()
                                                             .AllowAnyHeader()
-                                                            .AllowAnyMethod();
+                                                            .AllowAnyMethod()
+                                                            .AllowCredentials();
 
                                   });
             });
@@ -159,7 +160,11 @@ namespace KidProEdu.API
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyAPI");
+                    c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+                });
             }
 
             if (app.Environment.IsProduction())
@@ -182,7 +187,13 @@ namespace KidProEdu.API
 
             app.UseAuthorization();
 
+            app.UseStaticFiles();
+
             app.MapHub<NotificationHub>("/notificationHub");
+            /*app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<NotificationHub>("/notificationHub");
+            });*/
 
             app.MapControllers();
 

@@ -9,9 +9,9 @@ namespace KidProEdu.Application.ViewModels.NotificationViewModels
 {
     public class CreateNotificationViewModel
     {
-        public Guid Id { get; set; }
+        //public Guid Id { get; set; }
         public DateTime? Date { get; set; }
         public string? Message { get; set; }
-        public virtual ICollection<CreateNotificationUserViewModel> CreateNotificationUserViewModels { get; set; }
+        //public virtual ICollection<CreateNotificationUserViewModel> CreateNotificationUserViewModels { get; set; }
     }
 }

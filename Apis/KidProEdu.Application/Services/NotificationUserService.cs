@@ -29,8 +29,8 @@ namespace KidProEdu.Application.Services
         public async Task<bool> CreateNotificationUser(CreateNotificationUserViewModel createNotificationUserViewModel)
         {
             var mapper = _mapper.Map<NotificationUser>(createNotificationUserViewModel);
-            await _unitOfWork.NotificationUserRepository.AddAsync(mapper);
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo thất bại");
+             _unitOfWork.NotificationUserRepository.AddAsync(mapper);
+            return true;
         }
     }
 }

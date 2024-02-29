@@ -31,13 +31,13 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _notificationService.GetNotificationsByUserId(userId));
         }
 
-        [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PostNotification(CreateNotificationViewModel createNotificationViewModel)
+        /*[HttpPost]
+        *//*[Authorize(Roles = ("Admin"))]*//*
+        public async Task<IActionResult> PostNotification(CreateNotificationViewModel createNotificationViewModel, Guid[] userId)
         {
             try
             {
-                var result = await _notificationService.CreateNotification(createNotificationViewModel);
+                var result = await _notificationService.CreateNotification(createNotificationViewModel, userId);
                 if (result)
                 {
                     return Ok("Thông báo được tạo thành công.");
@@ -51,6 +51,6 @@ namespace KidProEdu.API.Controllers.Manager
             {
                 return BadRequest(ex.Message);
             }
-        }
+        }*/
     }
 }
