@@ -122,6 +122,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ICourseRepository, CourseRepository>();
             builder.Services.AddScoped<ISemesterCourseRepository, SemesterCourseRepository>();
             builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+            builder.Services.AddScoped<IClassRepository, ClassRepository>();
             #endregion
 
             #region DIService
@@ -145,6 +146,8 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<ISemesterCourseService, SemesterCourseService>();
+            builder.Services.AddScoped<IRequestService, RequestService>();
+            builder.Services.AddScoped<IClassService, ClassService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));
