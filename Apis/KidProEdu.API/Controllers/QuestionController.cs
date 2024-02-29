@@ -35,7 +35,7 @@ namespace KidProEdu.API.Controllers
 
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PostQuestion(CreateQuestionViewModel createQuestionViewModel)
+        public async Task<IActionResult> PostQuestion(CreateQuestionViewModel[] createQuestionViewModel)
         {
             try
             {
