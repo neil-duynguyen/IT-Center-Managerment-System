@@ -18,6 +18,7 @@ namespace KidProEdu.Domain.Entities
         public Guid? LocationId { get; set; }
         public Guid? ClassId { get; set; }
         public Guid? ScheduleId { get; set; }
+        public DateTime? TeachingDay { get; set; }
         public Guid? ReceiverRefundId { get; set; }
         public IList<RequestUserAccount> RequestUserAccounts { get; set; }
     }

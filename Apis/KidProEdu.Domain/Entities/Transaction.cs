@@ -20,7 +20,10 @@ namespace KidProEdu.Domain.Entities
         public string Message { get; set; }
         public PayType PayType { get; set; }
         public DateTime PayDate { get; set; }
-        public ICollection<Guid> ParentTransaction { get; set; }
+        public int InstallmentTerm { get; set; }
+        public DateTime? InstallmentPeriod { get; set; }
+        public StatusTransaction StatusTransaction { get; set; }
+        public Guid ParentsTransaction { get; set; }
         public virtual Order Order { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace KidProEdu.Infrastructures
 
         public DbSet<Role> Role { get; set; }
         public DbSet<UserAccount> UserAccount { get; set; }
+        public DbSet<UserSkill> UserSkill { get; set; }
         public DbSet<AdviseRequest> AdviseRequest { get; set; }
         public DbSet<AnnualWorkingDay> AnnualWorkingDay { get; set; }
         public DbSet<Attendance> Attendance { get; set; }
@@ -33,6 +34,7 @@ namespace KidProEdu.Infrastructures
         public DbSet<Course> Course { get; set; }
         public DbSet<Enrollment> Enrollment { get; set; }
         public DbSet<Equipment> Equipment { get; set; }
+        public DbSet<LogEquipment> LogEquipment { get; set; }
         public DbSet<Feedback> Feedback { get;set; }
         public DbSet<Document> Document { get; set; }
         public DbSet<Division> Division { get; set; }
@@ -49,7 +51,6 @@ namespace KidProEdu.Infrastructures
         public DbSet<Score> Score { get; set; }
         public DbSet<Semester> Semester { get; set; }
         public DbSet<SemesterCourse> SemesterCourse { get; set; }
-        public DbSet<Skill> Skill { get; set; }
         public DbSet<Tag> Tag { get; set; }
         public DbSet<TestTime> TestTime { get; set; }   
         public DbSet<Transaction> Transaction { get; set; }
@@ -243,7 +244,7 @@ namespace KidProEdu.Infrastructures
                 .HasMany(p => p.UserAccounts)
                 .WithMany(x => x.Divisions);
 
-            builder.Entity<Course>()
+            /*builder.Entity<Course>()
                 .Property(c => c.ParentCourse)
                 .HasConversion(
                 v => JsonConvert.SerializeObject(v), // Chuyển đổi ICollection<Guid>? thành chuỗi JSON khi lưu vào cơ sở dữ liệu
@@ -253,7 +254,7 @@ namespace KidProEdu.Infrastructures
                .Property(c => c.ParentTransaction)
                .HasConversion(
                v => JsonConvert.SerializeObject(v), // Chuyển đổi ICollection<Guid>? thành chuỗi JSON khi lưu vào cơ sở dữ liệu
-               v => JsonConvert.DeserializeObject<ICollection<Guid>>(v)); // Chuyển đổi chuỗi JSON thành ICollection<Guid>? khi đọc từ cơ sở dữ liệu
+               v => JsonConvert.DeserializeObject<ICollection<Guid>>(v)); // Chuyển đổi chuỗi JSON thành ICollection<Guid>? khi đọc từ cơ sở dữ liệu*/
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

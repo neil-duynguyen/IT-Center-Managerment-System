@@ -46,7 +46,7 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
-        public async Task<List<CourseViewModel>> GetAllCourse()
+        /*public async Task<List<CourseViewModel>> GetAllCourse()
         {
             var resultt = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
 
@@ -72,7 +72,7 @@ namespace KidProEdu.Application.Services
             }
 
             return listCourseViewModel;
-        }
+        }*/
 
         public async Task<bool> DeleteCourseAsync(Guid courseId)
         {

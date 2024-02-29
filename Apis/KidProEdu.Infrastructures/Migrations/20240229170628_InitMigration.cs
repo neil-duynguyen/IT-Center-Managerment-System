@@ -156,7 +156,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Prerequisite = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CourseType = table.Column<int>(type: "int", nullable: false),
-                    ParentCourse = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ParentCourse = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -243,6 +243,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    TeachingDay = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ReceiverRefundId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -345,6 +346,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TagName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TagType = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -491,6 +493,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     Price = table.Column<double>(type: "float", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true),
                     WarrantyDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    WarrantyPeriod = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -701,6 +705,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SemesterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClassCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -723,6 +728,12 @@ namespace KidProEdu.Infrastructures.Migrations
                         name: "FK_Class_Course_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Course",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Class_Semester_SemesterId",
+                        column: x => x.SemesterId,
+                        principalTable: "Semester",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -921,13 +932,12 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Skill",
+                name: "UserSkill",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SkillName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Level = table.Column<double>(type: "float", nullable: false),
+                    UserAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -938,10 +948,56 @@ namespace KidProEdu.Infrastructures.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Skill", x => x.Id);
+                    table.PrimaryKey("PK_UserSkill", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Skill_UserAccount_UserId",
-                        column: x => x.UserId,
+                        name: "FK_UserSkill_Tag_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tag",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserSkill_UserAccount_UserAccountId",
+                        column: x => x.UserAccountId,
+                        principalTable: "UserAccount",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LogEquipment",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EquipmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
+                    WarrantyDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    WarrantyPeriod = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModificationBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeleteBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LogEquipment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LogEquipment_Equipment_EquipmentId",
+                        column: x => x.EquipmentId,
+                        principalTable: "Equipment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LogEquipment_UserAccount_UserAccountId",
+                        column: x => x.UserAccountId,
                         principalTable: "UserAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -1226,7 +1282,10 @@ namespace KidProEdu.Infrastructures.Migrations
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PayType = table.Column<int>(type: "int", nullable: false),
                     PayDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ParentTransaction = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InstallmentTerm = table.Column<int>(type: "int", nullable: false),
+                    InstallmentPeriod = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StatusTransaction = table.Column<int>(type: "int", nullable: false),
+                    ParentsTransaction = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1338,9 +1397,9 @@ namespace KidProEdu.Infrastructures.Migrations
                 columns: new[] { "Id", "Address", "Avatar", "BankAccountName", "BankAccountNumber", "BankName", "CreatedBy", "CreationDate", "DateOfBirth", "DeleteBy", "DeletionDate", "Email", "FullName", "GenderType", "IsDeleted", "LocationId", "ModificationBy", "ModificationDate", "OTP", "PasswordHash", "Phone", "RoleId", "Status", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca82"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1976), null, null, "duynguyen@gmail.com", "NguyenVanDuy", null, false, null, null, null, null, "e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7", "0975844775", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a50"), 0, "Admin" },
-                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca83"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1985), null, null, "dunghoang@gmail.com", "HoangQuocDung", null, false, null, null, null, null, "e8392925a98c9c22795d1fc5d0dfee5b9a6943f6b768ec5a2a0c077e5ed119cf", "0975844796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a51"), 0, "Manager" },
-                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca84"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979), null, null, "linhchi@gmail.com", "LinhChi", null, false, null, null, null, null, "dfd48f36338aa36228ebb9e204bba6b4e18db0b623e25c458901edc831fb18e9", "0356724796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"), 0, "Staff" }
+                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca82"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1976), null, null, "duynguyen@gmail.com", "NguyenVanDuy", null, false, null, null, null, null, "e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7", "0975844775", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a50"), 1, "Admin" },
+                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca83"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1985), null, null, "dunghoang@gmail.com", "HoangQuocDung", null, false, null, null, null, null, "e8392925a98c9c22795d1fc5d0dfee5b9a6943f6b768ec5a2a0c077e5ed119cf", "0975844796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a51"), 1, "Manager" },
+                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca84"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979), null, null, "linhchi@gmail.com", "LinhChi", null, false, null, null, null, null, "dfd48f36338aa36228ebb9e204bba6b4e18db0b623e25c458901edc831fb18e9", "0356724796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"), 1, "Staff" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1393,6 +1452,11 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "IX_Class_CourseId",
                 table: "Class",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Class_SemesterId",
+                table: "Class",
+                column: "SemesterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Class_UserId",
@@ -1458,6 +1522,16 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "IX_Lesson_CourseId",
                 table: "Lesson",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LogEquipment_EquipmentId",
+                table: "LogEquipment",
+                column: "EquipmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LogEquipment_UserAccountId",
+                table: "LogEquipment",
+                column: "UserAccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NotificationUser_NotificationId",
@@ -1551,11 +1625,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 column: "SemesterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Skill_UserId",
-                table: "Skill",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Test_AdviseRequestId",
                 table: "Test",
                 column: "AdviseRequestId");
@@ -1574,6 +1643,16 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "IX_UserAccount_RoleId",
                 table: "UserAccount",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSkill_TagId",
+                table: "UserSkill",
+                column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSkill_UserAccountId",
+                table: "UserSkill",
+                column: "UserAccountId");
         }
 
         /// <inheritdoc />
@@ -1613,10 +1692,10 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "Enrollment");
 
             migrationBuilder.DropTable(
-                name: "Equipment");
+                name: "Feedback");
 
             migrationBuilder.DropTable(
-                name: "Feedback");
+                name: "LogEquipment");
 
             migrationBuilder.DropTable(
                 name: "NotificationUser");
@@ -1643,9 +1722,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "SemesterCourse");
 
             migrationBuilder.DropTable(
-                name: "Skill");
-
-            migrationBuilder.DropTable(
                 name: "Test");
 
             migrationBuilder.DropTable(
@@ -1655,10 +1731,10 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "Transaction");
 
             migrationBuilder.DropTable(
-                name: "Blog");
+                name: "UserSkill");
 
             migrationBuilder.DropTable(
-                name: "Tag");
+                name: "Blog");
 
             migrationBuilder.DropTable(
                 name: "Certificate");
@@ -1670,7 +1746,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "Division");
 
             migrationBuilder.DropTable(
-                name: "CategoryEquipment");
+                name: "Equipment");
 
             migrationBuilder.DropTable(
                 name: "Notification");
@@ -1682,22 +1758,25 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "Request");
 
             migrationBuilder.DropTable(
-                name: "Room");
-
-            migrationBuilder.DropTable(
                 name: "Schedule");
 
             migrationBuilder.DropTable(
                 name: "ChildrenProfile");
 
             migrationBuilder.DropTable(
-                name: "Semester");
-
-            migrationBuilder.DropTable(
                 name: "AdviseRequest");
 
             migrationBuilder.DropTable(
                 name: "Order");
+
+            migrationBuilder.DropTable(
+                name: "Tag");
+
+            migrationBuilder.DropTable(
+                name: "CategoryEquipment");
+
+            migrationBuilder.DropTable(
+                name: "Room");
 
             migrationBuilder.DropTable(
                 name: "Class");
@@ -1707,6 +1786,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
             migrationBuilder.DropTable(
                 name: "Course");
+
+            migrationBuilder.DropTable(
+                name: "Semester");
 
             migrationBuilder.DropTable(
                 name: "UserAccount");
