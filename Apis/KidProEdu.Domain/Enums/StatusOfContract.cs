@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KidProEdu.Domain.Enums
+﻿namespace KidProEdu.Domain.Enums
 {
     public enum StatusOfContract
     {
+        Valid = 1,
+        Expired = 2
     }
 }
