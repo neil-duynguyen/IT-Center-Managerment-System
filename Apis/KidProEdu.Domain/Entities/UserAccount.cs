@@ -37,7 +37,7 @@ namespace KidProEdu.Domain.Entities
         public IList<Blog> Blogs { get; set; }
         public IList<Skill> Skills { get; set; }
         public IList<Contract> Contracts { get; set; }
-        public IList<Request> Requests { get; set; }
         public IList<Division> Divisions { get; set; }
+        public IList<RequestUserAccount> RequestUserAccounts { get; set; }
     }
 }

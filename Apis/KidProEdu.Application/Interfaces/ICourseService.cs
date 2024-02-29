@@ -11,5 +11,6 @@ namespace KidProEdu.Application.Interfaces
     {
         public Task<bool> CreateCourseAsync(CreateCourseViewModel createCourseViewModel);
         public Task<List<CourseViewModel>> GetAllCourse();
+        Task<bool> DeleteCourseAsync(Guid courseId);
     }
 }

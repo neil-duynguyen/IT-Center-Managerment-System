@@ -22,11 +22,11 @@ namespace Infrastructures.Repositories
             _dbContext = dbContext;
         }
 
-        public Task<bool> CheckUserNameExited(string username) => _dbContext.Users.AnyAsync(u => u.UserName == username);
+        public Task<bool> CheckUserNameExited(string username) => _dbContext.UserAccount.AnyAsync(u => u.UserName == username);
 
         public async Task<UserAccount> GetUserByUserNameAndPasswordHash(string username, string passwordHash)
         {
-            var user = await _dbContext.Users.Include(u => u.Role)
+            var user = await _dbContext.UserAccount.Include(u => u.Role)
                 .FirstOrDefaultAsync(record => record.UserName == username
                                         && record.PasswordHash == passwordHash);
             if (user is null)
@@ -71,15 +71,15 @@ namespace Infrastructures.Repositories
             switch (propertyName)
             {
                 case nameof(UserAccount.UserName):
-                    return await _dbContext.Users
+                    return await _dbContext.UserAccount
                         .Where(x => x.UserName.ToLower().Equals(updateUserViewModel.UserName.ToLower()) && x.IsDeleted == false)
                         .FirstOrDefaultAsync();
                 case nameof(UserAccount.Email):
-                    return await _dbContext.Users
+                    return await _dbContext.UserAccount
                         .Where(x => x.Email.ToLower().Equals(updateUserViewModel.Email.ToLower()) && x.IsDeleted == false)
                         .FirstOrDefaultAsync();
                 case nameof(UserAccount.Phone):
-                    return await _dbContext.Users
+                    return await _dbContext.UserAccount
                         .Where(x => x.Phone.ToLower().Equals(updateUserViewModel.Phone.ToLower()) && x.IsDeleted == false)
                         .FirstOrDefaultAsync();
                 // Thêm các trường hợp xử lý khác nếu cần

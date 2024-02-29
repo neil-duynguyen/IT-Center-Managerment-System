@@ -22,26 +22,29 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateQuestion(CreateQuestionViewModel createQuestionViewModel)
+        public async Task<bool> CreateQuestion(CreateQuestionViewModel[] createQuestionViewModel)
         {
             var validator = new CreateQuestionViewModelValidator();
-            var validationResult = validator.Validate(createQuestionViewModel);
-            if (!validationResult.IsValid)
+            foreach (var item in createQuestionViewModel)
             {
-                foreach (var error in validationResult.Errors)
+                var validationResult = validator.Validate(item);
+                if (!validationResult.IsValid)
                 {
-                    throw new Exception(error.ErrorMessage);
+                    foreach (var error in validationResult.Errors)
+                    {
+                        throw new Exception(error.ErrorMessage);
+                    }
                 }
-            }
 
-            var Question = await _unitOfWork.QuestionRepository.GetQuestionByTitle(createQuestionViewModel.Title);
-            if (!Question.IsNullOrEmpty())
-            {
-                throw new Exception("Câu hỏi đã tồn tại");
-            }
+                var question = await _unitOfWork.QuestionRepository.GetQuestionByTitle(item.Title);
+                if (!question.IsNullOrEmpty())
+                {
+                    continue;
+                }
 
-            var mapper = _mapper.Map<Question>(createQuestionViewModel);
-            await _unitOfWork.QuestionRepository.AddAsync(mapper);
+                var mapper = _mapper.Map<Question>(item);
+                await _unitOfWork.QuestionRepository.AddAsync(mapper);
+            }
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo câu hỏi thất bại");
 
         }
@@ -59,17 +62,17 @@ namespace KidProEdu.Application.Services
             }
         }
 
-        public async Task<Question> GetQuestionById(Guid QuestionId)
+        public async Task<Question> GetQuestionById(Guid questionId)
         {
-            var Question = await _unitOfWork.QuestionRepository.GetByIdAsync(QuestionId);
-            return Question;
+            var question = await _unitOfWork.QuestionRepository.GetByIdAsync(questionId);
+            return question;
         }
 
         public async Task<List<Question>> GetQuestions()
         {
-            var Questions = _unitOfWork.QuestionRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false)
+            var questions = _unitOfWork.QuestionRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false)
                 .OrderByDescending(x => x.CreationDate).ToList();
-            return Questions;
+            return questions;
         }
 
         public async Task<bool> UpdateQuestion(UpdateQuestionViewModel updateQuestionViewModel)

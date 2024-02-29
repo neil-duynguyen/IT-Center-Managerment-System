@@ -6,27 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KidProEdu.Domain.Entities
+namespace KidProEdu.Application.ViewModels.ClassViewModels
 {
-    public class Class : BaseEntity
+    public class ClassViewModel
     {
-        [ForeignKey("UserAccount")]
+        public Guid Id { get; set; }
         public Guid? UserId { get; set; }
-
-        [ForeignKey("Course")]
         public Guid CourseId { get; set; }
         public string ClassCode { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public StatusOfClass StatusOfClass { get; set; }
+        public string StatusOfClass { get; set; }
         public int MaxNumber { get; set; }
         public int ExpectedNumber { get; set; }
         public int ActualNumber { get; set; }
-        public virtual UserAccount? UserAccount { get; set; }
-        public virtual Course Course { get; set; }
-        public IList<Enrollment> Enrollments { get; set; }
-        public IList<Feedback> Feedbacks { get; set; }
-        public IList<Schedule> Schedules { get; set; }
-
     }
 }

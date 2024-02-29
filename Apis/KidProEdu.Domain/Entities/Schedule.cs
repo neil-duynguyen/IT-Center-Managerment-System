@@ -19,5 +19,6 @@ namespace KidProEdu.Domain.Entities
         public virtual Class Class { get; set; }
         public IList<ScheduleRoom> ScheduleRooms { get; set; }
         public virtual Slot Slot { get; set; }
+        public IList<Attendance> Attendances { get; set; }
     }
 }

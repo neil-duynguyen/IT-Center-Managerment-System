@@ -16,7 +16,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Request>> GetRequestByRequestType(string requestType)
         {
-            var requests = await _dbContext.Requests
+            var requests = await _dbContext.Request
                 .Where(x => x.RequestType.ToLower() == requestType.ToLower() && x.IsDeleted == false)
                 .ToListAsync();
 

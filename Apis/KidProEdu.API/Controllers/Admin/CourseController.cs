@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.CourseViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers.Admin
@@ -16,7 +17,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> Postcourse(CreateCourseViewModel createCourseView) 
+        public async Task<IActionResult> PostCourse(CreateCourseViewModel createCourseView) 
         {
             try
             {
@@ -29,11 +30,24 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpGet("Courses")]
+        /*[Authorize(Roles = ("Parent"))]*/
         public async Task<IActionResult> GetAllCourse()
         {
             return Ok(await _courseService.GetAllCourse());
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCourse(Guid courseId)
+        {
+            try
+            {
+                return await _courseService.DeleteCourseAsync(courseId) ? Ok("Xoá Course thành công") : BadRequest("Xóa Course thất bại");
+            }
+            catch (Exception ex)
+            {
 
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

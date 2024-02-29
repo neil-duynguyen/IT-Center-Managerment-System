@@ -35,5 +35,20 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _semesterCourseService.GetSemesterCourseById(SemesterId));
         }
 
+        /*[HttpPut]
+        public async Task<IActionResult> UpdateCourseInSemester(CreateSemesterCourseViewModel createSemesterCourseView)
+        {
+            try
+            {
+                return Ok(await _semesterCourseService.UpdateCourseInSemester(createSemesterCourseView));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }*/
+
+
     }
 }
