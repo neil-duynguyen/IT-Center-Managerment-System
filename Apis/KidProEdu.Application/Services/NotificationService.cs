@@ -24,18 +24,20 @@ namespace KidProEdu.Application.Services
         private readonly ICurrentTime _currentTime;
         private readonly IClaimsService _claimsService;
         private readonly IMapper _mapper;
-        private readonly IHubContext<NotificationHub> _hubContext;
+        //private readonly IHubContext<NotificationHub> _hubContext;
 
-        public NotificationService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, IHubContext<NotificationHub> hubContext)
+        public NotificationService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper
+            //, IHubContext<NotificationHub> hubContext
+            )
         {
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
             _claimsService = claimsService;
             _mapper = mapper;
-            _hubContext = hubContext;
+            //_hubContext = hubContext;
         }
 
-        public async Task<bool> CreateNotification(CreateNotificationViewModel createNotificationViewModel)
+        public async Task<bool> CreateNotification(CreateNotificationViewModel createNotificationViewModel, Guid[] userId)
         {
             try
             {
@@ -48,30 +50,40 @@ namespace KidProEdu.Application.Services
                         throw new Exception(error.ErrorMessage);
                     }
                 }
-                createNotificationViewModel.Id = Guid.NewGuid();
-                createNotificationViewModel.Date = DateTime.Now;
-                createNotificationViewModel.Message = createNotificationViewModel.Message;
-                if (createNotificationViewModel.CreateNotificationUserViewModels == null)
+                //createNotificationViewModel.Id = Guid.NewGuid();
+                //createNotificationViewModel.Date = DateTime.Now;
+                //createNotificationViewModel.Message = createNotificationViewModel.Message;
+                /*if (createNotificationViewModel.CreateNotificationUserViewModels == null)
                 {
                     createNotificationViewModel.CreateNotificationUserViewModels = new List<CreateNotificationUserViewModel>();
-                }
+                }*/
 
-                foreach (var notificationUsers in createNotificationViewModel.CreateNotificationUserViewModels)
+                /*foreach (var notificationUsers in createNotificationViewModel.CreateNotificationUserViewModels)
                 {
                     notificationUsers.NotificationId = createNotificationViewModel.Id;
                     notificationUsers.UserId = notificationUsers.UserId;
+                }*/
+
+                    var newNotification = _mapper.Map<Notification>(createNotificationViewModel);
+                    await _unitOfWork.NotificationRepository.AddAsync(newNotification);
+
+                foreach (var item in userId)
+                {
+                    CreateNotificationUserViewModel vm = new()
+                    {
+                        UserId = item,
+                        NotificationId = newNotification.Id
+                    };
+                    NotificationUserService nu = new NotificationUserService(_unitOfWork, _currentTime, _claimsService, _mapper);
+                    await nu.CreateNotificationUser(vm);
                 }
-
-                var newNotification = _mapper.Map<Notification>(createNotificationViewModel);
-
-                await _unitOfWork.NotificationRepository.AddAsync(newNotification);
 
                 if (await _unitOfWork.SaveChangeAsync() > 0)
                 {
-                    foreach (var notificationUser in createNotificationViewModel.CreateNotificationUserViewModels)
+                    /*foreach (var notificationUser in createNotificationViewModel.CreateNotificationUserViewModels)
                     {
-                        await _hubContext.Clients.User(notificationUser.UserId.ToString()).SendAsync("ReceiveNotification", createNotificationViewModel.Message);
-                    }
+                        //await _hubContext.Clients.User(notificationUser.UserId.ToString()).SendAsync("ReceiveNotification", createNotificationViewModel.Message);
+                    }*/
 
                     return true;
                 }

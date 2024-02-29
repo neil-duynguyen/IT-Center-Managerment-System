@@ -63,10 +63,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<UpdateBlogViewModel, Blog>().ReverseMap();
 
 
-            CreateMap<CreateNotificationViewModel, Notification>()
-                .ForMember(dest => dest.NotificationUser, opt => opt.MapFrom(src => src.CreateNotificationUserViewModels)).ReverseMap();
+            CreateMap<CreateNotificationViewModel, Notification>().ReverseMap();
+                //.ForMember(dest => dest.NotificationUser, opt => opt.MapFrom(src => src.CreateNotificationUserViewModels)).ReverseMap();
             CreateMap<CreateNotificationUserViewModel, NotificationUser>().ReverseMap();
-            CreateMap<Notification, NotificationWithUserViewModel>();
+            CreateMap<Notification, NotificationWithUserViewModel>().ReverseMap();
 
             CreateMap<Rating, RatingViewModel>()
                 .ForMember(des => des.CourseName, src => src.MapFrom(x => x.Course.Name)).ReverseMap();

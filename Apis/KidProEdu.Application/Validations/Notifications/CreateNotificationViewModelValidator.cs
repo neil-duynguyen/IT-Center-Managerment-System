@@ -16,7 +16,7 @@ namespace KidProEdu.Application.Validations.Notifications
         public CreateNotificationViewModelValidator()
         {
             RuleFor(x => x.Message).NotEmpty().WithMessage("Nội dung không được để trống.")
-                .MaximumLength(10000).WithMessage("Tên không quá 10000 ký tự.");
+                .MaximumLength(10000).WithMessage("Thông báo không quá 10000 ký tự.");
 
         }
 
