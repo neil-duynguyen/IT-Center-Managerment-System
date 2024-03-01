@@ -67,6 +67,12 @@ namespace KidProEdu.Application.Services
             var question = await _unitOfWork.QuestionRepository.GetByIdAsync(questionId);
             return question;
         }
+        
+        public async Task<List<Question>> GetQuestionByLesson(Guid lessonId)
+        {
+            var question = await _unitOfWork.QuestionRepository.GetQuestionByLesson(lessonId);
+            return question;
+        }
 
         public async Task<List<Question>> GetQuestions()
         {

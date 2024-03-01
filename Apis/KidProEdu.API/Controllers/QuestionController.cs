@@ -25,12 +25,24 @@ namespace KidProEdu.API.Controllers
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> Question(Guid id)
         {
-            var Question = await _questionService.GetQuestionById(id);
-            if (Question == null)
+            var question = await _questionService.GetQuestionById(id);
+            if (question == null)
             {
                 return NotFound();
             }
-            return Ok(Question);
+            return Ok(question);
+        }
+        
+        [HttpGet("GetByLesson/{id}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> GetQuestionByLesson(Guid id)
+        {
+            var question = await _questionService.GetQuestionByLesson(id);
+            if (question == null)
+            {
+                return NotFound();
+            }
+            return Ok(question);
         }
 
         [HttpPost]

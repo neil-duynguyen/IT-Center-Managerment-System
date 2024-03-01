@@ -27,5 +27,14 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return questions;
         }
+
+        public async Task<List<Question>> GetQuestionByLesson(Guid id)
+        {
+            var questions = await _dbContext.Question
+                .Where(x => x.Id == id && x.IsDeleted == false)
+                .ToListAsync();
+
+            return questions;
+        }
     }
 }

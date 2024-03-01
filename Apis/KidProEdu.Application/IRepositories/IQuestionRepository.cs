@@ -12,5 +12,7 @@ namespace KidProEdu.Application.IRepositories
     {
         Task<List<Question>> GetQuestionByTitle(string title);
 
+        Task<List<Question>> GetQuestionByLesson(Guid id);
+
     }
 }

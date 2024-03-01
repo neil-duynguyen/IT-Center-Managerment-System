@@ -13,7 +13,8 @@ namespace KidProEdu.Application.Interfaces
         Task<List<Question>> GetQuestions();
         Task<bool> CreateQuestion(CreateQuestionViewModel[] createQuestionViewModel);
         Task<bool> UpdateQuestion(UpdateQuestionViewModel updateQuestionViewModel);
-        Task<Question> GetQuestionById(Guid QuestionId);
-        Task<bool> DeleteQuestion(Guid QuestionId);
+        Task<Question> GetQuestionById(Guid questionId);
+        Task<List<Question>> GetQuestionByLesson(Guid lessonId);
+        Task<bool> DeleteQuestion(Guid questionId);
     }
 }
