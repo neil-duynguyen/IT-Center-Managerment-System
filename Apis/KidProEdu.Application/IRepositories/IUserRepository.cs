@@ -8,7 +8,7 @@ namespace KidProEdu.Application.Repositories
     {
         Task<UserAccount> GetUserByUserNameAndPasswordHash(string username, string passwordHash);
 
-        Task<bool> CheckUserNameExited(string username);
+        Task<bool> CheckUserNameExited(CreateUserViewModel username);
 
         Task<UserAccount> GetUserAccountByProperty(UpdateUserViewModel updateUserViewModel, Expression<Func<UserAccount, object>> property);
 

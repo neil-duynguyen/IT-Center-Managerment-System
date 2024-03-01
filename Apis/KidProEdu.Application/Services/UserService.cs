@@ -48,12 +48,7 @@ namespace KidProEdu.Application.Services
         public async Task<bool> CreateAccountAsync(CreateUserViewModel userObject)
         {
             // check username exited
-            var isExited = await _unitOfWork.UserRepository.CheckUserNameExited(userObject.UserName);
-
-            if (isExited)
-            {
-                throw new Exception("Username exited please try again");
-            }
+            var isExited = await _unitOfWork.UserRepository.CheckUserNameExited(userObject);
 
             /* var newUser = new User
              {
