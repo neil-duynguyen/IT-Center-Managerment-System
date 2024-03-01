@@ -29,6 +29,7 @@ namespace Infrastructures
         private readonly ICourseRepository _courseRepository;
         private readonly ISemesterCourseRepository _semesterCourseRepository;
         private readonly IClassRepository _classRepository;
+        private readonly IDocumentRepository _documentRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -37,7 +38,8 @@ namespace Infrastructures
             , IChildrenRepository childrenRepository, INotificationRepository notificationRepository
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
-            ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository)
+            ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository
+            , IDocumentRepository documentRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -60,6 +62,7 @@ namespace Infrastructures
             _courseRepository = courseRepository;
             _semesterCourseRepository = semesterCourseRepository;
             _classRepository = classRepository;
+            _documentRepository = documentRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -98,6 +101,8 @@ namespace Infrastructures
         public IQuestionRepository QuestionRepository => _questionRepository;
 
         public IClassRepository ClassRepository => _classRepository;
+
+        public IDocumentRepository DocumentRepository => _documentRepository;
 
         public async Task<int> SaveChangeAsync()
         {
