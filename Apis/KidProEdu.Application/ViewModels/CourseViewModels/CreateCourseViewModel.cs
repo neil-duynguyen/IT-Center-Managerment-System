@@ -20,6 +20,6 @@ namespace KidProEdu.Application.ViewModels.CourseViewModels
         public string? Prerequisite { get; set; }
         public string? Image { get; set; }
         public int CourseType { get; set; }
-        public ICollection<Guid>? ParentCourse { get; set; }
+        public Guid? ParentCourse { get; set; }
     }
 }

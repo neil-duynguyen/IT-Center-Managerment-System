@@ -26,13 +26,13 @@ namespace Infrastructures.Repositories
 
         public async Task<bool> CheckUserNameExited(CreateUserViewModel userObject)
         {
-            if(await _dbContext.UserAccount.AnyAsync(u => u.UserName == userObject.UserName))
+            if(await _dbContext.UserAccount.AnyAsync(u => u.UserName.Equals(userObject.UserName, StringComparison.OrdinalIgnoreCase)))
                 throw new Exception("UserName đã tồn tại");
 
-            if(await _dbContext.UserAccount.AnyAsync(u => u.Email == userObject.Email))
+            if(await _dbContext.UserAccount.AnyAsync(u => u.Email.Equals(userObject.Email, StringComparison.OrdinalIgnoreCase)))
                 throw new Exception("Email đã tồn tại");
 
-            if(await _dbContext.UserAccount.AnyAsync(u => u.Phone == userObject.Phone))
+            if(await _dbContext.UserAccount.AnyAsync(u => u.Phone.Equals(userObject.Phone, StringComparison.OrdinalIgnoreCase)))
                 throw new Exception("Phone đã tồn tại");
             return true;
         }

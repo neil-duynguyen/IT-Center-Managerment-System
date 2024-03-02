@@ -46,7 +46,7 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
-        /*public async Task<List<CourseViewModel>> GetAllCourse()
+        public async Task<List<CourseViewModel>> GetAllCourse()
         {
             var resultt = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
 
@@ -56,23 +56,21 @@ namespace KidProEdu.Application.Services
             {
                 var listCourse = new List<CourseViewModel>();
 
-                if (item.ParentCourse != null)
+                if (item.CourseType == Domain.Enums.CourseType.Spect)
                 {
-                    
-                    foreach (var courseid in item.ParentCourse)
-                    {
-                        var result = await _unitOfWork.CourseRepository.GetByIdAsync(courseid);
-                        listCourse.Add(_mapper.Map<CourseViewModel>(result));
-                    }
+                    var result = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == item.Id).ToList();
+                    listCourse = _mapper.Map<List<CourseViewModel>>(result);
                 }
-
-                var course = _mapper.Map<CourseViewModel>(item);
-                course.Courses = listCourse.Count != 0 ? listCourse : null;
-                listCourseViewModel.Add(course);
+                if (item.ParentCourse.Equals(Guid.Empty) || item.CourseType == Domain.Enums.CourseType.Spect)
+                {
+                    var course = _mapper.Map<CourseViewModel>(item);
+                    course.Courses = listCourse.Count != 0 ? listCourse : null;
+                    listCourseViewModel.Add(course);
+                }
             }
 
             return listCourseViewModel;
-        }*/
+        }
 
         public async Task<bool> DeleteCourseAsync(Guid courseId)
         {
@@ -83,16 +81,16 @@ namespace KidProEdu.Application.Services
             _unitOfWork.CourseRepository.SoftRemove(getCourse);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
-        
-        public async Task<bool> UpdateCourseAsync()
+
+       /* public async Task<bool> UpdateCourseAsync(CreateCourseViewModel createCourseViewModel)
         {
             //check duplicate course name
-            /*var checkName = await _unitOfWork.CourseRepository.GetAllAsync();
-            if (checkName.FirstOrDefault(x => x.CourseType) == null)
-            { 
-                
-            }*/
+            var checkName = await _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.Id != );
+
+            checkName.FirstOrDefault(x => x.Name.Equals(createCourseViewModel.Name, StringComparison.OrdinalIgnoreCase));
+
+
             return true;
-        }
+        }*/
     }
 }
