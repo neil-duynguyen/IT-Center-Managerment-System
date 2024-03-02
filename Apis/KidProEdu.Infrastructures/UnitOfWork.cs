@@ -30,6 +30,7 @@ namespace Infrastructures
         private readonly ISemesterCourseRepository _semesterCourseRepository;
         private readonly IClassRepository _classRepository;
         private readonly IDocumentRepository _documentRepository;
+        private readonly ILogEquipmentRepository _logEquipmentRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -39,7 +40,7 @@ namespace Infrastructures
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
             ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository
-            , IDocumentRepository documentRepository)
+            , IDocumentRepository documentRepository, ILogEquipmentRepository logEquipmentRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -63,6 +64,7 @@ namespace Infrastructures
             _semesterCourseRepository = semesterCourseRepository;
             _classRepository = classRepository;
             _documentRepository = documentRepository;
+            _logEquipmentRepository = logEquipmentRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -103,6 +105,8 @@ namespace Infrastructures
         public IClassRepository ClassRepository => _classRepository;
 
         public IDocumentRepository DocumentRepository => _documentRepository;
+
+        public ILogEquipmentRepository LogEquipmentRepository => _logEquipmentRepository;
 
         public async Task<int> SaveChangeAsync()
         {

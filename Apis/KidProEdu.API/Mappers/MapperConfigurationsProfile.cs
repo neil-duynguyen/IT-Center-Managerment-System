@@ -9,6 +9,7 @@ using KidProEdu.Application.ViewModels.DocumentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
+using KidProEdu.Application.ViewModels.LogEquipmentViewModels;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.NotificationUserViewModels;
 using KidProEdu.Application.ViewModels.NotificationViewModels;
@@ -102,6 +103,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<Document, DocumentViewModel>().ReverseMap();
             CreateMap<CreateDocumentViewModel, Document>().ReverseMap();
             CreateMap<UpdateDocumentViewModel, Document>().ReverseMap();
+
+            CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap();
+            CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();
+            CreateMap<UpdateLogEquipmentViewModel, LogEquipment>().ReverseMap();
         }
     }
 }

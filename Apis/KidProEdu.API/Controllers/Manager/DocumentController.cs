@@ -2,6 +2,7 @@
 using KidProEdu.Application.ViewModels.DocumentViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers.Manager
@@ -49,36 +50,36 @@ namespace KidProEdu.API.Controllers.Manager
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> Doument(Guid id)
         {
-            var rating = await _documentService.GetDocumentById(id);
-            if (rating == null)
+            var result = await _documentService.GetDocumentById(id);
+            if (result == null)
             {
                 return NotFound();
             }
-            return Ok(rating);
+            return Ok(result);
         }
 
         [HttpGet("DocumentByClass/{classId}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> DocumentByClassId(Guid classId)
         {
-            var rating = await _documentService.GetDocumentsByClassId(classId);
-            if (rating == null)
+            var result = await _documentService.GetDocumentsByClassId(classId);
+            if (result == null)
             {
                 return NotFound();
             }
-            return Ok(rating);
+            return Ok(result);
         }
 
         [HttpGet("DocumentByLesson/{lessonId}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> DocumentByLessonId(Guid lessonId)
         {
-            var rating = await _documentService.GetDocumentsByLessonId(lessonId);
-            if (rating == null)
+            var result = await _documentService.GetDocumentsByLessonId(lessonId);
+            if (result == null)
             {
                 return NotFound();
             }
-            return Ok(rating);
+            return Ok(result);
         }
 
         [HttpPut]
