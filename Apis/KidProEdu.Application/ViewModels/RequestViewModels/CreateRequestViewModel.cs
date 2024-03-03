@@ -9,11 +9,12 @@ namespace KidProEdu.Application.ViewModels.RequestViewModels
 {
     public class CreateRequestViewModel
     {
-        //public Guid UserId { get; set; }
+        public Guid[] UserIds { get; set; }
         public string? RequestDescription { get; set; }
         //public StatusOfRequest? Status { get; set; }
         public string RequestType { get; set; }
         public DateTime? LeaveDate { get; set; }
+        public DateTime? TeachingDate { get; set; }
         public string? EquimentType { get; set; }
         public Guid? LocationId { get; set; }
         public Guid? ClassId { get; set; }
