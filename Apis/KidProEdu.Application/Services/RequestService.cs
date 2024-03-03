@@ -191,5 +191,12 @@ namespace KidProEdu.Application.Services
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trạng thái yêu cầu thất bại");
         }
+
+        public async Task<List<RequestViewModel>> GetRequestByUser(Guid userId)
+        {
+            var requests = await _unitOfWork.RequestRepository.GetRequestByUser(userId);
+
+            return _mapper.Map<List<RequestViewModel>>(requests);
+        }
     }
 }

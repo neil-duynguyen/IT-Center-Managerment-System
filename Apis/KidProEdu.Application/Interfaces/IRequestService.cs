@@ -16,5 +16,6 @@ namespace KidProEdu.Application.Interfaces
         Task<Request> GetRequestById(Guid requestId);
         Task<bool> DeleteRequest(Guid requestId);
         Task<bool> ChangeStatusRequest(ChangeStatusRequestViewModel changeStatusRequestViewModel);
+        Task<List<RequestViewModel>> GetRequestByUser(Guid userId);
     }
 }
