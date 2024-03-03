@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.IRepositories
 {
-    public interface IRequestRepository : IGenericRepository<Request>
+    public interface IRequestUserAccountRepository : IGenericRepository<RequestUserAccount>
     {
-        Task<List<Request>> GetRequestByUser(Guid id);
     }
 }

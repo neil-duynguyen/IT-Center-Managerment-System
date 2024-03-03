@@ -33,6 +33,13 @@ namespace KidProEdu.API.Controllers
             return Ok(Request);
         }
 
+        [HttpGet("GetRequestByUser/{id}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> GetRequestByUserId(Guid id)
+        {
+            return Ok(await _requestService.GetRequestByUser(id));
+        }
+
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> PostRequest(CreateRequestViewModel createRequestViewModel)

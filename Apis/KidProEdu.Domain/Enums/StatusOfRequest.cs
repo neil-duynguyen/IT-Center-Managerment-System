@@ -2,8 +2,8 @@
 {
     public enum StatusOfRequest
     {
-        Approved = 1,
-        Pending = 2,
+        Pending = 1,
+        Approved = 2,
         Cancel = 3
     }
 }

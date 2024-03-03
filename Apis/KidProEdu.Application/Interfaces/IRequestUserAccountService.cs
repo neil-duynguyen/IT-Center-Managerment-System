@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KidProEdu.Domain.Enums
+namespace KidProEdu.Application.Interfaces
 {
-    public enum StatusSemester
+    public interface IRequestUserAccountService
     {
-        Started = 1,
-        Closed = 2
     }
 }

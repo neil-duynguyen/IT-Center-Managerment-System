@@ -29,6 +29,7 @@ namespace Infrastructures
         private readonly ICourseRepository _courseRepository;
         private readonly ISemesterCourseRepository _semesterCourseRepository;
         private readonly IClassRepository _classRepository;
+        private readonly IRequestUserAccountRepository _requestUserAccountRepository;
         private readonly IDocumentRepository _documentRepository;
         private readonly ILogEquipmentRepository _logEquipmentRepository;
 
@@ -40,7 +41,8 @@ namespace Infrastructures
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
             ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository
-            , IDocumentRepository documentRepository, ILogEquipmentRepository logEquipmentRepository)
+            , IRequestUserAccountRepository requestUserAccountRepository, IDocumentRepository documentRepository
+            , ILogEquipmentRepository logEquipmentRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -63,6 +65,7 @@ namespace Infrastructures
             _courseRepository = courseRepository;
             _semesterCourseRepository = semesterCourseRepository;
             _classRepository = classRepository;
+            _requestUserAccountRepository = requestUserAccountRepository;
             _documentRepository = documentRepository;
             _logEquipmentRepository = logEquipmentRepository;
         }
@@ -95,14 +98,18 @@ namespace Infrastructures
         public IDivisionRepository DivisionRepository => _divisionRepository;
 
         public ILessonRepository LessonRepository => _lessonRepository;
+
         public ICourseRepository CourseRepository => _courseRepository;
 
         public ISemesterCourseRepository SemesterCourseRepository => _semesterCourseRepository;
+
         public IRequestRepository RequestRepository => _requestRepository;
 
         public IQuestionRepository QuestionRepository => _questionRepository;
 
         public IClassRepository ClassRepository => _classRepository;
+
+        public IRequestUserAccountRepository RequestUserAccountRepository => _requestUserAccountRepository;
 
         public IDocumentRepository DocumentRepository => _documentRepository;
 
