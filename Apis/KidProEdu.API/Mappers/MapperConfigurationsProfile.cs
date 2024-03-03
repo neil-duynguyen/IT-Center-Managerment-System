@@ -5,9 +5,11 @@ using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Application.ViewModels.DivisionViewModels;
+using KidProEdu.Application.ViewModels.DocumentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
+using KidProEdu.Application.ViewModels.LogEquipmentViewModels;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.NotificationUserViewModels;
 using KidProEdu.Application.ViewModels.NotificationViewModels;
@@ -34,7 +36,8 @@ namespace KidProEdu.API.Mappers
             CreateMap<UserAccount, LoginViewModel>().ReverseMap();
             CreateMap<UserAccount, CreateUserViewModel>().ReverseMap();
             CreateMap<UserAccount, UpdateUserViewModel>().ReverseMap();
-            CreateMap<UserViewModel, UserAccount>().ReverseMap().ForMember(des => des.RoleName, src => src.MapFrom(x => x.Role.Name));
+            CreateMap<UserViewModel, UserAccount>().ReverseMap().ForMember(des => des.RoleName, src => src.MapFrom(x => x.Role.Name))
+                                                                .ForMember(des => des.LocationName, src => src.MapFrom(x => x.Location.Name));
 
             CreateMap<CreateTagViewModel, Tag>().ReverseMap();
             CreateMap<UpdateTagViewModel, Tag>().ReverseMap();
@@ -100,6 +103,16 @@ namespace KidProEdu.API.Mappers
             CreateMap<SemesterCourse, CreateSemesterCourseViewModel>().ReverseMap();
 
             //CreateMap<RequestUserAccount, CreateRequestUserAccountViewModel>().ReverseMap();
+            CreateMap<Document, DocumentViewModel>().ReverseMap();
+            CreateMap<CreateDocumentViewModel, Document>().ReverseMap();
+            CreateMap<UpdateDocumentViewModel, Document>().ReverseMap();
+
+            CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap();
+            CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();
+            CreateMap<UpdateLogEquipmentViewModel, LogEquipment>().ReverseMap();
+
+
+            CreateMap<TagViewModel, Tag>().ReverseMap().ForMember(des => des.TagType, src => src.MapFrom(x => x.TagType != null ? (string)x.TagType.ToString() : (string?)null)); ;
         }
     }
 }

@@ -11,5 +11,6 @@ namespace KidProEdu.Application.ViewModels.TagViewModels
         public Guid Id { get; set; }
         public string TagName { get; set; }
         public string Description { get; set; }
+        public string TagType { get; set; }
     }
 }

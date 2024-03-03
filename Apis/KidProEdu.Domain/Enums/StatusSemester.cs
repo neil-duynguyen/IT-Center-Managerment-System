@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KidProEdu.Application.Validations.Documents
+namespace KidProEdu.Domain.Enums
 {
-    internal class CreateDocumentViewModel
+    public enum StatusSemester
     {
+        Started = 1,
+        Close = 2
     }
 }

@@ -4,6 +4,8 @@ using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Infrastructures;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace Infrastructures.Repositories
@@ -22,7 +24,18 @@ namespace Infrastructures.Repositories
             _dbContext = dbContext;
         }
 
-        public Task<bool> CheckUserNameExited(string username) => _dbContext.UserAccount.AnyAsync(u => u.UserName == username);
+        public async Task<bool> CheckUserNameExited(CreateUserViewModel userObject)
+        {
+            if(await _dbContext.UserAccount.AnyAsync(u => u.UserName == userObject.UserName))
+                throw new Exception("UserName đã tồn tại");
+
+            if(await _dbContext.UserAccount.AnyAsync(u => u.Email == userObject.Email))
+                throw new Exception("Email đã tồn tại");
+
+            if(await _dbContext.UserAccount.AnyAsync(u => u.Phone == userObject.Phone))
+                throw new Exception("Phone đã tồn tại");
+            return true;
+        }
 
         public async Task<UserAccount> GetUserByUserNameAndPasswordHash(string username, string passwordHash)
         {
@@ -38,12 +51,12 @@ namespace Infrastructures.Repositories
 
         public override async Task<List<UserAccount>> GetAllAsync()
         {
-            return await _dbSet.Include(x => x.Role).Where(x => !x.IsDeleted).ToListAsync();
+            return await _dbSet.Include(x => x.Role).Include(x => x.Location).Where(x => !x.IsDeleted).ToListAsync();
         }
 
         public override async Task<UserAccount> GetByIdAsync(Guid id)
         {
-            return await _dbSet.Include(x => x.Role).Where(x => !x.IsDeleted).FirstAsync(x => x.Id == id);
+            return await _dbSet.Include(x => x.Role).Include(x => x.Location).Where(x => !x.IsDeleted).FirstAsync(x => x.Id == id);
         }
 
         public async Task<UserAccount> GetUserAccountByProperty(UpdateUserViewModel updateUserViewModel, Expression<Func<UserAccount, object>> property)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    public class UserSkill : BaseEntity
+    public class SkillTag : BaseEntity
     {
         [ForeignKey("UserAccount")]
         public Guid UserAccountId { get; set; }

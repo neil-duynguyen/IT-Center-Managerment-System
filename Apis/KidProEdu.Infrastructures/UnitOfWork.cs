@@ -30,6 +30,8 @@ namespace Infrastructures
         private readonly ISemesterCourseRepository _semesterCourseRepository;
         private readonly IClassRepository _classRepository;
         private readonly IRequestUserAccountRepository _requestUserAccountRepository;
+        private readonly IDocumentRepository _documentRepository;
+        private readonly ILogEquipmentRepository _logEquipmentRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -39,7 +41,8 @@ namespace Infrastructures
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
             ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository
-            , IRequestUserAccountRepository requestUserAccountRepository)
+            , IRequestUserAccountRepository requestUserAccountRepository, IDocumentRepository documentRepository
+            , ILogEquipmentRepository logEquipmentRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -63,6 +66,8 @@ namespace Infrastructures
             _semesterCourseRepository = semesterCourseRepository;
             _classRepository = classRepository;
             _requestUserAccountRepository = requestUserAccountRepository;
+            _documentRepository = documentRepository;
+            _logEquipmentRepository = logEquipmentRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -93,9 +98,11 @@ namespace Infrastructures
         public IDivisionRepository DivisionRepository => _divisionRepository;
 
         public ILessonRepository LessonRepository => _lessonRepository;
+
         public ICourseRepository CourseRepository => _courseRepository;
 
         public ISemesterCourseRepository SemesterCourseRepository => _semesterCourseRepository;
+
         public IRequestRepository RequestRepository => _requestRepository;
 
         public IQuestionRepository QuestionRepository => _questionRepository;
@@ -103,6 +110,10 @@ namespace Infrastructures
         public IClassRepository ClassRepository => _classRepository;
 
         public IRequestUserAccountRepository RequestUserAccountRepository => _requestUserAccountRepository;
+
+        public IDocumentRepository DocumentRepository => _documentRepository;
+
+        public ILogEquipmentRepository LogEquipmentRepository => _logEquipmentRepository;
 
         public async Task<int> SaveChangeAsync()
         {

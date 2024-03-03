@@ -5,6 +5,7 @@ using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -69,16 +70,24 @@ namespace KidProEdu.Application.Services
             }
         }
 
-        public async Task<Tag> GetTagById(Guid tagId)
+        public async Task<TagViewModel> GetTagById(Guid tagId)
         {
             var tag = await _unitOfWork.TagRepository.GetByIdAsync(tagId);
-            return tag;
+            return _mapper.Map<TagViewModel>(tag);
         }
 
-        public async Task<List<Tag>> GetTags()
+        public async Task<List<TagViewModel>> GetBlogTags()
         {
-            var tags = _unitOfWork.TagRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
-            return tags;
+            var tags = _unitOfWork.TagRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false && x.TagType.Equals(TagType.Blog)).OrderByDescending(x => x.CreationDate).ToList();
+
+            return _mapper.Map<List<TagViewModel>>(tags);
+        }
+
+        public async Task<List<TagViewModel>> GetSkillTags()
+        {
+            var tags = _unitOfWork.TagRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false && x.TagType.Equals(TagType.Skill)).OrderByDescending(x => x.CreationDate).ToList();
+
+            return _mapper.Map<List<TagViewModel>>(tags);
         }
 
         public async Task<bool> UpdateTag(UpdateTagViewModel updateTagViewModel)

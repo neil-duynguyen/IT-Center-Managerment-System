@@ -241,7 +241,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     LeaveDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EquimentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    FromClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ToClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     TeachingDay = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ReceiverRefundId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -303,6 +304,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SemesterName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StatusSemester = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -442,6 +444,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -456,7 +459,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     BankAccountName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BankName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -932,7 +934,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserSkill",
+                name: "SkillTag",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -948,15 +950,15 @@ namespace KidProEdu.Infrastructures.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserSkill", x => x.Id);
+                    table.PrimaryKey("PK_SkillTag", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserSkill_Tag_TagId",
+                        name: "FK_SkillTag_Tag_TagId",
                         column: x => x.TagId,
                         principalTable: "Tag",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserSkill_UserAccount_UserAccountId",
+                        name: "FK_SkillTag_UserAccount_UserAccountId",
                         column: x => x.UserAccountId,
                         principalTable: "UserAccount",
                         principalColumn: "Id",
@@ -1625,6 +1627,16 @@ namespace KidProEdu.Infrastructures.Migrations
                 column: "SemesterId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SkillTag_TagId",
+                table: "SkillTag",
+                column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SkillTag_UserAccountId",
+                table: "SkillTag",
+                column: "UserAccountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Test_AdviseRequestId",
                 table: "Test",
                 column: "AdviseRequestId");
@@ -1643,16 +1655,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "IX_UserAccount_RoleId",
                 table: "UserAccount",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserSkill_TagId",
-                table: "UserSkill",
-                column: "TagId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserSkill_UserAccountId",
-                table: "UserSkill",
-                column: "UserAccountId");
         }
 
         /// <inheritdoc />
@@ -1722,6 +1724,9 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "SemesterCourse");
 
             migrationBuilder.DropTable(
+                name: "SkillTag");
+
+            migrationBuilder.DropTable(
                 name: "Test");
 
             migrationBuilder.DropTable(
@@ -1729,9 +1734,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
             migrationBuilder.DropTable(
                 name: "Transaction");
-
-            migrationBuilder.DropTable(
-                name: "UserSkill");
 
             migrationBuilder.DropTable(
                 name: "Blog");
@@ -1764,13 +1766,13 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "ChildrenProfile");
 
             migrationBuilder.DropTable(
+                name: "Tag");
+
+            migrationBuilder.DropTable(
                 name: "AdviseRequest");
 
             migrationBuilder.DropTable(
                 name: "Order");
-
-            migrationBuilder.DropTable(
-                name: "Tag");
 
             migrationBuilder.DropTable(
                 name: "CategoryEquipment");
