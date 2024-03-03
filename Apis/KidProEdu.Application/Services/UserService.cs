@@ -9,6 +9,7 @@ using KidProEdu.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using System.Collections;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 
 namespace KidProEdu.Application.Services
 {
@@ -66,6 +67,7 @@ namespace KidProEdu.Application.Services
             var newUser = _mapper.Map<UserAccount>(userObject);
             newUser.PasswordHash = newUser.PasswordHash.Hash();
             newUser.Status = Domain.Enums.StatusUser.Enable;
+            newUser.LocationId = _unitOfWork.UserRepository.GetByIdAsync(_claimsService.GetCurrentUserId).Result.LocationId;
 
             await _unitOfWork.UserRepository.AddAsync(newUser);
 

@@ -16,7 +16,8 @@ namespace KidProEdu.Domain.Entities
         public DateTime? LeaveDate { get; set; }
         public string? EquimentType { get; set; }
         public Guid? LocationId { get; set; }
-        public Guid? ClassId { get; set; }
+        public Guid? FromClassId { get; set; }
+        public Guid? ToClassId { get; set; }
         public Guid? ScheduleId { get; set; }
         public DateTime? TeachingDay { get; set; }
         public Guid? ReceiverRefundId { get; set; }
