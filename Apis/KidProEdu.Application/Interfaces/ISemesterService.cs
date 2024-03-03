@@ -16,5 +16,6 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> UpdateSemester(UpdateSemesterViewModel updateSemesterViewModel, params Expression<Func<Semester, object>>[] uniqueProperties);
         Task<Semester> GetSemesterById(Guid semesterId);
         Task<bool> DeleteSemester(Guid semesterId);
+        Task<bool> ChangeStatusSemester(Guid id);
     }
 }
