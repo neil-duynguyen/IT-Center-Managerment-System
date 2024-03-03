@@ -18,11 +18,18 @@ namespace KidProEdu.API.Controllers.Manager
             _tagService = tagService;
         }
 
-        [HttpGet("Tags")]
+        [HttpGet("BlogTags")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> Tags()
+        public async Task<IActionResult> BlogTags()
         {
-            return Ok(await _tagService.GetTags());
+            return Ok(await _tagService.GetBlogTags());
+        }
+
+        [HttpGet("SkillTags")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> SkillTags()
+        {
+            return Ok(await _tagService.GetSkillTags());
         }
 
         [HttpGet("{id}")]
