@@ -39,6 +39,6 @@ namespace KidProEdu.Domain.Entities
         public IList<Division> Divisions { get; set; }
         public IList<RequestUserAccount> RequestUserAccounts { get; set; }
         public IList<LogEquipment> LogEquipments { get; set; }
-        public IList<UserSkill> UserSkills { get; set; }
+        public IList<SkillTag> UserSkills { get; set; }
     }
 }
