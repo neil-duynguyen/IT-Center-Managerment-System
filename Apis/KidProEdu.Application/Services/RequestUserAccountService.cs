@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
-using KidProEdu.Application.IRepositories;
+using KidProEdu.Application.Validations.RequestUserAccounts;
 using KidProEdu.Application.ViewModels.RequestUserAccountViewModels;
 using KidProEdu.Domain.Entities;
 

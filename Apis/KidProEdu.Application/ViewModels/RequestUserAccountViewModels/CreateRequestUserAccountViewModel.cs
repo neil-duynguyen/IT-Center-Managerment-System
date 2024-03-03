@@ -8,7 +8,7 @@ namespace KidProEdu.Application.ViewModels.RequestUserAccountViewModels
 {
     public class CreateRequestUserAccountViewModel
     {
-        public Guid RequestId { get; set; }
         public Guid[] RecieverIds { get; set; }
+        public Guid RequestId { get; set; }
     }
 }

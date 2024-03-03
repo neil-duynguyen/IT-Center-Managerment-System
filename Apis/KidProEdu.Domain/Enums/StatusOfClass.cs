@@ -2,8 +2,8 @@
 {
     public enum StatusOfClass
     {
-        Started = 1,
-        Pending = 2,
+        Pending = 1,
+        Started = 2,
         Cancel = 3,
         Expired = 4
     }

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using KidProEdu.Application.ViewModels.RequestUserAccountViewModels;
 
-namespace KidProEdu.Application.IRepositories
+namespace KidProEdu.Application.Validations.RequestUserAccounts
 {
     public class CreateRequestUserAccountViewModelValidator : AbstractValidator<CreateRequestUserAccountViewModel>
     {

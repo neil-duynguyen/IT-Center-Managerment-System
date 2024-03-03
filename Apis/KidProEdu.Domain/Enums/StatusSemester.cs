@@ -9,6 +9,6 @@ namespace KidProEdu.Domain.Enums
     public enum StatusSemester
     {
         Started = 1,
-        Close = 2
+        Closed = 2
     }
 }

@@ -90,7 +90,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<UpdateQuestionViewModel, Question>().ReverseMap();
             
             CreateMap<RequestViewModel, Request>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null));
-            CreateMap<CreateRequestViewModel, Request>().ReverseMap();
+            //CreateMap<CreateRequestViewModel, Request>().ReverseMap();
             CreateMap<UpdateRequestViewModel, Request>().ReverseMap();
 
             CreateMap<CreateCourseViewModel, Course>().ReverseMap();
@@ -103,6 +103,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<SemesterCourse, CreateSemesterCourseViewModel>().ReverseMap();
 
             //CreateMap<RequestUserAccount, CreateRequestUserAccountViewModel>().ReverseMap();
+
             CreateMap<Document, DocumentViewModel>().ReverseMap();
             CreateMap<CreateDocumentViewModel, Document>().ReverseMap();
             CreateMap<UpdateDocumentViewModel, Document>().ReverseMap();

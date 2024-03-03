@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
-using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Requests;
 using KidProEdu.Application.ViewModels.RequestUserAccountViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace KidProEdu.Application.Services
 {
@@ -37,25 +34,36 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            /*var request = await _unitOfWork.RequestRepository.GetRequestByRequestType(createRequestViewModel.RequestType);
-            if (!request.IsNullOrEmpty())
+            if (!createRequestViewModel.RequestType.Equals("Location")
+                && !createRequestViewModel.RequestType.Equals("Class")
+                && !createRequestViewModel.RequestType.Equals("Equipment")
+                && !createRequestViewModel.RequestType.Equals("Schedule")
+                && !createRequestViewModel.RequestType.Equals("Refund")
+                && !createRequestViewModel.RequestType.Equals("Leave")
+                )
+                throw new Exception("Loại yêu cầu không có trong hệ thống");
+
+            Request request = new()
             {
-                throw new Exception("Yêu cầu đã tồn tại");
-            }*/
+                RequestDescription = createRequestViewModel.RequestDescription,
+                RequestType = createRequestViewModel.RequestType,
+                LeaveDate = createRequestViewModel.LeaveDate,
+                TeachingDay = createRequestViewModel.TeachingDate,
+                EquimentType = createRequestViewModel.EquimentType,
+                LocationId = createRequestViewModel.LocationId,
+                FromClassId = createRequestViewModel.FromClassId,
+                ToClassId = createRequestViewModel.ToClassId,
+                ScheduleId = createRequestViewModel.ScheduleId,
+                ReceiverRefundId = createRequestViewModel.ReceiverRefundId,
+                Status = Domain.Enums.StatusOfRequest.Pending
+            };
 
-            var mapper = _mapper.Map<Request>(createRequestViewModel);
-
-            //List<Guid> guids = SplitGuid.SplitGuids(createRequestViewModel.UserIds);
-
-            //mapper.UserId = _claimsService.GetCurrentUserId;
-            mapper.Status = Domain.Enums.StatusOfRequest.Pending;
-
-            await _unitOfWork.RequestRepository.AddAsync(mapper);
+            await _unitOfWork.RequestRepository.AddAsync(request);
 
             //tạo request user account
             CreateRequestUserAccountViewModel model = new()
             {
-                RequestId = mapper.Id,
+                RequestId = request.Id,
                 RecieverIds = createRequestViewModel.UserIds
             };
             RequestUserAccountService service = new(_unitOfWork, _currentTime, _claimsService, _mapper);
@@ -143,12 +151,14 @@ namespace KidProEdu.Application.Services
                         {
                             case "Location":
                                 var user = await _unitOfWork.UserRepository.GetByIdAsync((Guid)request.CreatedBy);
-                                //user
-                                //thiếu id location bên user 
+                                user.LocationId = changeStatusRequestViewModel.LocationId;
+                                _unitOfWork.UserRepository.Update(user);
                                 break;
                             case "Class":
-                                var findClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)request.ClassId);
-                                // đổi được gv qua lớp kia nhưng k biết đổi từ lớp nào
+                                var currentClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)request.FromClassId);
+                                var newClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)request.ToClassId);
+                                currentClass.UserId = newClass.UserId; //lớp cũ đổi thành gv lớp mới
+                                newClass.UserId = request.CreatedBy; //lớp mới đổi thành gv cũ
                                 break;
                             case "Schedule":
                                 break;
