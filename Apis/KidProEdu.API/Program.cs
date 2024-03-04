@@ -129,6 +129,8 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IRequestUserAccountRepository, RequestUserAccountRepository>();
             builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
             builder.Services.AddScoped<ILogEquipmentRepository, LogEquipmentRepository>();
+            builder.Services.AddScoped<ILogEquipmentRepository, LogEquipmentRepository>();
+            builder.Services.AddScoped<IAdviseRequestRepository, AdviseRequestRepository>();
             #endregion
 
             #region DIService
@@ -157,6 +159,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IRequestUserAccountService, RequestUserAccountService>();
             builder.Services.AddScoped<IDocumentService, DocumentService>();
             builder.Services.AddScoped<ILogEquipmentService, LogEquipmentService>();
+            builder.Services.AddScoped<IAdviseRequestService, AdviseRequestService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));
