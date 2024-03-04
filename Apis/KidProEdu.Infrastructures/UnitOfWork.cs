@@ -32,6 +32,7 @@ namespace Infrastructures
         private readonly IRequestUserAccountRepository _requestUserAccountRepository;
         private readonly IDocumentRepository _documentRepository;
         private readonly ILogEquipmentRepository _logEquipmentRepository;
+        private readonly IAdviseRequestRepository _adviseRequestRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -42,7 +43,7 @@ namespace Infrastructures
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
             ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository
             , IRequestUserAccountRepository requestUserAccountRepository, IDocumentRepository documentRepository
-            , ILogEquipmentRepository logEquipmentRepository)
+            , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -68,6 +69,7 @@ namespace Infrastructures
             _requestUserAccountRepository = requestUserAccountRepository;
             _documentRepository = documentRepository;
             _logEquipmentRepository = logEquipmentRepository;
+            _adviseRequestRepository = adviseRequestRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -114,6 +116,8 @@ namespace Infrastructures
         public IDocumentRepository DocumentRepository => _documentRepository;
 
         public ILogEquipmentRepository LogEquipmentRepository => _logEquipmentRepository;
+
+        public IAdviseRequestRepository AdviseRequestRepository => _adviseRequestRepository;
 
         public async Task<int> SaveChangeAsync()
         {

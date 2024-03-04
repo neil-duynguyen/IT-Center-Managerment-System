@@ -28,6 +28,7 @@ namespace KidProEdu.Application
         public IRequestUserAccountRepository RequestUserAccountRepository { get; }
         public IDocumentRepository DocumentRepository { get; }
         public ILogEquipmentRepository LogEquipmentRepository { get; }
+        public IAdviseRequestRepository  AdviseRequestRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
