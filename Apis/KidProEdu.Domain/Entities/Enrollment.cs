@@ -14,7 +14,7 @@ namespace KidProEdu.Domain.Entities
         [ForeignKey("ChildrenProfile")]
         public Guid ChildrenProfileId { get; set;}
         public DateTime? RegisterDate { get; set; }
-        public double? Price { get; set; }
+        public double? Commission { get; set; }
         public Guid UserId { get; set; }
 
         public virtual Class Class { get; set; }

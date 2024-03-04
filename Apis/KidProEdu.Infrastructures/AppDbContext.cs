@@ -55,6 +55,7 @@ namespace KidProEdu.Infrastructures
         public DbSet<TestTime> TestTime { get; set; }   
         public DbSet<Transaction> Transaction { get; set; }
         public DbSet<RequestUserAccount> RequestUserAccount { get; set; }
+        public DbSet<DivisionUserAccount> DivisionUserAccount { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Role>().HasData(
@@ -236,13 +237,13 @@ namespace KidProEdu.Infrastructures
                 .HasMany(p => p.Blogs)
                 .WithMany(x => x.Tags);
 
-            builder.Entity<UserAccount>()
+            /*builder.Entity<UserAccount>()
                 .HasMany(p => p.Divisions)
                 .WithMany(x => x.UserAccounts);
 
             builder.Entity<Division>()
                 .HasMany(p => p.UserAccounts)
-                .WithMany(x => x.Divisions);
+                .WithMany(x => x.Divisions);*/
 
             /*builder.Entity<Course>()
                 .Property(c => c.ParentCourse)
