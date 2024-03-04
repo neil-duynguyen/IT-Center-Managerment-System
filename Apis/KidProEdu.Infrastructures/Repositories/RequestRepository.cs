@@ -14,10 +14,10 @@ namespace KidProEdu.Infrastructures.Repositories
             _dbContext = context;
         }
 
-        public async Task<List<Request>> GetRequestByRequestType(string requestType)
+        public async Task<List<Request>> GetRequestByUser(Guid id)
         {
             var requests = await _dbContext.Request
-                .Where(x => x.RequestType.ToLower() == requestType.ToLower() && x.IsDeleted == false)
+                .Where(x => x.CreatedBy == id && x.IsDeleted == false)
                 .ToListAsync();
 
             return requests;

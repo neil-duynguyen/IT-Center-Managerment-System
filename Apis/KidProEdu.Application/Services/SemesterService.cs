@@ -1,17 +1,10 @@
 ﻿using AutoMapper;
 using AutoMapper.Execution;
-using AutoMapper.Internal;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Semesters;
 using KidProEdu.Application.ViewModels.SemesterViewModels;
 using KidProEdu.Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KidProEdu.Application.Services
 {
@@ -33,7 +26,7 @@ namespace KidProEdu.Application.Services
         public async Task<bool> CreateSemester()
         {
             // Xác định ngày bắt đầu của năm học
-            DateTime startDate = new DateTime(_currentTime.GetCurrentTime().Year, 1, 1);
+            DateTime startDate = new(_currentTime.GetCurrentTime().Year, 1, 1);
 
             if ((await _unitOfWork.SemesterRepository.GetSemesterByStartDate(startDate)) != null)
                 throw new Exception("Tạo thất bại, học kỳ trong năm học này đã được tạo");
@@ -79,6 +72,7 @@ namespace KidProEdu.Application.Services
                 var semester = new Semester
                 {
                     SemesterName = semesterName,
+                    StatusSemester = Domain.Enums.StatusSemester.Closed,
                     StartDate = semesterStartDate,
                     EndDate = semesterEndDate
                     // Các thông tin khác nếu cần
@@ -112,7 +106,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<Semester>> GetSemesters()
         {
-            var semesters = _unitOfWork.SemesterRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();            
+            var semesters = _unitOfWork.SemesterRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
             return semesters;
         }
 
@@ -153,6 +147,23 @@ namespace KidProEdu.Application.Services
             //var mapper = _mapper.Map<Semester>(updateSemesterViewModel);
             _unitOfWork.SemesterRepository.Update(_mapper.Map(updateSemesterViewModel, existingSemester));
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật Semester thất bại");
+        }
+
+        public async Task<bool> ChangeStatusSemester(Guid id)
+        {
+            var semester = await _unitOfWork.SemesterRepository.GetByIdAsync(id) ?? throw new Exception("Không tìm thấy kỳ này");
+            if (semester.StatusSemester.Equals(Domain.Enums.StatusSemester.Closed))
+            {
+                semester.StatusSemester = Domain.Enums.StatusSemester.Started;
+            }
+            else
+            {
+                semester.StatusSemester = Domain.Enums.StatusSemester.Closed;
+            }
+
+            _unitOfWork.SemesterRepository.Update(semester);
+
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Thay đổi trạng thái kỳ học thất bại");
         }
     }
 }

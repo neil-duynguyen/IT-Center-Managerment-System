@@ -55,8 +55,8 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
-        [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[HttpPut]
+        *//*[Authorize(Roles = ("Admin"))]*//*
         public async Task<IActionResult> PutSemester(UpdateSemesterViewModel updateSemesterViewModel)
         {
             try
@@ -78,7 +78,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        *//*[Authorize(Roles = ("Admin"))]*//*
         public async Task<IActionResult> DeleteSemester(Guid id)
         {
             try
@@ -91,6 +91,28 @@ namespace KidProEdu.API.Controllers.Manager
                 else
                 {
                     return BadRequest("Semester đã được xóa thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }*/
+
+        [HttpPut("ChangeStatusSemester")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> ChangeStatusSemester(Guid id)
+        {
+            try
+            {
+                var result = await _semesterService.ChangeStatusSemester(id);
+                if (result)
+                {
+                    return Ok("Semester cập nhật trạng thái thành công.");
+                }
+                else
+                {
+                    return BadRequest("Semester cập nhật trạng thái thất bại.");
                 }
             }
             catch (Exception ex)

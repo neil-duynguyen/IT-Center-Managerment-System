@@ -13,6 +13,8 @@ namespace KidProEdu.Domain.Entities
     {
         [ForeignKey("Role")]
         public Guid RoleId { get; set; }
+        [ForeignKey("Location")]
+        public Guid? LocationId { get; set; }
         public string UserName { get; set; }
         public string PasswordHash { get; set; }
         public string FullName { get; set; }
@@ -28,6 +30,7 @@ namespace KidProEdu.Domain.Entities
         public string? BankName { get; set; }
         public StatusUser Status { get; set; } = StatusUser.Enable;
         public virtual Role Role { get; set; }
+        public virtual Location? Location { get; set; }
         public IList<AdviseRequest> AdviseRequests { get; set; }
         public IList<Feedback> Feedbacks { get; set; }
         public IList<Class> Classes { get; set; }
@@ -36,9 +39,9 @@ namespace KidProEdu.Domain.Entities
         public IList<NotificationUser> NotificationUsers { get; set; }
         public IList<Blog> Blogs { get; set; }
         public IList<Contract> Contracts { get; set; }
-        public IList<Division> Divisions { get; set; }
         public IList<RequestUserAccount> RequestUserAccounts { get; set; }
         public IList<LogEquipment> LogEquipments { get; set; }
-        public IList<UserSkill> UserSkills { get; set; }
+        public IList<SkillTag> SkillTag { get; set; }
+        public IList<DivisionUserAccount> DivisionUserAccounts { get; set; }
     }
 }

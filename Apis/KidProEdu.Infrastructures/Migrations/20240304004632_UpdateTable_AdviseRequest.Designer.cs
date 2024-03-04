@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240229170628_InitMigration")]
-    partial class InitMigration
+    [Migration("20240304004632_UpdateTable_AdviseRequest")]
+    partial class UpdateTable_AdviseRequest
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,21 +40,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.ToTable("BlogTag");
                 });
 
-            modelBuilder.Entity("DivisionUserAccount", b =>
-                {
-                    b.Property<Guid>("DivisionsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserAccountsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("DivisionsId", "UserAccountsId");
-
-                    b.HasIndex("UserAccountsId");
-
-                    b.ToTable("DivisionUserAccount");
-                });
-
             modelBuilder.Entity("KidProEdu.Domain.Entities.AdviseRequest", b =>
                 {
                     b.Property<Guid>("Id")
@@ -62,10 +47,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CourseName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -95,6 +76,10 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<bool?>("IsTested")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("ModificationBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -104,6 +89,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StatusAdviseRequest")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -860,6 +848,48 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.ToTable("Division");
                 });
 
+            modelBuilder.Entity("KidProEdu.Domain.Entities.DivisionUserAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("DivisionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModificationBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserAccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DivisionId");
+
+                    b.HasIndex("UserAccountId");
+
+                    b.ToTable("DivisionUserAccount");
+                });
+
             modelBuilder.Entity("KidProEdu.Domain.Entities.Document", b =>
                 {
                     b.Property<Guid>("Id")
@@ -915,6 +945,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<Guid>("ClassId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double?>("Commission")
+                        .HasColumnType("float");
+
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -935,9 +968,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<double?>("Price")
-                        .HasColumnType("float");
 
                     b.Property<DateTime?>("RegisterDate")
                         .HasColumnType("datetime2");
@@ -1528,9 +1558,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ClassId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -1545,6 +1572,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<string>("EquimentType")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("FromClassId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1578,6 +1608,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<DateTime?>("TeachingDay")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ToClassId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1920,6 +1953,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("StatusSemester")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Semester");
@@ -1965,6 +2001,48 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasIndex("SemesterId");
 
                     b.ToTable("SemesterCourse");
+                });
+
+            modelBuilder.Entity("KidProEdu.Domain.Entities.SkillTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModificationBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserAccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TagId");
+
+                    b.HasIndex("UserAccountId");
+
+                    b.ToTable("SkillTag");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Slot", b =>
@@ -2400,48 +2478,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         });
                 });
 
-            modelBuilder.Entity("KidProEdu.Domain.Entities.UserSkill", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModificationBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("TagId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserAccountId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TagId");
-
-                    b.HasIndex("UserAccountId");
-
-                    b.ToTable("UserSkill");
-                });
-
             modelBuilder.Entity("BlogTag", b =>
                 {
                     b.HasOne("KidProEdu.Domain.Entities.Blog", null)
@@ -2453,21 +2489,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasOne("KidProEdu.Domain.Entities.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DivisionUserAccount", b =>
-                {
-                    b.HasOne("KidProEdu.Domain.Entities.Division", null)
-                        .WithMany()
-                        .HasForeignKey("DivisionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KidProEdu.Domain.Entities.UserAccount", null)
-                        .WithMany()
-                        .HasForeignKey("UserAccountsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -2586,6 +2607,25 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired();
 
                     b.Navigation("ConfigJobType");
+
+                    b.Navigation("UserAccount");
+                });
+
+            modelBuilder.Entity("KidProEdu.Domain.Entities.DivisionUserAccount", b =>
+                {
+                    b.HasOne("KidProEdu.Domain.Entities.Division", "Division")
+                        .WithMany("DivisionUserAccounts")
+                        .HasForeignKey("DivisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
+                        .WithMany("DivisionUserAccounts")
+                        .HasForeignKey("UserAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Division");
 
                     b.Navigation("UserAccount");
                 });
@@ -2854,6 +2894,25 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("Semester");
                 });
 
+            modelBuilder.Entity("KidProEdu.Domain.Entities.SkillTag", b =>
+                {
+                    b.HasOne("KidProEdu.Domain.Entities.Tag", "Tag")
+                        .WithMany("SkillTag")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
+                        .WithMany("SkillTag")
+                        .HasForeignKey("UserAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tag");
+
+                    b.Navigation("UserAccount");
+                });
+
             modelBuilder.Entity("KidProEdu.Domain.Entities.Test", b =>
                 {
                     b.HasOne("KidProEdu.Domain.Entities.AdviseRequest", "AdviseRequest")
@@ -2878,7 +2937,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.UserAccount", b =>
                 {
-                    b.HasOne("KidProEdu.Domain.Entities.Location", null)
+                    b.HasOne("KidProEdu.Domain.Entities.Location", "Location")
                         .WithMany("UserAccount")
                         .HasForeignKey("LocationId");
 
@@ -2888,26 +2947,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Location");
+
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("KidProEdu.Domain.Entities.UserSkill", b =>
-                {
-                    b.HasOne("KidProEdu.Domain.Entities.Tag", "Tag")
-                        .WithMany("UserSkills")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
-                        .WithMany("UserSkills")
-                        .HasForeignKey("UserAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tag");
-
-                    b.Navigation("UserAccount");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.AdviseRequest", b =>
@@ -2961,6 +3003,11 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("Scores");
 
                     b.Navigation("SemesterCourses");
+                });
+
+            modelBuilder.Entity("KidProEdu.Domain.Entities.Division", b =>
+                {
+                    b.Navigation("DivisionUserAccounts");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Equipment", b =>
@@ -3031,7 +3078,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Tag", b =>
                 {
-                    b.Navigation("UserSkills");
+                    b.Navigation("SkillTag");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.UserAccount", b =>
@@ -3046,6 +3093,8 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Navigation("Contracts");
 
+                    b.Navigation("DivisionUserAccounts");
+
                     b.Navigation("Enrollments");
 
                     b.Navigation("Feedbacks");
@@ -3056,7 +3105,7 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Navigation("RequestUserAccounts");
 
-                    b.Navigation("UserSkills");
+                    b.Navigation("SkillTag");
                 });
 #pragma warning restore 612, 618
         }

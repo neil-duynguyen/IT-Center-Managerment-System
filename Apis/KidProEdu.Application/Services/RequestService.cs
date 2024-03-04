@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
-using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Requests;
+using KidProEdu.Application.ViewModels.RequestUserAccountViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace KidProEdu.Application.Services
 {
@@ -36,20 +34,40 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            /*var request = await _unitOfWork.RequestRepository.GetRequestByRequestType(createRequestViewModel.RequestType);
-            if (!request.IsNullOrEmpty())
+            if (!createRequestViewModel.RequestType.Equals("Location")
+                && !createRequestViewModel.RequestType.Equals("Class")
+                && !createRequestViewModel.RequestType.Equals("Equipment")
+                && !createRequestViewModel.RequestType.Equals("Schedule")
+                && !createRequestViewModel.RequestType.Equals("Refund")
+                && !createRequestViewModel.RequestType.Equals("Leave")
+                )
+                throw new Exception("Loại yêu cầu không có trong hệ thống");
+
+            Request request = new()
             {
-                throw new Exception("Yêu cầu đã tồn tại");
-            }*/
+                RequestDescription = createRequestViewModel.RequestDescription,
+                RequestType = createRequestViewModel.RequestType,
+                LeaveDate = createRequestViewModel.LeaveDate,
+                TeachingDay = createRequestViewModel.TeachingDate,
+                EquimentType = createRequestViewModel.EquimentType,
+                LocationId = createRequestViewModel.LocationId,
+                FromClassId = createRequestViewModel.FromClassId,
+                ToClassId = createRequestViewModel.ToClassId,
+                ScheduleId = createRequestViewModel.ScheduleId,
+                ReceiverRefundId = createRequestViewModel.ReceiverRefundId,
+                Status = Domain.Enums.StatusOfRequest.Pending
+            };
 
-            var mapper = _mapper.Map<Request>(createRequestViewModel);
+            await _unitOfWork.RequestRepository.AddAsync(request);
 
-            //List<Guid> guids = SplitGuid.SplitGuids(createRequestViewModel.UserIds);
-
-            /*mapper.UserId = _claimsService.GetCurrentUserId;
-            mapper.Status = Domain.Enums.StatusOfRequest.Pending;*/
-
-            await _unitOfWork.RequestRepository.AddAsync(mapper);
+            //tạo request user account
+            CreateRequestUserAccountViewModel model = new()
+            {
+                RequestId = request.Id,
+                RecieverIds = createRequestViewModel.UserIds
+            };
+            RequestUserAccountService service = new(_unitOfWork, _currentTime, _claimsService, _mapper);
+            await service.CreateRequestUserAccount(model);
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo yêu cầu thất bại");
 
@@ -121,30 +139,64 @@ namespace KidProEdu.Application.Services
         {
             var status = Domain.Enums.StatusOfRequest.Pending;
 
-            switch (changeStatusRequestViewModel.status)
+            switch (changeStatusRequestViewModel.Status)
             {
                 case "Approved":
                     status = Domain.Enums.StatusOfRequest.Approved;
+
+                    foreach (var idRequest in changeStatusRequestViewModel.RequestIds)
+                    {
+                        var request = await _unitOfWork.RequestRepository.GetByIdAsync(idRequest);
+                        switch (request.RequestType)
+                        {
+                            case "Location":
+                                var user = await _unitOfWork.UserRepository.GetByIdAsync((Guid)request.CreatedBy);
+                                user.LocationId = changeStatusRequestViewModel.LocationId;
+                                _unitOfWork.UserRepository.Update(user);
+                                break;
+                            case "Class":
+                                var currentClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)request.FromClassId);
+                                var newClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)request.ToClassId);
+                                currentClass.UserId = newClass.UserId; //lớp cũ đổi thành gv lớp mới
+                                newClass.UserId = request.CreatedBy; //lớp mới đổi thành gv cũ
+                                break;
+                            case "Schedule":
+                                break;
+                            case "Equipment":
+                                break;
+                            case "Leave":
+                                break;
+                            case "Refund":
+                                break;
+                            default:
+                                //throw new Exception("Loại request không được hỗ trợ");
+                                break;
+                        }
+
+                        request.Status = status;
+
+                        _unitOfWork.RequestRepository.Update(request);
+                    }
+
                     break;
-                case "Pending":
+                /*case "Pending":
                     status = Domain.Enums.StatusOfRequest.Pending;
-                    break;
+                    break;*/
                 case "Cancel":
                     status = Domain.Enums.StatusOfRequest.Cancel;
                     break;
                 default:
-                    throw new Exception("Trạng thái không có trong hệ thống");
-            }
-
-            foreach (var item in changeStatusRequestViewModel.ids)
-            {
-                var request = await _unitOfWork.RequestRepository.GetByIdAsync(item);
-                request.Status = status;
-
-                _unitOfWork.RequestRepository.Update(request);
+                    throw new Exception("Trạng thái không được hỗ trợ");
             }
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trạng thái yêu cầu thất bại");
+        }
+
+        public async Task<List<RequestViewModel>> GetRequestByUser(Guid userId)
+        {
+            var requests = await _unitOfWork.RequestRepository.GetRequestByUser(userId);
+
+            return _mapper.Map<List<RequestViewModel>>(requests);
         }
     }
 }

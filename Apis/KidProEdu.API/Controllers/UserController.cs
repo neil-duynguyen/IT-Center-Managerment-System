@@ -1,6 +1,7 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.UserViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography.Xml;
 
@@ -35,6 +36,7 @@ namespace KidProEdu.WebAPI.Controllers
 
         [HttpPost]
         [Route("Register")]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> CreateAccountAsync(CreateUserViewModel loginObject)
         {
             try

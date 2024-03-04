@@ -10,6 +10,6 @@ namespace KidProEdu.Domain.Entities
     {
         public string Name { get; set; }
         public string? Description { get; set; }
-        public IList<UserAccount> UserAccounts { get; set; }
+        public IList<DivisionUserAccount> DivisionUserAccounts { get; set; }
     }
 }

@@ -8,7 +8,16 @@ namespace KidProEdu.Application.ViewModels.RequestViewModels
 {
     public class ChangeStatusRequestViewModel
     {
-        public Guid[] ids { get; set; }
-        public string status { get; set; }
+        public Guid[] RequestIds { get; set; }
+        public string Status { get; set; }
+        public string? RequestDescription { get; set; }
+        public DateTime? LeaveDate { get; set; }
+        public DateTime? TeachingDate { get; set; }
+        public string? EquimentType { get; set; }
+        public Guid? LocationId { get; set; }
+        public Guid? ClassId { get; set; }
+        public Guid? ScheduleId { get; set; }
+        public Guid? ReceiverRefundId { get; set; }
+        
     }
 }
