@@ -11,6 +11,7 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
     {
         //public Guid UserId { get; set; }
         public Guid CourseId { get; set; }
+        public Guid SemesterId { get; set; }
         public string ClassCode { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
