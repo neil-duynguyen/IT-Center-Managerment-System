@@ -5,6 +5,7 @@ using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
+using KidProEdu.Application.ViewModels.DivisionUserAccountViewModels;
 using KidProEdu.Application.ViewModels.DivisionViewModels;
 using KidProEdu.Application.ViewModels.DocumentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
@@ -118,6 +119,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<AdviseRequestViewModel, AdviseRequest>().ReverseMap().ForMember(des => des.StatusAdviseRequest, src => src.MapFrom(x => x.StatusAdviseRequest != null ? (string)x.StatusAdviseRequest.ToString() : (string?)null)); ;
             CreateMap<CreateAdviseRequestViewModel, AdviseRequest>().ReverseMap();
             CreateMap<UpdateAdviseRequestViewModel, AdviseRequest>().ReverseMap();
+
+            CreateMap<DivisionUserAccount, DivisionUserAccountViewModel>().ReverseMap();
+            CreateMap<CreateDivisionUserAccountViewModel, DivisionUserAccount>().ReverseMap();
+            CreateMap<UpdateDivisionUserAccountViewModel, DivisionUserAccount>().ReverseMap();
 
         }
     }
