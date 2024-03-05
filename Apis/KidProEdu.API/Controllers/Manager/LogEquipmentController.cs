@@ -33,11 +33,11 @@ namespace KidProEdu.API.Controllers.Manager
                 var result = await _logEquipmentService.CreateLogEquipment(createLogEquipmentViewModel);
                 if (result)
                 {
-                    return Ok("Tài liệu đã được tạo thành công.");
+                    return Ok("Nhật kí thiết bị đã được tạo thành công.");
                 }
                 else
                 {
-                    return BadRequest("Tài liệu đã được tạo thất bại.");
+                    return BadRequest("Nhật kí thiết bị đã được tạo thất bại.");
                 }
             }
             catch (Exception ex)
@@ -80,6 +80,86 @@ namespace KidProEdu.API.Controllers.Manager
                 return NotFound();
             }
             return Ok(result);
+        }
+
+        [HttpGet("LogEquipmentByName/{name}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> LogEquipmentByName(string name)
+        {
+            var result = await _logEquipmentService.GetLogEquipmentsByName(name);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("LogEquipmentByCode/{code}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> LogEquipmentByCode(string code)
+        {
+            var result = await _logEquipmentService.GetLogEquipmentsByCode(code);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("LogEquipmentByEquipmentId/{equipmentId}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> LogEquipmentByEquipmentId(Guid equipmentId)
+        {
+            var result = await _logEquipmentService.GetLogEquipmentsByEquipmentId(equipmentId);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> DeleteLogEquipment(Guid id)
+        {
+            try
+            {
+                var result = await _logEquipmentService.DeleteLogEquipment(id);
+                if (result)
+                {
+                    return Ok("Nhật kí thiết bị đã được xóa thành công.");
+                }
+                else
+                {
+                    return BadRequest("Nhật kí thiết bị đã được xóa thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> PutLogEquipment(UpdateLogEquipmentViewModel updateLogEquipmentViewModel)
+        {
+            try
+            {
+                var result = await _logEquipmentService.UpdateLogEquipment(updateLogEquipmentViewModel);
+                if (result)
+                {
+                    return Ok("Nhật kí thiết bị đã được cập nhật thành công.");
+                }
+                else
+                {
+                    return BadRequest("Nhật kí thiết bị đã được cập nhật thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }
