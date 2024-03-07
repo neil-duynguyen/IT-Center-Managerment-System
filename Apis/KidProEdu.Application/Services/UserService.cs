@@ -6,6 +6,7 @@ using KidProEdu.Application.Validations.Users;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.Extensions.Configuration;
 using System.Collections;
 using System.Linq.Expressions;
@@ -78,7 +79,17 @@ namespace KidProEdu.Application.Services
         {
             var findUser = await _unitOfWork.UserRepository.GetByIdAsync(id);
 
-            return findUser != null ? _mapper.Map<UserViewModel>(findUser) : throw new Exception();
+            var mapper = _mapper.Map<UserViewModel>(findUser);
+
+            if (findUser.Role.Id == new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A54"))
+            {
+            
+                var getChildren = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.UserId == findUser.Id).ToList();
+
+                mapper.ChildrenProfiles = getChildren;
+            }
+
+            return findUser != null ? mapper : throw new Exception();
         }
 
         public async Task<List<UserViewModel>> GetAllUser()

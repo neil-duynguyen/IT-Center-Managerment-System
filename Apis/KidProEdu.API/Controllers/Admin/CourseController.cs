@@ -29,13 +29,18 @@ namespace KidProEdu.API.Controllers.Admin
             }
         }
 
-        /*[HttpGet("Courses")]
-        *//*[Authorize(Roles = ("Parent"))]*//*
+        [HttpGet("Courses")]
         public async Task<IActionResult> GetAllCourse()
         {
             return Ok(await _courseService.GetAllCourse());
         }
-*/
+
+        [HttpGet("GetCourseById")]
+        public async Task<IActionResult> GetCOurseById(Guid Id)
+        {
+            return Ok(await _courseService.GetCourseById(Id));
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteCourse(Guid courseId)
         {

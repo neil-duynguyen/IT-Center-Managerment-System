@@ -23,7 +23,7 @@ namespace KidProEdu.Domain.Entities
         public StatusOfClass StatusOfClass { get; set; }
         public int MaxNumber { get; set; }
         public int ExpectedNumber { get; set; }
-        public int ActualNumber { get; set; }
+        public int ActualNumber { get; set; }//(30/35 alowed start class)
         public virtual UserAccount? UserAccount { get; set; }
         public virtual Course Course { get; set; }
         public virtual Semester Semester { get; set; }

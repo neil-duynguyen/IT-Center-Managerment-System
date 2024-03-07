@@ -31,5 +31,10 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return requests;
         }
+
+        public override async Task<Class> GetByIdAsync(Guid id)
+        { 
+            return await _dbContext.Class.Include(x => x.Course).Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

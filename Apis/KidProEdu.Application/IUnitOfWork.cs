@@ -30,6 +30,7 @@ namespace KidProEdu.Application
         public ILogEquipmentRepository LogEquipmentRepository { get; }
         public IAdviseRequestRepository  AdviseRequestRepository { get; }
         public IDivisionUserAccountRepository DivisionUserAccountRepository { get; }
+        public IEnrollmentRepository  EnrollmentRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

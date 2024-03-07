@@ -8,6 +8,7 @@ using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Application.ViewModels.DivisionUserAccountViewModels;
 using KidProEdu.Application.ViewModels.DivisionViewModels;
 using KidProEdu.Application.ViewModels.DocumentViewModels;
+using KidProEdu.Application.ViewModels.EnrollmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
@@ -58,6 +59,7 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<CreateChildrenViewModel, ChildrenProfile>().ReverseMap();
             CreateMap<UpdateChildrenViewModel, ChildrenProfile>().ReverseMap();
+            CreateMap<ChildrenViewModel, ChildrenProfile>().ReverseMap();
 
             CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();         
@@ -124,6 +126,9 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateDivisionUserAccountViewModel, DivisionUserAccount>().ReverseMap();
             CreateMap<UpdateDivisionUserAccountViewModel, DivisionUserAccount>().ReverseMap();
 
+            CreateMap<EnrollmentViewModel, Enrollment>().ReverseMap().ForMember(des => des.ClassCode, src => src.MapFrom(x => x.Class.ClassCode))
+                                                                    .ForMember(des => des.ChildrenName, src => src.MapFrom(x => x.ChildrenProfile.FullName));
+            CreateMap<CreateEnrollmentViewModel, Enrollment>().ReverseMap();
         }
     }
 }

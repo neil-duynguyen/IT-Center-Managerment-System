@@ -34,6 +34,7 @@ namespace Infrastructures
         private readonly ILogEquipmentRepository _logEquipmentRepository;
         private readonly IAdviseRequestRepository _adviseRequestRepository;
         private readonly IDivisionUserAccountRepository _divisionUserAccountRepository;
+        private readonly IEnrollmentRepository _enrollmentRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -44,7 +45,7 @@ namespace Infrastructures
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
             ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository
             , IRequestUserAccountRepository requestUserAccountRepository, IDocumentRepository documentRepository
-            , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository, IDivisionUserAccountRepository divisionUserAccountRepository)
+            , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository, IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -72,6 +73,7 @@ namespace Infrastructures
             _logEquipmentRepository = logEquipmentRepository;
             _adviseRequestRepository = adviseRequestRepository;
             _divisionUserAccountRepository = divisionUserAccountRepository;
+            _enrollmentRepository = enrollmentRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -122,6 +124,8 @@ namespace Infrastructures
         public IAdviseRequestRepository AdviseRequestRepository => _adviseRequestRepository;
 
         public IDivisionUserAccountRepository DivisionUserAccountRepository => _divisionUserAccountRepository;
+
+        public IEnrollmentRepository EnrollmentRepository => _enrollmentRepository;
 
         public async Task<int> SaveChangeAsync()
         {
