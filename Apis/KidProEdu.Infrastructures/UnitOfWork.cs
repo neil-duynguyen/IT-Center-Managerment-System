@@ -33,6 +33,7 @@ namespace Infrastructures
         private readonly IDocumentRepository _documentRepository;
         private readonly ILogEquipmentRepository _logEquipmentRepository;
         private readonly IAdviseRequestRepository _adviseRequestRepository;
+        private readonly IDivisionUserAccountRepository _divisionUserAccountRepository;
         private readonly IEnrollmentRepository _enrollmentRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
@@ -44,7 +45,7 @@ namespace Infrastructures
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
             ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository
             , IRequestUserAccountRepository requestUserAccountRepository, IDocumentRepository documentRepository
-            , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository, IEnrollmentRepository enrollmentRepository)
+            , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository, IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -71,6 +72,7 @@ namespace Infrastructures
             _documentRepository = documentRepository;
             _logEquipmentRepository = logEquipmentRepository;
             _adviseRequestRepository = adviseRequestRepository;
+            _divisionUserAccountRepository = divisionUserAccountRepository;
             _enrollmentRepository = enrollmentRepository;
         }
 
@@ -120,6 +122,8 @@ namespace Infrastructures
         public ILogEquipmentRepository LogEquipmentRepository => _logEquipmentRepository;
 
         public IAdviseRequestRepository AdviseRequestRepository => _adviseRequestRepository;
+
+        public IDivisionUserAccountRepository DivisionUserAccountRepository => _divisionUserAccountRepository;
 
         public IEnrollmentRepository EnrollmentRepository => _enrollmentRepository;
 
