@@ -26,13 +26,13 @@ namespace Infrastructures.Repositories
 
         public async Task<bool> CheckUserNameExited(CreateUserViewModel userObject)
         {
-            if(await _dbContext.UserAccount.AnyAsync(u => u.UserName.Equals(userObject.UserName, StringComparison.OrdinalIgnoreCase)))
+            if(await _dbContext.UserAccount.FirstOrDefaultAsync(u => u.UserName.ToLower() == userObject.UserName) != null)
                 throw new Exception("UserName đã tồn tại");
 
-            if(await _dbContext.UserAccount.AnyAsync(u => u.Email.Equals(userObject.Email, StringComparison.OrdinalIgnoreCase)))
+            if(await _dbContext.UserAccount.FirstOrDefaultAsync(u => u.Email.ToLower() == userObject.Email) != null)
                 throw new Exception("Email đã tồn tại");
 
-            if(await _dbContext.UserAccount.AnyAsync(u => u.Phone.Equals(userObject.Phone, StringComparison.OrdinalIgnoreCase)))
+            if(await _dbContext.UserAccount.FirstOrDefaultAsync(u => u.Phone.ToLower() == userObject.Phone) != null)
                 throw new Exception("Phone đã tồn tại");
             return true;
         }
@@ -56,7 +56,7 @@ namespace Infrastructures.Repositories
 
         public override async Task<UserAccount> GetByIdAsync(Guid id)
         {
-            return await _dbSet.Include(x => x.Role).Include(x => x.Location).Where(x => !x.IsDeleted).FirstAsync(x => x.Id == id);
+            return await _dbSet.Include(x => x.Role).Include(x => x.Location).Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<UserAccount> GetUserAccountByProperty(UpdateUserViewModel updateUserViewModel, Expression<Func<UserAccount, object>> property)

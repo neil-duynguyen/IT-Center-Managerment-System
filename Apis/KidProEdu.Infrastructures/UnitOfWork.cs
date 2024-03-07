@@ -33,6 +33,7 @@ namespace Infrastructures
         private readonly IDocumentRepository _documentRepository;
         private readonly ILogEquipmentRepository _logEquipmentRepository;
         private readonly IAdviseRequestRepository _adviseRequestRepository;
+        private readonly IEnrollmentRepository _enrollmentRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -43,7 +44,7 @@ namespace Infrastructures
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
             ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository
             , IRequestUserAccountRepository requestUserAccountRepository, IDocumentRepository documentRepository
-            , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository)
+            , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository, IEnrollmentRepository enrollmentRepository)
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -70,6 +71,7 @@ namespace Infrastructures
             _documentRepository = documentRepository;
             _logEquipmentRepository = logEquipmentRepository;
             _adviseRequestRepository = adviseRequestRepository;
+            _enrollmentRepository = enrollmentRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -118,6 +120,8 @@ namespace Infrastructures
         public ILogEquipmentRepository LogEquipmentRepository => _logEquipmentRepository;
 
         public IAdviseRequestRepository AdviseRequestRepository => _adviseRequestRepository;
+
+        public IEnrollmentRepository EnrollmentRepository => _enrollmentRepository;
 
         public async Task<int> SaveChangeAsync()
         {

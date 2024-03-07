@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KidProEdu.Application.ViewModels.EnrollmentViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,7 @@ namespace KidProEdu.Application.Interfaces
 {
     public interface IEnrollmentServices
     {
+        Task<List<EnrollmentViewModel>> GetEnrollment();
+        Task<List<EnrollmentViewModel>> GetEnrollmentById(Guid Id);
     }
 }

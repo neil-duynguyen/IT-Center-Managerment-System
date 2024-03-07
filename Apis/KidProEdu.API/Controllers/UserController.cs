@@ -36,7 +36,7 @@ namespace KidProEdu.WebAPI.Controllers
 
         [HttpPost]
         [Route("Register")]
-        [Authorize(Roles = ("Admin, Manager"))]
+        [Authorize(Roles = ("Admin, Manager, Staff"))]
         public async Task<IActionResult> CreateAccountAsync(CreateUserViewModel loginObject)
         {
             try

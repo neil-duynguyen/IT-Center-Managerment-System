@@ -23,7 +23,7 @@ namespace KidProEdu.API.Controllers
             try
             {
                 var result = await _childrenService.CreateChildren(createChildrenViewModel);
-                return Ok("Tạo trẻ thành công.");
+                return Ok(result);
             }
             catch (Exception ex)
             {
