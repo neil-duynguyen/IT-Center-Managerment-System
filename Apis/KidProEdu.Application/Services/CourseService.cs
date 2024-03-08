@@ -65,8 +65,13 @@ namespace KidProEdu.Application.Services
 
         public async Task<CourseViewModel> GetCourseById(Guid Id)
         {
-            var course = await _unitOfWork.CourseRepository.GetByIdAsync(Id);
-            var mapper = _mapper.Map<CourseViewModel>(course);
+            var courseParent = await _unitOfWork.CourseRepository.GetByIdAsync(Id);
+            var mapper = _mapper.Map<CourseViewModel>(courseParent);
+
+            var getList = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == courseParent.Id).ToList();
+
+            mapper.Courses = _mapper.Map<List<CourseViewModel>>(getList);
+
             return mapper;
         }
 
@@ -91,8 +96,6 @@ namespace KidProEdu.Application.Services
                     course.Courses = listCourse.Count != 0 ? listCourse : null;
                     listCourseViewModel.Add(course);
                 }
-            }
-                listCourseViewModel.Add(course);
             }
 
             return listCourseViewModel;
