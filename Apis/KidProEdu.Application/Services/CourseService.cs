@@ -46,6 +46,23 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
+        public async Task<bool> CreateCourseParentAsync(CreateCourseParentViewModel createCourseParentViewModel)
+        {
+            // check name exited
+            var isExited = await _unitOfWork.CourseRepository.CheckNameExited(createCourseParentViewModel.Name);
+
+            if (isExited)
+            {
+                throw new Exception("Tên Course đã tồn tại.");
+            }
+
+            var mapper = _mapper.Map<Course>(createCourseParentViewModel);
+
+            await _unitOfWork.CourseRepository.AddAsync(mapper);
+
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
+        }
+
         public async Task<CourseViewModel> GetCourseById(Guid Id)
         {
             var course = await _unitOfWork.CourseRepository.GetByIdAsync(Id);
