@@ -98,6 +98,15 @@ namespace KidProEdu.Application.Services
             var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(updateClassViewModel.Id)
                 ?? throw new Exception("Không tìm thấy lớp");
 
+            if (updateClassViewModel.MaxNumber < findClass.ActualNumber)
+            {
+                throw new Exception("Số lượng học sinh tối đa không thể nhỏ hơn số lượng học sinh thực tế đang có trong lớp");
+            }
+            /*else if (updateClassViewModel.MaxNumber < findClass.ExpectedNumber)
+            {
+                throw new Exception("Số lượng học sinh dự kiến không thể lớn hơn số lượng học tối đa của lớp");
+            }*/
+
             var existingClass = await _unitOfWork.ClassRepository.GetClassByClassCode(updateClassViewModel.ClassCode);
             if (!existingClass.IsNullOrEmpty())
             {
