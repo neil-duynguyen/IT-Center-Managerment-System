@@ -46,10 +46,32 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
+        public async Task<bool> CreateCourseParentAsync(CreateCourseParentViewModel createCourseParentViewModel)
+        {
+            // check name exited
+            var isExited = await _unitOfWork.CourseRepository.CheckNameExited(createCourseParentViewModel.Name);
+
+            if (isExited)
+            {
+                throw new Exception("Tên Course đã tồn tại.");
+            }
+
+            var mapper = _mapper.Map<Course>(createCourseParentViewModel);
+
+            await _unitOfWork.CourseRepository.AddAsync(mapper);
+
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
+        }
+
         public async Task<CourseViewModel> GetCourseById(Guid Id)
         {
-            var course = await _unitOfWork.CourseRepository.GetByIdAsync(Id);
-            var mapper = _mapper.Map<CourseViewModel>(course);
+            var courseParent = await _unitOfWork.CourseRepository.GetByIdAsync(Id);
+            var mapper = _mapper.Map<CourseViewModel>(courseParent);
+
+            var getList = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == courseParent.Id).ToList();
+
+            mapper.Courses = _mapper.Map<List<CourseViewModel>>(getList);
+
             return mapper;
         }
 

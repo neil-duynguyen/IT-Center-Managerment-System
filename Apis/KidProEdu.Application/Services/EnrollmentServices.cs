@@ -32,9 +32,13 @@ namespace KidProEdu.Application.Services
             //check number children in class
             var getNumbderChildren = await _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId);
 
-            if (getNumbderChildren.ActualNumber > getNumbderChildren.MaxNumber) throw new Exception($"Lớp học {getNumbderChildren.ClassCode} đã đủ số lượng trẻ.");
+            if (getNumbderChildren.ActualNumber == getNumbderChildren.MaxNumber) throw new Exception($"Lớp học {getNumbderChildren.ClassCode} đã đủ số lượng trẻ.");
 
             var getPriceClass = _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId).Result.Course.Price;
+
+            //update ActualNumber in class
+            var updateActualNumber = await _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId);
+            updateActualNumber.ActualNumber = getNumbderChildren.Enrollments.Count + 1;
 
             var mapper = _mapper.Map<Enrollment>(createEnrollmentViewModel);
             mapper.RegisterDate = _currentTime.GetCurrentTime();

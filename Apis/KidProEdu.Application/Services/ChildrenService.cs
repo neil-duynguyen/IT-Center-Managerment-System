@@ -71,9 +71,10 @@ namespace KidProEdu.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<ChildrenProfile>> GetChildrens()
+        public async Task<List<ChildrenViewModel>> GetChildrensByStaffId()
         {
-            throw new NotImplementedException();
+            var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.CreatedBy == _claimsService.GetCurrentUserId).ToList();
+            return _mapper.Map<List<ChildrenViewModel>>(getChildrens);
         }
 
     }

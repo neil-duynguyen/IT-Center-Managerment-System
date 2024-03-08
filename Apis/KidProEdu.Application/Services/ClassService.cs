@@ -65,10 +65,10 @@ namespace KidProEdu.Application.Services
             }
         }
 
-        public async Task<Class> GetClassById(Guid ClassId)
+        public async Task<ClassViewModel> GetClassById(Guid ClassId)
         {
-            var Class = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
-            return Class;
+            var getClass = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+            return _mapper.Map<ClassViewModel>(getClass); ;
         }
 
         public async Task<List<ClassViewModel>> GetClasses()

@@ -11,7 +11,6 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
     {
         public Guid Id { get; set; }
         //public Guid UserId { get; set; }
-        public Guid CourseId { get; set; }
         public Guid SemesterId { get; set; }
         public string ClassCode { get; set; }
         public DateTime StartDate { get; set; }
@@ -19,6 +18,5 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
         //public StatusOfClass StatusOfClass { get; set; }
         public int MaxNumber { get; set; }
         public int ExpectedNumber { get; set; }
-        public int ActualNumber { get; set; }
     }
 }

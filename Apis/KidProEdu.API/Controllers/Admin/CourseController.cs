@@ -16,12 +16,25 @@ namespace KidProEdu.API.Controllers.Admin
             _courseService = courseService;
         }
 
-        [HttpPost]
+        [HttpPost()]
         public async Task<IActionResult> PostCourse(CreateCourseViewModel createCourseView) 
         {
             try
             {
                 return await _courseService.CreateCourseAsync(createCourseView) ? Ok("Course đã được tạo thành công.") : BadRequest("Course đã được tạo thất bại.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("CourseParent")]
+        public async Task<IActionResult> PostCourseParent(CreateCourseParentViewModel createCourseParentViewModel)
+        {
+            try
+            {
+                return await _courseService.CreateCourseParentAsync(createCourseParentViewModel) ? Ok("Course đã được tạo thành công.") : BadRequest("Course đã được tạo thất bại.");
             }
             catch (Exception ex)
             {
