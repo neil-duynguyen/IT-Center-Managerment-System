@@ -92,6 +92,8 @@ namespace KidProEdu.Application.Services
                     listCourseViewModel.Add(course);
                 }
             }
+                listCourseViewModel.Add(course);
+            }
 
             return listCourseViewModel;
         }
