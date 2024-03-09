@@ -48,7 +48,7 @@ namespace KidProEdu.API.Controllers.Admin
             return Ok(await _courseService.GetAllCourse());
         }
 
-        [HttpGet("GetCourseById")]
+        [HttpGet("GetCourseById/{Id}")]
         public async Task<IActionResult> GetCOurseById(Guid Id)
         {
             return Ok(await _courseService.GetCourseById(Id));

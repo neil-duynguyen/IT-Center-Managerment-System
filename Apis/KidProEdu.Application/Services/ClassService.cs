@@ -160,5 +160,13 @@ namespace KidProEdu.Application.Services
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trạng thái lớp thất bại");
         }
+
+        //api này dùng để get childen trong classid
+        public async Task<List<ClassChildrenViewModel>> GetChildrenByClassId(Guid classId)
+        {
+            var result = _unitOfWork.EnrollmentRepository.GetAllAsync().Result.Where(x => x.ClassId == classId).ToList();
+            var mapper = _mapper.Map<List<ClassChildrenViewModel>>(result);
+            return mapper;
+        }
     }
 }
