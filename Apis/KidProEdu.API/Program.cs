@@ -40,7 +40,7 @@ namespace KidProEdu.API
                                   {
                                       policy.WithOrigins("http://localhost:5173",
                                                         "http://127.0.0.1:5173",
-                                                        "https://kid-pro-education.netlify.app/login"
+                                                        "https://kid-pro-education.netlify.app"
                                                           )
                                                             //.AllowAnyOrigin()
                                                             .AllowAnyHeader()
