@@ -35,19 +35,19 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _semesterCourseService.GetSemesterCourseById(SemesterId));
         }
 
-        /*[HttpPut]
-        public async Task<IActionResult> UpdateCourseInSemester(CreateSemesterCourseViewModel createSemesterCourseView)
+        [HttpDelete("DeleteCourseInSemester/{idCourse}")]
+        public async Task<IActionResult> DeleteCourseInSemester(Guid idCourse)
         {
             try
             {
-                return Ok(await _semesterCourseService.UpdateCourseInSemester(createSemesterCourseView));
+                var result = await _semesterCourseService.DeleteSemesterCourse(idCourse);
+                return Ok(result);
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
-        }*/
+        }
 
 
     }

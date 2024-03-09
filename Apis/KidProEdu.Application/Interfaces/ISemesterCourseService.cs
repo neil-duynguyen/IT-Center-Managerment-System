@@ -11,7 +11,7 @@ namespace KidProEdu.Application.Interfaces
     public interface ISemesterCourseService
     {
         Task<bool> AddCourse(CreateSemesterCourseViewModel createSemesterCourseView);
-        Task<bool> UpdateCourseInSemester(CreateSemesterCourseViewModel createSemesterCourseView);
         Task<List<CourseViewModel>> GetSemesterCourseById(Guid Id);
+        Task<bool> DeleteSemesterCourse(Guid courseId);
     }
 }
