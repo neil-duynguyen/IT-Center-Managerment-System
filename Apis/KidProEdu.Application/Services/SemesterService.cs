@@ -104,10 +104,10 @@ namespace KidProEdu.Application.Services
             return semester;
         }
 
-        public async Task<List<Semester>> GetSemesters()
+        public async Task<List<SemesterViewModel>> GetSemesters()
         {
             var semesters = _unitOfWork.SemesterRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
-            return semesters;
+            return _mapper.Map<List<SemesterViewModel>>(semesters);
         }
 
         public async Task<bool> UpdateSemester(UpdateSemesterViewModel updateSemesterViewModel, params Expression<Func<Semester, object>>[] uniqueProperties)
