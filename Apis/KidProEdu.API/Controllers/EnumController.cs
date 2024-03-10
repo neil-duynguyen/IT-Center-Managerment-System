@@ -29,5 +29,12 @@ namespace KidProEdu.API.Controllers
             List<EnumViewModel> enums = ((CourseType[])Enum.GetValues(typeof(CourseType))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
             return Ok(enums);
         }
+        
+        [HttpGet("StatusAdviseRequest")]
+        public async Task<IActionResult> CoursStatusAdviseRequesteType()
+        {
+            List<EnumViewModel> enums = ((StatusAdviseRequest[])Enum.GetValues(typeof(StatusAdviseRequest))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            return Ok(enums);
+        }
     }
 }
