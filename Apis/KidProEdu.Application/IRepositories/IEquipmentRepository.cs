@@ -11,7 +11,6 @@ namespace KidProEdu.Application.IRepositories
 
     public interface IEquipmentRepository : IGenericRepository<Equipment>
     {
-        Task<List<Equipment>> GetEquipmentByName(string name);
-        Task<List<Equipment>> GetEquipmentByCode(string code);
+        Task<List<Equipment>> GetListEquipmentByName(string name);
     }
 }
