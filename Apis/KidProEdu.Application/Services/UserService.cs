@@ -3,6 +3,7 @@ using AutoMapper.Execution;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Users;
+using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.LoginViewModel;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
@@ -86,7 +87,7 @@ namespace KidProEdu.Application.Services
             
                 var getChildren = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.UserId == findUser.Id).ToList();
 
-                mapper.ChildrenProfiles = getChildren;
+                mapper.ChildrenProfiles = _mapper.Map<List<ChildrenViewModel>> (getChildren);
             }
 
             return findUser != null ? mapper : throw new Exception();
