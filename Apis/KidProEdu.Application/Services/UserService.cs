@@ -10,6 +10,7 @@ using KidProEdu.Domain.Entities;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.Extensions.Configuration;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 
@@ -82,7 +83,7 @@ namespace KidProEdu.Application.Services
 
             var mapper = _mapper.Map<UserViewModel>(findUser);
 
-            if (findUser.Role.Id == new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A54"))
+            if (findUser.Role.Name.Equals("Parent"))
             {
             
                 var getChildren = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.UserId == findUser.Id).ToList();
@@ -95,9 +96,23 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<UserViewModel>> GetAllUser()
         {
-            var user = _unitOfWork.UserRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate);
+            var listUser = await _unitOfWork.UserRepository.GetAllAsync();
 
-            return _mapper.Map<List<UserViewModel>>(user);
+            var getCurrentUserId = _unitOfWork.UserRepository.GetByIdAsync(_claimsService.GetCurrentUserId).Result.Role.Name;
+
+            List<UserAccount> users = new List<UserAccount>();
+            
+            if (getCurrentUserId.Equals("Admin"))
+            {
+                users = listUser.Where(x => x.Role.Name.Equals("Manager") || x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).ToList();
+            }
+
+            if (getCurrentUserId.Equals("Manager"))
+            {
+                users = listUser.Where(x => x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).ToList();
+            }
+
+            return _mapper.Map<List<UserViewModel>>(users);
         }
 
         public async Task<List<UserViewModel>> GetUserByRoleId(Guid Id)
