@@ -1,9 +1,5 @@
-﻿using KidProEdu.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using KidProEdu.Application.ViewModels.ClassViewModels;
+using KidProEdu.Application.ViewModels.LessonViewModels;
 
 namespace KidProEdu.Application.ViewModels.CourseViewModels
 {
@@ -22,5 +18,8 @@ namespace KidProEdu.Application.ViewModels.CourseViewModels
         public string? Image { get; set; }
         public string CourseType { get; set; }
         public ICollection<CourseViewModel> Courses { get; set; }
+        public ICollection<ClassViewModel> Classes { get; set; }
+        public ICollection<LessonViewModel> Lessons { get; set; }
+
     }
 }

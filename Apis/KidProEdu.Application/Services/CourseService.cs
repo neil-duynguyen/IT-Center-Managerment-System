@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
+using KidProEdu.Application.ViewModels.LessonViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Configuration;
@@ -69,8 +71,12 @@ namespace KidProEdu.Application.Services
             var mapper = _mapper.Map<CourseViewModel>(courseParent);
 
             var getList = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == courseParent.Id).ToList();
+            var classes = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.CourseId == Id).ToList();
+            var lessons = _unitOfWork.LessonRepository.GetAllAsync().Result.Where(x => x.CourseId == Id).ToList();
 
             mapper.Courses = _mapper.Map<List<CourseViewModel>>(getList);
+            mapper.Classes = _mapper.Map<List<ClassViewModel>>(classes);
+            mapper.Lessons = _mapper.Map<List<LessonViewModel>>(lessons);
 
             return mapper;
         }

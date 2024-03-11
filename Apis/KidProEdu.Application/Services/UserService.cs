@@ -83,7 +83,7 @@ namespace KidProEdu.Application.Services
 
             if (findUser.Role.Id == new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A54"))
             {
-            
+
                 var getChildren = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.UserId == findUser.Id).ToList();
 
                 mapper.ChildrenProfiles = getChildren;
@@ -101,7 +101,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<UserViewModel>> GetUserByRoleId(Guid Id)
         {
-            var user = _unitOfWork.UserRepository.GetAllAsync().Result.Where(x => x.RoleId == Id && x.Status.ToString().Equals("Enable"));
+            var user = _unitOfWork.UserRepository.GetAllAsync().Result.Where(x => x.RoleId == Id && x.IsDeleted == false).OrderByDescending(x => x.CreationDate);
 
             return _mapper.Map<List<UserViewModel>>(user);
         }
