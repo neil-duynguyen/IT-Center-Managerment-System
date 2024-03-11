@@ -56,7 +56,7 @@ namespace Infrastructures.Repositories
 
         public override async Task<UserAccount> GetByIdAsync(Guid id)
         {
-            return await _dbSet.Include(x => x.Role).Include(x => x.Location).Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbSet.Include(x => x.Role).Include(x => x.ChildrenProfile).Include(x => x.Location).Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<UserAccount> GetUserAccountByProperty(UpdateUserViewModel updateUserViewModel, Expression<Func<UserAccount, object>> property)

@@ -1,4 +1,5 @@
-﻿using KidProEdu.Domain.Entities;
+﻿using KidProEdu.Application.ViewModels.ChildrenViewModels;
+using KidProEdu.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,6 @@ namespace KidProEdu.Application.ViewModels.UserViewModels
         public string? BankAccountName { get; set; }
         public string? BankName { get; set; }
         public string Status { get; set; }
-        public ICollection<ChildrenProfile> ChildrenProfiles { get; set; }
+        public ICollection<ChildrenViewModel> ChildrenProfiles { get; set; }
     }
 }
