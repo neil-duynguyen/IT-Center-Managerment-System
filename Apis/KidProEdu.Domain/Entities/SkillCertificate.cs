@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    public class SkillTag : BaseEntity
+    public class SkillCertificate : BaseEntity
     {
         [ForeignKey("UserAccount")]
         public Guid UserAccountId { get; set; }
-        [ForeignKey("Tag")]
-        public Guid TagId { get; set; }
+        [ForeignKey("Skill")]
+        public Guid SkillId { get; set; }
+        public string Url { get; set; }
         public virtual UserAccount UserAccount { get; set; }
-        public virtual Tag Tag { get; set; }
+        public virtual Skill Skill { get; set; }
     }
 }

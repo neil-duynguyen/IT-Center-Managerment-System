@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Entities
 {
-    public class Document : BaseEntity
+    public class Resource : BaseEntity
     {
-        [ForeignKey("Lesson")]
-        public Guid LessonId { get; set; }
+        [ForeignKey("Course")]
+        public Guid CourseId { get; set; }
         public string? Url { get; set; }
         public Guid ClassId { get; set; }
 
-        public virtual Lesson Lesson { get; set; }
+        public virtual Course Course { get; set; }
     }
 }

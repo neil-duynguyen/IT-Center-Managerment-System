@@ -157,8 +157,8 @@ namespace KidProEdu.Application.Services
                             case "Class":
                                 var currentClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)request.FromClassId);
                                 var newClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)request.ToClassId);
-                                currentClass.UserId = newClass.UserId; //lớp cũ đổi thành gv lớp mới
-                                newClass.UserId = request.CreatedBy; //lớp mới đổi thành gv cũ
+                                //currentClass.UserId = newClass.UserId; //lớp cũ đổi thành gv lớp mới
+                                //newClass.UserId = request.CreatedBy; //lớp mới đổi thành gv cũ
                                 break;
                             case "Schedule":
                                 break;

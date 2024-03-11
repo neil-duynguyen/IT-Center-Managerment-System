@@ -110,9 +110,9 @@ namespace KidProEdu.API.Mappers
 
             //CreateMap<RequestUserAccount, CreateRequestUserAccountViewModel>().ReverseMap();
 
-            CreateMap<Document, DocumentViewModel>().ReverseMap();
-            CreateMap<CreateDocumentViewModel, Document>().ReverseMap();
-            CreateMap<UpdateDocumentViewModel, Document>().ReverseMap();
+            CreateMap<Resource, DocumentViewModel>().ReverseMap();
+            CreateMap<CreateDocumentViewModel, Resource>().ReverseMap();
+            CreateMap<UpdateDocumentViewModel, Resource>().ReverseMap();
 
             CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap();
             CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();

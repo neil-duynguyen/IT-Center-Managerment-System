@@ -30,7 +30,7 @@ namespace Infrastructures
         private readonly ISemesterCourseRepository _semesterCourseRepository;
         private readonly IClassRepository _classRepository;
         private readonly IRequestUserAccountRepository _requestUserAccountRepository;
-        private readonly IDocumentRepository _documentRepository;
+        private readonly IResourceRepository _resourceRepository;
         private readonly ILogEquipmentRepository _logEquipmentRepository;
         private readonly IAdviseRequestRepository _adviseRequestRepository;
         private readonly IDivisionUserAccountRepository _divisionUserAccountRepository;
@@ -44,7 +44,7 @@ namespace Infrastructures
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
             ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository
-            , IRequestUserAccountRepository requestUserAccountRepository, IDocumentRepository documentRepository
+            , IRequestUserAccountRepository requestUserAccountRepository, IResourceRepository resourceRepository
             , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository, IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository)
         {
             _dbContext = dbContext;
@@ -69,7 +69,7 @@ namespace Infrastructures
             _semesterCourseRepository = semesterCourseRepository;
             _classRepository = classRepository;
             _requestUserAccountRepository = requestUserAccountRepository;
-            _documentRepository = documentRepository;
+            _resourceRepository = resourceRepository;
             _logEquipmentRepository = logEquipmentRepository;
             _adviseRequestRepository = adviseRequestRepository;
             _divisionUserAccountRepository = divisionUserAccountRepository;
@@ -117,7 +117,7 @@ namespace Infrastructures
 
         public IRequestUserAccountRepository RequestUserAccountRepository => _requestUserAccountRepository;
 
-        public IDocumentRepository DocumentRepository => _documentRepository;
+        public IResourceRepository ResourceRepository => _resourceRepository;
 
         public ILogEquipmentRepository LogEquipmentRepository => _logEquipmentRepository;
 

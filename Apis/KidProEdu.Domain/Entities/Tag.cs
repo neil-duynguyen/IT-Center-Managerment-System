@@ -13,6 +13,5 @@ namespace KidProEdu.Domain.Entities
         public string? Description { get; set; }
         public TagType TagType { get; set; }
         public IList<Blog> Blogs { get; set; }
-        public IList<SkillTag> SkillTag { get; set; }
     }
 }

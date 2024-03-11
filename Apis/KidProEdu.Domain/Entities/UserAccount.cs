@@ -33,7 +33,7 @@ namespace KidProEdu.Domain.Entities
         public virtual Location? Location { get; set; }
         public IList<AdviseRequest> AdviseRequests { get; set; }
         public IList<Feedback> Feedbacks { get; set; }
-        public IList<Class> Classes { get; set; }
+        public IList<TeachingClassHistory> TeachingClassHistories { get; set; }
         public IList<ChildrenProfile> ChildrenProfile { get; set; }
         public IList<Enrollment> Enrollments { get; set; }
         public IList<NotificationUser> NotificationUsers { get; set; }
@@ -41,7 +41,7 @@ namespace KidProEdu.Domain.Entities
         public IList<Contract> Contracts { get; set; }
         public IList<RequestUserAccount> RequestUserAccounts { get; set; }
         public IList<LogEquipment> LogEquipments { get; set; }
-        public IList<SkillTag> SkillTag { get; set; }
+        public IList<SkillCertificate> SkillCertificate { get; set; }
         public IList<DivisionUserAccount> DivisionUserAccounts { get; set; }
     }
 }

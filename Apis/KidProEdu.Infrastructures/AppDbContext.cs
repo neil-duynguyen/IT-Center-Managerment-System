@@ -17,7 +17,9 @@ namespace KidProEdu.Infrastructures
 
         public DbSet<Role> Role { get; set; }
         public DbSet<UserAccount> UserAccount { get; set; }
-        public DbSet<SkillTag> SkillTag { get; set; }
+        public DbSet<TeachingClassHistory> TeachingClassHistory { get; set; }
+        public DbSet<Skill> Skill { get; set; }
+        public DbSet<SkillCertificate> SkillCertificate { get; set; }
         public DbSet<AdviseRequest> AdviseRequest { get; set; }
         public DbSet<AnnualWorkingDay> AnnualWorkingDay { get; set; }
         public DbSet<Attendance> Attendance { get; set; }
@@ -36,7 +38,7 @@ namespace KidProEdu.Infrastructures
         public DbSet<Equipment> Equipment { get; set; }
         public DbSet<LogEquipment> LogEquipment { get; set; }
         public DbSet<Feedback> Feedback { get;set; }
-        public DbSet<Document> Document { get; set; }
+        public DbSet<Resource> Resource { get; set; }
         public DbSet<Division> Division { get; set; }
         public DbSet<Lesson> Lesson { get; set; }
         public DbSet<Location> Location { get; set; }

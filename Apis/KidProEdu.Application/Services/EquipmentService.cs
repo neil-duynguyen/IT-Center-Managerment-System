@@ -123,7 +123,7 @@ namespace KidProEdu.Application.Services
             equipment.CategoryEquipmentId = updateEquipmentViewModel.CategoryEquipmentId;
             equipment.Status = updateEquipmentViewModel.Status;
             equipment.Price = updateEquipmentViewModel.Price;
-            equipment.WarrantyDate = updateEquipmentViewModel.WarrantyDate;
+            //equipment.WarrantyDate = updateEquipmentViewModel.WarrantyDate;
             equipment.Code = updateEquipmentViewModel.Code;
             equipment.RoomId = updateEquipmentViewModel.RoomId;
 

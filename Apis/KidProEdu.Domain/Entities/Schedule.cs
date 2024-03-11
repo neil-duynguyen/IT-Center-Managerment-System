@@ -14,8 +14,8 @@ namespace KidProEdu.Domain.Entities
         public Guid SlotId { get;set; } 
         public string NameSlot { get; set; }
         public Guid ChildrenId { get; set; }
-        public TimeSpan StartSlot { get; set; }
-        public TimeSpan EndSlot { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
         public virtual Class Class { get; set; }
         public IList<ScheduleRoom> ScheduleRooms { get; set; }
         public virtual Slot Slot { get; set; }

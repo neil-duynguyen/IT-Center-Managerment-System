@@ -15,14 +15,14 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.Services
 {
-    public class DocumentService : IDocumentService
+    public class ResourceService : IResourceService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentTime _currentTime;
         private readonly IClaimsService _claimsService;
         private readonly IMapper _mapper;
 
-        public DocumentService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper)
+        public ResourceService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
@@ -30,7 +30,7 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateDocument(CreateDocumentViewModel createDocumentViewModel)
+        /*public async Task<bool> CreateDocument(CreateDocumentViewModel createDocumentViewModel)
         {
             var validator = new CreateDocumentViewModelValidator();
             var validationResult = validator.Validate(createDocumentViewModel);
@@ -132,6 +132,6 @@ namespace KidProEdu.Application.Services
             mapper.Url = updateDocumentViewModel.Url;
             _unitOfWork.DocumentRepository.Update(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật tài liệu thất bại");
-        }
+        }*/
     }
 }

@@ -197,7 +197,7 @@ namespace KidProEdu.Application.Services
             mapper.Price = updateLogEquipmentViewModel.Price;
             mapper.Status = updateLogEquipmentViewModel.Status;
             mapper.WarrantyDate = updateLogEquipmentViewModel.WarrantyDate;
-            mapper.WarrantyPeriod = updateLogEquipmentViewModel.WarrantyPeriod;
+            //mapper.WarrantyPeriod = updateLogEquipmentViewModel.WarrantyPeriod;
             mapper.PurchaseDate = updateLogEquipmentViewModel.PurchaseDate;
             mapper.RoomId = updateLogEquipmentViewModel.RoomId;
             _unitOfWork.LogEquipmentRepository.Update(mapper);

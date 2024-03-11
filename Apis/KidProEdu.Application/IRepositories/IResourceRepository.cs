@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace KidProEdu.Application.IRepositories
 {
 
-    public interface IDocumentRepository : IGenericRepository<Document>
+    public interface IResourceRepository : IGenericRepository<Resource>
     {
-        Task<List<Document>> GetDocumentsByLessonId(Guid lessonId);
-        Task<List<Document>> GetDocumentsByClassId(Guid classId);
+        //Task<List<Resource>> GetDocumentsByLessonId(Guid lessonId);
+        Task<List<Resource>> GetDocumentsByClassId(Guid classId);
     }
 }

@@ -26,7 +26,7 @@ namespace KidProEdu.Application
         public ISemesterCourseRepository SemesterCourseRepository { get; }
         public IClassRepository ClassRepository { get; }
         public IRequestUserAccountRepository RequestUserAccountRepository { get; }
-        public IDocumentRepository DocumentRepository { get; }
+        public IResourceRepository ResourceRepository { get; }
         public ILogEquipmentRepository LogEquipmentRepository { get; }
         public IAdviseRequestRepository  AdviseRequestRepository { get; }
         public IDivisionUserAccountRepository DivisionUserAccountRepository { get; }

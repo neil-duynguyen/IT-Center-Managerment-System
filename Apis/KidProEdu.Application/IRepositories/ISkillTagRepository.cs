@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.IRepositories
 {
-    public interface ISkillTagRepository : IGenericRepository<SkillTag>
+    public interface ISkillTagRepository : IGenericRepository<SkillCertificate>
     {
     }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Infrastructures.Repositories
 {
-    public class SkillTagRepository : GenericRepository<SkillTag>, ISkillTagRepository
+    public class SkillTagRepository : GenericRepository<SkillCertificate>, ISkillTagRepository
     {
         public SkillTagRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService) : base(context, timeService, claimsService)
         {

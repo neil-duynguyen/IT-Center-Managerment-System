@@ -17,9 +17,8 @@ namespace KidProEdu.Domain.Entities
         public string? Name { get; set; }
         public string? Code { get; set; }
         public double? Price { get; set; }
-        public StatusOfEquipment? Status {  get; set; }
-        public DateTime? WarrantyDate { get; set; }
-        public DateTime? WarrantyPeriod { get; set; }
+        public StatusOfEquipment? Status {  get; set; }    
+        public string? WarrantyPeriod { get; set; }
         public DateTime? PurchaseDate { get; set; }
         public virtual CategoryEquipment CategoryEquipment { get; set; }
         public virtual Room? Room { get; set; }

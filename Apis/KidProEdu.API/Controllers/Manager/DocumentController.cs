@@ -11,21 +11,21 @@ namespace KidProEdu.API.Controllers.Manager
     [ApiController]
     public class DocumentController : ControllerBase
     {
-        private readonly IDocumentService _documentService;
-        public DocumentController(IDocumentService documentService)
+        private readonly IResourceService _documentService;
+        public DocumentController(IResourceService documentService)
         {
             _documentService = documentService;
         }
 
-        [HttpGet("Documents")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[HttpGet("Documents")]
+        *//*[Authorize(Roles = ("Admin"))]*//*
         public async Task<IActionResult> Documents()
         {
             return Ok(await _documentService.GetDocuments());
         }
 
         [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
+        *//*[Authorize(Roles = ("Admin"))]*//*
         public async Task<IActionResult> PostDocument(CreateDocumentViewModel createDocumentViewModel)
         {
             try
@@ -47,7 +47,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("{id}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        *//*[Authorize(Roles = ("Admin"))]*//*
         public async Task<IActionResult> Doument(Guid id)
         {
             var result = await _documentService.GetDocumentById(id);
@@ -59,7 +59,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("DocumentByClass/{classId}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        *//*[Authorize(Roles = ("Admin"))]*//*
         public async Task<IActionResult> DocumentByClassId(Guid classId)
         {
             var result = await _documentService.GetDocumentsByClassId(classId);
@@ -71,7 +71,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("DocumentByLesson/{lessonId}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        *//*[Authorize(Roles = ("Admin"))]*//*
         public async Task<IActionResult> DocumentByLessonId(Guid lessonId)
         {
             var result = await _documentService.GetDocumentsByLessonId(lessonId);
@@ -83,7 +83,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        *//*[Authorize(Roles = ("Admin"))]*//*
         public async Task<IActionResult> PutDocument(UpdateDocumentViewModel updateDocumentViewModel)
         {
             try
@@ -105,7 +105,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        *//*[Authorize(Roles = ("Admin"))]*//*
         public async Task<IActionResult> DeleteDocument(Guid id)
         {
             try
@@ -124,6 +124,6 @@ namespace KidProEdu.API.Controllers.Manager
             {
                 return BadRequest(ex.Message);
             }
-        }
+        }*/
     }
 }
