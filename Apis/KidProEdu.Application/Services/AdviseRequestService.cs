@@ -95,9 +95,14 @@ namespace KidProEdu.Application.Services
 
             var adviseRequest = await _unitOfWork.AdviseRequestRepository.GetByIdAsync(updateAdviseRequestViewModel.Id)
                 ?? throw new Exception("Không tìm thấy yêu cầu tư vấn");
+
             if (adviseRequest.UserId != null)
             {
-                throw new Exception("Yêu cầu tư vấn này đã có người nhận");
+                if (updateAdviseRequestViewModel.UserId != adviseRequest.UserId)
+                {
+
+                    throw new Exception("Yêu cầu tư vấn này đã có người nhận");
+                }
             }
 
             foreach (var property in uniqueProperties)
