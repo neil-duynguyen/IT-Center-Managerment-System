@@ -90,7 +90,7 @@ namespace KidProEdu.Application.Services
             return mapper;
         }
 
-        public async Task<List<LogEquipmentViewModel>> GetLogEquipments()
+        public async Task<List<dotnet ef database update -s KidProEdu.API -p KidProEdu.InfrastructuresViewModel>> GetLogEquipments()
         {
             var results = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
 
@@ -196,7 +196,7 @@ namespace KidProEdu.Application.Services
             mapper.Code = updateLogEquipmentViewModel.Code;
             mapper.Price = updateLogEquipmentViewModel.Price;
             mapper.Status = updateLogEquipmentViewModel.Status;
-            mapper.WarrantyDate = updateLogEquipmentViewModel.WarrantyDate;
+            //mapper.WarrantyDate = updateLogEquipmentViewModel.WarrantyDate;
             //mapper.WarrantyPeriod = updateLogEquipmentViewModel.WarrantyPeriod;
             mapper.PurchaseDate = updateLogEquipmentViewModel.PurchaseDate;
             mapper.RoomId = updateLogEquipmentViewModel.RoomId;

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240311174007_UpdateTable_Equipment,Skill,User")]
-    partial class UpdateTable_EquipmentSkillUser
+    [Migration("20240312053238_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1193,6 +1193,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("ReturnedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("ReturnedDealine")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid?>("RoomId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1201,9 +1204,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<Guid?>("UserAccountId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("WarrantyDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("WarrantyPeriod")
                         .HasColumnType("nvarchar(max)");
