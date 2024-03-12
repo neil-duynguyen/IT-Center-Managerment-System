@@ -13,9 +13,9 @@ namespace KidProEdu.Application.ViewModels.EquipmentViewModels
         public Guid CategoryEquipmentId { get; set; }
         public Guid? RoomId { get; set; }
         public string? Name { get; set; }
-        public string? Code { get; set; }
         public double? Price { get; set; }
         public StatusOfEquipment? Status { get; set; }
-        public DateTime? WarrantyDate { get; set; }
+        public string? WarrantyPeriod { get; set; }
+        public DateTime? PurchaseDate { get; set; }
     }
 }

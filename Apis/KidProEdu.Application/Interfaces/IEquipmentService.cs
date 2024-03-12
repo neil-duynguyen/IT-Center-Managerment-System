@@ -11,10 +11,11 @@ namespace KidProEdu.Application.Interfaces
 
     public interface IEquipmentService
     {
-        Task<List<Equipment>> GetEquipments();
+        Task<List<EquipmentViewModel>> GetEquipments();
+        Task<List<EquipmentViewModel>> GetListEquipmentByName(string name);
         Task<bool> CreateEquipment(CreateEquipmentViewModel createEquipmentViewModel);
         Task<bool> UpdateEquipment(UpdateEquipmentViewModel updateEquipmentViewModel);
-        Task<Equipment> GetEquipmentById(Guid id);
+        Task<EquipmentViewModel> GetEquipmentById(Guid id);
         Task<bool> DeleteEquipment(Guid id);
     }
 }

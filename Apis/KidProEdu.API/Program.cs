@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using Infrastructures;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Application.Hubs;
+using KidProEdu.Application.Utils;
 
 namespace KidProEdu.API
 {
@@ -136,6 +137,8 @@ namespace KidProEdu.API
             #endregion
 
             #region DIService
+            builder.Services.AddScoped<QRCodeUtility>();
+
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IClaimsService, ClaimsService>();

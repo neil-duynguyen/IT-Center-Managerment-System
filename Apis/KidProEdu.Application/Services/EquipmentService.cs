@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.CategoryEquipments;
 using KidProEdu.Application.Validations.Equipments;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
@@ -20,13 +21,15 @@ namespace KidProEdu.Application.Services
         private readonly ICurrentTime _currentTime;
         private readonly IClaimsService _claimsService;
         private readonly IMapper _mapper;
+        private readonly QRCodeUtility _qrCodeUtility;
 
-        public EquipmentService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper)
+        public EquipmentService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, QRCodeUtility qrCodeUtility)
         {
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
             _claimsService = claimsService;
             _mapper = mapper;
+            _qrCodeUtility = qrCodeUtility;
         }
 
         public async Task<bool> CreateEquipment(CreateEquipmentViewModel createEquipmentViewModel)
@@ -41,21 +44,11 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var equipment = await _unitOfWork.EquipmentRepository.GetEquipmentByName(createEquipmentViewModel.Name);
-            if (!equipment.IsNullOrEmpty())
-            {
-                throw new Exception("Tên đã tồn tại");
-            }
-
-            var equipment1 = await _unitOfWork.EquipmentRepository.GetEquipmentByCode(createEquipmentViewModel.Code);
-            if (!equipment1.IsNullOrEmpty())
-            {
-                throw new Exception("Code đã tồn tại");
-            }
-
             var mapper = _mapper.Map<Equipment>(createEquipmentViewModel);
             await _unitOfWork.EquipmentRepository.AddAsync(mapper);
+            mapper.Code = _qrCodeUtility.GenerateQRCode($"{mapper.Id}");
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo thiết bị thất bại");
+
         }
 
         public async Task<bool> DeleteEquipment(Guid id)
@@ -69,18 +62,29 @@ namespace KidProEdu.Application.Services
                 _unitOfWork.EquipmentRepository.SoftRemove(result);
                 return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa thiết bị thất bại");
             }
+
         }
 
-        public async Task<Equipment> GetEquipmentById(Guid id)
+        public async Task<EquipmentViewModel> GetEquipmentById(Guid id)
         {
             var result = await _unitOfWork.EquipmentRepository.GetByIdAsync(id);
-            return result;
+            var mapper = _mapper.Map<EquipmentViewModel>(result);
+            return mapper;
+
         }
 
-        public async Task<List<Equipment>> GetEquipments()
+        public async Task<List<EquipmentViewModel>> GetEquipments()
         {
-            var results = _unitOfWork.EquipmentRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
-            return results;
+            var results =  _unitOfWork.EquipmentRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
+            var mapper = _mapper.Map<List<EquipmentViewModel>>(results);
+            return mapper;
+        }
+
+        public async Task<List<EquipmentViewModel>> GetListEquipmentByName(string name)
+        {
+            var results = _unitOfWork.EquipmentRepository.GetListEquipmentByName(name).Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
+            var mapper = _mapper.Map<List<EquipmentViewModel>>(results);
+            return mapper;
         }
 
         public async Task<bool> UpdateEquipment(UpdateEquipmentViewModel updateEquipmentViewModel)
@@ -101,33 +105,15 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Không tìm thấy thiết bị");
             }
 
-            var existingEquipment = await _unitOfWork.EquipmentRepository.GetEquipmentByName(updateEquipmentViewModel.Name);
-            if (!existingEquipment.IsNullOrEmpty())
-            {
-                if (existingEquipment.FirstOrDefault().Id != equipment.Id)
-                {
-                    throw new Exception("Tên đã tồn tại");
-                }
-            }
-
-            var existingEquipment2 = await _unitOfWork.EquipmentRepository.GetEquipmentByCode(updateEquipmentViewModel.Code);
-            if (!existingEquipment2.IsNullOrEmpty())
-            {
-                if (existingEquipment2.FirstOrDefault().Id != equipment.Id)
-                {
-                    throw new Exception("Code đã tồn tại");
-                }
-            }
-
-            equipment.Name = updateEquipmentViewModel.Name;
-            equipment.CategoryEquipmentId = updateEquipmentViewModel.CategoryEquipmentId;
-            equipment.Status = updateEquipmentViewModel.Status;
-            equipment.Price = updateEquipmentViewModel.Price;
-            //equipment.WarrantyDate = updateEquipmentViewModel.WarrantyDate;
-            equipment.Code = updateEquipmentViewModel.Code;
-            equipment.RoomId = updateEquipmentViewModel.RoomId;
-
-            _unitOfWork.EquipmentRepository.Update(equipment);
+            var mapper = _mapper.Map<Equipment>(equipment);
+            mapper.CategoryEquipmentId = updateEquipmentViewModel.CategoryEquipmentId;
+            mapper.RoomId = updateEquipmentViewModel.RoomId;
+            mapper.Name = updateEquipmentViewModel.Name;
+            mapper.Price = updateEquipmentViewModel.Price;
+            mapper.Status = updateEquipmentViewModel.Status;
+            mapper.WarrantyPeriod = updateEquipmentViewModel.WarrantyPeriod;
+            mapper.PurchaseDate = updateEquipmentViewModel.PurchaseDate;
+            _unitOfWork.EquipmentRepository.Update(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật thiết bị thất bại");
         }
     }

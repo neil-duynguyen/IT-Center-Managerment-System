@@ -20,16 +20,7 @@ namespace KidProEdu.Infrastructures.Repositories
             _dbContext = context;
         }
 
-        public async Task<List<Equipment>> GetEquipmentByCode(string code)
-        {
-            var equipments = await _dbContext.Equipment
-                .Where(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == false)
-                .ToListAsync();
-
-            return equipments;
-        }
-
-        public async Task<List<Equipment>> GetEquipmentByName(string name)
+        public async Task<List<Equipment>> GetListEquipmentByName(string name)
         {
             var equipments = await _dbContext.Equipment
                 .Where(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == false)
