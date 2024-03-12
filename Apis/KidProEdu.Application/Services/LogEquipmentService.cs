@@ -33,7 +33,57 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateLogEquipment(CreateLogEquipmentViewModel createLogEquipmentViewModel)
+        public Task<bool> CreateLogEquipment(CreateLogEquipmentViewModel createLogEquipmentViewModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteLogEquipment(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LogEquipmentViewModel> GetLogEquipmentById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<LogEquipmentViewModel>> GetLogEquipments()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<LogEquipmentViewModel>> GetLogEquipmentsByCode(string code)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<LogEquipmentViewModel>> GetLogEquipmentsByEquipmentId(Guid equipmentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<LogEquipmentViewModel>> GetLogEquipmentsByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<LogEquipmentViewModel>> GetLogEquipmentsByRoomId(Guid roomId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<LogEquipmentViewModel>> GetLogEquipmentsByUserId(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateLogEquipment(UpdateLogEquipmentViewModel updateLogEquipmentViewModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        /*public async Task<bool> CreateLogEquipment(CreateLogEquipmentViewModel createLogEquipmentViewModel)
         {
             var validator = new CreateLogEquipmentViewModelValidator();
             var validationResult = validator.Validate(createLogEquipmentViewModel);
@@ -202,6 +252,6 @@ namespace KidProEdu.Application.Services
             mapper.RoomId = updateLogEquipmentViewModel.RoomId;
             _unitOfWork.LogEquipmentRepository.Update(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật bài học thất bại");
-        }
+        }*/
     }
 }

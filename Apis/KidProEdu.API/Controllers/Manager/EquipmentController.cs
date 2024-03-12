@@ -35,6 +35,18 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(equipment);
         }
 
+        [HttpGet("Equipments/{name}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> EquipmentByName(string name)
+        {
+            var equipments = await _equipmentService.GetListEquipmentByName(name);
+            if (equipments == null)
+            {
+                return NotFound();
+            }
+            return Ok(equipments);
+        }
+
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> PostEquipment(CreateEquipmentViewModel createEquipmentViewModel)
