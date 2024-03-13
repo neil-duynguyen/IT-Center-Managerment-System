@@ -14,7 +14,6 @@ namespace Infrastructures
         private readonly ITagRepository _tagRepository;
         private readonly ILocationRepository _locationRepository;
         private readonly ICategoryEquipmentRepository _categoryEquipmentRepository;
-        private readonly ISemesterRepository _semesterRepository;
         private readonly IRoomRepository _roomRepository;
         private readonly IEquipmentRepository _equipmentRepository;
         private readonly IBlogRepository _blogRepository;
@@ -27,7 +26,6 @@ namespace Infrastructures
         private readonly IQuestionRepository _questionRepository;
         private readonly IRequestRepository _requestRepository;
         private readonly ICourseRepository _courseRepository;
-        private readonly ISemesterCourseRepository _semesterCourseRepository;
         private readonly IClassRepository _classRepository;
         private readonly IRequestUserAccountRepository _requestUserAccountRepository;
         private readonly IResourceRepository _resourceRepository;
@@ -38,12 +36,12 @@ namespace Infrastructures
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
-            , ISemesterRepository semesterRepository, IRoomRepository roomRepository, IEquipmentRepository equipmentRepository
+            , IRoomRepository roomRepository, IEquipmentRepository equipmentRepository
             , IBlogRepository blogRepository
             , IChildrenRepository childrenRepository, INotificationRepository notificationRepository
             , INotificationUserRepository notificationUserRepository, IRatingRepository ratingRepository, IDivisionRepository divisionRepository
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
-            ICourseRepository courseRepository, ISemesterCourseRepository semesterCourseRepository, IClassRepository classRepository
+            ICourseRepository courseRepository, IClassRepository classRepository
             , IRequestUserAccountRepository requestUserAccountRepository, IResourceRepository resourceRepository
             , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository, IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository)
         {
@@ -53,7 +51,6 @@ namespace Infrastructures
             _tagRepository = tagRepository;
             _locationRepository = locationRepository;
             _categoryEquipmentRepository = categoryEquipmentRepository;
-            _semesterRepository = semesterRepository;
             _roomRepository = roomRepository;
             _equipmentRepository = equipmentRepository;
             _blogRepository = blogRepository;
@@ -66,7 +63,6 @@ namespace Infrastructures
             _questionRepository = questionRepository;
             _requestRepository = requestRepository;
             _courseRepository = courseRepository;
-            _semesterCourseRepository = semesterCourseRepository;
             _classRepository = classRepository;
             _requestUserAccountRepository = requestUserAccountRepository;
             _resourceRepository = resourceRepository;
@@ -84,8 +80,6 @@ namespace Infrastructures
         public ILocationRepository LocationRepository => _locationRepository;
 
         public ICategoryEquipmentRepository CategoryEquipmentRepository => _categoryEquipmentRepository;
-
-        public ISemesterRepository SemesterRepository => _semesterRepository;
 
         public IRoomRepository RoomRepository => _roomRepository;
 
@@ -106,8 +100,6 @@ namespace Infrastructures
         public ILessonRepository LessonRepository => _lessonRepository;
 
         public ICourseRepository CourseRepository => _courseRepository;
-
-        public ISemesterCourseRepository SemesterCourseRepository => _semesterCourseRepository;
 
         public IRequestRepository RequestRepository => _requestRepository;
 

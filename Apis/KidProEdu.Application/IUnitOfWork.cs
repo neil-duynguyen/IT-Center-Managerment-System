@@ -10,7 +10,6 @@ namespace KidProEdu.Application
         public ITagRepository TagRepository { get; }
         public ILocationRepository LocationRepository { get; }
         public ICategoryEquipmentRepository CategoryEquipmentRepository { get; }
-        public ISemesterRepository SemesterRepository { get; }
         public IRoomRepository RoomRepository { get; }
         public IEquipmentRepository EquipmentRepository { get; }
         public IBlogRepository BlogRepository { get; }
@@ -23,7 +22,6 @@ namespace KidProEdu.Application
         public IQuestionRepository QuestionRepository { get; }
         public IRequestRepository RequestRepository { get; }
         public ICourseRepository CourseRepository { get; }
-        public ISemesterCourseRepository SemesterCourseRepository { get; }
         public IClassRepository ClassRepository { get; }
         public IRequestUserAccountRepository RequestUserAccountRepository { get; }
         public IResourceRepository ResourceRepository { get; }

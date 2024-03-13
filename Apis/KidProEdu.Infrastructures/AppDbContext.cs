@@ -50,14 +50,15 @@ namespace KidProEdu.Infrastructures
         public DbSet<Room> Room { get; set; }
         public DbSet<Schedule> Schedule { get; set; }
         public DbSet<ScheduleRoom> ScheduleRoom { get; set; }
-        public DbSet<Score> Score { get; set; }
-        public DbSet<Semester> Semester { get; set; }
-        public DbSet<SemesterCourse> SemesterCourse { get; set; }
         public DbSet<Tag> Tag { get; set; }
         public DbSet<TestTime> TestTime { get; set; }   
         public DbSet<Transaction> Transaction { get; set; }
         public DbSet<RequestUserAccount> RequestUserAccount { get; set; }
         public DbSet<DivisionUserAccount> DivisionUserAccount { get; set; }
+        public DbSet<Exam> Exam { get; set; }
+        public DbSet<ChildrenAnswer> ChildrenAnswer { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Role>().HasData(
@@ -185,18 +186,6 @@ namespace KidProEdu.Infrastructures
                 .HasForeignKey(x => x.ScheduleId)
                 .OnDelete(DeleteBehavior.ClientSetNull);        
 
-            builder.Entity<ChildrenCertificate>()
-                .HasOne(x => x.ChildrenProfile)
-                .WithMany(x => x.ChildrenCertificates)
-                .HasForeignKey(x => x.ChildrenProfileId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            builder.Entity<ChildrenCertificate>()
-                .HasOne(x => x.Certificate)
-                .WithMany(x => x.ChildrenCertificates)
-                .HasForeignKey(x => x.CertificateId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
             builder.Entity<Attendance>()
                 .HasOne(x => x.Schedule)
                 .WithMany(x => x.Attendances)
@@ -221,15 +210,11 @@ namespace KidProEdu.Infrastructures
                 .HasForeignKey(x => x.RequestId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            builder.Entity<Course>()
-               .HasOne(p => p.Certificate)
-               .WithOne(x => x.Course)
-               .HasForeignKey<Certificate>(x => x.CourseId);
-
-            builder.Entity<Slot>()
-               .HasOne(p => p.Schedule)
-               .WithOne(x => x.Slot)
-               .HasForeignKey<Schedule>(x => x.SlotId);
+            builder.Entity<OrderDetail>()
+                .HasOne(x => x.ChildrenProfile)
+                .WithMany(x => x.OrderDetails)
+                .HasForeignKey(x => x.ChildrenProfileId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<Blog>()
                 .HasMany(p => p.Tags)

@@ -20,5 +20,6 @@ namespace KidProEdu.Domain.Entities
         public int? Level { get; set; }
 
         public virtual Lesson Lesson { get; set; }
+        public IList<ChildrenAnswer> ChildrenAnswer { get; set; }
     }
 }

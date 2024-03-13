@@ -11,6 +11,6 @@ namespace KidProEdu.Domain.Entities
         public string Name { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
-        public virtual Schedule Schedule { get; set; }
+        public IList<Schedule> Schedule { get; set; }
     }
 }

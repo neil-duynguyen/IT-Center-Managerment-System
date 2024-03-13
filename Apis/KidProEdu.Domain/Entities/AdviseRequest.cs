@@ -16,6 +16,5 @@ namespace KidProEdu.Domain.Entities
         public bool? IsTested { get; set; }
         public StatusAdviseRequest StatusAdviseRequest { get; set; }
         public virtual UserAccount? UserAccount { get; set; }
-        public IList<Test> Tests { get; set; }
     }
 }

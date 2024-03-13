@@ -112,7 +112,6 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ITagRepository, TagRepository>();
             builder.Services.AddScoped<ILocationRepository, LocationRepository>();
             builder.Services.AddScoped<ICategoryEquipmentRepository, CategoryEquipmentRepository>();
-            builder.Services.AddScoped<ISemesterRepository, SemesterRepository>();
             builder.Services.AddScoped<IRoomRepository, RoomRepository>();
             builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
             builder.Services.AddScoped<IBlogRepository, BlogRepository>();
@@ -124,7 +123,6 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ILessonRepository, LessonRepository>();
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<ICourseRepository, CourseRepository>();
-            builder.Services.AddScoped<ISemesterCourseRepository, SemesterCourseRepository>();
             builder.Services.AddScoped<IRequestRepository, RequestRepository>();
             builder.Services.AddScoped<IClassRepository, ClassRepository>();
             builder.Services.AddScoped<IRequestUserAccountRepository, RequestUserAccountRepository>();
@@ -146,7 +144,6 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ITagService, TagService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddScoped<ICategoryEquipmentService, CategoryEquipmentService>();
-            builder.Services.AddScoped<ISemesterService, SemesterService>();
             builder.Services.AddScoped<IRoomService, RoomService>();
             builder.Services.AddScoped<IEquipmentService, EquipmentService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
@@ -158,7 +155,6 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ILessonService, LessonService>();
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
-            builder.Services.AddScoped<ISemesterCourseService, SemesterCourseService>();
             builder.Services.AddScoped<IRequestService, RequestService>();
             builder.Services.AddScoped<IClassService, ClassService>();
             builder.Services.AddScoped<IRequestUserAccountService, RequestUserAccountService>();

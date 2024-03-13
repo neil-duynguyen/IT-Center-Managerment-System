@@ -10,8 +10,8 @@ namespace KidProEdu.Domain.Entities
 {
     public class Transaction : BaseEntity
     {
-        [ForeignKey("Order")]
-        public Guid OrderId { get; set; }
+        [ForeignKey("OrderDetail")]
+        public Guid OrderDetailId { get; set; }
         public string BankingAccountNumber { get; set; }
         public string BankingNumber { get; set; }
         public string BankName { get; set; }
@@ -24,6 +24,6 @@ namespace KidProEdu.Domain.Entities
         public DateTime? InstallmentPeriod { get; set; }
         public StatusTransaction StatusTransaction { get; set; }
         public Guid ParentsTransaction { get; set; }
-        public virtual Order Order { get; set; }
+        public virtual OrderDetail OrderDetail { get; set; }
     }
 }

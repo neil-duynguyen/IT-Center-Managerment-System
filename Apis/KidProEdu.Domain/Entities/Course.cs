@@ -17,19 +17,17 @@ namespace KidProEdu.Domain.Entities
         public string Description { get; set; }
         public int DurationTotal { get; set; }
         public string? Syllabus { get; set; }
-        public string? Level { get; set; } // sửa datatype -> int thứ tự học của các course con
-        public string? EntryPoint { get; set; } //điểm đầu vào thang điểm 10
+        public int? Level { get; set; }
+        public int? EntryPoint { get; set; } //điểm đầu vào thang điểm 10
         public string? Prerequisite { get; set; }
         public string? Image { get; set; }
         public CourseType CourseType { get; set; }
         public Guid ParentCourse { get; set; }
         public IList<Rating> Ratings { get; set; }
-        public IList<SemesterCourse> SemesterCourses { get; set; }
         public IList<Class> Classes { get; set; }
         public IList<Lesson> Lessons { get; set; }
-        public IList<Score> Scores { get; set; }
         public IList<OrderDetail> OrderDetails { get; set; }
         public IList<Resource> Resources { get; set; }
-        public Certificate Certificate { get; set; }
+        public IList<Certificate> Certificates { get; set; }
     }
 }

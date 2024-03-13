@@ -11,6 +11,8 @@ namespace KidProEdu.Domain.Entities
     {
         [ForeignKey("Order")]
         public Guid OrderId { get; set; }
+        [ForeignKey("ChildrenProfile")]
+        public Guid ChildrenProfileId { get; set; }
         public Guid CourseId { get; set; }
         public string CourseName { get; set; }
         public int Quantity { get; set; }
@@ -18,5 +20,7 @@ namespace KidProEdu.Domain.Entities
         public double TotalPrice { get; set; }
         public virtual Course Course { get; set; }
         public virtual Order Order { get; set; }
+        public virtual ChildrenProfile ChildrenProfile { get; set; }
+        public IList<Transaction> Transactions { get; set; }
     }
 }

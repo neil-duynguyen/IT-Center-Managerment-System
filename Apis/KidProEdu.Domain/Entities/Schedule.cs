@@ -11,14 +11,14 @@ namespace KidProEdu.Domain.Entities
     {
         [ForeignKey("Class")]
         public Guid ClassId { get; set; }
+        [ForeignKey("Slot")]
         public Guid SlotId { get;set; } 
-        public string NameSlot { get; set; }
-        public Guid ChildrenId { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public string? DayInWeek { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public virtual Class Class { get; set; }
-        public IList<ScheduleRoom> ScheduleRooms { get; set; }
         public virtual Slot Slot { get; set; }
+        public IList<ScheduleRoom> ScheduleRooms { get; set; }
         public IList<Attendance> Attendances { get; set; }
     }
 }

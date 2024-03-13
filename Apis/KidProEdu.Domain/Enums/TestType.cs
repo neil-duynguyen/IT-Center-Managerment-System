@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KidProEdu.Application.Interfaces
+namespace KidProEdu.Domain.Enums
 {
-    public interface ISkillTagService
+    public enum TestType
     {
     }
 }

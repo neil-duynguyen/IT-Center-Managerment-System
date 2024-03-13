@@ -79,7 +79,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<ClassViewModel>> GetClassBySemester(Guid id)
         {
-            var Classs = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false && x.SemesterId == id).OrderByDescending(x => x.CreationDate).ToList();
+            var Classs = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
             return _mapper.Map<List<ClassViewModel>>(Classs);
         }
 

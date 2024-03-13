@@ -18,9 +18,10 @@ namespace KidProEdu.Domain.Entities
         public string? Avatar { get; set; }
         public string? SpecialSkill { get; set; }
         public virtual UserAccount UserAccount { get; set; }
-        public IList<Score> Scores { get; set; }
-        public IList<ChildrenCertificate> ChildrenCertificates { get; set; }
+        public IList<Certificate> Certificates { get; set; }
         public IList<Enrollment> Enrollments { get; set; }
         public IList<Attendance> Attendances { get; set; }
+        public IList<ChildrenAnswer> ChildrenAnswers { get; set; }
+        public IList<OrderDetail> OrderDetails { get; set; }
     }
 }
