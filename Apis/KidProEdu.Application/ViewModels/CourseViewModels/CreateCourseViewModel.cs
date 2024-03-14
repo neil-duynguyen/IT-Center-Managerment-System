@@ -15,8 +15,8 @@ namespace KidProEdu.Application.ViewModels.CourseViewModels
         public string Description { get; set; }
         public int DurationTotal { get; set; }
         public string? Syllabus { get; set; }
-        public string? Level { get; set; }
-        public string? EntryPoint { get; set; }
+        public int? Level { get; set; }
+        public int? EntryPoint { get; set; }
         public string? Prerequisite { get; set; }
         public string? Image { get; set; }
         public int CourseType { get; set; }

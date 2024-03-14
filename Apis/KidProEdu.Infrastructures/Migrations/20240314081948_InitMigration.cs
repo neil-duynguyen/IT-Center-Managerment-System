@@ -55,28 +55,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Certificate",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ChildrenProfileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModificationBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeleteBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Certificate", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ConfigDay",
                 columns: table => new
                 {
@@ -178,7 +156,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Prerequisite = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CourseType = table.Column<int>(type: "int", nullable: false),
-                    ParentCourse = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParentCourse = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -420,30 +398,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TestTime", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CertificateCourse",
-                columns: table => new
-                {
-                    CertificatesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CoursesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CertificateCourse", x => new { x.CertificatesId, x.CoursesId });
-                    table.ForeignKey(
-                        name: "FK_CertificateCourse_Certificate_CertificatesId",
-                        column: x => x.CertificatesId,
-                        principalTable: "Certificate",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CertificateCourse_Course_CoursesId",
-                        column: x => x.CoursesId,
-                        principalTable: "Course",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1201,25 +1155,35 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CertificateChildrenProfile",
+                name: "Certificate",
                 columns: table => new
                 {
-                    CertificatesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ChildrenProfilesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ChildrenProfileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModificationBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeleteBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CertificateChildrenProfile", x => new { x.CertificatesId, x.ChildrenProfilesId });
+                    table.PrimaryKey("PK_Certificate", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CertificateChildrenProfile_Certificate_CertificatesId",
-                        column: x => x.CertificatesId,
-                        principalTable: "Certificate",
+                        name: "FK_Certificate_ChildrenProfile_ChildrenProfileId",
+                        column: x => x.ChildrenProfileId,
+                        principalTable: "ChildrenProfile",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CertificateChildrenProfile_ChildrenProfile_ChildrenProfilesId",
-                        column: x => x.ChildrenProfilesId,
-                        principalTable: "ChildrenProfile",
+                        name: "FK_Certificate_Course_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Course",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1364,7 +1328,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     InstallmentPeriod = table.Column<DateTime>(type: "datetime2", nullable: true),
                     StatusTransaction = table.Column<int>(type: "int", nullable: false),
                     ParentsTransaction = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1382,11 +1345,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         principalTable: "OrderDetail",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Transaction_Order_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Order",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -1449,14 +1407,14 @@ namespace KidProEdu.Infrastructures.Migrations
                 column: "TagsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CertificateChildrenProfile_ChildrenProfilesId",
-                table: "CertificateChildrenProfile",
-                column: "ChildrenProfilesId");
+                name: "IX_Certificate_ChildrenProfileId",
+                table: "Certificate",
+                column: "ChildrenProfileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CertificateCourse_CoursesId",
-                table: "CertificateCourse",
-                column: "CoursesId");
+                name: "IX_Certificate_CourseId",
+                table: "Certificate",
+                column: "CourseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChildrenAnswer_ChildrenProfileId",
@@ -1659,11 +1617,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 column: "OrderDetailId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_OrderId",
-                table: "Transaction",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserAccount_LocationId",
                 table: "UserAccount",
                 column: "LocationId");
@@ -1690,10 +1643,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "BlogTag");
 
             migrationBuilder.DropTable(
-                name: "CertificateChildrenProfile");
-
-            migrationBuilder.DropTable(
-                name: "CertificateCourse");
+                name: "Certificate");
 
             migrationBuilder.DropTable(
                 name: "ChildrenAnswer");
@@ -1754,9 +1704,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tag");
-
-            migrationBuilder.DropTable(
-                name: "Certificate");
 
             migrationBuilder.DropTable(
                 name: "Exam");

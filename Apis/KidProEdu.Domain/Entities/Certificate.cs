@@ -15,7 +15,7 @@ namespace KidProEdu.Domain.Entities
         public Guid CourseId { get; set; }
         public string Code { get; set; }
         public string Url { get; set; }
-        public IList<ChildrenProfile> ChildrenProfiles { get; set; }
-        public IList<Course> Courses { get; set; }
+        public virtual ChildrenProfile ChildrenProfile { get; set; }
+        public virtual Course Course { get; set; }
     }
 }

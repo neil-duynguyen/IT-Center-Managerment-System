@@ -62,5 +62,11 @@ namespace KidProEdu.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetListClassByChildrenId(Guid id)
+        {
+            return Ok(await _childrenService.GetListClassByChildrenId(id));
+        }
     }
 }

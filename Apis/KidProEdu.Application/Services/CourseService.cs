@@ -48,7 +48,7 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
-        public async Task<bool> CreateCourseParentAsync(CreateCourseParentViewModel createCourseParentViewModel)
+        /*public async Task<bool> CreateCourseParentAsync(CreateCourseParentViewModel createCourseParentViewModel)
         {
             // check name exited
             var isExited = await _unitOfWork.CourseRepository.CheckNameExited(createCourseParentViewModel.Name);
@@ -63,7 +63,7 @@ namespace KidProEdu.Application.Services
             await _unitOfWork.CourseRepository.AddAsync(mapper);
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
-        }
+        }*/
 
         public async Task<CourseViewModel> GetCourseById(Guid Id)
         {
@@ -96,7 +96,7 @@ namespace KidProEdu.Application.Services
                     var result = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == item.Id).ToList();
                     listCourse = _mapper.Map<List<CourseViewModel>>(result);
                 }
-                if (item.ParentCourse.Equals(Guid.Empty) || item.CourseType == Domain.Enums.CourseType.Spect)
+                if (item.ParentCourse.Equals(Guid.Empty) || item.CourseType == Domain.Enums.CourseType.Single)
                 {
                     var course = _mapper.Map<CourseViewModel>(item);
                     course.Courses = listCourse.Count != 0 ? listCourse : null;
