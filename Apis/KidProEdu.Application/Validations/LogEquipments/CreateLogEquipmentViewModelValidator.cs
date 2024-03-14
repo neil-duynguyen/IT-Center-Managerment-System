@@ -12,7 +12,7 @@ namespace KidProEdu.Application.Validations.LogEquipments
 
     public class CreateLogEquipmentViewModelValidator : AbstractValidator<CreateLogEquipmentViewModel>
     {
-        public CreateLogEquipmentViewModelValidator()
+        /*public CreateLogEquipmentViewModelValidator()
         {
             RuleFor(x => x.EquipmentId).NotEmpty().WithMessage("Thiết bị không được để trống.");
             RuleFor(x => x.UserAccountId).NotEmpty().WithMessage("Người mượn thiết bị không được để trống.");
@@ -34,7 +34,7 @@ namespace KidProEdu.Application.Validations.LogEquipments
         private bool BeValidWarrantyDate(DateTime? warrantyDate)
         {
             return !warrantyDate.HasValue || warrantyDate.Value.Date <= DateTime.Today;
-        }
+        }*/
     }
 
 
