@@ -16,7 +16,6 @@ namespace KidProEdu.Application.Interfaces
         Task<ClassViewModel> GetClassById(Guid ClassId);
         Task<bool> DeleteClass(Guid ClassId);
         Task<bool> ChangeStatusClass(ChangeStatusClassViewModel changeStatusClassViewModel);
-        Task<List<ClassViewModel>> GetClassBySemester(Guid id);
         Task<List<ClassChildrenViewModel>> GetChildrenByClassId(Guid classId);
     }
 }
