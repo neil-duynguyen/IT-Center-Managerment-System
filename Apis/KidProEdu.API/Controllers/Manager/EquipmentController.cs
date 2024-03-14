@@ -69,6 +69,28 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
+        [HttpPost("equipment-management")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> EquipmentManagement(EquipmentWithLogEquipmentViewModel equipmentWithLogEquipmentView)
+        {
+            try
+            {
+                var result = await _equipmentService.EquipmentManagement(equipmentWithLogEquipmentView);
+                if (result)
+                {
+                    return Ok("Cập nhật thành công.");
+                }
+                else
+                {
+                    return BadRequest("Cập nhật thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPut]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> PutEquipment(UpdateEquipmentViewModel updateEquipmentViewModel)

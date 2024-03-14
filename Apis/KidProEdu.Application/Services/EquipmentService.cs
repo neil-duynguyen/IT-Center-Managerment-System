@@ -6,6 +6,7 @@ using KidProEdu.Application.Validations.Equipments;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,69 @@ namespace KidProEdu.Application.Services
                 return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa thiết bị thất bại");
             }
 
+        }
+
+        public async Task<bool> EquipmentManagement(EquipmentWithLogEquipmentViewModel equipmentWithLogEquipmentView)
+        {
+            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentWithLogEquipmentView.Equipment.Id);
+            var logEquipment = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.EquipmentId == equipment.Id);
+
+            if (equipment == null)
+            {
+                throw new Exception("Không tìm thấy thiết bị");
+            }else{
+                if (equipment.Status == StatusOfEquipment.Borrowed && equipmentWithLogEquipmentView.Equipment.Status == StatusOfEquipment.Borrowed)
+                {
+                    throw new Exception("Thiết bị đang được cho mượn");
+                }
+                else if(equipment.Status == StatusOfEquipment.Borrowed && equipmentWithLogEquipmentView.Equipment.Status == StatusOfEquipment.Repair)
+                {
+                    throw new Exception("Thiết bị đang được cho mượn nên không thể bảo dưỡng");
+                }
+                else if (equipment.Status == StatusOfEquipment.Repair && equipmentWithLogEquipmentView.Equipment.Status == StatusOfEquipment.Borrowed)
+                {
+                    throw new Exception("Thiết bị đang được bảo dưỡng nên không thể cho mượn");
+                }
+                else if (equipment.Status == StatusOfEquipment.Returned && equipmentWithLogEquipmentView.Equipment.Status == StatusOfEquipment.Returned)
+                {
+                    throw new Exception("Thiết bị đã được trả lại rồi");
+                }
+                else if (equipment.Status == StatusOfEquipment.Repair && equipmentWithLogEquipmentView.Equipment.Status == StatusOfEquipment.Repair)
+                {
+                    throw new Exception("Thiết bị đã được mang đi bảo dưỡng rồi");
+                }
+                else if (equipment.Status == StatusOfEquipment.Repair && equipmentWithLogEquipmentView.Equipment.Status == StatusOfEquipment.Returned && equipmentWithLogEquipmentView.Log.UserAccountId != logEquipment.UserAccountId)
+                {
+                    throw new Exception("Người mang thiết bị đi bảo dưỡng khác với người nhận lại thiết bị");
+                }
+                else if (equipment.Status == StatusOfEquipment.Borrowed && equipmentWithLogEquipmentView.Equipment.Status == StatusOfEquipment.Returned && equipmentWithLogEquipmentView.Log.UserAccountId != logEquipment.UserAccountId)
+                {
+                    throw new Exception("Người muợn thiết bị khác với người trả thiết bị");
+                }
+
+            }
+            // Cập nhật trạng thái thiết bị
+            var mapper = _mapper.Map<Equipment>(equipment);
+            mapper.Status = equipmentWithLogEquipmentView.Equipment.Status;
+            mapper.RoomId = equipmentWithLogEquipmentView.Equipment.RoomId;
+            _unitOfWork.EquipmentRepository.Update(equipment);
+
+            var mapper2 = _mapper.Map<LogEquipment>(equipmentWithLogEquipmentView.Log);            
+            mapper2.EquipmentId = equipment.Id;
+            mapper2.UserAccountId = equipmentWithLogEquipmentView.Log.UserAccountId;
+            mapper2.Name = equipment.Name;
+            mapper2.Code = equipment.Code;
+            mapper2.Price = equipment.Price;
+            mapper2.Status = equipmentWithLogEquipmentView.Equipment.Status;
+            mapper2.RepairDate = equipmentWithLogEquipmentView.Log.RepairDate;
+            mapper2.BorrowedDate = equipmentWithLogEquipmentView.Log.BorrowedDate;
+            mapper2.ReturnedDate = equipmentWithLogEquipmentView.Log.ReturnedDate;
+            mapper2.ReturnedDealine = equipmentWithLogEquipmentView.Log.ReturnedDealine;
+            mapper2.WarrantyPeriod = equipment.WarrantyPeriod;
+            mapper2.PurchaseDate = equipment.PurchaseDate;
+            mapper2.RoomId = equipmentWithLogEquipmentView.Equipment.RoomId;
+            _unitOfWork.LogEquipmentRepository.AddAsync(mapper2);
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật thất bại");
         }
 
         public async Task<EquipmentViewModel> GetEquipmentById(Guid id)

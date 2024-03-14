@@ -63,6 +63,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<Equipment, EquipmentViewModel>().ReverseMap();
+            CreateMap<EquipmentManagementViewModel, Equipment>().ReverseMap();
 
             CreateMap<BlogViewModel, Blog>().ReverseMap().ForMember(des => des.Tags, src => src.MapFrom(x => x.Tags.Select(x => x.TagName)))
                                                           .ForMember(des => des.Author, src => src.MapFrom(x => x.UserAccount.FullName));
@@ -112,6 +113,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap();
             CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();
             CreateMap<UpdateLogEquipmentViewModel, LogEquipment>().ReverseMap();
+            CreateMap<LogEquipmentManagementViewModel, LogEquipment>().ReverseMap();
 
 
             CreateMap<TagViewModel, Tag>().ReverseMap().ForMember(des => des.TagType, src => src.MapFrom(x => x.TagType != null ? (string)x.TagType.ToString() : (string?)null)); ;
