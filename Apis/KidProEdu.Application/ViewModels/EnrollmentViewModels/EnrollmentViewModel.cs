@@ -9,6 +9,7 @@ namespace KidProEdu.Application.ViewModels.EnrollmentViewModels
 {
     public class EnrollmentViewModel
     {
+        public Guid Id { get; set; }
         public string ClassCode { get; set; }
         public DateTime RegisterDate { get; set; }
         public double? Commission { get; set; }
