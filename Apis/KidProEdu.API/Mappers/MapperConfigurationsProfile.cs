@@ -21,6 +21,7 @@ using KidProEdu.Application.ViewModels.RatingViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
+using KidProEdu.Application.ViewModels.ScheduleViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
@@ -129,6 +130,10 @@ namespace KidProEdu.API.Mappers
                                                             .ForMember(x => x.ChildrenId, src => src.MapFrom(x => x.ChildrenProfileId))
                                                             .ForMember(x => x.Avatar, src => src.MapFrom(x => x.ChildrenProfile.Avatar))
                                                             .ForMember(x => x.NameChildren, src => src.MapFrom(x => x.ChildrenProfile.FullName));
+
+            CreateMap<Schedule, ScheduleViewModel>().ReverseMap();
+            CreateMap<CreateScheduleViewModel, Schedule>().ReverseMap();
+            CreateMap<UpdateScheduleViewModel, Schedule>().ReverseMap();
         }
     }
 }

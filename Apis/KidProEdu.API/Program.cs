@@ -132,6 +132,8 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IAdviseRequestRepository, AdviseRequestRepository>();
             builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
             builder.Services.AddScoped<IDivisionUserAccountRepository, DivisionUserAccountRepository>();
+            builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+            builder.Services.AddScoped<ISlotRepository, SlotRepository>();
             #endregion
 
             #region DIService
@@ -163,6 +165,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IAdviseRequestService, AdviseRequestService>();
             builder.Services.AddScoped<IDivisionUserAccountService, DivisionUserAccountService>();
             builder.Services.AddScoped<IEnrollmentServices, EnrollmentServices>();
+            builder.Services.AddScoped<ISlotService, SlotService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));
