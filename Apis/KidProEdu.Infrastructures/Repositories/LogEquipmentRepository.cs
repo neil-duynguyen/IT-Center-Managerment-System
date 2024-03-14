@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,14 @@ namespace KidProEdu.Infrastructures.Repositories
                 .Where(x => x.RoomId == roomId && x.IsDeleted == false)
                 .ToListAsync();
 
+            return logEquipments;
+        }
+
+        public async Task<List<LogEquipment>> GetLogEquipmentByStatus(StatusOfEquipment statusOfEquipment)
+        {
+            var logEquipments = await _dbContext.LogEquipment
+                .Where(x => x.Status == statusOfEquipment && x.IsDeleted == false)
+                .ToListAsync();
             return logEquipments;
         }
 
