@@ -29,6 +29,8 @@ namespace KidProEdu.Application
         public IAdviseRequestRepository  AdviseRequestRepository { get; }
         public IDivisionUserAccountRepository DivisionUserAccountRepository { get; }
         public IEnrollmentRepository  EnrollmentRepository { get; }
+        public IContractRepository  ContractRepository { get; }
+        public IConfigJobTypeRepository  ConfigJobTypeRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

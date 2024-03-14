@@ -31,9 +31,23 @@ namespace KidProEdu.API.Controllers
         }
         
         [HttpGet("StatusAdviseRequest")]
-        public async Task<IActionResult> CoursStatusAdviseRequesteType()
+        public async Task<IActionResult> StatusAdviseRequest()
         {
             List<EnumViewModel> enums = ((StatusAdviseRequest[])Enum.GetValues(typeof(StatusAdviseRequest))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            return Ok(enums);
+        }
+        
+        [HttpGet("StatusOfContract")]
+        public async Task<IActionResult> StatusOfContract()
+        {
+            List<EnumViewModel> enums = ((StatusOfContract[])Enum.GetValues(typeof(StatusOfContract))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            return Ok(enums);
+        }
+        
+        [HttpGet("JobType")]
+        public async Task<IActionResult> JobType()
+        {
+            List<EnumViewModel> enums = ((JobType[])Enum.GetValues(typeof(JobType))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
             return Ok(enums);
         }
     }
