@@ -4,6 +4,8 @@ using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
+using KidProEdu.Application.ViewModels.ConfigJobType;
+using KidProEdu.Application.ViewModels.ContractViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Application.ViewModels.DivisionUserAccountViewModels;
 using KidProEdu.Application.ViewModels.DivisionViewModels;
@@ -21,6 +23,7 @@ using KidProEdu.Application.ViewModels.RatingViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
+using KidProEdu.Application.ViewModels.ScheduleViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
@@ -129,6 +132,18 @@ namespace KidProEdu.API.Mappers
                                                             .ForMember(x => x.ChildrenId, src => src.MapFrom(x => x.ChildrenProfileId))
                                                             .ForMember(x => x.Avatar, src => src.MapFrom(x => x.ChildrenProfile.Avatar))
                                                             .ForMember(x => x.NameChildren, src => src.MapFrom(x => x.ChildrenProfile.FullName));
+           
+            CreateMap<Contract, ContractViewModel>().ReverseMap()
+                .ForMember(des => des.StatusOfContract, src => src.MapFrom(x => x.StatusOfContract != null ? (string)x.StatusOfContract.ToString() : (string?)null));
+            CreateMap<CreateContractViewModel, Contract>().ReverseMap();
+            CreateMap<UpdateContractViewModel, Contract>().ReverseMap();
+
+            CreateMap<UpdateConfigJobTypeViewModel, ConfigJobType>().ReverseMap();
+
+            CreateMap<Schedule, ScheduleViewModel>().ReverseMap();
+            CreateMap<CreateScheduleViewModel, Schedule>().ReverseMap();
+            CreateMap<UpdateScheduleViewModel, Schedule>().ReverseMap();
+            
         }
     }
 }

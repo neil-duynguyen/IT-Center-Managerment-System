@@ -33,6 +33,10 @@ namespace Infrastructures
         private readonly IAdviseRequestRepository _adviseRequestRepository;
         private readonly IDivisionUserAccountRepository _divisionUserAccountRepository;
         private readonly IEnrollmentRepository _enrollmentRepository;
+        private readonly IScheduleRepository _scheduleRepository;
+        private readonly ISlotRepository _slotRepository;
+        private readonly IContractRepository _contractRepository;
+        private readonly IConfigJobTypeRepository _configJobTypeRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -43,7 +47,11 @@ namespace Infrastructures
             , ILessonRepository lessonRepository, IQuestionRepository questionRepository, IRequestRepository requestRepository,
             ICourseRepository courseRepository, IClassRepository classRepository
             , IRequestUserAccountRepository requestUserAccountRepository, IResourceRepository resourceRepository
-            , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository, IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository)
+            , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository,
+            IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository,
+            IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
+            IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository
+            )
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -70,6 +78,10 @@ namespace Infrastructures
             _adviseRequestRepository = adviseRequestRepository;
             _divisionUserAccountRepository = divisionUserAccountRepository;
             _enrollmentRepository = enrollmentRepository;
+            _scheduleRepository = scheduleRepository;
+            _slotRepository = slotRepository;
+            _contractRepository = contractRepository;
+            _configJobTypeRepository = configJobTypeRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -118,6 +130,14 @@ namespace Infrastructures
         public IDivisionUserAccountRepository DivisionUserAccountRepository => _divisionUserAccountRepository;
 
         public IEnrollmentRepository EnrollmentRepository => _enrollmentRepository;
+
+        public IScheduleRepository ScheduleRepository => _scheduleRepository;
+
+        public ISlotRepository SlotRepository => _slotRepository;
+
+        public IContractRepository ContractRepository => _contractRepository;
+
+        public IConfigJobTypeRepository ConfigJobTypeRepository => _configJobTypeRepository;
 
         public async Task<int> SaveChangeAsync()
         {
