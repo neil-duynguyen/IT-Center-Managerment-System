@@ -70,19 +70,30 @@ namespace KidProEdu.Application.Services
         {
             throw new NotImplementedException();
         }
-
-        /*public async Task<Location> GetListClassByChildrenId(Guid childrenId)
-        {
-            var result = await _unitOfWork.ChildrenRepository.GetByIdAsync(childrenId);
-
-            return _mapper.Map<ChildrenViewModel>(getChildrens);
-        }*/
-
         public async Task<List<ChildrenViewModel>> GetChildrensByStaffId()
         {
             var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.CreatedBy == _claimsService.GetCurrentUserId).ToList();
             return _mapper.Map<List<ChildrenViewModel>>(getChildrens);
         }
+
+        public async Task<ChildrenViewModel> GetListClassByChildrenId(Guid childrenId)
+        {
+            var result = await _unitOfWork.ChildrenRepository.GetByIdAsync(childrenId);
+
+            var mapper = _mapper.Map<ChildrenViewModel>(result);
+
+            
+            List<ClassViewModelInChildren> listClass = new List<ClassViewModelInChildren>();
+
+            foreach (var item in mapper.Classes)
+            {
+                listClass.Add(new ClassViewModelInChildren() {ClassId = item.ClassId, ClassCode = item.ClassCode });
+            }
+
+            return mapper;
+            
+        }
+
 
     }
 }

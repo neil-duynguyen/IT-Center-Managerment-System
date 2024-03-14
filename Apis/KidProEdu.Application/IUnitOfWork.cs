@@ -31,6 +31,8 @@ namespace KidProEdu.Application
         public IEnrollmentRepository  EnrollmentRepository { get; }
         public IScheduleRepository  ScheduleRepository { get; }
         public ISlotRepository  SlotRepository { get; }
+        public IContractRepository  ContractRepository { get; }
+        public IConfigJobTypeRepository  ConfigJobTypeRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

@@ -35,6 +35,8 @@ namespace Infrastructures
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly IScheduleRepository _scheduleRepository;
         private readonly ISlotRepository _slotRepository;
+        private readonly IContractRepository _contractRepository;
+        private readonly IConfigJobTypeRepository _configJobTypeRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -47,7 +49,9 @@ namespace Infrastructures
             , IRequestUserAccountRepository requestUserAccountRepository, IResourceRepository resourceRepository
             , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository,
             IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository,
-            IScheduleRepository scheduleRepository, ISlotRepository slotRepository)
+            IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
+            IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository
+            )
         {
             _dbContext = dbContext;
             _userRepository = userRepository;
@@ -76,6 +80,8 @@ namespace Infrastructures
             _enrollmentRepository = enrollmentRepository;
             _scheduleRepository = scheduleRepository;
             _slotRepository = slotRepository;
+            _contractRepository = contractRepository;
+            _configJobTypeRepository = configJobTypeRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -128,6 +134,10 @@ namespace Infrastructures
         public IScheduleRepository ScheduleRepository => _scheduleRepository;
 
         public ISlotRepository SlotRepository => _slotRepository;
+
+        public IContractRepository ContractRepository => _contractRepository;
+
+        public IConfigJobTypeRepository ConfigJobTypeRepository => _configJobTypeRepository;
 
         public async Task<int> SaveChangeAsync()
         {
