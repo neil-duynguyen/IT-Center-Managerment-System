@@ -37,36 +37,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.ToTable("BlogTag");
                 });
 
-            modelBuilder.Entity("CertificateChildrenProfile", b =>
-                {
-                    b.Property<Guid>("CertificatesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ChildrenProfilesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CertificatesId", "ChildrenProfilesId");
-
-                    b.HasIndex("ChildrenProfilesId");
-
-                    b.ToTable("CertificateChildrenProfile");
-                });
-
-            modelBuilder.Entity("CertificateCourse", b =>
-                {
-                    b.Property<Guid>("CertificatesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CoursesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CertificatesId", "CoursesId");
-
-                    b.HasIndex("CoursesId");
-
-                    b.ToTable("CertificateCourse");
-                });
-
             modelBuilder.Entity("KidProEdu.Domain.Entities.AdviseRequest", b =>
                 {
                     b.Property<Guid>("Id")
@@ -352,6 +322,10 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ChildrenProfileId");
+
+                    b.HasIndex("CourseId");
 
                     b.ToTable("Certificate");
                 });
@@ -2304,9 +2278,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<Guid>("OrderDetailId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("OrderId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("ParentsTransaction")
                         .HasColumnType("uniqueidentifier");
 
@@ -2322,8 +2293,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderDetailId");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("Transaction");
                 });
@@ -2475,36 +2444,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CertificateChildrenProfile", b =>
-                {
-                    b.HasOne("KidProEdu.Domain.Entities.Certificate", null)
-                        .WithMany()
-                        .HasForeignKey("CertificatesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KidProEdu.Domain.Entities.ChildrenProfile", null)
-                        .WithMany()
-                        .HasForeignKey("ChildrenProfilesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CertificateCourse", b =>
-                {
-                    b.HasOne("KidProEdu.Domain.Entities.Certificate", null)
-                        .WithMany()
-                        .HasForeignKey("CertificatesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KidProEdu.Domain.Entities.Course", null)
-                        .WithMany()
-                        .HasForeignKey("CoursesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("KidProEdu.Domain.Entities.AdviseRequest", b =>
                 {
                     b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
@@ -2540,6 +2479,25 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired();
 
                     b.Navigation("UserAccount");
+                });
+
+            modelBuilder.Entity("KidProEdu.Domain.Entities.Certificate", b =>
+                {
+                    b.HasOne("KidProEdu.Domain.Entities.ChildrenProfile", "ChildrenProfile")
+                        .WithMany("Certificates")
+                        .HasForeignKey("ChildrenProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KidProEdu.Domain.Entities.Course", "Course")
+                        .WithMany("Certificates")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChildrenProfile");
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ChildrenAnswer", b =>
@@ -2906,10 +2864,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KidProEdu.Domain.Entities.Order", null)
-                        .WithMany("Transactions")
-                        .HasForeignKey("OrderId");
-
                     b.Navigation("OrderDetail");
                 });
 
@@ -2939,6 +2893,8 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.Navigation("Attendances");
 
+                    b.Navigation("Certificates");
+
                     b.Navigation("ChildrenAnswers");
 
                     b.Navigation("Enrollments");
@@ -2959,6 +2915,8 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Course", b =>
                 {
+                    b.Navigation("Certificates");
+
                     b.Navigation("Classes");
 
                     b.Navigation("Lessons");
@@ -3003,8 +2961,6 @@ namespace KidProEdu.Infrastructures.Migrations
             modelBuilder.Entity("KidProEdu.Domain.Entities.Order", b =>
                 {
                     b.Navigation("OrderDetails");
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.OrderDetail", b =>

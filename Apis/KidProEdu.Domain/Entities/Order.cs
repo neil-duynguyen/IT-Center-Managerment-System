@@ -17,6 +17,5 @@ namespace KidProEdu.Domain.Entities
         public StatusPayment PaymentStatus { get; set; }
         public virtual UserAccount UserAccount { get; set; }
         public IList<OrderDetail> OrderDetails { get; set; }
-        public IList<Transaction> Transactions { get; set; }
     }
 }
