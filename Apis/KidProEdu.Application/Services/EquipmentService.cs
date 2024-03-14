@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.CategoryEquipments;
@@ -66,7 +67,170 @@ namespace KidProEdu.Application.Services
 
         }
 
-        public async Task<bool> EquipmentManagement(EquipmentWithLogEquipmentViewModel equipmentWithLogEquipmentView)
+        public async Task<bool> EquipmentBorrowedManagement(EquipmentWithLogEquipmentBorrowedViewModel equipmentWithLogEquipmentBorrowedViewModel)
+        {
+            var validator = new LogEquipmentBorrowedManagementViewModelValidator();
+            var validationResult = validator.Validate(equipmentWithLogEquipmentBorrowedViewModel.Log);
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    throw new Exception(error.ErrorMessage);
+                }
+            }
+            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentWithLogEquipmentBorrowedViewModel.Equipment.Id);
+            //var logEquipment = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.EquipmentId == equipment.Id);
+
+            if (equipment == null)
+            {
+                throw new Exception("Không tìm thấy thiết bị");
+            }
+            else
+            {
+                if (equipment.Status == StatusOfEquipment.Borrowed)
+                {
+                    throw new Exception("Thiết bị đang được cho mượn");
+                }           
+                else if (equipment.Status == StatusOfEquipment.Repair)
+                {
+                    throw new Exception("Thiết bị đang được bảo dưỡng nên không thể cho mượn");
+                }              
+            }
+            // Cập nhật trạng thái thiết bị
+            var mapper = _mapper.Map<Equipment>(equipment);
+            mapper.Status = StatusOfEquipment.Borrowed;
+            mapper.RoomId = equipmentWithLogEquipmentBorrowedViewModel.Equipment.RoomId;
+            _unitOfWork.EquipmentRepository.Update(equipment);
+
+            var mapper2 = _mapper.Map<LogEquipment>(equipmentWithLogEquipmentBorrowedViewModel.Log);
+            mapper2.EquipmentId = equipment.Id;
+            mapper2.UserAccountId = equipmentWithLogEquipmentBorrowedViewModel.Log.UserAccountId;
+            mapper2.Name = equipment.Name;
+            mapper2.Code = equipment.Code;
+            mapper2.Price = equipment.Price;
+            mapper2.Status = StatusOfEquipment.Borrowed;
+            mapper2.RepairDate = null;
+            mapper2.BorrowedDate = DateTime.Now;
+            mapper2.ReturnedDate = null;
+            mapper2.ReturnedDealine = equipmentWithLogEquipmentBorrowedViewModel.Log.ReturnedDealine;
+            mapper2.WarrantyPeriod = equipment.WarrantyPeriod;
+            mapper2.PurchaseDate = equipment.PurchaseDate;
+            mapper2.RoomId = equipmentWithLogEquipmentBorrowedViewModel.Equipment.RoomId;
+            _unitOfWork.LogEquipmentRepository.AddAsync(mapper2);
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Mượn thiết bị thất bại");
+        }
+
+        public async Task<bool> EquipmentRepairManagement(EquipmentWithLogEquipmentRepairViewModel equipmentWithLogEquipmentRepairViewModel)
+        {
+            var validator = new LogEquipmentRepairManagementViewModelValidator();
+            var validationResult = validator.Validate(equipmentWithLogEquipmentRepairViewModel.Log);
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    throw new Exception(error.ErrorMessage);
+                }
+            }
+            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentWithLogEquipmentRepairViewModel.Equipment.Id);
+            //var logEquipment = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.EquipmentId == equipment.Id);
+
+            if (equipment == null)
+            {
+                throw new Exception("Không tìm thấy thiết bị");
+            }
+            else
+            {
+                if (equipment.Status == StatusOfEquipment.Borrowed)
+                {
+                    throw new Exception("Thiết bị đang được cho mượn không thể mang đi bảo dưỡng");
+                }
+                else if (equipment.Status == StatusOfEquipment.Repair)
+                {
+                    throw new Exception("Thiết bị đang được bảo dưỡng rồi");
+                }
+            }
+            // Cập nhật trạng thái thiết bị
+            var mapper = _mapper.Map<Equipment>(equipment);
+            mapper.Status = StatusOfEquipment.Repair;
+            mapper.RoomId = equipmentWithLogEquipmentRepairViewModel.Equipment.RoomId;
+            _unitOfWork.EquipmentRepository.Update(equipment);
+
+            var mapper2 = _mapper.Map<LogEquipment>(equipmentWithLogEquipmentRepairViewModel.Log);
+            mapper2.EquipmentId = equipment.Id;
+            mapper2.UserAccountId = equipmentWithLogEquipmentRepairViewModel.Log.UserAccountId;
+            mapper2.Name = equipment.Name;
+            mapper2.Code = equipment.Code;
+            mapper2.Price = equipment.Price;
+            mapper2.Status = StatusOfEquipment.Repair;
+            mapper2.RepairDate = DateTime.Now;
+            mapper2.BorrowedDate = null;
+            mapper2.ReturnedDate = null;
+            mapper2.ReturnedDealine = null;
+            mapper2.WarrantyPeriod = equipment.WarrantyPeriod;
+            mapper2.PurchaseDate = equipment.PurchaseDate;
+            mapper2.RoomId = equipmentWithLogEquipmentRepairViewModel.Equipment.RoomId;
+            _unitOfWork.LogEquipmentRepository.AddAsync(mapper2);
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Mang thiết bị đi sửa thất bại");
+        }
+
+        public async Task<bool> EquipmentReturnedManagement(EquipmentWithLogEquipmentReturnedViewModel equipmentWithLogEquipmentReturnedViewModel)
+        {
+            var validator = new LogEquipmentReturnedManagementViewModelValidator();
+            var validationResult = validator.Validate(equipmentWithLogEquipmentReturnedViewModel.Log);
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    throw new Exception(error.ErrorMessage);
+                }
+            }
+            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentWithLogEquipmentReturnedViewModel.Equipment.Id);
+            var logEquipment = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.EquipmentId == equipment.Id);
+
+            if (equipment == null)
+            {
+                throw new Exception("Không tìm thấy thiết bị");
+            }
+            else
+            {
+                if (equipment.Status == StatusOfEquipment.Returned)
+                {
+                    throw new Exception("Thiết bị đã được trả rồi");
+                }
+                else if (equipment.Status == StatusOfEquipment.Repair && equipmentWithLogEquipmentReturnedViewModel.Log.UserAccountId != logEquipment.UserAccountId)
+                {
+                    throw new Exception("Người mang thiết bị đi bảo dưỡng khác với người trả thiết bị");
+                }
+                else if (equipment.Status == StatusOfEquipment.Borrowed && equipmentWithLogEquipmentReturnedViewModel.Log.UserAccountId != logEquipment.UserAccountId)
+                {
+                    throw new Exception("Người mượn thiết bị khác với người trả thiết bị");
+                }
+            }
+            // Cập nhật trạng thái thiết bị
+            var mapper = _mapper.Map<Equipment>(equipment);
+            mapper.Status = StatusOfEquipment.Returned;
+            mapper.RoomId = equipmentWithLogEquipmentReturnedViewModel.Equipment.RoomId;
+            _unitOfWork.EquipmentRepository.Update(equipment);
+
+            var mapper2 = _mapper.Map<LogEquipment>(equipmentWithLogEquipmentReturnedViewModel.Log);
+            mapper2.EquipmentId = equipment.Id;
+            mapper2.UserAccountId = equipmentWithLogEquipmentReturnedViewModel.Log.UserAccountId;
+            mapper2.Name = equipment.Name;
+            mapper2.Code = equipment.Code;
+            mapper2.Price = equipment.Price;
+            mapper2.Status = StatusOfEquipment.Returned;
+            mapper2.RepairDate = null;
+            mapper2.BorrowedDate = null;
+            mapper2.ReturnedDate = DateTime.Now;
+            mapper2.ReturnedDealine = null;
+            mapper2.WarrantyPeriod = equipment.WarrantyPeriod;
+            mapper2.PurchaseDate = equipment.PurchaseDate;
+            mapper2.RoomId = equipmentWithLogEquipmentReturnedViewModel.Equipment.RoomId;
+            _unitOfWork.LogEquipmentRepository.AddAsync(mapper2);
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Trả thiết bị đi sửa thất bại");
+        }
+
+        /*public async Task<bool> EquipmentManagement(EquipmentWithLogEquipmentBorrowedViewModel equipmentWithLogEquipmentView)
         {
             var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentWithLogEquipmentView.Equipment.Id);
             var logEquipment = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.EquipmentId == equipment.Id);
@@ -127,7 +291,7 @@ namespace KidProEdu.Application.Services
             mapper2.RoomId = equipmentWithLogEquipmentView.Equipment.RoomId;
             _unitOfWork.LogEquipmentRepository.AddAsync(mapper2);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật thất bại");
-        }
+        }*/
 
         public async Task<EquipmentViewModel> GetEquipmentById(Guid id)
         {

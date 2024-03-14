@@ -8,13 +8,9 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.ViewModels.EquipmentViewModels
 {
-    public class LogEquipmentManagementViewModel
+    public class LogEquipmentBorrowedManagementViewModel
     {
         public Guid? UserAccountId { get; set; }
-        public DateTime? RepairDate { get; set; }
-        public DateTime? BorrowedDate { get; set; }
-        public DateTime? ReturnedDate { get; set; }
         public DateTime? ReturnedDealine { get; set; }
-        public Guid? RoomId { get; set; }
     }
 }

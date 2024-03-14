@@ -17,6 +17,8 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> UpdateEquipment(UpdateEquipmentViewModel updateEquipmentViewModel);
         Task<EquipmentViewModel> GetEquipmentById(Guid id);
         Task<bool> DeleteEquipment(Guid id);
-        Task<bool> EquipmentManagement(EquipmentWithLogEquipmentViewModel equipmentWithLogEquipmentView);
+        Task<bool> EquipmentBorrowedManagement(EquipmentWithLogEquipmentBorrowedViewModel equipmentWithLogEquipmentBorrowedViewModel);
+        Task<bool> EquipmentRepairManagement(EquipmentWithLogEquipmentRepairViewModel equipmentWithLogEquipmentRepairViewModel);
+        Task<bool> EquipmentReturnedManagement(EquipmentWithLogEquipmentReturnedViewModel equipmentWithLogEquipmentReturnedViewModel);
     }
 }

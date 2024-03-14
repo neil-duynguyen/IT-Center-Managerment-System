@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.ViewModels.EquipmentViewModels
 {
-    public class EquipmentWithLogEquipmentViewModel
+
+    public class EquipmentWithLogEquipmentRepairViewModel
     {
         public EquipmentManagementViewModel Equipment { get; set; }
-        public LogEquipmentManagementViewModel Log { get; set; }
+        public LogEquipmentRepairManagementViewModel Log { get; set; }
     }
 }
