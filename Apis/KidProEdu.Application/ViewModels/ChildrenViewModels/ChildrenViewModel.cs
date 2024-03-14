@@ -12,12 +12,12 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
         public string FullName { get; set; }
         public string? GenderType { get; set; }
         public string BirthDay { get; set; }
-        //public IList<Class> Classes { get; set; }
+        public IList<ClassViewModelInChildren> Classes { get; set; }
     }
 
-    /*public class Class
+    public class ClassViewModelInChildren
     {
         public Guid? ClassId { get; set; }
         public string ClassCode { get; set; }
-    }*/
+    }
 }

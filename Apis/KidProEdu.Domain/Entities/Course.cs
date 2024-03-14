@@ -22,7 +22,7 @@ namespace KidProEdu.Domain.Entities
         public string? Prerequisite { get; set; }
         public string? Image { get; set; }
         public CourseType CourseType { get; set; }
-        public Guid ParentCourse { get; set; }
+        public Guid? ParentCourse { get; set; }
         public IList<Rating> Ratings { get; set; }
         public IList<Class> Classes { get; set; }
         public IList<Lesson> Lessons { get; set; }

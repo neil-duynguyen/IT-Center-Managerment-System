@@ -156,7 +156,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Prerequisite = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CourseType = table.Column<int>(type: "int", nullable: false),
-                    ParentCourse = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParentCourse = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),

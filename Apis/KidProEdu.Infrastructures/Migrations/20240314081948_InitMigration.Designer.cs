@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240313112556_InitMigration")]
+    [Migration("20240314081948_InitMigration")]
     partial class InitMigration
     {
         /// <inheritdoc />
@@ -795,7 +795,7 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ParentCourse")
+                    b.Property<Guid?>("ParentCourse")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Prerequisite")

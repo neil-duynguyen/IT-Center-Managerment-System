@@ -792,7 +792,7 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ParentCourse")
+                    b.Property<Guid?>("ParentCourse")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Prerequisite")
