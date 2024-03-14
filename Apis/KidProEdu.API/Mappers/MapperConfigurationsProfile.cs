@@ -113,7 +113,9 @@ namespace KidProEdu.API.Mappers
             CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap();
             CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();
             CreateMap<UpdateLogEquipmentViewModel, LogEquipment>().ReverseMap();
-            CreateMap<LogEquipmentManagementViewModel, LogEquipment>().ReverseMap();
+            CreateMap<LogEquipmentBorrowedManagementViewModel, LogEquipment>().ReverseMap();
+            CreateMap<LogEquipmentRepairManagementViewModel, LogEquipment>().ReverseMap();
+            CreateMap<LogEquipmentReturnedManagementViewModel, LogEquipment>().ReverseMap();
 
 
             CreateMap<TagViewModel, Tag>().ReverseMap().ForMember(des => des.TagType, src => src.MapFrom(x => x.TagType != null ? (string)x.TagType.ToString() : (string?)null)); ;
