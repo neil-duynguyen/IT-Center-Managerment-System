@@ -24,6 +24,7 @@ using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
+using KidProEdu.Application.ViewModels.SkillViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
@@ -48,6 +49,10 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<CreateLocationViewModel, Location>().ReverseMap();
             CreateMap<UpdateLocationViewModel, Location>().ReverseMap();
+
+            CreateMap<CreateSkillViewModel, Skill>().ReverseMap();
+            CreateMap<UpdateSkillViewModel, Skill>().ReverseMap();
+            CreateMap<Skill, SkillViewModel>().ReverseMap();
 
             CreateMap<CreateCategoryEquipmentViewModel, CategoryEquipment>().ReverseMap();
             CreateMap<UpdateCategoryEquipmentViewModel, CategoryEquipment>().ReverseMap();
