@@ -33,6 +33,7 @@ namespace KidProEdu.Application
         public ISlotRepository  SlotRepository { get; }
         public IContractRepository  ContractRepository { get; }
         public IConfigJobTypeRepository  ConfigJobTypeRepository { get; }
+        public ISkillRepository SkillRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

@@ -136,6 +136,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ISlotRepository, SlotRepository>();
             builder.Services.AddScoped<IContractRepository, ContractRepository>();
             builder.Services.AddScoped<IConfigJobTypeRepository, ConfigJobTypeRepository>();
+            builder.Services.AddScoped<ISkillRepository, SkillRepository>();
             #endregion
 
             #region DIService
@@ -171,6 +172,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IScheduleService, ScheduleService>();
             builder.Services.AddScoped<IContractService, ContractService>();
             builder.Services.AddScoped<IConfigJobTypeService, ConfigJobTypeService>();
+            builder.Services.AddScoped<ISkillService, SkillService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));

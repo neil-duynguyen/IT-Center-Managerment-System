@@ -37,6 +37,7 @@ namespace Infrastructures
         private readonly ISlotRepository _slotRepository;
         private readonly IContractRepository _contractRepository;
         private readonly IConfigJobTypeRepository _configJobTypeRepository;
+        private readonly ISkillRepository _skillRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -49,6 +50,7 @@ namespace Infrastructures
             , IRequestUserAccountRepository requestUserAccountRepository, IResourceRepository resourceRepository
             , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository,
             IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository,
+            ISkillRepository skillRepository,
             IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
             IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository
             )
@@ -82,6 +84,7 @@ namespace Infrastructures
             _slotRepository = slotRepository;
             _contractRepository = contractRepository;
             _configJobTypeRepository = configJobTypeRepository;
+            _skillRepository = skillRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -138,6 +141,8 @@ namespace Infrastructures
         public IContractRepository ContractRepository => _contractRepository;
 
         public IConfigJobTypeRepository ConfigJobTypeRepository => _configJobTypeRepository;
+
+        public ISkillRepository SkillRepository => _skillRepository;
 
         public async Task<int> SaveChangeAsync()
         {
