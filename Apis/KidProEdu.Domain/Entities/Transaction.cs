@@ -18,7 +18,6 @@ namespace KidProEdu.Domain.Entities
         public double Amount { get; set; }
         public string CourseName { get; set; }
         public string Message { get; set; }
-        public PayType PayType { get; set; }
         public DateTime PayDate { get; set; }
         public int InstallmentTerm { get; set; }
         public DateTime? InstallmentPeriod { get; set; }

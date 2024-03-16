@@ -37,6 +37,8 @@ namespace Infrastructures
         private readonly ISlotRepository _slotRepository;
         private readonly IContractRepository _contractRepository;
         private readonly IConfigJobTypeRepository _configJobTypeRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderDetailRepository _orderDetailRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -50,7 +52,7 @@ namespace Infrastructures
             , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository,
             IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository,
             IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
-            IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository
+            IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository
             )
         {
             _dbContext = dbContext;
@@ -82,6 +84,8 @@ namespace Infrastructures
             _slotRepository = slotRepository;
             _contractRepository = contractRepository;
             _configJobTypeRepository = configJobTypeRepository;
+            _orderRepository = orderRepository;
+            _orderDetailRepository = orderDetailRepository; 
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -138,6 +142,10 @@ namespace Infrastructures
         public IContractRepository ContractRepository => _contractRepository;
 
         public IConfigJobTypeRepository ConfigJobTypeRepository => _configJobTypeRepository;
+
+        public IOrderRepository OrderRepository => _orderRepository;
+
+        public IOrderDetailRepository OrderDetailRepository => _orderDetailRepository;
 
         public async Task<int> SaveChangeAsync()
         {

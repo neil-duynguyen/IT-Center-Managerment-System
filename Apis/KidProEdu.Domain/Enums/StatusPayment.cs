@@ -4,6 +4,7 @@
     {
         Pending = 1,
         Paid = 2,
-        Cancel = 3
+        Unpaid = 3,
+        Cancel = 4
     }
 }
