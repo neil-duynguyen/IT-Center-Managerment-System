@@ -39,6 +39,7 @@ namespace Infrastructures
         private readonly IConfigJobTypeRepository _configJobTypeRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
+        private readonly ISkillRepository _skillRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -51,6 +52,7 @@ namespace Infrastructures
             , IRequestUserAccountRepository requestUserAccountRepository, IResourceRepository resourceRepository
             , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository,
             IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository,
+            ISkillRepository skillRepository,
             IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
             IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository
             )
@@ -84,6 +86,7 @@ namespace Infrastructures
             _slotRepository = slotRepository;
             _contractRepository = contractRepository;
             _configJobTypeRepository = configJobTypeRepository;
+            _skillRepository = skillRepository;
             _orderRepository = orderRepository;
             _orderDetailRepository = orderDetailRepository; 
         }
@@ -142,6 +145,8 @@ namespace Infrastructures
         public IContractRepository ContractRepository => _contractRepository;
 
         public IConfigJobTypeRepository ConfigJobTypeRepository => _configJobTypeRepository;
+
+        public ISkillRepository SkillRepository => _skillRepository;
 
         public IOrderRepository OrderRepository => _orderRepository;
 

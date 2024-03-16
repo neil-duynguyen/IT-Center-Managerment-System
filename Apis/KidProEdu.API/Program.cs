@@ -41,7 +41,7 @@ namespace KidProEdu.API
                                   {
                                       policy.WithOrigins("http://localhost:5173",
                                                         "http://127.0.0.1:5173",
-                                                        "https://kid-pro-education.netlify.app"
+                                                        "https://kid-pro-edu-v1.netlify.app/"
                                                           )
                                                             //.AllowAnyOrigin()
                                                             .AllowAnyHeader()
@@ -136,6 +136,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ISlotRepository, SlotRepository>();
             builder.Services.AddScoped<IContractRepository, ContractRepository>();
             builder.Services.AddScoped<IConfigJobTypeRepository, ConfigJobTypeRepository>();
+            builder.Services.AddScoped<ISkillRepository, SkillRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             #endregion
@@ -173,6 +174,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IScheduleService, ScheduleService>();
             builder.Services.AddScoped<IContractService, ContractService>();
             builder.Services.AddScoped<IConfigJobTypeService, ConfigJobTypeService>();
+            builder.Services.AddScoped<ISkillService, SkillService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
             #endregion

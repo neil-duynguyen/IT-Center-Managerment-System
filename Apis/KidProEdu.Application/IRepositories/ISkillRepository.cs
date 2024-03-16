@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 namespace KidProEdu.Application.IRepositories
 {
 
-    public interface ILessonRepository : IGenericRepository<Lesson>
+    public interface ISkillRepository : IGenericRepository<Skill>
     {
-        Task<Lesson> GetLessonByName(string name);
-        Task<List<Lesson>> GetLessonsByCourseId(Guid CourseId);
+        Task<Skill> GetSkillByName(string name);
     }
 }
