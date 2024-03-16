@@ -32,12 +32,12 @@ namespace KidProEdu.API.Controllers
             }
             return Ok(question);
         }
-        
-        [HttpGet("GetByLesson/{id}")]
+
+        [HttpPost("CreateExam")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> GetQuestionByLesson(Guid id)
+        public async Task<IActionResult> CreateExam(List<CreateExamViewModel> createExamViewModels)
         {
-            var question = await _questionService.GetQuestionByLesson(id);
+            var question = await _questionService.CreateExam(createExamViewModels);
             if (question == null)
             {
                 return NotFound();

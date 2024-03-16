@@ -70,9 +70,9 @@ namespace KidProEdu.Application.Services
             var courseParent = await _unitOfWork.CourseRepository.GetByIdAsync(Id);
             var mapper = _mapper.Map<CourseViewModel>(courseParent);
 
-            var getList = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == courseParent.Id).ToList();
-            var classes = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.CourseId == Id).ToList();
-            var lessons = _unitOfWork.LessonRepository.GetAllAsync().Result.Where(x => x.CourseId == Id).ToList();
+            var getList = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == courseParent.Id && x.IsDeleted == false).ToList();
+            var classes = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.CourseId == Id && x.IsDeleted == false).ToList();
+            var lessons = _unitOfWork.LessonRepository.GetAllAsync().Result.Where(x => x.CourseId == Id && x.IsDeleted == false).ToList();
 
             mapper.Courses = _mapper.Map<List<CourseViewModel>>(getList);
             mapper.Classes = _mapper.Map<List<ClassViewModel>>(classes);
