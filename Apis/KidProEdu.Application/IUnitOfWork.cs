@@ -34,6 +34,7 @@ namespace KidProEdu.Application
         public IContractRepository  ContractRepository { get; }
         public IConfigJobTypeRepository  ConfigJobTypeRepository { get; }
         public ISkillRepository SkillRepository { get; }
+        public ISkillCertificateRepository SkillCertificateRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

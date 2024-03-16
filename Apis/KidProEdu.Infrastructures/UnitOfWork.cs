@@ -38,6 +38,7 @@ namespace Infrastructures
         private readonly IContractRepository _contractRepository;
         private readonly IConfigJobTypeRepository _configJobTypeRepository;
         private readonly ISkillRepository _skillRepository;
+        private readonly ISkillCertificateRepository _skillCertificateRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -50,7 +51,7 @@ namespace Infrastructures
             , IRequestUserAccountRepository requestUserAccountRepository, IResourceRepository resourceRepository
             , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository,
             IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository,
-            ISkillRepository skillRepository,
+            ISkillRepository skillRepository, ISkillCertificateRepository skillCertificateRepository,
             IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
             IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository
             )
@@ -85,6 +86,7 @@ namespace Infrastructures
             _contractRepository = contractRepository;
             _configJobTypeRepository = configJobTypeRepository;
             _skillRepository = skillRepository;
+            _skillCertificateRepository = skillCertificateRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -143,6 +145,8 @@ namespace Infrastructures
         public IConfigJobTypeRepository ConfigJobTypeRepository => _configJobTypeRepository;
 
         public ISkillRepository SkillRepository => _skillRepository;
+
+        public ISkillCertificateRepository SkillCertificateRepository => _skillCertificateRepository;
 
         public async Task<int> SaveChangeAsync()
         {
