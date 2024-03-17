@@ -16,7 +16,7 @@ namespace KidProEdu.API.Controllers.Staff
             _orderService = orderService;
         }
 
-        [HttpPost]
+        [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrder(CreateOrderDetailViewModel orderDetailViewModel)
         {
             try
@@ -34,5 +34,25 @@ namespace KidProEdu.API.Controllers.Staff
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("CreateTransaction")]
+        public async Task<IActionResult> CreateTransaction(Guid orderId)
+        {
+            try
+            {
+                var result = await _orderService.CreateTransaction(orderId);
+                return Ok(result);
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("Lỗi DB");
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

@@ -2227,24 +2227,20 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
                     b.Property<string>("BankName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BankingAccountNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BankingNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CourseName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("CourseQuantity")
+                        .HasColumnType("float");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -2261,14 +2257,13 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("InstallmentPeriod")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("InstallmentTerm")
+                    b.Property<int?>("InstallmentTerm")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ModificationBy")
@@ -2277,17 +2272,20 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OrderDetailId")
+                    b.Property<Guid?>("OrderDetailId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ParentsTransaction")
+                    b.Property<Guid?>("ParentsTransaction")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("PayDate")
+                    b.Property<DateTime?>("PayDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("StatusTransaction")
+                    b.Property<int?>("StatusTransaction")
                         .HasColumnType("int");
+
+                    b.Property<double?>("TotalAmount")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -2859,9 +2857,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.HasOne("KidProEdu.Domain.Entities.OrderDetail", "OrderDetail")
                         .WithMany("Transactions")
-                        .HasForeignKey("OrderDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderDetailId");
 
                     b.Navigation("OrderDetail");
                 });
