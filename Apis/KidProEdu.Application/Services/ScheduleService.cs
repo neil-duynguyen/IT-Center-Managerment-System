@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Schedules;
+using KidProEdu.Application.ViewModels.AttendanceViewModels;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -38,14 +40,35 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var schedule = await _unitOfWork.ScheduleRepository.GetScheduleByClass(createScheduleViewModel.ClassId);
+            /*var schedule = await _unitOfWork.ScheduleRepository.GetScheduleByClass(createScheduleViewModel.ClassId);
             if (!schedule.IsNullOrEmpty())
             {
                 throw new Exception("Lịch đã tồn tại");
+            }*/
+            var getListEnrollment = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassId(createScheduleViewModel.ClassId);
+            if (getListEnrollment.IsNullOrEmpty())
+            {
+                throw new Exception("Chưa có học sinh nào trong lớp");
             }
 
-            var mapper = _mapper.Map<Schedule>(createScheduleViewModel);
+            var schedule = await _unitOfWork.ScheduleRepository.GetScheduleByClassAndSlot(createScheduleViewModel.ClassId, createScheduleViewModel.SlotId);
+            if (schedule != null)
+            {
+                throw new Exception("Lịch đã tồn tại");
+            }
+            var mapper = _mapper.Map<Schedule>(createScheduleViewModel);           
+            // Thêm danh sách Attendance vào unitOfWork           
             await _unitOfWork.ScheduleRepository.AddAsync(mapper);
+            var attendanceList = getListEnrollment.Select(enrollment => new CreateAttendanceViewModel
+            {
+                ScheduleId = mapper.Id,
+                ChildrenProfileId = enrollment.ChildrenProfileId,
+                Date = (DateTime)createScheduleViewModel.StartTime,
+                StatusAttendance = StatusAttendance.Future,
+                Note = ""
+            }).ToList();
+            var mapper2 = _mapper.Map<List<Attendance>>(attendanceList);
+            await _unitOfWork.AttendanceRepository.AddRangeAsync(mapper2);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo lịch thất bại");
         }
 

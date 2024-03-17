@@ -1,5 +1,5 @@
 ﻿using KidProEdu.Application.Repositories;
-using KidProEdu.Application.ViewModels.EnrollmentViewModels;
+using KidProEdu.Application.ViewModels.AttendanceViewModels;
 using KidProEdu.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.IRepositories
 {
-    public interface IEnrollmentRepository : IGenericRepository<Enrollment>
+
+    public interface IAttendanceRepository : IGenericRepository<Attendance>
     {
-        Task<List<Enrollment>> GetEnrollmentsByClassId(Guid Id);
+        Task<List<Attendance>> GetAttendanceByScheduleId(Guid id);
     }
 }

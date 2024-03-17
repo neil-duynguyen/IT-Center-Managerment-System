@@ -5,5 +5,6 @@
     {
         Attend = 1,
         Absent = 2,
+        Future = 3
     }
 }
