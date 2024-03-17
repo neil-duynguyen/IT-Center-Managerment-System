@@ -139,6 +139,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ISkillRepository, SkillRepository>();
             builder.Services.AddScoped<ISkillCertificateRepository, SkillCertificateRepository>();
             builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+            builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
             #endregion
 
             #region DIService
@@ -177,6 +178,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ISkillService, SkillService>();
             builder.Services.AddScoped<ISkillCertificateService, SkillCertificateService>();
             builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+            builder.Services.AddScoped<IResourceService, ResourceService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));
