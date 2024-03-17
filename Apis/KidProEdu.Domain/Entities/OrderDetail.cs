@@ -14,7 +14,8 @@ namespace KidProEdu.Domain.Entities
         public Guid? OrderId { get; set; }
         [ForeignKey("ChildrenProfile")]
         public Guid? ChildrenProfileId { get; set; }
-        public Guid CourseId { get; set; }
+        public Guid? CourseId { get; set; }
+        public ICollection<Guid>? ChildCourse { get;set; }
         public int? Quantity { get; set; }
         public double? UnitPrice { get; set; }
         public double? TotalPrice { get; set; }

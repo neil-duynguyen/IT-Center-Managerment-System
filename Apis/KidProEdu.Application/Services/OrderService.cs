@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
-using KidProEdu.Application.ViewModels.OrderViewModels;
+using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,23 +27,35 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Order> CreateOrder(CreateOrderDetailViewModel orderDetailViewModel)
+        public async Task<List<OrderViewModel>> GetOrderByStaffId()
         {
+            var result = _unitOfWork.OrderRepository.GetAllAsync().Result.Where(x => x.UserAccount.Id == _claimsService.GetCurrentUserId).OrderByDescending(x => x.CreationDate).ToList();
+            return _mapper.Map<List<OrderViewModel>>(result);
+        }
+
+        public async Task<OrderViewModel> CreateOrder(CreateOrderDetailViewModel orderDetailViewModel)
+        {
+            double total = 0;
+            foreach (var item in orderDetailViewModel.ListCourseId)
+            {
+                var course = await _unitOfWork.CourseRepository.GetByIdAsync(item);
+                total += course.Price;
+            }
+
             //new Order
             Order order = new Order()
             {
                 Id = Guid.NewGuid(),
                 OrderDate = _currentTime.GetCurrentTime(),
-                TotalAmount = 0,
+                TotalAmount = total,
                 PaymentStatus = Domain.Enums.StatusPayment.Unpaid,
                 UserId = _claimsService.GetCurrentUserId
             };
             await _unitOfWork.OrderRepository.AddAsync(order);
 
-            double total = 0;
+            //new OrderDetail
             foreach (var item in orderDetailViewModel.ListCourseId)
             {
-                //new OrderDetail
                 var course = await _unitOfWork.CourseRepository.GetByIdAsync(item);
                 OrderDetail orderDetail = new OrderDetail()
                 {
@@ -53,17 +65,14 @@ namespace KidProEdu.Application.Services
                     UnitPrice = course.Price,
                 };
                 await _unitOfWork.OrderDetailRepository.AddAsync(orderDetail);
-                total += orderDetail.TotalPrice;
-
             }
-            order.TotalAmount = total;
 
-            return await _unitOfWork.SaveChangeAsync() > 0 ? order : throw new Exception("Tạo đơn hàng thất bại");
+            return await _unitOfWork.SaveChangeAsync() > 0 ? _mapper.Map<OrderViewModel>(order) : throw new Exception("Tạo đơn hàng thất bại");
 
         }
 
         //function này sẽ chạy sau khi thanh toán thành công
-        public async Task<bool> CreateTransaction(Guid orderId)
+        /*public async Task<bool> CreateTransaction(Guid orderId)
         {
             //xem INP bên vnpay để làm
             //sau khi check trạng thái thanh toán thành công thì cập nhật db và tạo transaction
@@ -134,7 +143,7 @@ namespace KidProEdu.Application.Services
                 return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo transaction thất bại");
             }
             return true;
-        }
+        }*/
 
 
     }

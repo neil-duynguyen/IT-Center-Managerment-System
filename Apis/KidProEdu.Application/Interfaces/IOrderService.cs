@@ -1,4 +1,5 @@
-﻿using KidProEdu.Application.ViewModels.OrderViewModels;
+﻿using KidProEdu.Application.ViewModels.OrderDetailViewModels;
+using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,8 @@ namespace KidProEdu.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<Order> CreateOrder(CreateOrderDetailViewModel orderDetailViewModel);
-        Task<bool> CreateTransaction(Guid orderId);
+        Task<List<OrderViewModel>> GetOrderByStaffId();
+        Task<OrderViewModel> CreateOrder(CreateOrderDetailViewModel orderDetailViewModel);
+        //Task<bool> CreateTransaction(Guid orderId);
     }
 }

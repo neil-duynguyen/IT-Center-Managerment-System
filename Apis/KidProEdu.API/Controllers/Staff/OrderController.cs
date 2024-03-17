@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Interfaces;
-using KidProEdu.Application.ViewModels.OrderViewModels;
+using KidProEdu.Application.ViewModels.OrderDetailViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,14 @@ namespace KidProEdu.API.Controllers.Staff
         public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
+        }
+
+        [HttpGet("Orders")]
+        [Authorize(Roles = ("Staff"))]
+        //api này dùng bên order
+        public async Task<IActionResult> GetOrderByStaffId()
+        {
+            return Ok(await _orderService.GetOrderByStaffId());
         }
 
         [HttpPost("CreateOrder")]
@@ -35,13 +44,13 @@ namespace KidProEdu.API.Controllers.Staff
             }
         }
 
-        [HttpPost("CreateTransaction")]
+        /*[HttpPost("CreateTransaction")]
         public async Task<IActionResult> CreateTransaction(Guid orderId)
         {
             try
             {
-                var result = await _orderService.CreateTransaction(orderId);
-                return Ok(result);
+                *//*var result = await _orderService.CreateTransaction(orderId);
+                return Ok(result);*//*
             }
             catch (DbUpdateException ex)
             {
@@ -52,7 +61,7 @@ namespace KidProEdu.API.Controllers.Staff
             {
                 return BadRequest(ex.Message);
             }
-        }
+        }*/
 
     }
 }

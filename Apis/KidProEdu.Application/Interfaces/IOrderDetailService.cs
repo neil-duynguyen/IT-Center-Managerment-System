@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KidProEdu.Application.ViewModels.OrderDetailViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,7 @@ namespace KidProEdu.Application.Interfaces
 {
     public interface IOrderDetailService
     {
+        Task<List<OrderDetailViewModel>> GetOrderDetailByOrderId(Guid orderId);
+        Task<bool> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView);
     }
 }

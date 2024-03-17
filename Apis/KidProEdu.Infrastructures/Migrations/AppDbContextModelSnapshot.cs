@@ -1399,10 +1399,13 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ChildrenProfileId")
+                    b.Property<string>("ChildCourse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ChildrenProfileId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CourseId")
+                    b.Property<Guid?>("CourseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("CreatedBy")
@@ -1417,7 +1420,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("InstallmentTerm")
+                    b.Property<int?>("InstallmentTerm")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -1429,19 +1432,19 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid?>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("PayType")
+                    b.Property<int?>("PayType")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<double>("TotalPrice")
+                    b.Property<double?>("TotalPrice")
                         .HasColumnType("float");
 
-                    b.Property<double>("UnitPrice")
+                    b.Property<double?>("UnitPrice")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -2701,20 +2704,15 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.HasOne("KidProEdu.Domain.Entities.ChildrenProfile", "ChildrenProfile")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("ChildrenProfileId")
-                        .IsRequired();
+                        .HasForeignKey("ChildrenProfileId");
 
                     b.HasOne("KidProEdu.Domain.Entities.Course", "Course")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourseId");
 
                     b.HasOne("KidProEdu.Domain.Entities.Order", "Order")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("ChildrenProfile");
 
