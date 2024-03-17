@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -10,10 +11,14 @@ namespace KidProEdu.Infrastructures.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.DropColumn(
                 name: "ChildCourse",
+                table: "OrderDetail");
+
+            migrationBuilder.AddColumn<Guid>(
+                name: "ParentOrderDetail",
                 table: "OrderDetail",
-                type: "nvarchar(max)",
+                type: "uniqueidentifier",
                 nullable: true);
         }
 
@@ -21,8 +26,14 @@ namespace KidProEdu.Infrastructures.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ChildCourse",
+                name: "ParentOrderDetail",
                 table: "OrderDetail");
+
+            migrationBuilder.AddColumn<string>(
+                name: "ChildCourse",
+                table: "OrderDetail",
+                type: "nvarchar(max)",
+                nullable: true);
         }
     }
 }

@@ -243,12 +243,6 @@ namespace KidProEdu.Infrastructures
                .HasConversion(
                v => JsonConvert.SerializeObject(v), // Chuyển đổi ICollection<Guid>? thành chuỗi JSON khi lưu vào cơ sở dữ liệu
                v => JsonConvert.DeserializeObject<ICollection<Guid>>(v)); // Chuyển đổi chuỗi JSON thành ICollection<Guid>? khi đọc từ cơ sở dữ liệu*/
-
-            builder.Entity<OrderDetail>()
-               .Property(c => c.ChildCourse)
-               .HasConversion(
-               v => JsonConvert.SerializeObject(v), // Chuyển đổi ICollection<Guid>? thành chuỗi JSON khi lưu vào cơ sở dữ liệu
-               v => JsonConvert.DeserializeObject<ICollection<Guid>>(v)); // Chuyển đổi chuỗi JSON thành ICollection<Guid>? khi đọc từ cơ sở dữ liệu
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

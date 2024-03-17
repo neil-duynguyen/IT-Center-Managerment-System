@@ -1399,9 +1399,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ChildCourse")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("ChildrenProfileId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1433,6 +1430,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ParentOrderDetail")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("PayType")

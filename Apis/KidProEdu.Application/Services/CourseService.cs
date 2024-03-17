@@ -95,11 +95,11 @@ namespace KidProEdu.Application.Services
                 {
                     var mapperParentCourse = _mapper.Map<CourseViewModel>(item);
 
-                    var result = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == item.Id).ToList();
+                    var result = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == item.Id && x.IsDeleted == false).ToList();
                     mapperParentCourse.Courses = _mapper.Map<List<CourseViewModel>>(result);
                     listCourseViewModel.Add(mapperParentCourse);
                 }
-                if (item.ParentCourse is null && item.CourseType == Domain.Enums.CourseType.Single)
+                if (item.ParentCourse is null && item.CourseType == Domain.Enums.CourseType.Single && item.IsDeleted == false)
                 {
                     var course = _mapper.Map<CourseViewModel>(item);
                     course.Courses = listCourse.Count != 0 ? listCourse : null;

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240317100134_UpdateTableOrderDetail,Transaction")]
+    [Migration("20240317143800_UpdateTableOrderDetail,Transaction")]
     partial class UpdateTableOrderDetailTransaction
     {
         /// <inheritdoc />
@@ -1402,9 +1402,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ChildCourse")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("ChildrenProfileId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1436,6 +1433,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ParentOrderDetail")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("PayType")
