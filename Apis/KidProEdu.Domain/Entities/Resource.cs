@@ -12,8 +12,7 @@ namespace KidProEdu.Domain.Entities
         [ForeignKey("Course")]
         public Guid CourseId { get; set; }
         public string? Url { get; set; }
-        public Guid ClassId { get; set; }
-
+        public string? Description { get; set; }
         public virtual Course Course { get; set; }
     }
 }

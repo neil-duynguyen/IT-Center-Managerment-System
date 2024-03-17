@@ -22,7 +22,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Resource>> GetDocumentsByClassId(Guid classId)
         {
-            return await _dbContext.Resource.Where(x => !x.IsDeleted && x.ClassId == classId).ToListAsync();
+            return await _dbContext.Resource.Where(x => !x.IsDeleted).ToListAsync();
         }
 
         /*public async Task<List<Resource>> GetDocumentsByLessonId(Guid lessonId)

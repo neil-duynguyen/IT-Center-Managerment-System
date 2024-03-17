@@ -31,7 +31,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<Question>> GetQuestionByLesson(Guid id)
         {
             var questions = await _dbContext.Question
-                .Where(x => x.Id == id && x.IsDeleted == false)
+                .Where(x => x.LessionId == id && x.IsDeleted == false)
                 .ToListAsync();
 
             return questions;

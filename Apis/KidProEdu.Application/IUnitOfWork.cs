@@ -34,6 +34,8 @@ namespace KidProEdu.Application
         public IContractRepository  ContractRepository { get; }
         public IConfigJobTypeRepository  ConfigJobTypeRepository { get; }
         public ISkillRepository SkillRepository { get; }
+        public ISkillCertificateRepository SkillCertificateRepository { get; }
+        public IAttendanceRepository AttendanceRepository { get; }
         public IOrderRepository OrderRepository { get; }
         public IOrderDetailRepository OrderDetailRepository { get; }    
         public ITransactionRepository TransactionRepository { get; }

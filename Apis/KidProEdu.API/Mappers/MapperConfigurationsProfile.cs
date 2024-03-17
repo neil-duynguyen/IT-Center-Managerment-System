@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.ViewModels.AdviseRequestViewModels;
+using KidProEdu.Application.ViewModels.AttendanceViewModels;
 using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
@@ -24,6 +25,7 @@ using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
+using KidProEdu.Application.ViewModels.SkillCertificateViewModels;
 using KidProEdu.Application.ViewModels.SkillViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
@@ -54,6 +56,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<UpdateSkillViewModel, Skill>().ReverseMap();
             CreateMap<Skill, SkillViewModel>().ReverseMap();
 
+            CreateMap<CreateSkillCertificateViewModel, SkillCertificate>().ReverseMap();
+            CreateMap<UpdateSkillCertificateViewModel, SkillCertificate>().ReverseMap();
+            CreateMap<SkillCertificate, SkillCertificateViewModel>().ReverseMap();
+
             CreateMap<CreateCategoryEquipmentViewModel, CategoryEquipment>().ReverseMap();
             CreateMap<UpdateCategoryEquipmentViewModel, CategoryEquipment>().ReverseMap();
 
@@ -64,6 +70,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateChildrenViewModel, ChildrenProfile>().ReverseMap();
             CreateMap<UpdateChildrenViewModel, ChildrenProfile>().ReverseMap();
             CreateMap<ChildrenViewModel, ChildrenProfile>().ReverseMap();
+            CreateMap<ChildrenProfile, ChildrenProfileViewModel>();
 
             CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
@@ -133,6 +140,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateDivisionUserAccountViewModel, DivisionUserAccount>().ReverseMap();
             CreateMap<UpdateDivisionUserAccountViewModel, DivisionUserAccount>().ReverseMap();
 
+            CreateMap<Enrollment, Enrollment2ViewModel>().ReverseMap();
             CreateMap<EnrollmentViewModel, Enrollment>().ReverseMap().ForMember(des => des.ClassCode, src => src.MapFrom(x => x.Class.ClassCode))
                                                                     .ForMember(des => des.ChildrenName, src => src.MapFrom(x => x.ChildrenProfile.FullName));
             CreateMap<CreateEnrollmentViewModel, Enrollment>().ReverseMap();
@@ -152,7 +160,19 @@ namespace KidProEdu.API.Mappers
             CreateMap<Schedule, ScheduleViewModel>().ReverseMap();
             CreateMap<CreateScheduleViewModel, Schedule>().ReverseMap();
             CreateMap<UpdateScheduleViewModel, Schedule>().ReverseMap();
-            
+
+            CreateMap<CreateAttendanceViewModel, Attendance>().ReverseMap();
+            CreateMap<UpdateAttendanceViewModel, Attendance>().ReverseMap();
+            CreateMap<Attendance, AttendanceViewModel>().ReverseMap()
+                .AfterMap((src, dest) =>
+                {
+                    dest.ChildrenProfile.UserId = src.ChildrenProfile.UserId;
+                    dest.ChildrenProfile.FullName = src.ChildrenProfile.FullName;
+                    dest.ChildrenProfile.Avatar = src.ChildrenProfile.Avatar;
+                    dest.ChildrenProfile.BirthDay = src.ChildrenProfile.BirthDay;
+                    dest.ChildrenProfile.GenderType = src.ChildrenProfile.GenderType;
+                    dest.ChildrenProfile.SpecialSkill = src.ChildrenProfile.SpecialSkill;
+                }).ReverseMap(); ;
         }
     }
 }

@@ -137,6 +137,8 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IContractRepository, ContractRepository>();
             builder.Services.AddScoped<IConfigJobTypeRepository, ConfigJobTypeRepository>();
             builder.Services.AddScoped<ISkillRepository, SkillRepository>();
+            builder.Services.AddScoped<ISkillCertificateRepository, SkillCertificateRepository>();
+            builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
@@ -176,6 +178,8 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IContractService, ContractService>();
             builder.Services.AddScoped<IConfigJobTypeService, ConfigJobTypeService>();
             builder.Services.AddScoped<ISkillService, SkillService>();
+            builder.Services.AddScoped<ISkillCertificateService, SkillCertificateService>();
+            builder.Services.AddScoped<IAttendanceService, AttendanceService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
             builder.Services.AddScoped<ITransactionService, TransactionService>();

@@ -28,5 +28,11 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return schedules;
         }
+
+        public async Task<Schedule> GetScheduleByClassAndSlot(Guid classId, Guid slotId)
+        {
+            var schedule = await _dbContext.Schedule.FirstOrDefaultAsync(x => x.ClassId == classId && x.SlotId == slotId && x.IsDeleted == false);
+            return schedule;
+        }
     }
 }

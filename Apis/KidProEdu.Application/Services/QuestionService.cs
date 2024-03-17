@@ -4,6 +4,7 @@ using KidProEdu.Application.Validations.Questions;
 using KidProEdu.Application.ViewModels.QuestionViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
+using System;
 
 namespace KidProEdu.Application.Services
 {
@@ -67,11 +68,40 @@ namespace KidProEdu.Application.Services
             var question = await _unitOfWork.QuestionRepository.GetByIdAsync(questionId);
             return question;
         }
-        
-        public async Task<List<Question>> GetQuestionByLesson(Guid lessonId)
+
+        public async Task<List<QuestionByLessonViewModel>> CreateExam(List<CreateExamViewModel> createExamViewModels)
         {
-            var question = await _unitOfWork.QuestionRepository.GetQuestionByLesson(lessonId);
-            return question;
+            //var questions = new List<Question> { };
+            var listModel = new List<QuestionByLessonViewModel>();
+            if (createExamViewModels == null)
+            {
+                throw new Exception("Dữ liệu không hợp lệ");
+            }
+
+            if (createExamViewModels.Count == 1 && createExamViewModels.FirstOrDefault().TotalQuestion == null)
+            {
+                var vm = new QuestionByLessonViewModel
+                {
+                    LessonId = createExamViewModels.FirstOrDefault().LessonId,
+                    Questions = await _unitOfWork.QuestionRepository.GetQuestionByLesson(createExamViewModels.FirstOrDefault().LessonId)
+                };
+                listModel.Add(vm);
+            }
+            else
+            {
+                Random random = new Random();
+
+                foreach (var item in createExamViewModels)
+                {
+                    var vm = new QuestionByLessonViewModel();
+                    var questions = await _unitOfWork.QuestionRepository.GetQuestionByLesson(item.LessonId);
+                    var randomList = questions.OrderBy(x => random.Next()).Take((int)item.TotalQuestion).ToList();
+                    vm.LessonId = item.LessonId;
+                    vm.Questions = randomList;
+                    listModel.Add(vm);
+                }
+            }
+            return listModel;
         }
 
         public async Task<List<Question>> GetQuestions()
