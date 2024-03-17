@@ -10,7 +10,6 @@ using KidProEdu.Application.ViewModels.ContractViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Application.ViewModels.DivisionUserAccountViewModels;
 using KidProEdu.Application.ViewModels.DivisionViewModels;
-using KidProEdu.Application.ViewModels.DocumentViewModels;
 using KidProEdu.Application.ViewModels.EnrollmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
@@ -22,6 +21,7 @@ using KidProEdu.Application.ViewModels.NotificationViewModels;
 using KidProEdu.Application.ViewModels.QuestionViewModels;
 using KidProEdu.Application.ViewModels.RatingViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
+using KidProEdu.Application.ViewModels.ResourceViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
@@ -118,9 +118,9 @@ namespace KidProEdu.API.Mappers
 
             //CreateMap<RequestUserAccount, CreateRequestUserAccountViewModel>().ReverseMap();
 
-            CreateMap<Resource, DocumentViewModel>().ReverseMap();
-            CreateMap<CreateDocumentViewModel, Resource>().ReverseMap();
-            CreateMap<UpdateDocumentViewModel, Resource>().ReverseMap();
+            CreateMap<Resource, ResourceViewModel>().ReverseMap();
+            CreateMap<CreateResourceViewModel, Resource>().ReverseMap();
+            CreateMap<UpdateResourceViewModel, Resource>().ReverseMap();
 
             CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap();
             CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();

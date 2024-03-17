@@ -10,8 +10,7 @@ namespace KidProEdu.Application.IRepositories
 {
 
     public interface IResourceRepository : IGenericRepository<Resource>
-    {
-        //Task<List<Resource>> GetDocumentsByLessonId(Guid lessonId);
-        Task<List<Resource>> GetDocumentsByClassId(Guid classId);
+    {      
+        Task<List<Resource>> GetResourcesByCourseId(Guid id);
     }
 }
