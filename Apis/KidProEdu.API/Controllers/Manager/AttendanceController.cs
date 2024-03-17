@@ -1,6 +1,7 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
+using KidProEdu.Application.ViewModels.SkillCertificateViewModels;
 using KidProEdu.Application.ViewModels.SkillViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,28 @@ namespace KidProEdu.API.Controllers.Manager
         public async Task<IActionResult> AttendanceByScheduleId(Guid id)
         {
             return Ok(await _attendanceService.GetAttendanceByScheduleId(id));
+        }
+
+        [HttpPost]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> PostAttendance(CreateAttendanceViewModel createAttendanceViewModel)
+        {
+            try
+            {
+                var result = await _attendanceService.CreateAttendance(createAttendanceViewModel);
+                if (result)
+                {
+                    return Ok("Điểm danh đã được tạo thành công.");
+                }
+                else
+                {
+                    return BadRequest("Điểm danh đã được tạo thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]

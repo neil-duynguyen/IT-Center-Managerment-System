@@ -11,5 +11,6 @@ namespace KidProEdu.Application.ViewModels.AttendanceViewModels
     {
         public Guid Id { get; set; }
         public StatusAttendance StatusAttendance { get; set; }
+        public string? Note { get; set; }
     }
 }

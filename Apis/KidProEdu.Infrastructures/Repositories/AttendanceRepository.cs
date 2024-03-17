@@ -24,10 +24,10 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Attendance>> GetAttendanceByScheduleId(Guid id)
         {
-            var schedules = await _dbContext.Attendance
+            var results = await _dbContext.Attendance
                 .Where(x => x.ScheduleId == id && x.IsDeleted == false).Include(x => x.ChildrenProfile)
                 .ToListAsync();
-            return schedules;
+            return results;
         }
 
         public override async Task<List<Attendance>> GetAllAsync()
@@ -35,5 +35,10 @@ namespace KidProEdu.Infrastructures.Repositories
             return await _dbSet.Include(x => x.ChildrenProfile).Where(x => !x.IsDeleted).ToListAsync();
         }
 
+        public async Task<Attendance> GetAttendanceByScheduleIdAndChilId(Guid scheduleId, Guid childId)
+        {
+            var result = await _dbContext.Attendance.FirstOrDefaultAsync(x => x.ScheduleId == scheduleId && x.ChildrenProfileId == childId && x.IsDeleted == false);
+            return result;
+        }
     }
 }
