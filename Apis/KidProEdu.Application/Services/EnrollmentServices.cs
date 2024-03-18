@@ -78,10 +78,10 @@ namespace KidProEdu.Application.Services
             return mapper;
         }
 
-        public async Task<List<Enrollment2ViewModel>> GetEnrollmentsByClassId(Guid Id)
+        public async Task<List<EnrollmentViewModel>> GetEnrollmentsByClassId(Guid Id)
         {
             var getEnrollments = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassId(Id);
-            var mapper = _mapper.Map<List<Enrollment2ViewModel>>(getEnrollments);
+            var mapper = _mapper.Map<List<EnrollmentViewModel>>(getEnrollments);
             return mapper;
         }
     }

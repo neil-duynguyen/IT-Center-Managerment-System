@@ -32,26 +32,22 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateAttendance(CreateAttendanceViewModel createAttendanceViewModel)
-        {
+        public async Task<bool> CreateAttendances(List<CreateAttendanceViewModel> createAttendanceViewModel)
+        {           
             var validator = new CreateAttendanceViewModelValidator();
-            var validationResult = validator.Validate(createAttendanceViewModel);
-            if (!validationResult.IsValid)
+            foreach (var attendanceViewModel in createAttendanceViewModel)
             {
-                foreach (var error in validationResult.Errors)
+                var validationResult = validator.Validate(attendanceViewModel);
+                if (!validationResult.IsValid)
                 {
-                    throw new Exception(error.ErrorMessage);
+                    foreach (var error in validationResult.Errors)
+                    {
+                        throw new Exception(error.ErrorMessage);
+                    }
                 }
             }
-
-            var attendance = await _unitOfWork.AttendanceRepository.GetAttendanceByScheduleIdAndChilId(createAttendanceViewModel.ScheduleId, createAttendanceViewModel.ChildrenProfileId);
-            if (attendance != null)
-            {
-                throw new Exception("Điểm danh này đã tồn tại");
-            }
-
-            var mapper = _mapper.Map<Attendance>(createAttendanceViewModel);
-            await _unitOfWork.AttendanceRepository.AddAsync(mapper);
+            var mapper = _mapper.Map<List<Attendance>>(createAttendanceViewModel);
+            await _unitOfWork.AttendanceRepository.AddRangeAsync(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo điểm danh thất bại");
         }
 
@@ -82,14 +78,10 @@ namespace KidProEdu.Application.Services
                         throw new Exception(error.ErrorMessage);
                     }
                 }  
-                if (updateAttendance.StatusAttendance == StatusAttendance.Future)
-                {
-                    throw new Exception("Vẫn còn học viên chưa được điểm danh");
-                }
 
                 var attendanceUpdate = await _unitOfWork.AttendanceRepository.GetByIdAsync(updateAttendance.Id);
                 var mapper = _mapper.Map<Attendance>(attendanceUpdate);
-                mapper.Id = updateAttendance.Id;
+                mapper.Date = updateAttendance.Date;
                 mapper.StatusAttendance = updateAttendance.StatusAttendance;
                 mapper.Note = updateAttendance.Note;
                 _unitOfWork.AttendanceRepository.Update(attendanceUpdate);

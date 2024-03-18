@@ -34,11 +34,11 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PostAttendance(CreateAttendanceViewModel createAttendanceViewModel)
+        public async Task<IActionResult> PostAttendance(List<CreateAttendanceViewModel> createAttendanceViewModel)
         {
             try
             {
-                var result = await _attendanceService.CreateAttendance(createAttendanceViewModel);
+                var result = await _attendanceService.CreateAttendances(createAttendanceViewModel);
                 if (result)
                 {
                     return Ok("Điểm danh đã được tạo thành công.");
