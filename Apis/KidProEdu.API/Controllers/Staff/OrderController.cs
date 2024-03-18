@@ -26,6 +26,7 @@ namespace KidProEdu.API.Controllers.Staff
         }
 
         [HttpPost("CreateOrder")]
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> CreateOrder(CreateOrderDetailViewModel orderDetailViewModel)
         {
             try
@@ -35,7 +36,7 @@ namespace KidProEdu.API.Controllers.Staff
             }
             catch (DbUpdateException ex)
             { 
-                return BadRequest("Lỗi DB");
+                return BadRequest("Lỗi tạo đơn hàng");
             }
 
             catch (Exception ex)

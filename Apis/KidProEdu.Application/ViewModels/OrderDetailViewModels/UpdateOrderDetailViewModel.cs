@@ -8,8 +8,8 @@ namespace KidProEdu.Application.ViewModels.OrderDetailViewModels
 {
     public class UpdateOrderDetailViewModel
     {
-        public Guid OrderDetailId { get; set; }
-        public Guid? ParentCourseId { get; set; }
+        public Guid OrderId { get; set; }
+        public Guid ParentCourseId { get; set; }
         public List<Guid> ListChildCourseId { get; set; }
         public int PayType { get; set; }
         public int? InstallmentTerm { get; set; }

@@ -9,6 +9,7 @@ namespace KidProEdu.Application.ViewModels.OrderDetailViewModels
 {
     public class OrderDetailViewModel
     {
+        public Guid OrderDetailId { get; set; }
         public Guid CourseId { get; set; }
         public string CourseName { get; set; }
         public int? Quantity { get; set; }

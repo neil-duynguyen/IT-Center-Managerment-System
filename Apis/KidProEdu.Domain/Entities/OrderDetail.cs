@@ -16,7 +16,7 @@ namespace KidProEdu.Domain.Entities
         public Guid? ChildrenProfileId { get; set; }
         public Guid? CourseId { get; set; }
         public int? Quantity { get; set; }
-        public double? UnitPrice { get; set; }
+        public double UnitPrice { get; set; }
         public double? TotalPrice { get; set; }
         public int? InstallmentTerm { get; set; }
         public PayType? PayType { get; set; }

@@ -1444,7 +1444,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<double?>("TotalPrice")
                         .HasColumnType("float");
 
-                    b.Property<double?>("UnitPrice")
+                    b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
