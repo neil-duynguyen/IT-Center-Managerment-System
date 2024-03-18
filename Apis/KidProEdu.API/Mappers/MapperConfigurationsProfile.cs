@@ -72,7 +72,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<ChildrenViewModel, ChildrenProfile>().ReverseMap();
             CreateMap<ChildrenProfile, ChildrenProfileViewModel>();
 
-            CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
+            CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null)); 
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<Equipment, EquipmentViewModel>().ReverseMap();
             CreateMap<EquipmentManagementViewModel, Equipment>().ReverseMap();
@@ -122,7 +122,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateResourceViewModel, Resource>().ReverseMap();
             CreateMap<UpdateResourceViewModel, Resource>().ReverseMap();
 
-            CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap();
+            CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null));
             CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();
             CreateMap<UpdateLogEquipmentViewModel, LogEquipment>().ReverseMap();
             CreateMap<LogEquipmentBorrowedManagementViewModel, LogEquipment>().ReverseMap();
@@ -132,7 +132,7 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<TagViewModel, Tag>().ReverseMap().ForMember(des => des.TagType, src => src.MapFrom(x => x.TagType != null ? (string)x.TagType.ToString() : (string?)null)); ;
 
-            CreateMap<AdviseRequestViewModel, AdviseRequest>().ReverseMap().ForMember(des => des.StatusAdviseRequest, src => src.MapFrom(x => x.StatusAdviseRequest != null ? (string)x.StatusAdviseRequest.ToString() : (string?)null)); ;
+            CreateMap<AdviseRequestViewModel, AdviseRequest>().ReverseMap().ForMember(des => des.StatusAdviseRequest, src => src.MapFrom(x => x.StatusAdviseRequest != null ? (string)x.StatusAdviseRequest.ToString() : (string?)null));
             CreateMap<CreateAdviseRequestViewModel, AdviseRequest>().ReverseMap();
             CreateMap<UpdateAdviseRequestViewModel, AdviseRequest>().ReverseMap();
 
@@ -171,7 +171,8 @@ namespace KidProEdu.API.Mappers
                     dest.ChildrenProfile.BirthDay = src.ChildrenProfile.BirthDay;
                     dest.ChildrenProfile.GenderType = src.ChildrenProfile.GenderType;
                     dest.ChildrenProfile.SpecialSkill = src.ChildrenProfile.SpecialSkill;
-                }).ReverseMap(); ;
+                })
+                .ForMember(des => des.StatusAttendance, src => src.MapFrom(x => x.StatusAttendance != null ? (string)x.StatusAttendance.ToString() : (string?)null)).ReverseMap();
         }
     }
 }

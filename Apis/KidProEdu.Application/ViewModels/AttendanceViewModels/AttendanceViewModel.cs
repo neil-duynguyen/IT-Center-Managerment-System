@@ -15,7 +15,7 @@ namespace KidProEdu.Application.ViewModels.AttendanceViewModels
         public Guid ScheduleId { get; set; }
         public DateTime Date { get; set; }
         public Guid ChildrenProfileId { get; set; }
-        public StatusAttendance StatusAttendance { get; set; }
+        public string? StatusAttendance { get; set; }
         public string? Note { get; set; }
         public ChildrenProfileViewModel ChildrenProfile { get; set; }
     }
