@@ -12,6 +12,7 @@ namespace KidProEdu.Application.ViewModels.ScheduleViewModels
     {
         public Guid ClassId { get; set; }
         public Guid SlotId { get; set; }
+        public DateTime? StartDate { get; set; }
         public string? DayInWeek { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
