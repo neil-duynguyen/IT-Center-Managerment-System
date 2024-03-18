@@ -9,6 +9,7 @@
         public string Phone { get; set; }
         public string Address { get; set; }
         public string Location { get; set; }
+        public DateTime TestDate { get; set; }
         public bool? IsTested { get; set; }
         public string StatusAdviseRequest { get; set; }
     }

@@ -13,6 +13,7 @@ namespace KidProEdu.Domain.Entities
         public string Phone { get; set; }
         public string Address { get; set; }
         public string Location { get; set; }
+        public DateTime TestDate { get; set; }
         public bool? IsTested { get; set; }
         public StatusAdviseRequest StatusAdviseRequest { get; set; }
         public virtual UserAccount? UserAccount { get; set; }

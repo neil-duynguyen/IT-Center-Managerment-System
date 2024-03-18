@@ -34,6 +34,15 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return adviseRequests;
         }
+        
+        public async Task<List<AdviseRequest>> GetAdviseRequestByTestDate(DateTime testDate)
+        {
+            var adviseRequests = await _dbContext.AdviseRequest
+                .Where(x => x.TestDate.Date == testDate.Date && x.IsDeleted == false)
+                .ToListAsync();
+
+            return adviseRequests;
+        }
 
         public async Task<AdviseRequest> GetAdviseRequestByProperty(UpdateAdviseRequestViewModel updateAdviseRequestViewModel, Expression<Func<AdviseRequest, object>> property)
         {

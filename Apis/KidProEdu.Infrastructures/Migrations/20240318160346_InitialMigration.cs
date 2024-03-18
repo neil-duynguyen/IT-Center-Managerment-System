@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KidProEdu.Infrastructures.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -469,7 +469,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -579,6 +579,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SlotId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DayInWeek = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -649,6 +650,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsTested = table.Column<bool>(type: "bit", nullable: true),
                     StatusAdviseRequest = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),

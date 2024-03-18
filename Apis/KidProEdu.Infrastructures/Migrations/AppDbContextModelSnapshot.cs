@@ -90,6 +90,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int>("StatusAdviseRequest")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("TestDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 

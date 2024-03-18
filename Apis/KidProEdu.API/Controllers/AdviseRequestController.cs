@@ -16,26 +16,64 @@ namespace KidProEdu.API.Controllers
 
         [HttpGet("AdviseRequests")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> Locations()
+        public async Task<IActionResult> AdviseRequests()
         {
-            return Ok(await _adviseRequestService.GetAdviseRequests());
+            try
+            {
+                return Ok(await _adviseRequestService.GetAdviseRequests());
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet("{id}")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> Location(Guid id)
+        public async Task<IActionResult> AdviseRequest(Guid id)
         {
-            var result = await _adviseRequestService.GetAdviseRequestById(id);
-            if (result == null)
+            try
             {
-                return NotFound();
+                var result = await _adviseRequestService.GetAdviseRequestById(id);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
             }
-            return Ok(result);
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+
+        }
+        
+        [HttpGet("GetTestDate/{testDate}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> TestDate(DateTime testDate)
+        {
+            try
+            {
+                var result = await _adviseRequestService.GetAdviseRequestByTestDate(testDate);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+
         }
 
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PostLocation(CreateAdviseRequestViewModel createAdviseRequestViewModel)
+        public async Task<IActionResult> PostAdviseRequest(CreateAdviseRequestViewModel createAdviseRequestViewModel)
         {
             try
             {
@@ -57,7 +95,7 @@ namespace KidProEdu.API.Controllers
 
         [HttpPut]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PutLocation(UpdateAdviseRequestViewModel updateAdviseRequestViewModel)
+        public async Task<IActionResult> PutAdviseRequest(UpdateAdviseRequestViewModel updateAdviseRequestViewModel)
         {
             try
             {
@@ -79,7 +117,7 @@ namespace KidProEdu.API.Controllers
 
         [HttpDelete]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> DeleteLocation(Guid id)
+        public async Task<IActionResult> DeleteAdviseRequest(Guid id)
         {
             try
             {

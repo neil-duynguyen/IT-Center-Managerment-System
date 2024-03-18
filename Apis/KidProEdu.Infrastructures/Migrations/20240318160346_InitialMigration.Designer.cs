@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240316170331_fixResource")]
-    partial class fixResource
+    [Migration("20240318160346_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,6 +92,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<int>("StatusAdviseRequest")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("TestDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -1867,6 +1870,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<Guid>("SlotId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
