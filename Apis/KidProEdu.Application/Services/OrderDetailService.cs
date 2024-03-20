@@ -47,103 +47,177 @@ namespace KidProEdu.Application.Services
                 var getPrice = await _unitOfWork.CourseRepository.GetByIdAsync(orderDetail.ParentCourseId);
                 var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderDetail.OrderId).FirstOrDefault(x => x.CourseId == orderDetail.ParentCourseId);
 
-                //nếu orderDetaiId đó đã tồn tại
-                if (getOrderDetail.ChildrenProfileId is not null)
+                //trường hợp course là spec
+                if (orderDetail.ListChildCourseId.Count > 0)
                 {
-                    OrderDetail newOrderDetail = new()
+                    if (getOrderDetail.ChildrenProfileId is not null)
                     {
-                        Id = Guid.NewGuid(),
-                        OrderId = orderDetail.OrderId,
-                        CourseId = orderDetail.ParentCourseId,
-                        UnitPrice = getPrice.Price,
-                        TotalPrice = getPrice.Price,
-                        ChildrenProfileId = orderDetail.ChildrenProfildId,
-                        PayType = (Domain.Enums.PayType?)orderDetail.PayType,
-                        InstallmentTerm = orderDetail.InstallmentTerm
-                    };
-                    await _unitOfWork.OrderDetailRepository.AddAsync(newOrderDetail);
-                    await _unitOfWork.SaveChangeAsync();
+                        double totalPriceChildCourse = 0;
+                        OrderDetail newParentOrderDetail = new()
+                        {
+                            Id = Guid.NewGuid(),
+                            OrderId = orderDetail.OrderId,
+                            ChildrenProfileId = orderDetail.ChildrenProfildId,
+                            CourseId = orderDetail.ParentCourseId,
+                            UnitPrice = getPrice.Price,
+                            PayType = (Domain.Enums.PayType?)orderDetail.PayType,
+                            InstallmentTerm = orderDetail.InstallmentTerm
+                        };
+                        await _unitOfWork.OrderDetailRepository.AddAsync(newParentOrderDetail);
+
+                        foreach (var item in orderDetail.ListChildCourseId)
+                        {
+                            var getPriceChildCourse = await _unitOfWork.CourseRepository.GetByIdAsync(item);
+                            OrderDetail newChildOrderDetail = new()
+                            {
+                                Id = Guid.NewGuid(),
+                                ChildrenProfileId = orderDetail.ChildrenProfildId,
+                                CourseId = item,
+                                UnitPrice = getPriceChildCourse.Price,
+                                ParentOrderDetail = newParentOrderDetail.Id
+                            };
+                            totalPriceChildCourse += getPriceChildCourse.Price;
+                            await _unitOfWork.OrderDetailRepository.AddAsync(newChildOrderDetail);
+                        }
+
+                        newParentOrderDetail.TotalPrice = totalPriceChildCourse;                        
+                        await _unitOfWork.SaveChangeAsync();
+                    }
+                    else
+                    {
+                        double totalPriceChildCourse = 0;
+                        getOrderDetail.ChildrenProfileId = orderDetail.ChildrenProfildId;
+                        getOrderDetail.UnitPrice = getPrice.Price;                       
+                        getOrderDetail.PayType = (Domain.Enums.PayType?)orderDetail.PayType;
+                        getOrderDetail.InstallmentTerm = orderDetail.InstallmentTerm;
+
+                        foreach (var item in orderDetail.ListChildCourseId)
+                        {
+                            var getPriceChildCourse = await _unitOfWork.CourseRepository.GetByIdAsync(item);
+                            OrderDetail newChildOrderDetail = new()
+                            {
+                                Id = Guid.NewGuid(),
+                                ChildrenProfileId = orderDetail.ChildrenProfildId,
+                                CourseId = item,
+                                UnitPrice = getPriceChildCourse.Price,
+                                ParentOrderDetail = getOrderDetail.Id
+                            };
+
+                            totalPriceChildCourse += getPriceChildCourse.Price;
+                            await _unitOfWork.OrderDetailRepository.AddAsync(newChildOrderDetail);                            
+                        }
+                        getOrderDetail.TotalPrice = totalPriceChildCourse;
+                        _unitOfWork.OrderDetailRepository.Update(getOrderDetail);
+                        await _unitOfWork.SaveChangeAsync();
+                    }
+
                 }
                 else
                 {
-                    //update OrderDetail
-                    getOrderDetail.ChildrenProfileId = orderDetail.ChildrenProfildId;
-                    getOrderDetail.UnitPrice = getPrice.Price;
-                    getOrderDetail.TotalPrice = getPrice.Price;
-                    getOrderDetail.PayType = (Domain.Enums.PayType?)orderDetail.PayType;
-                    getOrderDetail.InstallmentTerm = orderDetail.InstallmentTerm;
-                    _unitOfWork.OrderDetailRepository.Update(getOrderDetail);
-                    
-                    await _unitOfWork.SaveChangeAsync();
-                }
-
-                //lấy số tiền đơn hàng trc đó để cộng dồn lên
-                var getPriceChildOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderDetail.OrderId).Sum(x => x.TotalPrice);
-
-                _unitOfWork.OrderRepository.Update(getOrder);
-                await _unitOfWork.SaveChangeAsync();
-            }
-
-
-                // orderId = (Guid)getOrderDetail.OrderId;
-
-                //lấy số tiền đơn hàng trc đó để cộng dồn lên
-                /*var getPriceChildOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.ParentOrderDetail == getOrderDetail.Id).Sum(x => x.UnitPrice);
-
-                totalPrice += getPriceChildOrderDetail;
-
-
-                var getPrice = await _unitOfWork.CourseRepository.GetByIdAsync((Guid)orderDetail.ParentCourseId);
-                //course spec thì vào đây
-                if (orderDetail.ListChildCourseId.Count > 0)
-                {
-                    OrderDetail newParentOrderDetail = new()
+                    //nếu orderDetaiId đó đã tồn tại
+                    if (getOrderDetail.ChildrenProfileId is not null)
                     {
-                        Id = Guid.NewGuid(),
-                        ChildrenProfileId = orderDetail.ChildrenProfildId,
-                        CourseId = orderDetail.ParentCourseId,
-                        UnitPrice = getPrice.Price,
-                    };
-                    await _unitOfWork.OrderDetailRepository.AddAsync(newParentOrderDetail);
-
-                    foreach (var item in orderDetail.ListChildCourseId)
-                    {
-                        var getPriceChildCourse = await _unitOfWork.CourseRepository.GetByIdAsync(item);
-                        OrderDetail newChildOrderDetail = new()
+                        OrderDetail newOrderDetail = new()
                         {
                             Id = Guid.NewGuid(),
+                            OrderId = orderDetail.OrderId,
+                            CourseId = orderDetail.ParentCourseId,
+                            UnitPrice = getPrice.Price,
+                            TotalPrice = getPrice.Price,
                             ChildrenProfileId = orderDetail.ChildrenProfildId,
-                            CourseId = item,
-                            UnitPrice = getPriceChildCourse.Price,
-                            ParentOrderDetail = newParentOrderDetail.Id
+                            PayType = (Domain.Enums.PayType?)orderDetail.PayType,
+                            InstallmentTerm = orderDetail.InstallmentTerm
                         };
-                        totalPrice += getPrice.Price;
-                        await _unitOfWork.OrderDetailRepository.AddAsync(newChildOrderDetail);
+                        await _unitOfWork.OrderDetailRepository.AddAsync(newOrderDetail);
+                        await _unitOfWork.SaveChangeAsync();
                     }
+                    else
+                    {
+                        //update OrderDetail
+                        getOrderDetail.ChildrenProfileId = orderDetail.ChildrenProfildId;
+                        getOrderDetail.UnitPrice = getPrice.Price;
+                        getOrderDetail.TotalPrice = getPrice.Price;
+                        getOrderDetail.PayType = (Domain.Enums.PayType?)orderDetail.PayType;
+                        getOrderDetail.InstallmentTerm = orderDetail.InstallmentTerm;
+                        _unitOfWork.OrderDetailRepository.Update(getOrderDetail);
+
+                        await _unitOfWork.SaveChangeAsync();
+                    }
+
+                    //lấy số tiền đơn hàng trc đó để cộng dồn lên
+                    //var getPriceChildOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderDetail.OrderId).Sum(x => x.TotalPrice);
+
+                    _unitOfWork.OrderRepository.Update(getOrder);
+                    await _unitOfWork.SaveChangeAsync();
                 }
-                else {                  
-                    OrderDetail newOrderDetail = new()
+                //Update TotalAmount bên Order
+                var updateTotalOrder = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderDetail.OrderId).Sum(x => x.TotalPrice);
+                var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderDetail.OrderId);
+                if (getOrderById == null) throw new Exception("Đã xảy ra lỗi không thế thanh toán đơn hàng.");
+                getOrderById.TotalAmount = (double)updateTotalOrder;
+                _unitOfWork.OrderRepository.Update(getOrderById);
+                await _unitOfWork.SaveChangeAsync();
+
+            }
+            return true;
+        }
+
+
+            // orderId = (Guid)getOrderDetail.OrderId;
+
+            //lấy số tiền đơn hàng trc đó để cộng dồn lên
+            /*var getPriceChildOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.ParentOrderDetail == getOrderDetail.Id).Sum(x => x.UnitPrice);
+
+            totalPrice += getPriceChildOrderDetail;
+
+
+            var getPrice = await _unitOfWork.CourseRepository.GetByIdAsync((Guid)orderDetail.ParentCourseId);
+            //course spec thì vào đây
+            if (orderDetail.ListChildCourseId.Count > 0)
+            {
+                OrderDetail newParentOrderDetail = new()
+                {
+                    Id = Guid.NewGuid(),
+                    ChildrenProfileId = orderDetail.ChildrenProfildId,
+                    CourseId = orderDetail.ParentCourseId,
+                    UnitPrice = getPrice.Price,
+                };
+                await _unitOfWork.OrderDetailRepository.AddAsync(newParentOrderDetail);
+
+                foreach (var item in orderDetail.ListChildCourseId)
+                {
+                    var getPriceChildCourse = await _unitOfWork.CourseRepository.GetByIdAsync(item);
+                    OrderDetail newChildOrderDetail = new()
                     {
                         Id = Guid.NewGuid(),
-                        OrderId = orderId,
                         ChildrenProfileId = orderDetail.ChildrenProfildId,
-                        CourseId = orderDetail.ParentCourseId,
-                        UnitPrice = getPrice.Price,
+                        CourseId = item,
+                        UnitPrice = getPriceChildCourse.Price,
+                        ParentOrderDetail = newParentOrderDetail.Id
                     };
                     totalPrice += getPrice.Price;
-                    await _unitOfWork.OrderDetailRepository.AddAsync(newOrderDetail);
-                }*/
+                    await _unitOfWork.OrderDetailRepository.AddAsync(newChildOrderDetail);
+                }
+            }
+            else {                  
+                OrderDetail newOrderDetail = new()
+                {
+                    Id = Guid.NewGuid(),
+                    OrderId = orderId,
+                    ChildrenProfileId = orderDetail.ChildrenProfildId,
+                    CourseId = orderDetail.ParentCourseId,
+                    UnitPrice = getPrice.Price,
+                };
+                totalPrice += getPrice.Price;
+                await _unitOfWork.OrderDetailRepository.AddAsync(newOrderDetail);
+            }*/
 
 
 
 
 
-                //update TotalPrice bên Order
-                //var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
-                //getOrder.TotalAmount = totalPrice;
-                // _unitOfWork.OrderRepository.Update(getOrder);
-
-                return true;
-        }
+            //update TotalPrice bên Order
+            //var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
+            //getOrder.TotalAmount = totalPrice;
     }
 }

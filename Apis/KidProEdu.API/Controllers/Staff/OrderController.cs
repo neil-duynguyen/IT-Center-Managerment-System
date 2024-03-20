@@ -1,8 +1,14 @@
 ﻿using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.PaymentService.Dtos;
+using KidProEdu.Application.PaymentService.Momo.Request;
+using KidProEdu.Application.PaymentService.Payment.Commands;
+using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace KidProEdu.API.Controllers.Staff
 {
@@ -64,5 +70,20 @@ namespace KidProEdu.API.Controllers.Staff
             }
         }*/
 
+        [HttpPost("CreatePayment/{orderId}")]
+        public async Task<IActionResult> Create(Guid orderId)
+        {
+            var result = await _orderService.CreatePaymentHandler(orderId);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("momo-return")]
+        public async Task<IActionResult> MomoReturn([FromQuery] MomoOneTimePaymentResultRequest response)
+        {
+            var result = await _orderService.ProcessMomoPaymentReturnHandler(response);
+            return Redirect(result);
+
+        }
     }
 }

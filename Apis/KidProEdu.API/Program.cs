@@ -31,6 +31,10 @@ namespace KidProEdu.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR();
+           /* builder.Services.AddMediatR(r =>
+            {
+               // r.RegisterServicesFromAssembly(typeof(CreateMerchant).Assembly);
+            });*/
 
             //CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
