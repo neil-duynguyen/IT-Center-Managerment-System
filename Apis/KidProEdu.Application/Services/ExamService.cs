@@ -43,11 +43,11 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var exitResult = await _unitOfWork.ExamRepository.GetExamByTestName(createExamViewModel.TestName);
+            /*var exitResult = await _unitOfWork.ExamRepository.GetExamByTestName(createExamViewModel.TestName);
             if (exitResult != null)
             {
                 throw new Exception("Bài kiểm tra này đã tồn tại");
-            }
+            }*/
 
             var mapper = _mapper.Map<Exam>(createExamViewModel);
             await _unitOfWork.ExamRepository.AddAsync(mapper);
@@ -113,14 +113,14 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Không tìm thấy bài kiểm tra");
             }
 
-            var existingExam = await _unitOfWork.ExamRepository.GetExamByTestName(updateExamViewModel.TestName);
+            /*var existingExam = await _unitOfWork.ExamRepository.GetExamByTestName(updateExamViewModel.TestName);
             if (existingExam != null)
             {
                 if (existingExam.Id != updateExamViewModel.Id)
                 {
                     throw new Exception("Tên đã tồn tại");
                 }
-            }
+            }*/
             var mapper = _mapper.Map<Exam>(result);
             mapper.TestDuration = updateExamViewModel.TestDuration;
             mapper.TestDate = updateExamViewModel.TestDate;
