@@ -8,5 +8,7 @@ namespace KidProEdu.Domain.Enums
 {
     public enum TestType
     {
+        TestExam = 1,
+        FinalExam = 2
     }
 }

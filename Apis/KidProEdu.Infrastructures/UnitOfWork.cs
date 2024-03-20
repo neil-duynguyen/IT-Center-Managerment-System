@@ -43,6 +43,7 @@ namespace Infrastructures
         private readonly ISkillCertificateRepository _skillCertificateRepository;
         private readonly IAttendanceRepository _attendanceRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IExamRepository _examRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -58,7 +59,7 @@ namespace Infrastructures
             ISkillRepository skillRepository, ISkillCertificateRepository skillCertificateRepository, IAttendanceRepository attendanceRepository,
             IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
             IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
-            ITransactionRepository transactionRepository
+            ITransactionRepository transactionRepository, IExamRepository examRepository
             )
         {
             _dbContext = dbContext;
@@ -96,6 +97,7 @@ namespace Infrastructures
             _orderRepository = orderRepository;
             _orderDetailRepository = orderDetailRepository; 
             _transactionRepository = transactionRepository;
+            _examRepository = examRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -164,6 +166,8 @@ namespace Infrastructures
         public IOrderDetailRepository OrderDetailRepository => _orderDetailRepository;
 
         public ITransactionRepository TransactionRepository => _transactionRepository;
+
+        public IExamRepository ExamRepository => _examRepository;
 
         public async Task<int> SaveChangeAsync()
         {
