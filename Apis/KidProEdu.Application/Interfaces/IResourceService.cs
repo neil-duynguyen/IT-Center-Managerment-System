@@ -1,5 +1,6 @@
-﻿using KidProEdu.Application.ViewModels.DocumentViewModels;
+﻿using KidProEdu.Application.ViewModels.ResourceViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
+using KidProEdu.Application.ViewModels.ResourceViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,11 @@ namespace KidProEdu.Application.Interfaces
 
     public interface IResourceService
     {
-        /*Task<List<DocumentViewModel>> GetDocuments();
-        Task<bool> CreateDocument(CreateDocumentViewModel createDocumentViewModel);
-        Task<bool> UpdateDocument(UpdateDocumentViewModel updateDocumentViewModel);
-        Task<DocumentViewModel> GetDocumentById(Guid id);
-        Task<bool> DeleteDocument(Guid id);
-        Task<List<DocumentViewModel>> GetDocumentsByLessonId(Guid lessonId);
-        Task<List<DocumentViewModel>> GetDocumentsByClassId(Guid classId);*/
+        Task<List<ResourceViewModel>> GetResources();
+        Task<bool> CreateResource(CreateResourceViewModel createResourceViewModel);
+        Task<bool> UpdateResource(UpdateResourceViewModel updateResourceViewModel);
+        Task<ResourceViewModel> GetResourceById(Guid id);
+        Task<bool> DeleteResource(Guid id);
+        Task<List<ResourceViewModel>> GetResourcesByCourseId(Guid id);
     }
 }

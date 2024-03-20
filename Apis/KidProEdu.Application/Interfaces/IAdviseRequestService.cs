@@ -10,6 +10,7 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> CreateAdviseRequest(CreateAdviseRequestViewModel createAdviseRequestViewModel);
         Task<bool> UpdateAdviseRequest(UpdateAdviseRequestViewModel updateAdviseRequestViewModel, params Expression<Func<AdviseRequest, object>>[] uniqueProperties);
         Task<AdviseRequestViewModel> GetAdviseRequestById(Guid AdviseRequestId);
+        Task<List<AdviseRequestViewModel>> GetAdviseRequestByTestDate(DateTime testDate);
         Task<bool> DeleteAdviseRequest(Guid AdviseRequestId);
     }
 }

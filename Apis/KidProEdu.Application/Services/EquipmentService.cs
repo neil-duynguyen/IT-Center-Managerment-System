@@ -197,10 +197,10 @@ namespace KidProEdu.Application.Services
                 {
                     throw new Exception("Thiết bị đã được trả rồi");
                 }
-                else if (equipment.Status == StatusOfEquipment.Repair && equipmentWithLogEquipmentReturnedViewModel.Log.UserAccountId != logEquipment.UserAccountId)
+                /*else if (equipment.Status == StatusOfEquipment.Repair && equipmentWithLogEquipmentReturnedViewModel.Log.UserAccountId != logEquipment.UserAccountId)
                 {
                     throw new Exception("Người mang thiết bị đi bảo dưỡng khác với người trả thiết bị");
-                }
+                }*/
                 else if (equipment.Status == StatusOfEquipment.Borrowed && equipmentWithLogEquipmentReturnedViewModel.Log.UserAccountId != logEquipment.UserAccountId)
                 {
                     throw new Exception("Người mượn thiết bị khác với người trả thiết bị");

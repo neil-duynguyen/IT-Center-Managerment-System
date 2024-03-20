@@ -29,5 +29,6 @@ namespace KidProEdu.Domain.Entities
         public IList<OrderDetail> OrderDetails { get; set; }
         public IList<Resource> Resources { get; set; }
         public IList<Certificate> Certificates { get; set; }
+        public IList<Exam> Exams { get; set; }
     }
 }

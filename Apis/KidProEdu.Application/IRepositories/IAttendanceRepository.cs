@@ -13,5 +13,6 @@ namespace KidProEdu.Application.IRepositories
     public interface IAttendanceRepository : IGenericRepository<Attendance>
     {
         Task<List<Attendance>> GetAttendanceByScheduleId(Guid id);
+        Task<Attendance> GetAttendanceByScheduleIdAndChilId(Guid scheduleId, Guid childId);
     }
 }

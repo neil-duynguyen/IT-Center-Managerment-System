@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Validations.Attendances;
+using KidProEdu.Application.Validations.SkillCertificates;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
 using KidProEdu.Application.ViewModels.SkillCertificateViewModels;
 using KidProEdu.Application.ViewModels.SkillViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +32,25 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
+        public async Task<bool> CreateAttendances(List<CreateAttendanceViewModel> createAttendanceViewModel)
+        {           
+            var validator = new CreateAttendanceViewModelValidator();
+            foreach (var attendanceViewModel in createAttendanceViewModel)
+            {
+                var validationResult = validator.Validate(attendanceViewModel);
+                if (!validationResult.IsValid)
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        throw new Exception(error.ErrorMessage);
+                    }
+                }
+            }
+            var mapper = _mapper.Map<List<Attendance>>(createAttendanceViewModel);
+            await _unitOfWork.AttendanceRepository.AddRangeAsync(mapper);
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo điểm danh thất bại");
+        }
+
         public async Task<List<AttendanceViewModel>> GetAttendanceByScheduleId(Guid id)
         {
             var result = await _unitOfWork.AttendanceRepository.GetAttendanceByScheduleId(id);
@@ -47,10 +69,21 @@ namespace KidProEdu.Application.Services
         {
             foreach (var updateAttendance in updateAttendanceViewModel)
             {
+                var validator = new UpdateAttendanceViewModelValidator();
+                var validationResult = validator.Validate(updateAttendance);
+                if (!validationResult.IsValid)
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        throw new Exception(error.ErrorMessage);
+                    }
+                }  
+
                 var attendanceUpdate = await _unitOfWork.AttendanceRepository.GetByIdAsync(updateAttendance.Id);
                 var mapper = _mapper.Map<Attendance>(attendanceUpdate);
-                mapper.Id = updateAttendance.Id;
+                mapper.Date = updateAttendance.Date;
                 mapper.StatusAttendance = updateAttendance.StatusAttendance;
+                mapper.Note = updateAttendance.Note;
                 _unitOfWork.AttendanceRepository.Update(attendanceUpdate);
             }
 

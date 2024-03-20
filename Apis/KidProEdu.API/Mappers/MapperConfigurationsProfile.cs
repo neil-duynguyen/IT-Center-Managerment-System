@@ -10,7 +10,6 @@ using KidProEdu.Application.ViewModels.ContractViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Application.ViewModels.DivisionUserAccountViewModels;
 using KidProEdu.Application.ViewModels.DivisionViewModels;
-using KidProEdu.Application.ViewModels.DocumentViewModels;
 using KidProEdu.Application.ViewModels.EnrollmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
@@ -24,6 +23,7 @@ using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Application.ViewModels.QuestionViewModels;
 using KidProEdu.Application.ViewModels.RatingViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
+using KidProEdu.Application.ViewModels.ResourceViewModels;
 using KidProEdu.Application.ViewModels.RoleViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
@@ -74,7 +74,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<ChildrenViewModel, ChildrenProfile>().ReverseMap();
             CreateMap<ChildrenProfile, ChildrenProfileViewModel>();
 
-            CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
+            CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null)); 
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<Equipment, EquipmentViewModel>().ReverseMap();
             CreateMap<EquipmentManagementViewModel, Equipment>().ReverseMap();
@@ -120,11 +120,11 @@ namespace KidProEdu.API.Mappers
 
             //CreateMap<RequestUserAccount, CreateRequestUserAccountViewModel>().ReverseMap();
 
-            CreateMap<Resource, DocumentViewModel>().ReverseMap();
-            CreateMap<CreateDocumentViewModel, Resource>().ReverseMap();
-            CreateMap<UpdateDocumentViewModel, Resource>().ReverseMap();
+            CreateMap<Resource, ResourceViewModel>().ReverseMap();
+            CreateMap<CreateResourceViewModel, Resource>().ReverseMap();
+            CreateMap<UpdateResourceViewModel, Resource>().ReverseMap();
 
-            CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap();
+            CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null));
             CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();
             CreateMap<UpdateLogEquipmentViewModel, LogEquipment>().ReverseMap();
             CreateMap<LogEquipmentBorrowedManagementViewModel, LogEquipment>().ReverseMap();
@@ -134,7 +134,7 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<TagViewModel, Tag>().ReverseMap().ForMember(des => des.TagType, src => src.MapFrom(x => x.TagType != null ? (string)x.TagType.ToString() : (string?)null)); ;
 
-            CreateMap<AdviseRequestViewModel, AdviseRequest>().ReverseMap().ForMember(des => des.StatusAdviseRequest, src => src.MapFrom(x => x.StatusAdviseRequest != null ? (string)x.StatusAdviseRequest.ToString() : (string?)null)); ;
+            CreateMap<AdviseRequestViewModel, AdviseRequest>().ReverseMap().ForMember(des => des.StatusAdviseRequest, src => src.MapFrom(x => x.StatusAdviseRequest != null ? (string)x.StatusAdviseRequest.ToString() : (string?)null));
             CreateMap<CreateAdviseRequestViewModel, AdviseRequest>().ReverseMap();
             CreateMap<UpdateAdviseRequestViewModel, AdviseRequest>().ReverseMap();
 
@@ -142,7 +142,6 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateDivisionUserAccountViewModel, DivisionUserAccount>().ReverseMap();
             CreateMap<UpdateDivisionUserAccountViewModel, DivisionUserAccount>().ReverseMap();
 
-            CreateMap<Enrollment, Enrollment2ViewModel>().ReverseMap();
             CreateMap<EnrollmentViewModel, Enrollment>().ReverseMap().ForMember(des => des.ClassCode, src => src.MapFrom(x => x.Class.ClassCode))
                                                                     .ForMember(des => des.ChildrenName, src => src.MapFrom(x => x.ChildrenProfile.FullName));
             CreateMap<CreateEnrollmentViewModel, Enrollment>().ReverseMap();
@@ -174,6 +173,8 @@ namespace KidProEdu.API.Mappers
                     dest.ChildrenProfile.BirthDay = src.ChildrenProfile.BirthDay;
                     dest.ChildrenProfile.GenderType = src.ChildrenProfile.GenderType;
                     dest.ChildrenProfile.SpecialSkill = src.ChildrenProfile.SpecialSkill;
+                })
+                .ForMember(des => des.StatusAttendance, src => src.MapFrom(x => x.StatusAttendance != null ? (string)x.StatusAttendance.ToString() : (string?)null)).ReverseMap();
                 }).ReverseMap();
 
             CreateMap<OrderViewModel, Order>().ReverseMap().ForMember(des => des.PaymentStatus, src => src.MapFrom(x => x.PaymentStatus != null ? (string)x.PaymentStatus.ToString() : (string?)null)); ;

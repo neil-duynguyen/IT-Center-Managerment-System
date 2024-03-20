@@ -14,6 +14,7 @@ namespace KidProEdu.Domain.Entities
         [ForeignKey("Slot")]
         public Guid SlotId { get;set; } 
         public string? DayInWeek { get; set; }
+        public DateTime? StartDate { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public virtual Class Class { get; set; }

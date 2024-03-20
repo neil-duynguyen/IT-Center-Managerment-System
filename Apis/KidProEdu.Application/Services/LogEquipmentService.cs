@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
-using KidProEdu.Application.Validations.Documents;
 using KidProEdu.Application.Validations.Lessons;
 using KidProEdu.Application.Validations.LogEquipments;
 using KidProEdu.Application.ViewModels.DocumentViewModels;

@@ -45,7 +45,7 @@ namespace KidProEdu.Application.Services
             var lesson = await _unitOfWork.LessonRepository.GetLessonByName(createLessonViewModel.Name);
             if (lesson != null)
             {
-                throw new Exception("Tên đã tồn tại");
+                throw new Exception("Bài học đã tồn tại ở khóa học khác");
             }
 
             var mapper = _mapper.Map<Lesson>(createLessonViewModel);
@@ -116,7 +116,7 @@ namespace KidProEdu.Application.Services
             {
                 if (existingLesson.Id != updateLessonViewModel.Id)
                 {
-                    throw new Exception("Tên đã tồn tại");
+                    throw new Exception("Bài học đã tồn tại");
                 }
             }
 

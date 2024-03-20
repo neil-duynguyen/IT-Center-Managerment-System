@@ -9,10 +9,12 @@ namespace KidProEdu.Domain.Entities
 {
     public class Exam : BaseEntity
     {
+        public Guid? CourseId { get; set; }
         public string TestName { get; set; }
         public DateTime TestDate { get; set; }
         public int TestDuration { get; set; }
         public TestType TestType { get; set; }
+        public virtual Course? Course { get; set; }
         public IList<ChildrenAnswer> ChildrenAnswer { get; set; }
     }
 }

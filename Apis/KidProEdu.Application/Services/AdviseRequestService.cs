@@ -44,7 +44,13 @@ namespace KidProEdu.Application.Services
             adviseRequest = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByPhone(createAdviseRequestViewModel.Phone);
             if (adviseRequest != null)
             {
-                throw new Exception("Phone đã tồn tại");
+                throw new Exception("Số điện thoại đã tồn tại");
+            }
+            
+            var adviseRequests = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByTestDate(createAdviseRequestViewModel.TestDate);
+            if (adviseRequests != null && adviseRequests.Count == 5)
+            {
+                throw new Exception("Lịch đánh giá cho thời gian này đã đủ số lượng");
             }
 
             var mapper = _mapper.Map<AdviseRequest>(createAdviseRequestViewModel);
@@ -76,7 +82,17 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<AdviseRequestViewModel>> GetAdviseRequests()
         {
-            var results = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
+            var results = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result
+                .Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
+            var mapper = _mapper.Map<List<AdviseRequestViewModel>>(results);
+            return mapper;
+        }
+
+        public async Task<List<AdviseRequestViewModel>> GetAdviseRequestByTestDate(DateTime testDate)
+        {
+            var results = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result
+                .Where(x => x.IsDeleted == false && x.TestDate.Date == testDate.Date)
+                .OrderByDescending(x => x.CreationDate).ToList();
             var mapper = _mapper.Map<List<AdviseRequestViewModel>>(results);
             return mapper;
         }
