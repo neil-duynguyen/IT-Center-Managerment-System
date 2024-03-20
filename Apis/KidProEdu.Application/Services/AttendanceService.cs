@@ -51,6 +51,19 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo điểm danh thất bại");
         }
 
+        public async Task<bool> DeleteAttendance(Guid id)
+        {
+            var result = await _unitOfWork.AttendanceRepository.GetByIdAsync(id);
+
+            if (result == null)
+                throw new Exception("Không tìm thấy điểm danh này");
+            else
+            {
+                _unitOfWork.AttendanceRepository.SoftRemove(result);
+                return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa điểm danh thất bại");
+            }
+        }
+
         public async Task<List<AttendanceViewModel>> GetAttendanceByScheduleId(Guid id)
         {
             var result = await _unitOfWork.AttendanceRepository.GetAttendanceByScheduleId(id);

@@ -147,6 +147,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
             builder.Services.AddScoped<IExamRepository, ExamRepository>();
+            builder.Services.AddScoped<IChildrenAnswerRepository, ChildrenAnswerRepository>();
             #endregion
 
             #region DIService
@@ -189,6 +190,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
             builder.Services.AddScoped<ITransactionService, TransactionService>();
             builder.Services.AddScoped<IExamService, ExamService>();
+            builder.Services.AddScoped<IChildrenAnswerService, ChildrenAnswerService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));

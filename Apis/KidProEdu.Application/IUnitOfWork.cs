@@ -40,6 +40,7 @@ namespace KidProEdu.Application
         public IOrderDetailRepository OrderDetailRepository { get; }    
         public ITransactionRepository TransactionRepository { get; }
         public IExamRepository ExamRepository { get; }
+        public IChildrenAnswerRepository ChildrenAnswerRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

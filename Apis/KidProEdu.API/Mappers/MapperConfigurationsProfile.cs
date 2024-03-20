@@ -3,6 +3,7 @@ using KidProEdu.Application.ViewModels.AdviseRequestViewModels;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
 using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
+using KidProEdu.Application.ViewModels.ChildrenAnswerViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.ConfigJobType;
@@ -188,7 +189,10 @@ namespace KidProEdu.API.Mappers
                 .ForMember(des => des.PayType, src => src.MapFrom(x => x.PayType != null ? (string)x.PayType.ToString() : (string?)null))
                 .ForMember(des => des.CourseName, src => src.MapFrom(x => x.Course.Name));
 
-            
+            CreateMap<ChildrenAnswer, ChildrenAnswerViewModel>().ReverseMap();
+            CreateMap<CreateChildrenAnswerViewModel, ChildrenAnswer>().ReverseMap();
+            CreateMap<UpdateChildrenAnswerViewModel, ChildrenAnswer>().ReverseMap();
+
         }
     }
 }

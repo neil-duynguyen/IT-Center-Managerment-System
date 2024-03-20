@@ -18,5 +18,6 @@ namespace KidProEdu.Application.Interfaces
         Task<List<AttendanceViewModel>> GetAttendances();
         Task<bool> CreateAttendances(List<CreateAttendanceViewModel> createAttendanceViewModel);
         Task<bool> UpdateAttendances(List<UpdateAttendanceViewModel> updateAttendanceViewModel);
+        Task<bool> DeleteAttendance(Guid id);
     }
 }

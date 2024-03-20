@@ -44,6 +44,7 @@ namespace Infrastructures
         private readonly IAttendanceRepository _attendanceRepository;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IExamRepository _examRepository;
+        private readonly IChildrenAnswerRepository _childrenAnswerRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -59,7 +60,7 @@ namespace Infrastructures
             ISkillRepository skillRepository, ISkillCertificateRepository skillCertificateRepository, IAttendanceRepository attendanceRepository,
             IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
             IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
-            ITransactionRepository transactionRepository, IExamRepository examRepository
+            ITransactionRepository transactionRepository, IExamRepository examRepository, IChildrenAnswerRepository childrenAnswerRepository
             )
         {
             _dbContext = dbContext;
@@ -98,6 +99,7 @@ namespace Infrastructures
             _orderDetailRepository = orderDetailRepository; 
             _transactionRepository = transactionRepository;
             _examRepository = examRepository;
+            _childrenAnswerRepository = childrenAnswerRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -168,6 +170,8 @@ namespace Infrastructures
         public ITransactionRepository TransactionRepository => _transactionRepository;
 
         public IExamRepository ExamRepository => _examRepository;
+
+        public IChildrenAnswerRepository ChildrenAnswerRepository => _childrenAnswerRepository;
 
         public async Task<int> SaveChangeAsync()
         {
