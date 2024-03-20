@@ -183,7 +183,7 @@ namespace KidProEdu.API.Mappers
                 .ForMember(des => des.PayType, src => src.MapFrom(x => x.PayType != null ? (string)x.PayType.ToString() : (string?)null))
                 .ForMember(des => des.CourseName, src => src.MapFrom(x => x.Course.Name));
 
-
+            
         }
     }
 }
