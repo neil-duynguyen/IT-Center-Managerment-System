@@ -136,6 +136,11 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ISlotRepository, SlotRepository>();
             builder.Services.AddScoped<IContractRepository, ContractRepository>();
             builder.Services.AddScoped<IConfigJobTypeRepository, ConfigJobTypeRepository>();
+            builder.Services.AddScoped<ISkillRepository, SkillRepository>();
+            builder.Services.AddScoped<ISkillCertificateRepository, SkillCertificateRepository>();
+            builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+            builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
+            builder.Services.AddScoped<ITeachingClassHistoryRepository, TeachingClassHistoryRepository>();
             #endregion
 
             #region DIService

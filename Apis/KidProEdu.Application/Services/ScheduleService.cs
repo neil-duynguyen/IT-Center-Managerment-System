@@ -45,6 +45,7 @@ namespace KidProEdu.Application.Services
             }
 
             var mapper = _mapper.Map<Schedule>(createScheduleViewModel);
+            // Thêm danh sách Attendance vào unitOfWork           
             await _unitOfWork.ScheduleRepository.AddAsync(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo lịch thất bại");
         }
@@ -103,11 +104,37 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-           /* schedule.Name = updateScheduleViewModel.Name;
-            schedule.Status = updateScheduleViewModel.Status;*/
+            /* schedule.Name = updateScheduleViewModel.Name;
+             schedule.Status = updateScheduleViewModel.Status;*/
 
             _unitOfWork.ScheduleRepository.Update(schedule);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật lịch thất bại");
+        }
+
+        public async Task<bool> AutomaticalySchedule()
+        {
+            var classes = new List<Class>();
+            var fullTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.FullTime); //lấy list giáo viên fulltime
+            var partTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.PartTime); //lấy list giáo viên parttime
+            var teachingHistory = new TeachingClassHistory();
+
+            for (var i = 1; i <= 5; i++)
+            {
+                 classes = await _unitOfWork.ClassRepository.GetClassBySlot(i); //lấy list lớp học theo từng slot
+                foreach (var item in classes)
+                {
+                    foreach (var teacher in fullTeachers)
+                    {
+                        teachingHistory.ClassId = item.Id;
+                        teachingHistory.UserAccountId = teacher.Id;
+                        teachingHistory.StartTime = _currentTime.GetCurrentTime();
+                    }
+                }
+
+            }
+
+
+            return true;
         }
     }
 }

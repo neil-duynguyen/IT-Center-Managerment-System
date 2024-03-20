@@ -37,6 +37,10 @@ namespace Infrastructures
         private readonly ISlotRepository _slotRepository;
         private readonly IContractRepository _contractRepository;
         private readonly IConfigJobTypeRepository _configJobTypeRepository;
+        private readonly ISkillRepository _skillRepository;
+        private readonly ISkillCertificateRepository _skillCertificateRepository;
+        private readonly IAttendanceRepository _attendanceRepository;
+        private readonly ITeachingClassHistoryRepository _teachingClassHistoryRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -50,7 +54,8 @@ namespace Infrastructures
             , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository,
             IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository,
             IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
-            IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository
+            IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, 
+            ITeachingClassHistoryRepository teachingClassHistoryRepository
             )
         {
             _dbContext = dbContext;
@@ -82,6 +87,10 @@ namespace Infrastructures
             _slotRepository = slotRepository;
             _contractRepository = contractRepository;
             _configJobTypeRepository = configJobTypeRepository;
+            _skillRepository = skillRepository;
+            _skillCertificateRepository = skillCertificateRepository;
+            _attendanceRepository = attendanceRepository;
+            _teachingClassHistoryRepository = teachingClassHistoryRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -138,6 +147,13 @@ namespace Infrastructures
         public IContractRepository ContractRepository => _contractRepository;
 
         public IConfigJobTypeRepository ConfigJobTypeRepository => _configJobTypeRepository;
+
+        public ISkillRepository SkillRepository => _skillRepository;
+
+        public ISkillCertificateRepository SkillCertificateRepository => _skillCertificateRepository;
+
+        public IAttendanceRepository AttendanceRepository => _attendanceRepository;
+        public ITeachingClassHistoryRepository TeachingClassHistoryRepository => _teachingClassHistoryRepository;
 
         public async Task<int> SaveChangeAsync()
         {
