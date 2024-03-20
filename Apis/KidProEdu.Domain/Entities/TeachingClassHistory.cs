@@ -14,8 +14,8 @@ namespace KidProEdu.Domain.Entities
         public Guid UserAccountId { get; set; }
         [ForeignKey("Class")]
         public Guid ClassId { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public TeachingStatus TeachingStatus { get; set; }
         public virtual UserAccount UserAccount { get; set; }
         public virtual Class Class { get; set; }    

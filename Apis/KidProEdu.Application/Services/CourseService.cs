@@ -70,9 +70,9 @@ namespace KidProEdu.Application.Services
             var courseParent = await _unitOfWork.CourseRepository.GetByIdAsync(Id);
             var mapper = _mapper.Map<CourseViewModel>(courseParent);
 
-            var getList = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == courseParent.Id).ToList();
-            var classes = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.CourseId == Id).ToList();
-            var lessons = _unitOfWork.LessonRepository.GetAllAsync().Result.Where(x => x.CourseId == Id).ToList();
+            var getList = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == courseParent.Id && x.IsDeleted == false).ToList();
+            var classes = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.CourseId == Id && x.IsDeleted == false).ToList();
+            var lessons = _unitOfWork.LessonRepository.GetAllAsync().Result.Where(x => x.CourseId == Id && x.IsDeleted == false).ToList();
 
             mapper.Courses = _mapper.Map<List<CourseViewModel>>(getList);
             mapper.Classes = _mapper.Map<List<ClassViewModel>>(classes);
@@ -93,10 +93,13 @@ namespace KidProEdu.Application.Services
 
                 if (item.CourseType == Domain.Enums.CourseType.Spect)
                 {
-                    var result = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == item.Id).ToList();
-                    listCourse = _mapper.Map<List<CourseViewModel>>(result);
+                    var mapperParentCourse = _mapper.Map<CourseViewModel>(item);
+
+                    var result = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == item.Id && x.IsDeleted == false).ToList();
+                    mapperParentCourse.Courses = _mapper.Map<List<CourseViewModel>>(result);
+                    listCourseViewModel.Add(mapperParentCourse);
                 }
-                if (item.ParentCourse.Equals(Guid.Empty) || item.CourseType == Domain.Enums.CourseType.Single)
+                if (item.ParentCourse is null && item.CourseType == Domain.Enums.CourseType.Single && item.IsDeleted == false)
                 {
                     var course = _mapper.Map<CourseViewModel>(item);
                     course.Courses = listCourse.Count != 0 ? listCourse : null;

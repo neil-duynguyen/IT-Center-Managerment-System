@@ -20,14 +20,9 @@ namespace KidProEdu.Infrastructures.Repositories
             _dbContext = context;
         }
 
-        public async Task<List<Resource>> GetDocumentsByClassId(Guid classId)
+        public async Task<List<Resource>> GetResourcesByCourseId(Guid id)
         {
-            return await _dbContext.Resource.Where(x => !x.IsDeleted && x.ClassId == classId).ToListAsync();
+            return await _dbContext.Resource.Where(x => x.CourseId == id && !x.IsDeleted).ToListAsync();
         }
-
-        /*public async Task<List<Resource>> GetDocumentsByLessonId(Guid lessonId)
-        {
-            return await _dbContext.Resource.Where(x => !x.IsDeleted && x.LessonId == lessonId).ToListAsync();
-        }*/
     }
 }

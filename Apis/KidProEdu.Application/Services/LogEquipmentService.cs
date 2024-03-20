@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
-using KidProEdu.Application.Validations.Documents;
 using KidProEdu.Application.Validations.Lessons;
 using KidProEdu.Application.Validations.LogEquipments;
 using KidProEdu.Application.ViewModels.DocumentViewModels;
@@ -8,6 +7,7 @@ using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
 using KidProEdu.Application.ViewModels.LogEquipmentViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using ZXing.QrCode.Internal;
+using static ZXing.QrCode.Internal.Mode;
 
 namespace KidProEdu.Application.Services
 {
@@ -33,225 +35,74 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public Task<bool> CreateLogEquipment(CreateLogEquipmentViewModel createLogEquipmentViewModel)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteLogEquipment(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<LogEquipmentViewModel> GetLogEquipmentById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<LogEquipmentViewModel>> GetLogEquipments()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<LogEquipmentViewModel>> GetLogEquipmentsByCode(string code)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<LogEquipmentViewModel>> GetLogEquipmentsByEquipmentId(Guid equipmentId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<LogEquipmentViewModel>> GetLogEquipmentsByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<LogEquipmentViewModel>> GetLogEquipmentsByRoomId(Guid roomId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<LogEquipmentViewModel>> GetLogEquipmentsByUserId(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateLogEquipment(UpdateLogEquipmentViewModel updateLogEquipmentViewModel)
-        {
-            throw new NotImplementedException();
-        }
-
-        /*public async Task<bool> CreateLogEquipment(CreateLogEquipmentViewModel createLogEquipmentViewModel)
-        {
-            var validator = new CreateLogEquipmentViewModelValidator();
-            var validationResult = validator.Validate(createLogEquipmentViewModel);
-            if (!validationResult.IsValid)
-            {
-                foreach (var error in validationResult.Errors)
-                {
-                    throw new Exception(error.ErrorMessage);
-                }
-            }
-
-            var logEquipments = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByName(createLogEquipmentViewModel.Name);
-            if (!logEquipments.IsNullOrEmpty())
-            {
-                throw new Exception("Tên đã tồn tại");
-            }
-
-            var logEquipments1 = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByEquipmentId(createLogEquipmentViewModel.EquipmentId);
-            if (!logEquipments1.IsNullOrEmpty())
-            {
-                throw new Exception("Thiết bị đã tồn tại");
-            }
-
-            var logEquipments2 = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByCode(createLogEquipmentViewModel.Code);
-            if (!logEquipments2.IsNullOrEmpty())
-            {
-                throw new Exception("Code đã tồn tại");
-            }
-
-            var mapper = _mapper.Map<LogEquipment>(createLogEquipmentViewModel);
-            await _unitOfWork.LogEquipmentRepository.AddAsync(mapper);
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo tài liệu thất bại");
-        }
-
         public async Task<bool> DeleteLogEquipment(Guid id)
         {
             var result = await _unitOfWork.LogEquipmentRepository.GetByIdAsync(id);
 
             if (result == null)
-                throw new Exception("Không tìm thấy thiết bị");
+                throw new Exception("Không tìm thấy log thiết bị");
             else
             {
                 _unitOfWork.LogEquipmentRepository.SoftRemove(result);
-                return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa thiết bị thất bại");
+                return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa log thiết bị thất bại");
             }
         }
 
         public async Task<LogEquipmentViewModel> GetLogEquipmentById(Guid id)
         {
-            var results = await _unitOfWork.LogEquipmentRepository.GetByIdAsync(id);
-
-            var mapper = _mapper.Map<LogEquipmentViewModel>(results);
-
+            var result = await _unitOfWork.LogEquipmentRepository.GetByIdAsync(id);
+            var mapper = _mapper.Map<LogEquipmentViewModel>(result);
             return mapper;
         }
 
-        public async Task<List<dotnet ef database update -s KidProEdu.API -p KidProEdu.InfrastructuresViewModel>> GetLogEquipments()
+        public async Task<List<LogEquipmentViewModel>> GetLogEquipmentByStatus(StatusOfEquipment statusOfEquipment)
         {
-            var results = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
+            var result = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByStatus(statusOfEquipment);
+            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(result);
+            return mapper;
+        }
 
-            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(results);
-
+        public async Task<List<LogEquipmentViewModel>> GetLogEquipments()
+        {
+            var result = await _unitOfWork.LogEquipmentRepository.GetAllAsync();
+            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(result);
             return mapper;
         }
 
         public async Task<List<LogEquipmentViewModel>> GetLogEquipmentsByCode(string code)
         {
-            var results = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByCode(code);
-
-            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(results);
-
+            var result = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByCode(code);
+            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(result);
             return mapper;
         }
 
         public async Task<List<LogEquipmentViewModel>> GetLogEquipmentsByEquipmentId(Guid equipmentId)
         {
-            var results = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByEquipmentId(equipmentId);
-
-            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(results);
-
+            var result = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByEquipmentId(equipmentId);
+            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(result);
             return mapper;
         }
 
         public async Task<List<LogEquipmentViewModel>> GetLogEquipmentsByName(string name)
         {
-            var results = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByName(name);
-
-            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(results);
-
+            var result = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByName(name);
+            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(result);
             return mapper;
         }
 
         public async Task<List<LogEquipmentViewModel>> GetLogEquipmentsByRoomId(Guid roomId)
         {
-            var results = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByRoomId(roomId);
-
-            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(results);
-
+            var result = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByRoomId(roomId);
+            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(result);
             return mapper;
         }
 
         public async Task<List<LogEquipmentViewModel>> GetLogEquipmentsByUserId(Guid userId)
         {
-            var results = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByUserId(userId);
-
-            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(results);
-
+            var result = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByUserId(userId);
+            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(result);
             return mapper;
         }
 
-        public async Task<bool> UpdateLogEquipment(UpdateLogEquipmentViewModel updateLogEquipmentViewModel)
-        {
-            var validator = new UpdateLogEquipmentViewModelValidator();
-            var validationResult = validator.Validate(updateLogEquipmentViewModel);
-            if (!validationResult.IsValid)
-            {
-                foreach (var error in validationResult.Errors)
-                {
-                    throw new Exception(error.ErrorMessage);
-                }
-            }
-
-            var logEquipment = await _unitOfWork.LogEquipmentRepository.GetByIdAsync(updateLogEquipmentViewModel.Id);
-            if (logEquipment == null)
-            {
-                throw new Exception("Không tìm thấy bài học");
-            }
-
-            var existingLogEquipment = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByName(updateLogEquipmentViewModel.Name);
-            if (!existingLogEquipment.IsNullOrEmpty())
-            {
-                if (existingLogEquipment.FirstOrDefault().Id != updateLogEquipmentViewModel.Id)
-                {
-                    throw new Exception("Tên đã tồn tại");
-                }
-            }
-
-            var existingLogEquipment1 = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByCode(updateLogEquipmentViewModel.Code);
-            if (!existingLogEquipment1.IsNullOrEmpty())
-            {
-                if (existingLogEquipment1.FirstOrDefault().Id != updateLogEquipmentViewModel.Id)
-                {
-                    throw new Exception("Code đã tồn tại");
-                }
-            }
-
-            var existingLogEquipment2 = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByEquipmentId(updateLogEquipmentViewModel.EquipmentId);
-            if (!existingLogEquipment2.IsNullOrEmpty())
-            {
-                if (existingLogEquipment2.FirstOrDefault().Id != updateLogEquipmentViewModel.Id)
-                {
-                    throw new Exception("Thiết bị đã tồn tại");
-                }
-            }
-
-            var mapper = _mapper.Map<LogEquipment>(logEquipment);
-            mapper.EquipmentId = updateLogEquipmentViewModel.EquipmentId;
-            mapper.UserAccountId = updateLogEquipmentViewModel.UserAccountId;
-            mapper.Name = updateLogEquipmentViewModel.Name;
-            mapper.Code = updateLogEquipmentViewModel.Code;
-            mapper.Price = updateLogEquipmentViewModel.Price;
-            mapper.Status = updateLogEquipmentViewModel.Status;
-            //mapper.WarrantyDate = updateLogEquipmentViewModel.WarrantyDate;
-            //mapper.WarrantyPeriod = updateLogEquipmentViewModel.WarrantyPeriod;
-            mapper.PurchaseDate = updateLogEquipmentViewModel.PurchaseDate;
-            mapper.RoomId = updateLogEquipmentViewModel.RoomId;
-            _unitOfWork.LogEquipmentRepository.Update(mapper);
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật bài học thất bại");
-        }*/
     }
 }

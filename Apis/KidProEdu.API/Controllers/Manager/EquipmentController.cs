@@ -69,6 +69,72 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
+        [HttpPost("EquipmentBorrowedManagement")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> EquipmentBorrowedManagement(EquipmentWithLogEquipmentBorrowedViewModel equipmentWithLogEquipmentBorrowedViewModel)
+        {
+            try
+            {
+                var result = await _equipmentService.EquipmentBorrowedManagement(equipmentWithLogEquipmentBorrowedViewModel);
+                if (result)
+                {
+                    return Ok("Mượn thiết bị thành công.");
+                }
+                else
+                {
+                    return BadRequest("Mượn thiết bị thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("EquipmentRepairManagement")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> EquipmentRepairManagement(EquipmentWithLogEquipmentRepairViewModel equipmentWithLogEquipmentRepairViewModel)
+        {
+            try
+            {
+                var result = await _equipmentService.EquipmentRepairManagement(equipmentWithLogEquipmentRepairViewModel);
+                if (result)
+                {
+                    return Ok("Mang thiết bị đi bảo dưỡng thành công.");
+                }
+                else
+                {
+                    return BadRequest("Mang thiết bị đi bảo dưỡng thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("EquipmentReturnedManagement")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> EquipmentReturnedManagement(EquipmentWithLogEquipmentReturnedViewModel equipmentWithLogEquipmentReturnedViewModel)
+        {
+            try
+            {
+                var result = await _equipmentService.EquipmentReturnedManagement(equipmentWithLogEquipmentReturnedViewModel);
+                if (result)
+                {
+                    return Ok("Trả thiết bị thành công.");
+                }
+                else
+                {
+                    return BadRequest("Trả thiết bị thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPut]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> PutEquipment(UpdateEquipmentViewModel updateEquipmentViewModel)

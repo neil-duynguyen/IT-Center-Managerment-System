@@ -1,4 +1,5 @@
 ﻿using KidProEdu.Application.ViewModels.EnrollmentViewModels;
+using KidProEdu.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> CreateEnrollment(CreateEnrollmentViewModel createEnrollmentViewModel);
         Task<List<EnrollmentViewModel>> GetEnrollment();
         Task<List<EnrollmentViewModel>> GetEnrollmentById(Guid Id);
+        Task<List<EnrollmentViewModel>> GetEnrollmentsByClassId(Guid Id);
     }
 }

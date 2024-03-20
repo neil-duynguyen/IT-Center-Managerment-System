@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Utils;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -37,7 +38,7 @@ namespace KidProEdu.Infrastructures
         public DbSet<Enrollment> Enrollment { get; set; }
         public DbSet<Equipment> Equipment { get; set; }
         public DbSet<LogEquipment> LogEquipment { get; set; }
-        public DbSet<Feedback> Feedback { get;set; }
+        public DbSet<Feedback> Feedback { get; set; }
         public DbSet<Resource> Resource { get; set; }
         public DbSet<Division> Division { get; set; }
         public DbSet<Lesson> Lesson { get; set; }
@@ -51,7 +52,7 @@ namespace KidProEdu.Infrastructures
         public DbSet<Schedule> Schedule { get; set; }
         public DbSet<ScheduleRoom> ScheduleRoom { get; set; }
         public DbSet<Tag> Tag { get; set; }
-        public DbSet<TestTime> TestTime { get; set; }   
+        public DbSet<TestTime> TestTime { get; set; }
         public DbSet<Transaction> Transaction { get; set; }
         public DbSet<RequestUserAccount> RequestUserAccount { get; set; }
         public DbSet<DivisionUserAccount> DivisionUserAccount { get; set; }
@@ -62,8 +63,8 @@ namespace KidProEdu.Infrastructures
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Role>().HasData(
-               new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A50"), Name = "Admin", CreationDate = new DateTime(2024 - 01 - 15)},
-               new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A51"), Name = "Manager", CreationDate = new DateTime(2024 - 01 - 15)},
+               new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A50"), Name = "Admin", CreationDate = new DateTime(2024 - 01 - 15) },
+               new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A51"), Name = "Manager", CreationDate = new DateTime(2024 - 01 - 15) },
                new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A52"), Name = "Staff", CreationDate = new DateTime(2024 - 01 - 15) },
                new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A53"), Name = "Teacher", CreationDate = new DateTime(2024 - 01 - 15) },
                new Role { Id = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A54"), Name = "Parent", CreationDate = new DateTime(2024 - 01 - 15) });
@@ -76,7 +77,7 @@ namespace KidProEdu.Infrastructures
             var hashPasswordAdmin = "Admin@123";
             var hashPasswordManager = "Manager@123";
             var hashPasswordStaff = "Staff@123";
-            var hashPasswordTeacher = "Teacher@123";                     
+            var hashPasswordTeacher = "Teacher@123";
             var hashPasswordParent = "Parent@123";
 
             builder.Entity<UserAccount>().HasData(
@@ -162,12 +163,27 @@ namespace KidProEdu.Infrastructures
                 }
                 );
 
+            builder.Entity<ConfigJobType>().HasData(
+                new ConfigJobType
+                {
+                    Id = new Guid("572184c6-7885-47dc-8dee-8bfad25ae8a7"),
+                    JobType = Domain.Enums.JobType.PartTime,
+                    Slotperweek = 15
+                },
+                new ConfigJobType
+                {
+                    Id = new Guid("c7761baf-4675-4d4d-b61a-584f36835064"),
+                    JobType = Domain.Enums.JobType.FullTime,
+                    Slotperweek = 30
+                }
+                );
+
             builder.Entity<Enrollment>()
                 .HasOne(x => x.Class)
                 .WithMany(x => x.Enrollments)
                 .HasForeignKey(x => x.ClassId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
-            
+
             builder.Entity<Enrollment>()
                 .HasOne(x => x.ChildrenProfile)
                 .WithMany(x => x.Enrollments)
@@ -184,7 +200,7 @@ namespace KidProEdu.Infrastructures
                 .HasOne(x => x.Schedule)
                 .WithMany(x => x.ScheduleRooms)
                 .HasForeignKey(x => x.ScheduleId)
-                .OnDelete(DeleteBehavior.ClientSetNull);        
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<Attendance>()
                 .HasOne(x => x.Schedule)
@@ -259,6 +275,6 @@ namespace KidProEdu.Infrastructures
             }
         }
 
-        
+
     }
 }

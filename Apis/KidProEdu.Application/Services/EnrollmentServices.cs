@@ -60,7 +60,7 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
-        //Lấy những children mà staff đã đăng kí dành cho staff
+        //Lấy những children mà staff đã đăng kí dành cho staff dùng để quản lý n children là staff chụi trách nhiệm quản lý
         public async Task<List<EnrollmentViewModel>> GetEnrollment()
         {
             var getEnrollment = _unitOfWork.EnrollmentRepository.GetAllAsync().Result.Where(x => x.UserId == _claimsService.GetCurrentUserId).ToList();
@@ -75,6 +75,13 @@ namespace KidProEdu.Application.Services
             var getEnrollment = _unitOfWork.EnrollmentRepository.GetAllAsync().Result.Where(x => x.UserId == Id).ToList();
 
             var mapper = _mapper.Map<List<EnrollmentViewModel>>(getEnrollment);
+            return mapper;
+        }
+
+        public async Task<List<EnrollmentViewModel>> GetEnrollmentsByClassId(Guid Id)
+        {
+            var getEnrollments = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassId(Id);
+            var mapper = _mapper.Map<List<EnrollmentViewModel>>(getEnrollments);
             return mapper;
         }
     }

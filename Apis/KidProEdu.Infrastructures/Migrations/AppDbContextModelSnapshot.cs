@@ -90,6 +90,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int>("StatusAdviseRequest")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("TestDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -565,18 +568,36 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int>("JobType")
                         .HasColumnType("int");
 
-                    b.Property<int>("MinSlot")
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("ModificationBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Slotperweek")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("ConfigJobType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("572184c6-7885-47dc-8dee-8bfad25ae8a7"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            JobType = 2,
+                            Slotperweek = 15
+                        },
+                        new
+                        {
+                            Id = new Guid("c7761baf-4675-4d4d-b61a-584f36835064"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            JobType = 1,
+                            Slotperweek = 30
+                        });
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ConfigSystem", b =>
@@ -1012,6 +1033,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -1047,6 +1071,8 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
 
                     b.ToTable("Exam");
                 });
@@ -1399,15 +1425,11 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ChildrenProfileId")
+                    b.Property<Guid?>("ChildrenProfileId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CourseId")
+                    b.Property<Guid?>("CourseId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CourseName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -1421,6 +1443,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("InstallmentTerm")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -1430,13 +1455,19 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid?>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Quantity")
+                    b.Property<Guid?>("ParentOrderDetail")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("PayType")
                         .HasColumnType("int");
 
-                    b.Property<double>("TotalPrice")
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("TotalPrice")
                         .HasColumnType("float");
 
                     b.Property<double>("UnitPrice")
@@ -1678,9 +1709,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ClassId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1695,6 +1723,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1864,6 +1895,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<Guid>("SlotId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
@@ -2157,7 +2191,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -2169,7 +2203,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("TeachingStatus")
@@ -2225,24 +2259,20 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
                     b.Property<string>("BankName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BankingAccountNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BankingNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CourseName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("CourseQuantity")
+                        .HasColumnType("float");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -2259,14 +2289,13 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("InstallmentPeriod")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("InstallmentTerm")
+                    b.Property<int?>("InstallmentTerm")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ModificationBy")
@@ -2275,20 +2304,20 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OrderDetailId")
+                    b.Property<Guid?>("OrderDetailId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ParentsTransaction")
+                    b.Property<Guid?>("ParentsTransaction")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("PayDate")
+                    b.Property<DateTime?>("PayDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PayType")
+                    b.Property<int?>("StatusTransaction")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatusTransaction")
-                        .HasColumnType("int");
+                    b.Property<double?>("TotalAmount")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -2625,6 +2654,15 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("Room");
                 });
 
+            modelBuilder.Entity("KidProEdu.Domain.Entities.Exam", b =>
+                {
+                    b.HasOne("KidProEdu.Domain.Entities.Course", "Course")
+                        .WithMany("Exams")
+                        .HasForeignKey("CourseId");
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("KidProEdu.Domain.Entities.Feedback", b =>
                 {
                     b.HasOne("KidProEdu.Domain.Entities.Class", "Class")
@@ -2704,20 +2742,15 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.HasOne("KidProEdu.Domain.Entities.ChildrenProfile", "ChildrenProfile")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("ChildrenProfileId")
-                        .IsRequired();
+                        .HasForeignKey("ChildrenProfileId");
 
                     b.HasOne("KidProEdu.Domain.Entities.Course", "Course")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourseId");
 
                     b.HasOne("KidProEdu.Domain.Entities.Order", "Order")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("ChildrenProfile");
 
@@ -2860,9 +2893,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.HasOne("KidProEdu.Domain.Entities.OrderDetail", "OrderDetail")
                         .WithMany("Transactions")
-                        .HasForeignKey("OrderDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderDetailId");
 
                     b.Navigation("OrderDetail");
                 });
@@ -2918,6 +2949,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("Certificates");
 
                     b.Navigation("Classes");
+
+                    b.Navigation("Exams");
 
                     b.Navigation("Lessons");
 

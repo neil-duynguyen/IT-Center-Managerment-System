@@ -11,5 +11,6 @@ namespace KidProEdu.Application.IRepositories
     public interface IScheduleRepository : IGenericRepository<Schedule>
     {
         Task<List<Schedule>> GetScheduleByClass(Guid classId);
+        Task<Schedule> GetScheduleByClassAndSlot(Guid classId, Guid slotId);
     }
 }

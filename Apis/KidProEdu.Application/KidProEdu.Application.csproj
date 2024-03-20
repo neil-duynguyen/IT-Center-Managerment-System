@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="FluentValidation" Version="11.9.0" />
+    <PackageReference Include="MediatR" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
@@ -18,6 +19,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KidProEdu.Domain\KidProEdu.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="PaymentService\Momo\Lib\" />
+    <Folder Include="ViewModels\SkillCertificateViewModels\" />
   </ItemGroup>
 
 </Project>

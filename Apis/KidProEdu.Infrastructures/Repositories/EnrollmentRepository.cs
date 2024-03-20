@@ -23,5 +23,10 @@ namespace KidProEdu.Infrastructures.Repositories
         {
             return await _dbSet.Include(x => x.Class).Include(x => x.ChildrenProfile).Where(x => !x.IsDeleted).ToListAsync();
         }
+
+        public async Task<List<Enrollment>> GetEnrollmentsByClassId(Guid Id)
+        {
+            return await _dbContext.Enrollment.Where(x => x.ClassId == Id && !x.IsDeleted).ToListAsync();
+        }
     }
 }

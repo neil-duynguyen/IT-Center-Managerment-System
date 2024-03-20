@@ -31,6 +31,10 @@ namespace KidProEdu.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR();
+           /* builder.Services.AddMediatR(r =>
+            {
+               // r.RegisterServicesFromAssembly(typeof(CreateMerchant).Assembly);
+            });*/
 
             //CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -41,7 +45,7 @@ namespace KidProEdu.API
                                   {
                                       policy.WithOrigins("http://localhost:5173",
                                                         "http://127.0.0.1:5173",
-                                                        "https://kid-pro-education.netlify.app"
+                                                        "https://kid-pro-edu-v2.netlify.app"
                                                           )
                                                             //.AllowAnyOrigin()
                                                             .AllowAnyHeader()
@@ -141,6 +145,9 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
             builder.Services.AddScoped<ITeachingClassHistoryRepository, TeachingClassHistoryRepository>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
+            builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
             #endregion
 
             #region DIService
@@ -176,6 +183,12 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IScheduleService, ScheduleService>();
             builder.Services.AddScoped<IContractService, ContractService>();
             builder.Services.AddScoped<IConfigJobTypeService, ConfigJobTypeService>();
+            builder.Services.AddScoped<ISkillService, SkillService>();
+            builder.Services.AddScoped<ISkillCertificateService, SkillCertificateService>();
+            builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
+            builder.Services.AddScoped<ITransactionService, TransactionService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));

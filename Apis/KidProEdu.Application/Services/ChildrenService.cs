@@ -81,13 +81,13 @@ namespace KidProEdu.Application.Services
             var result = await _unitOfWork.ChildrenRepository.GetByIdAsync(childrenId);
 
             var mapper = _mapper.Map<ChildrenViewModel>(result);
-
-            
+         
             List<ClassViewModelInChildren> listClass = new List<ClassViewModelInChildren>();
 
-            foreach (var item in mapper.Classes)
+            foreach (var enrollment in result.Enrollments)
             {
-                listClass.Add(new ClassViewModelInChildren() {ClassId = item.ClassId, ClassCode = item.ClassCode });
+                listClass.Add(new ClassViewModelInChildren() {ClassId = enrollment.Class.Id, ClassCode = enrollment.Class.ClassCode });
+                mapper.Classes = listClass;
             }
 
             return mapper;

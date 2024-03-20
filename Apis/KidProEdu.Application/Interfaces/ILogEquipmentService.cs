@@ -1,5 +1,7 @@
 ﻿using KidProEdu.Application.ViewModels.DocumentViewModels;
 using KidProEdu.Application.ViewModels.LogEquipmentViewModels;
+using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +14,8 @@ namespace KidProEdu.Application.Interfaces
     public interface ILogEquipmentService
     {
         Task<List<LogEquipmentViewModel>> GetLogEquipments();
-        Task<bool> CreateLogEquipment(CreateLogEquipmentViewModel createLogEquipmentViewModel);
-        Task<bool> UpdateLogEquipment(UpdateLogEquipmentViewModel updateLogEquipmentViewModel);
+        /*Task<bool> CreateLogEquipment(CreateLogEquipmentViewModel createLogEquipmentViewModel);
+        Task<bool> UpdateLogEquipment(UpdateLogEquipmentViewModel updateLogEquipmentViewModel);*/
         Task<LogEquipmentViewModel> GetLogEquipmentById(Guid id);
         Task<bool> DeleteLogEquipment(Guid id);
         Task<List<LogEquipmentViewModel>> GetLogEquipmentsByRoomId(Guid roomId);
@@ -21,5 +23,6 @@ namespace KidProEdu.Application.Interfaces
         Task<List<LogEquipmentViewModel>> GetLogEquipmentsByName(string name);
         Task<List<LogEquipmentViewModel>> GetLogEquipmentsByEquipmentId(Guid equipmentId);
         Task<List<LogEquipmentViewModel>> GetLogEquipmentsByCode(string code);
+        Task<List<LogEquipmentViewModel>> GetLogEquipmentByStatus(StatusOfEquipment statusOfEquipment);
     }
 }

@@ -11,7 +11,7 @@ namespace KidProEdu.Application.IRepositories
 
     public interface ILessonRepository : IGenericRepository<Lesson>
     {
-        Task<List<Lesson>> GetLessonByName(string name);
+        Task<Lesson> GetLessonByName(string name);
         Task<List<Lesson>> GetLessonsByCourseId(Guid CourseId);
     }
 }

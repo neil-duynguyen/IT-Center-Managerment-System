@@ -15,7 +15,7 @@ namespace KidProEdu.Application.ViewModels.EquipmentViewModels
         public string? Name { get; set; }
         public double? Price { get; set; }
         public string? Code { get; set; }
-        public StatusOfEquipment? Status { get; set; }
+        public string? Status { get; set; }
         public string? WarrantyPeriod { get; set; }
         public DateTime? PurchaseDate { get; set; }
     }

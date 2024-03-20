@@ -41,6 +41,9 @@ namespace Infrastructures
         private readonly ISkillCertificateRepository _skillCertificateRepository;
         private readonly IAttendanceRepository _attendanceRepository;
         private readonly ITeachingClassHistoryRepository _teachingClassHistoryRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderDetailRepository _orderDetailRepository;
+        private readonly ITransactionRepository _transactionRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -53,9 +56,11 @@ namespace Infrastructures
             , IRequestUserAccountRepository requestUserAccountRepository, IResourceRepository resourceRepository
             , ILogEquipmentRepository logEquipmentRepository, IAdviseRequestRepository adviseRequestRepository,
             IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository,
+            ISkillRepository skillRepository, ISkillCertificateRepository skillCertificateRepository, IAttendanceRepository attendanceRepository,
             IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
             IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, 
-            ITeachingClassHistoryRepository teachingClassHistoryRepository
+            ITeachingClassHistoryRepository teachingClassHistoryRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
+            ITransactionRepository transactionRepository
             )
         {
             _dbContext = dbContext;
@@ -91,6 +96,9 @@ namespace Infrastructures
             _skillCertificateRepository = skillCertificateRepository;
             _attendanceRepository = attendanceRepository;
             _teachingClassHistoryRepository = teachingClassHistoryRepository;
+            _orderRepository = orderRepository;
+            _orderDetailRepository = orderDetailRepository; 
+            _transactionRepository = transactionRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -154,6 +162,12 @@ namespace Infrastructures
 
         public IAttendanceRepository AttendanceRepository => _attendanceRepository;
         public ITeachingClassHistoryRepository TeachingClassHistoryRepository => _teachingClassHistoryRepository;
+
+        public IOrderRepository OrderRepository => _orderRepository;
+
+        public IOrderDetailRepository OrderDetailRepository => _orderDetailRepository;
+
+        public ITransactionRepository TransactionRepository => _transactionRepository;
 
         public async Task<int> SaveChangeAsync()
         {

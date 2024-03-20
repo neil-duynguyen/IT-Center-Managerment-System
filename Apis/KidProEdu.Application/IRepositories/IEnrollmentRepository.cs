@@ -1,4 +1,5 @@
 ﻿using KidProEdu.Application.Repositories;
+using KidProEdu.Application.ViewModels.EnrollmentViewModels;
 using KidProEdu.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,6 @@ namespace KidProEdu.Application.IRepositories
 {
     public interface IEnrollmentRepository : IGenericRepository<Enrollment>
     {
+        Task<List<Enrollment>> GetEnrollmentsByClassId(Guid Id);
     }
 }

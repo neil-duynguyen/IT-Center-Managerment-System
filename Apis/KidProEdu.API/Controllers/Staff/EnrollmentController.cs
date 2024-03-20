@@ -23,11 +23,18 @@ namespace KidProEdu.API.Controllers.Staff
             return Ok(await _enrollmentServices.GetEnrollment());
         }
 
-        [HttpGet("GetEnrollmentById/{id}")]
+        [HttpGet("GetEnrollmentByStaffId/{id}")]
         [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> GetEnrollmentById(Guid Id)
         {
             return Ok(await _enrollmentServices.GetEnrollmentById(Id));
+        }
+
+        [HttpGet("GetEnrollmentByClass/{classId}")]
+        //[Authorize(Roles = ("Manager"))]
+        public async Task<IActionResult> GetEnrollmentByClass(Guid classId)
+        {
+            return Ok(await _enrollmentServices.GetEnrollmentsByClassId(classId));
         }
 
         [HttpPost]

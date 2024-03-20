@@ -37,6 +37,9 @@ namespace KidProEdu.Application
         public ISkillCertificateRepository SkillCertificateRepository { get; }
         public IAttendanceRepository AttendanceRepository { get; }
         public ITeachingClassHistoryRepository TeachingClassHistoryRepository { get; }
+        public IOrderRepository OrderRepository { get; }
+        public IOrderDetailRepository OrderDetailRepository { get; }    
+        public ITransactionRepository TransactionRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

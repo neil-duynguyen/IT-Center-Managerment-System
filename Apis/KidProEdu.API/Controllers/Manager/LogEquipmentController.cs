@@ -2,6 +2,7 @@
 using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.DocumentViewModels;
 using KidProEdu.Application.ViewModels.LogEquipmentViewModels;
+using KidProEdu.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,15 +18,15 @@ namespace KidProEdu.API.Controllers.Manager
             _logEquipmentService = logEquipmentService;
         }
 
-        [HttpGet("LogEquipments")]
+        [HttpGet("LogEquipmentsByStatus/{statusOfEquipment}")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> LogEquipments()
+        public async Task<IActionResult> LogEquipmentsByStatus(StatusOfEquipment statusOfEquipment)
         {
-            return Ok(await _logEquipmentService.GetLogEquipments());
+            return Ok(await _logEquipmentService.GetLogEquipmentByStatus(statusOfEquipment));
         }
 
-        [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[HttpPost]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> PostLogEquipment(CreateLogEquipmentViewModel createLogEquipmentViewModel)
         {
             try
@@ -44,10 +45,10 @@ namespace KidProEdu.API.Controllers.Manager
             {
                 return BadRequest(ex.Message);
             }
-        }
+        }*/
 
         [HttpGet("{id}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        //[Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> LogEquipment(Guid id)
         {
             var result = await _logEquipmentService.GetLogEquipmentById(id);
@@ -58,8 +59,8 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(result);
         }
 
-        [HttpGet("LogEquipmentByRoomId/{roomId}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [HttpGet("LogEquipmentsByRoom/{roomId}")]
+        //[Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> LogEquipmentByRoomId(Guid roomId)
         {
             var result = await _logEquipmentService.GetLogEquipmentsByRoomId(roomId);
@@ -70,8 +71,8 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(result);
         }
 
-        [HttpGet("LogEquipmentByUserId/{userId}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [HttpGet("LogEquipmentsByUser/{userId}")]
+        //[Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> LogEquipmentByUserId(Guid userId)
         {
             var result = await _logEquipmentService.GetLogEquipmentsByUserId(userId);
@@ -82,8 +83,8 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(result);
         }
 
-        [HttpGet("LogEquipmentByName/{name}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [HttpGet("LogEquipmentsByName/{name}")]
+        //[Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> LogEquipmentByName(string name)
         {
             var result = await _logEquipmentService.GetLogEquipmentsByName(name);
@@ -94,8 +95,8 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(result);
         }
 
-        [HttpGet("LogEquipmentByCode/{code}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [HttpGet("LogEquipmentsByCode/{code}")]
+        //[Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> LogEquipmentByCode(string code)
         {
             var result = await _logEquipmentService.GetLogEquipmentsByCode(code);
@@ -105,9 +106,20 @@ namespace KidProEdu.API.Controllers.Manager
             }
             return Ok(result);
         }
+        [HttpGet()]
+        //[Authorize(Roles = ("Admin"))]
+        public async Task<IActionResult> LogEquipments()
+        {
+            var result = await _logEquipmentService.GetLogEquipments();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
 
-        [HttpGet("LogEquipmentByEquipmentId/{equipmentId}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [HttpGet("LogEquipmentsByEquipment/{equipmentId}")]
+        //[Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> LogEquipmentByEquipmentId(Guid equipmentId)
         {
             var result = await _logEquipmentService.GetLogEquipmentsByEquipmentId(equipmentId);
@@ -119,7 +131,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        //[Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> DeleteLogEquipment(Guid id)
         {
             try
@@ -140,8 +152,8 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
-        [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[HttpPut]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> PutLogEquipment(UpdateLogEquipmentViewModel updateLogEquipmentViewModel)
         {
             try
@@ -160,7 +172,7 @@ namespace KidProEdu.API.Controllers.Manager
             {
                 return BadRequest(ex.Message);
             }
-        }
+        }*/
 
     }
 }

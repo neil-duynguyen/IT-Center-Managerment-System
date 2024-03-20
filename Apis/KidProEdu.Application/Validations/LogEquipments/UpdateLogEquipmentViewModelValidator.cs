@@ -11,7 +11,7 @@ namespace KidProEdu.Application.Validations.LogEquipments
 
     public class UpdateLogEquipmentViewModelValidator : AbstractValidator<UpdateLogEquipmentViewModel>
     {
-        public UpdateLogEquipmentViewModelValidator()
+        /*public UpdateLogEquipmentViewModelValidator()
         {
             RuleFor(x => x.Id).NotEmpty().WithMessage("Id không được để trống.");
             RuleFor(x => x.EquipmentId).NotEmpty().WithMessage("Thiết bị không được để trống.");
@@ -34,6 +34,6 @@ namespace KidProEdu.Application.Validations.LogEquipments
         private bool BeValidWarrantyDate(DateTime? warrantyDate)
         {
             return !warrantyDate.HasValue || warrantyDate.Value.Date <= DateTime.Today;
-        }
+        }*/
     }
 }
