@@ -81,7 +81,7 @@ namespace KidProEdu.Application.Services
         }
 
         //function này sẽ chạy sau khi thanh toán thành công
-        /*public async Task<bool> CreateTransaction(Guid orderId)
+        public async Task<bool> CreateTransaction(Guid orderId)
         {
             //xem INP bên vnpay để làm
             //sau khi check trạng thái thanh toán thành công thì cập nhật db và tạo transaction
@@ -114,7 +114,7 @@ namespace KidProEdu.Application.Services
                         await _unitOfWork.TransactionRepository.AddAsync(transactionParent);
 
                         //tính số tiên trả góp hàng tháng
-                        var installmentPayments = Math.Ceiling(item.TotalPrice / item.InstallmentTerm);
+                        var installmentPayments = Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
                         //tạo con
                         for (int i = 0; i < transactionParent.InstallmentTerm; i++)
                         {
@@ -122,7 +122,7 @@ namespace KidProEdu.Application.Services
                             {
                                 Id = Guid.NewGuid(),
                                 CourseName = item.Course.Name,
-                                TotalAmount = installmentPayments,
+                                TotalAmount = (double?)installmentPayments,
                                 InstallmentPeriod = i == 0 ? _currentTime.GetCurrentTime() : _currentTime.GetCurrentTime().AddMonths(i),
                                 StatusTransaction = i == 0 ? Domain.Enums.StatusTransaction.Successfully : Domain.Enums.StatusTransaction.Pending,
                                 ParentsTransaction = transactionParent.Id
@@ -152,7 +152,7 @@ namespace KidProEdu.Application.Services
                 return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo transaction thất bại");
             }
             return true;
-        }*/
+        }
 
 
         public async Task<string> CreatePaymentHandler(Guid orderId)
@@ -223,11 +223,11 @@ namespace KidProEdu.Application.Services
             string resultData = string.Empty;
             try
             {
-                //var request = new ProcessMomoPaymentReturn();
+               
                 //var resultData = new PaymentReturnDtos();
-                //var isValidSignature = request.IsValidSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
+                var isValidSignature = response.IsValidSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
 
-                if (true)
+                if (isValidSignature)
                 {
 
                     if (response.resultCode == 0)
