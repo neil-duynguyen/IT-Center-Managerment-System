@@ -11,19 +11,19 @@ namespace KidProEdu.Domain.Entities
     public class Transaction : BaseEntity
     {
         [ForeignKey("OrderDetail")]
-        public Guid OrderDetailId { get; set; }
-        public string BankingAccountNumber { get; set; }
-        public string BankingNumber { get; set; }
-        public string BankName { get; set; }
-        public double Amount { get; set; }
-        public string CourseName { get; set; }
-        public string Message { get; set; }
-        public PayType PayType { get; set; }
-        public DateTime PayDate { get; set; }
-        public int InstallmentTerm { get; set; }
+        public Guid? OrderDetailId { get; set; }
+        public string? BankingAccountNumber { get; set; }
+        public string? BankingNumber { get; set; }
+        public string? BankName { get; set; } 
+        public string? CourseName { get; set; }
+        public double? CourseQuantity { get; set; }
+        public double? TotalAmount { get; set; }
+        public string? Message { get; set; }
+        public DateTime? PayDate { get; set; }
+        public int? InstallmentTerm { get; set; }
         public DateTime? InstallmentPeriod { get; set; }
-        public StatusTransaction StatusTransaction { get; set; }
-        public Guid ParentsTransaction { get; set; }
-        public virtual OrderDetail OrderDetail { get; set; }
+        public StatusTransaction? StatusTransaction { get; set; }
+        public Guid? ParentsTransaction { get; set; }
+        public virtual OrderDetail? OrderDetail { get; set; }
     }
 }

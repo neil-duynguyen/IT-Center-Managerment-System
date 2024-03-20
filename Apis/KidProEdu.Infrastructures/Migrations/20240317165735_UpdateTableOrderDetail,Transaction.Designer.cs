@@ -4,6 +4,7 @@ using KidProEdu.Infrastructures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240317165735_UpdateTableOrderDetail,Transaction")]
+    partial class UpdateTableOrderDetailTransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,9 +92,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<int>("StatusAdviseRequest")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("TestDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -1015,9 +1015,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CourseId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -1053,8 +1050,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
 
                     b.ToTable("Exam");
                 });
@@ -1878,9 +1873,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<Guid>("SlotId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
 
@@ -2636,15 +2628,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("KidProEdu.Domain.Entities.Exam", b =>
-                {
-                    b.HasOne("KidProEdu.Domain.Entities.Course", "Course")
-                        .WithMany("Exams")
-                        .HasForeignKey("CourseId");
-
-                    b.Navigation("Course");
-                });
-
             modelBuilder.Entity("KidProEdu.Domain.Entities.Feedback", b =>
                 {
                     b.HasOne("KidProEdu.Domain.Entities.Class", "Class")
@@ -2931,8 +2914,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Navigation("Certificates");
 
                     b.Navigation("Classes");
-
-                    b.Navigation("Exams");
 
                     b.Navigation("Lessons");
 
