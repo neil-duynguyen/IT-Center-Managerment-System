@@ -10,7 +10,7 @@ namespace KidProEdu.Domain.Entities
     public class ConfigJobType : BaseEntity
     {
         public JobType JobType { get; set; }
-        public int MinSlot { get; set; }
+        public int Slotperweek { get; set; }
     }
 }
 
