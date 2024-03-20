@@ -175,9 +175,8 @@ namespace KidProEdu.API.Mappers
                     dest.ChildrenProfile.SpecialSkill = src.ChildrenProfile.SpecialSkill;
                 })
                 .ForMember(des => des.StatusAttendance, src => src.MapFrom(x => x.StatusAttendance != null ? (string)x.StatusAttendance.ToString() : (string?)null)).ReverseMap();
-                }).ReverseMap();
 
-            CreateMap<OrderViewModel, Order>().ReverseMap().ForMember(des => des.PaymentStatus, src => src.MapFrom(x => x.PaymentStatus != null ? (string)x.PaymentStatus.ToString() : (string?)null)); ;
+            CreateMap<OrderViewModel, Order>().ReverseMap().ForMember(des => des.PaymentStatus, src => src.MapFrom(x => x.PaymentStatus != null ? (string)x.PaymentStatus.ToString() : (string?)null));
 
             CreateMap<OrderDetailViewModel, OrderDetail>().ReverseMap()
                 .ForMember(des => des.OrderDetailId, src => src.MapFrom(x => x.Id))
