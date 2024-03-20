@@ -148,6 +148,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+            builder.Services.AddScoped<IScheduleRoomRepository, ScheduleRoomRepository>();
             #endregion
 
             #region DIService

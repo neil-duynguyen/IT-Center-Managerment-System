@@ -44,6 +44,7 @@ namespace Infrastructures
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IScheduleRoomRepository _scheduleRoomRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -60,7 +61,7 @@ namespace Infrastructures
             IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
             IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, 
             ITeachingClassHistoryRepository teachingClassHistoryRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
-            ITransactionRepository transactionRepository
+            ITransactionRepository transactionRepository, IScheduleRoomRepository scheduleRoomRepository
             )
         {
             _dbContext = dbContext;
@@ -99,6 +100,7 @@ namespace Infrastructures
             _orderRepository = orderRepository;
             _orderDetailRepository = orderDetailRepository; 
             _transactionRepository = transactionRepository;
+            _scheduleRoomRepository = scheduleRoomRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -168,6 +170,7 @@ namespace Infrastructures
         public IOrderDetailRepository OrderDetailRepository => _orderDetailRepository;
 
         public ITransactionRepository TransactionRepository => _transactionRepository;
+        public IScheduleRoomRepository ScheduleRoomRepository => _scheduleRoomRepository;
 
         public async Task<int> SaveChangeAsync()
         {

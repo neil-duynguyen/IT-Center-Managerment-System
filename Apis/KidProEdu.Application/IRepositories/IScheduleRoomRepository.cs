@@ -1,6 +1,5 @@
 ﻿using KidProEdu.Application.Repositories;
 using KidProEdu.Domain.Entities;
-using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +8,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.IRepositories
 {
-
-    public interface IRoomRepository : IGenericRepository<Room>
+    public interface IScheduleRoomRepository : IGenericRepository<ScheduleRoom>
     {
-        Task<List<Room>> GetRoomByName(string name);
-        Task<List<Room>> GetRoomByStatus(StatusOfRoom status);
     }
 }

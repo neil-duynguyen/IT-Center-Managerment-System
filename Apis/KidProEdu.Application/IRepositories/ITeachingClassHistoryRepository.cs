@@ -10,5 +10,6 @@ namespace KidProEdu.Application.IRepositories
 {
     public interface ITeachingClassHistoryRepository : IGenericRepository<TeachingClassHistory>
     {
+        Task<List<TeachingClassHistory>> GetClassByTeacherId(Guid id);
     }
 }

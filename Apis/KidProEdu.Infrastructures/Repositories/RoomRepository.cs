@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,15 @@ namespace KidProEdu.Infrastructures.Repositories
         {
             var rooms = await _dbContext.Room
                 .Where(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == false)
+                .ToListAsync();
+
+            return rooms;
+        }
+
+        public async Task<List<Room>> GetRoomByStatus(StatusOfRoom status)
+        {
+            var rooms = await _dbContext.Room
+                .Where(x => x.Status.Equals(status) && x.IsDeleted == false)
                 .ToListAsync();
 
             return rooms;
