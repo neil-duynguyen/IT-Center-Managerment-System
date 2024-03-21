@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.IRepositories
 {
-    public interface IClassRepository : IGenericRepository<Class>
+    public interface IScheduleRoomRepository : IGenericRepository<ScheduleRoom>
     {
-        Task<List<Class>> GetClassByClassCode(string classCode);
-        Task<List<Class>> GetClassBySlot(int slot);
     }
 }

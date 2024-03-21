@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.IRepositories
 {
-    public interface IClassRepository : IGenericRepository<Class>
+    public interface ITeachingClassHistoryRepository : IGenericRepository<TeachingClassHistory>
     {
-        Task<List<Class>> GetClassByClassCode(string classCode);
-        Task<List<Class>> GetClassBySlot(int slot);
+        Task<List<TeachingClassHistory>> GetClassByTeacherId(Guid id);
     }
 }

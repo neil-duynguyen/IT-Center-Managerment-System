@@ -21,6 +21,29 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _scheduleService.GetSchedules());
         }
 
+        [HttpGet("AutomaticalySchedule")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> AutomaticalySchedule()
+        {
+            try
+            {
+                var model = await _scheduleService.AutomaticalySchedule();
+                if (model.CountSchedule > 0 || model.CountRoom > 0)
+                {
+                    return Ok("Còn " + model.CountSchedule + " lớp chưa được xếp giáo viên \n" +
+                              "Còn " + model.CountRoom + " lớp chưa được xếp phòng");
+                }
+                else
+                {
+                    return Ok("Xếp lịch thành công");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{id}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> Schedule(Guid id)

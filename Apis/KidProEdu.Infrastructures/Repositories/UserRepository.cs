@@ -2,6 +2,7 @@ using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Repositories;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using KidProEdu.Infrastructures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
@@ -26,13 +27,13 @@ namespace Infrastructures.Repositories
 
         public async Task<bool> CheckUserNameExited(CreateUserViewModel userObject)
         {
-            if(await _dbContext.UserAccount.FirstOrDefaultAsync(u => u.UserName.ToLower() == userObject.UserName) != null)
+            if (await _dbContext.UserAccount.FirstOrDefaultAsync(u => u.UserName.ToLower() == userObject.UserName) != null)
                 throw new Exception("UserName đã tồn tại");
 
-            if(await _dbContext.UserAccount.FirstOrDefaultAsync(u => u.Email.ToLower() == userObject.Email) != null)
+            if (await _dbContext.UserAccount.FirstOrDefaultAsync(u => u.Email.ToLower() == userObject.Email) != null)
                 throw new Exception("Email đã tồn tại");
 
-            if(await _dbContext.UserAccount.FirstOrDefaultAsync(u => u.Phone.ToLower() == userObject.Phone) != null)
+            if (await _dbContext.UserAccount.FirstOrDefaultAsync(u => u.Phone.ToLower() == userObject.Phone) != null)
                 throw new Exception("Phone đã tồn tại");
             return true;
         }
@@ -99,6 +100,19 @@ namespace Infrastructures.Repositories
                 default:
                     throw new ArgumentException($"Property {propertyName} is not supported.");
             }
+        }
+
+        public async Task<List<UserAccount>> GetTeacherByJobType(JobType jobType)
+        {
+            var teachers = await _dbContext.UserAccount.Include(x => x.Role)
+                .Include(x => x.Contracts).ThenInclude(x => x.ConfigJobType)
+                .Where(x => x.Role.Name.ToLower() == "Teacher" && x.IsDeleted == false
+                && x.Status.Equals(KidProEdu.Domain.Enums.StatusUser.Enable)
+                && x.Contracts.OrderByDescending(x => x.CreationDate).FirstOrDefault().ConfigJobType.JobType.Equals(jobType)
+                )
+                .ToListAsync();
+
+            return teachers;
         }
     }
 }
