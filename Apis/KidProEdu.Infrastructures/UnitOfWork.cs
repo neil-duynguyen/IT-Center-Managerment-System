@@ -64,8 +64,7 @@ namespace Infrastructures
             IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, 
             ITeachingClassHistoryRepository teachingClassHistoryRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
             ITransactionRepository transactionRepository, IScheduleRoomRepository scheduleRoomRepository,
-            IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
-            ITransactionRepository transactionRepository, IExamRepository examRepository,
+            IExamRepository examRepository,
             IChildrenAnswerRepository childrenAnswerRepository
             )
         {
