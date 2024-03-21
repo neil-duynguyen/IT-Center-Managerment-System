@@ -1,4 +1,5 @@
 ﻿using KidProEdu.Application.PaymentService.Momo.Request;
+using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
@@ -16,6 +17,6 @@ namespace KidProEdu.Application.Interfaces
         Task<OrderViewModel> CreateOrder(CreateOrderDetailViewModel orderDetailViewModel);
         //Task<bool> CreateTransaction(Guid orderId);
         Task<string> CreatePaymentHandler(Guid orderId);
-        Task<string> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response);
+        Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response);
     }
 }

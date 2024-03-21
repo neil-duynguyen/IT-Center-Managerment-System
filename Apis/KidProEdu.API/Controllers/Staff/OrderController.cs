@@ -73,8 +73,16 @@ namespace KidProEdu.API.Controllers.Staff
         [HttpPost("CreatePayment/{orderId}")]
         public async Task<IActionResult> Create(Guid orderId)
         {
-            var result = await _orderService.CreatePaymentHandler(orderId);
-            return Ok(result);
+            try
+            {
+                var result = await _orderService.CreatePaymentHandler(orderId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpGet]
@@ -82,7 +90,8 @@ namespace KidProEdu.API.Controllers.Staff
         public async Task<IActionResult> MomoReturn([FromQuery] MomoOneTimePaymentResultRequest response)
         {
             var result = await _orderService.ProcessMomoPaymentReturnHandler(response);
-            return Redirect(result);
+
+            return Redirect("https://kid-pro-edu-v2.netlify.app/enrollment");
 
         }
     }
