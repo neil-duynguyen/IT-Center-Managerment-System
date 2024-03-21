@@ -148,8 +148,10 @@ namespace KidProEdu.Application.Services
                                 StartDate = _currentTime.GetCurrentTime()
                             };
 
-                            var countSlotPerWeek = (await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(teacher.Id)).Count * 2;
-                            if (countSlotPerWeek < 24)
+                            var countSlotPerWeek = (await _unitOfWork.TeachingClassHistoryRepository
+                                .GetClassByTeacherId(teacher.Id))
+                                .Count * 2;//2 là số slot học trong 1 tuần của 1 lớp, có thể thay đổi
+                            if (countSlotPerWeek < 24)//24 là số slot dạy trong 1 tuần, slotperweek trong configjobtype
                             {
                                 await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
                                 fullTeachers.Remove(teacher);
@@ -169,8 +171,9 @@ namespace KidProEdu.Application.Services
                                 StartDate = _currentTime.GetCurrentTime()
                             };
 
-                            var countSlotPerWeek = (await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(teacher.Id)).Count * 2;
-                            if (countSlotPerWeek < 15)
+                            var countSlotPerWeek = (await _unitOfWork.TeachingClassHistoryRepository
+                                .GetClassByTeacherId(teacher.Id)).Count * 2;//2 là số slot học 1 lớp trong 1 tuần
+                            if (countSlotPerWeek < 15)//15 là số slot dạy trong 1 tuần, slotperweek trong configjobtype
                             {
                                 await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
                                 partTeachers.Remove(teacher);
