@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:Apis/KidProEdu.Infrastructures/Migrations/20240320103138_UpdateTableConfigJobType.Designer.cs
-    [Migration("20240320103138_UpdateTableConfigJobType")]
-    partial class UpdateTableConfigJobType
-========
-    [Migration("20240320100717_InitialMigration")]
-    partial class InitialMigration
->>>>>>>> Dev:Apis/KidProEdu.Infrastructures/Migrations/20240320100717_InitialMigration.Designer.cs
+    [Migration("20240321101806_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -405,6 +400,10 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BirthDay")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChildrenCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
