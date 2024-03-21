@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Children;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Domain.Entities;
@@ -40,6 +41,8 @@ namespace KidProEdu.Application.Services
             }
 
             var mapper = _mapper.Map<ChildrenProfile>(createChildrenViewModel);
+            mapper.ChildrenCode = StringUtils.GenerateRandomString(2, 6);
+
             await _unitOfWork.ChildrenRepository.AddAsync(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo trẻ thất bại.");
         }
@@ -81,17 +84,17 @@ namespace KidProEdu.Application.Services
             var result = await _unitOfWork.ChildrenRepository.GetByIdAsync(childrenId);
 
             var mapper = _mapper.Map<ChildrenViewModel>(result);
-         
+
             List<ClassViewModelInChildren> listClass = new List<ClassViewModelInChildren>();
 
             foreach (var enrollment in result.Enrollments)
             {
-                listClass.Add(new ClassViewModelInChildren() {ClassId = enrollment.Class.Id, ClassCode = enrollment.Class.ClassCode });
+                listClass.Add(new ClassViewModelInChildren() { ClassId = enrollment.Class.Id, ClassCode = enrollment.Class.ClassCode });
                 mapper.Classes = listClass;
             }
 
             return mapper;
-            
+
         }
 
 
