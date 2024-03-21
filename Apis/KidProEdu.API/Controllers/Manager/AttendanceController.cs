@@ -76,6 +76,27 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
+        [HttpDelete]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> DeleteAttendance(Guid id)
+        {
+            try
+            {
+                var result = await _attendanceService.DeleteAttendance(id);
+                if (result)
+                {
+                    return Ok("Kĩ năng đã được xóa thành công.");
+                }
+                else
+                {
+                    return BadRequest("Kĩ năng đã được xóa thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

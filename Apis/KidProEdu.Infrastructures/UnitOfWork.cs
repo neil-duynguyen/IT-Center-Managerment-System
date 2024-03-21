@@ -37,12 +37,16 @@ namespace Infrastructures
         private readonly ISlotRepository _slotRepository;
         private readonly IContractRepository _contractRepository;
         private readonly IConfigJobTypeRepository _configJobTypeRepository;
-        private readonly IOrderRepository _orderRepository;
-        private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly ISkillRepository _skillRepository;
         private readonly ISkillCertificateRepository _skillCertificateRepository;
         private readonly IAttendanceRepository _attendanceRepository;
+        private readonly ITeachingClassHistoryRepository _teachingClassHistoryRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IScheduleRoomRepository _scheduleRoomRepository;
+        private readonly IExamRepository _examRepository;
+        private readonly IChildrenAnswerRepository _childrenAnswerRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -57,8 +61,11 @@ namespace Infrastructures
             IDivisionUserAccountRepository divisionUserAccountRepository, IEnrollmentRepository enrollmentRepository,
             ISkillRepository skillRepository, ISkillCertificateRepository skillCertificateRepository, IAttendanceRepository attendanceRepository,
             IScheduleRepository scheduleRepository, ISlotRepository slotRepository,
-            IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
-            ITransactionRepository transactionRepository
+            IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, 
+            ITeachingClassHistoryRepository teachingClassHistoryRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
+            ITransactionRepository transactionRepository, IScheduleRoomRepository scheduleRoomRepository,
+            IExamRepository examRepository,
+            IChildrenAnswerRepository childrenAnswerRepository
             )
         {
             _dbContext = dbContext;
@@ -93,9 +100,13 @@ namespace Infrastructures
             _skillRepository = skillRepository;
             _skillCertificateRepository = skillCertificateRepository;
             _attendanceRepository = attendanceRepository;
+            _teachingClassHistoryRepository = teachingClassHistoryRepository;
             _orderRepository = orderRepository;
             _orderDetailRepository = orderDetailRepository; 
             _transactionRepository = transactionRepository;
+            _scheduleRoomRepository = scheduleRoomRepository;
+            _examRepository = examRepository;
+            _childrenAnswerRepository = childrenAnswerRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -158,12 +169,18 @@ namespace Infrastructures
         public ISkillCertificateRepository SkillCertificateRepository => _skillCertificateRepository;
 
         public IAttendanceRepository AttendanceRepository => _attendanceRepository;
+        public ITeachingClassHistoryRepository TeachingClassHistoryRepository => _teachingClassHistoryRepository;
 
         public IOrderRepository OrderRepository => _orderRepository;
 
         public IOrderDetailRepository OrderDetailRepository => _orderDetailRepository;
 
         public ITransactionRepository TransactionRepository => _transactionRepository;
+        public IScheduleRoomRepository ScheduleRoomRepository => _scheduleRoomRepository;
+
+        public IExamRepository ExamRepository => _examRepository;
+
+        public IChildrenAnswerRepository ChildrenAnswerRepository => _childrenAnswerRepository;
 
         public async Task<int> SaveChangeAsync()
         {

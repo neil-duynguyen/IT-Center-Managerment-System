@@ -8,5 +8,7 @@ namespace KidProEdu.Domain.Enums
 {
     public enum TeachingStatus
     {
+        Teaching = 1,
+        Leaved = 2
     }
 }

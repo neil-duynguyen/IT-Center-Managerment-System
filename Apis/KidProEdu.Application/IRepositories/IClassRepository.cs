@@ -11,5 +11,6 @@ namespace KidProEdu.Application.IRepositories
     public interface IClassRepository : IGenericRepository<Class>
     {
         Task<List<Class>> GetClassByClassCode(string classCode);
+        Task<List<Class>> GetClassBySlot(int slot);
     }
 }

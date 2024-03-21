@@ -34,5 +34,27 @@ namespace KidProEdu.Application.Utils
                 return hex;
             }
         }
+
+        public static string GenerateRandomString(int letterCount, int numberCount)
+        {
+            // Dùng StringBuilder để tạo và xây dựng chuỗi
+            StringBuilder builder = new StringBuilder();
+
+            // Thêm chữ cái RB vào chuỗi
+            builder.Append("RB");
+
+            // Dùng Random để tạo số ngẫu nhiên
+            Random random = new Random();
+
+            // Tạo chuỗi với 6 số ngẫu nhiên
+            for (int i = 0; i < numberCount; i++)
+            {
+                // Tạo số ngẫu nhiên từ 0 đến 9 và thêm vào chuỗi
+                builder.Append(random.Next(0, 10));
+            }
+
+            // Chuyển đổi StringBuilder thành chuỗi và trả về
+            return builder.ToString();
+        }
     }
 }
