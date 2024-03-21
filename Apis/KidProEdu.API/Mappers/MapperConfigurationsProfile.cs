@@ -3,6 +3,7 @@ using KidProEdu.Application.ViewModels.AdviseRequestViewModels;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
 using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
+using KidProEdu.Application.ViewModels.ChildrenAnswerViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.ConfigJobType;
@@ -12,6 +13,7 @@ using KidProEdu.Application.ViewModels.DivisionUserAccountViewModels;
 using KidProEdu.Application.ViewModels.DivisionViewModels;
 using KidProEdu.Application.ViewModels.EnrollmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
+using KidProEdu.Application.ViewModels.ExamViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LogEquipmentViewModels;
@@ -124,6 +126,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateResourceViewModel, Resource>().ReverseMap();
             CreateMap<UpdateResourceViewModel, Resource>().ReverseMap();
 
+            CreateMap<Exam, ExamViewModel>().ReverseMap();
+            CreateMap<CreateExamViewModel2, Exam>().ReverseMap();
+            CreateMap<UpdateExamViewModel, Exam>().ReverseMap();
+
             CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null));
             CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();
             CreateMap<UpdateLogEquipmentViewModel, LogEquipment>().ReverseMap();
@@ -183,7 +189,10 @@ namespace KidProEdu.API.Mappers
                 .ForMember(des => des.PayType, src => src.MapFrom(x => x.PayType != null ? (string)x.PayType.ToString() : (string?)null))
                 .ForMember(des => des.CourseName, src => src.MapFrom(x => x.Course.Name));
 
-            
+            CreateMap<ChildrenAnswer, ChildrenAnswerViewModel>().ReverseMap();
+            CreateMap<CreateChildrenAnswerViewModel, ChildrenAnswer>().ReverseMap();
+            CreateMap<UpdateChildrenAnswerViewModel, ChildrenAnswer>().ReverseMap();
+
         }
     }
 }
