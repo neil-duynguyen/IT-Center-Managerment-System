@@ -41,7 +41,13 @@ namespace KidProEdu.Application.Services
             }
 
             var mapper = _mapper.Map<ChildrenProfile>(createChildrenViewModel);
-            mapper.ChildrenCode = StringUtils.GenerateRandomString(2, 6);
+            var randomCode = StringUtils.GenerateRandomString(2, 6);
+            while (_unitOfWork.ChildrenRepository.GetAllAsync().Result.FirstOrDefault(x => x.ChildrenCode == randomCode) != null)
+            {
+                randomCode = StringUtils.GenerateRandomString(2, 6);
+            }
+
+            mapper.ChildrenCode = randomCode;
 
             await _unitOfWork.ChildrenRepository.AddAsync(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo trẻ thất bại.");
