@@ -137,21 +137,5 @@ namespace KidProEdu.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        /*[HttpGet("SendEmail")]
-        *//*[Authorize(Roles = ("Admin"))]*//*
-        public async Task<IActionResult> SendEmail()
-        {
-            try
-            {
-                SendEmailUtil.SendEmail("nghia");
-                return Ok();
-            }
-            catch (Exception e)
-            {
-
-                return BadRequest(e.Message);
-            }
-        }*/
     }
 }

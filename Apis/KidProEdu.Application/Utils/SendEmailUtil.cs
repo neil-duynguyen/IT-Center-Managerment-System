@@ -63,7 +63,7 @@ namespace KidProEdu.Application.Utils
                 Console.WriteLine("Hangfire Server started. ");
                 Console.ReadKey();
             }*//*
-            //RecurringJob.AddOrUpdate("send-email-job", () => SendEmail("tkchoi1312@gmail.com"), "*/5 * * * * *");
+            //RecurringJob.AddOrUpdate("send-email-job", () => SendEmail("tkchoi1312@gmail.com"), "*A/5 * * * * *");
             //RecurringJob.AddOrUpdate("send-email-job", () => SendEmail("tkchoi1312@gmail.com"), "0 0 * * *");
 
         }*/

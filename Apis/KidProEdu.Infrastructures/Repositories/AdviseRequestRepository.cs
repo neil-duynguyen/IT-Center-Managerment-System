@@ -34,12 +34,12 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return adviseRequests;
         }
-        
+
         public async Task<List<AdviseRequest>> GetAdviseRequestByTestDate(DateTime testDate)
         {
             var adviseRequests = await _dbContext.AdviseRequest
                 .Where(x => x.TestDate.Date == testDate.Date && x.IsDeleted == false)
-                .ToListAsync();
+                .OrderByDescending(x => x.TestDate).ToListAsync();
 
             return adviseRequests;
         }

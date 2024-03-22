@@ -7,6 +7,7 @@ using KidProEdu.Application.ViewModels.AdviseRequestViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
 using System.Linq.Expressions;
+using System.Reflection.Metadata.Ecma335;
 
 namespace KidProEdu.Application.Services
 {
@@ -47,18 +48,38 @@ namespace KidProEdu.Application.Services
             {
                 throw new Exception("Số điện thoại đã tồn tại");
             }
-            
-            var adviseRequests = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByTestDate(createAdviseRequestViewModel.TestDate);
-            if (adviseRequests != null && adviseRequests.Count == 5)
+
+            if (createAdviseRequestViewModel.TestDate != null && createAdviseRequestViewModel.StartTime != null)
             {
-                throw new Exception("Lịch đánh giá cho thời gian này đã đủ số lượng");
+                var adviseRequests = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result.Where(x => x.IsTested == false
+               && x.TestDate.Date.Equals(createAdviseRequestViewModel.TestDate.Value)
+               && x.StartTime.Value.Hour == createAdviseRequestViewModel.StartTime.Value.Hour
+               && x.IsTested == false).ToList();
+                if (adviseRequests != null && adviseRequests.Count == 5)
+                {
+                    throw new Exception("Lịch đánh giá cho thời gian này đã đủ số lượng");
+                }
             }
 
             var mapper = _mapper.Map<AdviseRequest>(createAdviseRequestViewModel);
             mapper.StatusAdviseRequest = Domain.Enums.StatusAdviseRequest.Pending;
 
             await _unitOfWork.AdviseRequestRepository.AddAsync(mapper);
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo yêu cầu tư vấn thất bại");
+
+            var result = await _unitOfWork.SaveChangeAsync();
+            if (result > 0)
+            {
+                await SendEmailUtil.SendEmail(mapper.Email, "Xác nhận yêu cầu tư vấn",
+                    "Kính gửi quý phụ huynh, \n\n" +
+                    "Yêu cầu tư vấn của bạn đã được xác nhận, nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất \n\n" +
+                    "Trân trọng, \n" +
+                    "KidPro Education!");
+                return true;
+            }
+            else
+            {
+                throw new Exception("Tạo yêu cầu tư vấn thất bại");
+            }
         }
 
         public async Task<bool> DeleteAdviseRequest(Guid AdviseRequestId)
@@ -91,15 +112,14 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<AdviseRequestViewModel>> GetAdviseRequestByTestDate(DateTime testDate)
         {
-            var results = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result
-                .Where(x => x.IsDeleted == false && x.TestDate.Date == testDate.Date)
-                .OrderByDescending(x => x.CreationDate).ToList();
+            var results = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByTestDate(testDate);
             var mapper = _mapper.Map<List<AdviseRequestViewModel>>(results);
             return mapper;
         }
 
         public async Task<bool> UpdateAdviseRequest(UpdateAdviseRequestViewModel updateAdviseRequestViewModel, params Expression<Func<AdviseRequest, object>>[] uniqueProperties)
         {
+            var count = 0;
             var validator = new UpdateAdviseRequestViewModelValidator();
             var validationResult = validator.Validate(updateAdviseRequestViewModel);
             if (!validationResult.IsValid)
@@ -122,6 +142,30 @@ namespace KidProEdu.Application.Services
                 }
             }
 
+            if (updateAdviseRequestViewModel.TestDate != null && updateAdviseRequestViewModel.StartTime != null)
+            {
+                if (updateAdviseRequestViewModel.TestDate.Value.Equals(adviseRequest.TestDate.Date) &&
+                    updateAdviseRequestViewModel.StartTime.Value.Equals(adviseRequest.StartTime.Value))
+                {
+
+                }
+                else
+                {
+                    var adviseRequests = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result.Where(x => x.IsTested == false
+                    && x.TestDate.Date.Equals(updateAdviseRequestViewModel.TestDate.Value)
+                    && x.StartTime.Value.Hour == updateAdviseRequestViewModel.StartTime.Value.Hour
+                    && x.IsTested == false).ToList();
+                    if (adviseRequests != null && adviseRequests.Count == 5)
+                    {
+                        throw new Exception("Lịch đánh giá cho thời gian này đã đủ số lượng");
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                }
+            }
+
             foreach (var property in uniqueProperties)
             {
                 var obj = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByProperty(updateAdviseRequestViewModel, property);
@@ -134,7 +178,25 @@ namespace KidProEdu.Application.Services
             var mapper = _mapper.Map(updateAdviseRequestViewModel, adviseRequest);
 
             _unitOfWork.AdviseRequestRepository.Update(mapper);
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật yêu cầu tư vấn thất bại");
+
+            var result = await _unitOfWork.SaveChangeAsync();
+            if (result > 0)
+            {
+                if (count > 0)
+                {
+                    await SendEmailUtil.SendEmail(mapper.Email, "Xác nhận thay đổi lịch đăng kí tham gia đánh giá đầu vào",
+                    "Kính gửi quý phụ huynh, \n\n" +
+                    "Xác nhận lịch đăng kí tham gia đánh giá đầu vào của trẻ đã thay đổi sang: " + mapper.StartTime + " - "
+                    + mapper.EndTime + " ngày " + mapper.TestDate + ".\n\n" +
+                    "Trân trọng, \n" +
+                    "KidPro Education!");
+                }
+                return true;
+            }
+            else
+            {
+                throw new Exception("Cập nhật yêu cầu tư vấn thất bại");
+            }
         }
 
         public async Task AutoSendEmail()
@@ -142,13 +204,12 @@ namespace KidProEdu.Application.Services
             var advises = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByTestDate(_currentTime.GetCurrentTime().AddDays(1));
             foreach (var item in advises)
             {
-                await SendEmailUtil.SendEmail("tkchoi1312@gmail.com", "Nhắc nhở ngày tham gia làm bài kiểm tra đầu vào của KidPro",
-                    "Trân trọng, \n\n" +
+                await SendEmailUtil.SendEmail(item.Email, "Nhắc nhở ngày tham gia làm bài kiểm tra đầu vào của KidPro",
+                    "Kính gửi quý phụ huynh, \n\n" +
                     "KidPro xin gửi thông báo đến quý phụ huynh có trẻ đã đăng kí lịch làm bài kiểm tra đầu vào của KidPro" +
                     " lúc: " + item.StartTime + " - " + item.EndTime + " ngày " + item.TestDate.Date + ". \n\n" +
                     "Xin cảm ơn, \n" +
-                    "KidPro Education!") ;
-                    
+                    "KidPro Education!");
             }
         }
     }
