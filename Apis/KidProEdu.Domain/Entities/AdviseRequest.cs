@@ -14,6 +14,8 @@ namespace KidProEdu.Domain.Entities
         public string Address { get; set; }
         public string Location { get; set; }
         public DateTime TestDate { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public bool? IsTested { get; set; }
         public StatusAdviseRequest StatusAdviseRequest { get; set; }
         public virtual UserAccount? UserAccount { get; set; }

@@ -131,7 +131,7 @@ namespace KidProEdu.Application.Services
             mapper.ExamId = updateChildrenAnswerView.ExamId;
             mapper.QuestionId = updateChildrenAnswerView.QuestionId;
             mapper.Answer = updateChildrenAnswerView.Answer;
-            mapper.ChildrenScore = updateChildrenAnswerView.ChildrenScore;
+            //mapper.ChildrenScore = updateChildrenAnswerView.ChildrenScore;
             _unitOfWork.ChildrenAnswerRepository.Update(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật câu trả lời thất bại");
         }
