@@ -43,6 +43,7 @@ namespace KidProEdu.Application
         public IScheduleRoomRepository ScheduleRoomRepository { get; }
         public IExamRepository ExamRepository { get; }
         public IChildrenAnswerRepository ChildrenAnswerRepository { get; }
+        public IFeedbackRepository FeedbackRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
