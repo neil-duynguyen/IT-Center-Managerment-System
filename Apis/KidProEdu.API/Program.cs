@@ -14,6 +14,9 @@ using Infrastructures;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Application.Hubs;
 using KidProEdu.Application.Utils;
+using Hangfire;
+using HangfireBasicAuthenticationFilter;
+using KidProEdu.API.Controllers;
 
 namespace KidProEdu.API
 {
@@ -31,10 +34,18 @@ namespace KidProEdu.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR();
-           /* builder.Services.AddMediatR(r =>
+            builder.Services.AddHangfire((sp, config) =>
             {
-               // r.RegisterServicesFromAssembly(typeof(CreateMerchant).Assembly);
-            });*/
+                var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Development");
+                config.UseSqlServerStorage(connectionString);
+                //RecurringJob.AddOrUpdate("send-email-job", () => SendEmailUtil.SendEmailJob(), "0 0 * * *");  
+                RecurringJob.AddOrUpdate<IAdviseRequestService>("send-email-job", x => x.AutoSendEmail(), "*/5 * * * * *");
+            });
+            builder.Services.AddHangfireServer();
+            /* builder.Services.AddMediatR(r =>
+             {
+                // r.RegisterServicesFromAssembly(typeof(CreateMerchant).Assembly);
+             });*/
 
             //CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -241,6 +252,20 @@ namespace KidProEdu.API
             {
                 endpoints.MapHub<NotificationHub>("/notificationHub");
             });*/
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                DashboardTitle = "KidPro's Education Dashboard",
+                Authorization = new[]
+                {
+                    new HangfireCustomBasicAuthenticationFilter
+                    {
+                        User= "admin",
+                        Pass = "admin123"
+                    }
+                }
+            });
+            app.UseHangfireServer();
 
             app.MapControllers();
 

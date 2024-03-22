@@ -12,5 +12,6 @@ namespace KidProEdu.Application.Interfaces
         Task<AdviseRequestViewModel> GetAdviseRequestById(Guid AdviseRequestId);
         Task<List<AdviseRequestViewModel>> GetAdviseRequestByTestDate(DateTime testDate);
         Task<bool> DeleteAdviseRequest(Guid AdviseRequestId);
+        Task AutoSendEmail();
     }
 }
