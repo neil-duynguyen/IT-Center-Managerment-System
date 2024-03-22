@@ -95,7 +95,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<ChildrenAnswerViewModel>> GetChildrenAnswers()
         {
-            var result = await _unitOfWork.ChildrenAnswerRepository.GetAllAsync();
+            var result = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
             var mapper = _mapper.Map<List<ChildrenAnswerViewModel>>(result);
             return mapper;
         }
