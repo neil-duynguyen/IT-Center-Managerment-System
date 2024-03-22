@@ -1,9 +1,13 @@
-﻿namespace KidProEdu.Application.ViewModels.AdviseRequestViewModels
+﻿using KidProEdu.Application.ViewModels.UserViewModels;
+using KidProEdu.Domain.Entities;
+
+namespace KidProEdu.Application.ViewModels.AdviseRequestViewModels
 {
     public class AdviseRequestViewModel
     {
         public Guid Id { get; set; }
         public Guid? UserId { get; set; }
+        public UserViewModel Staff { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }

@@ -38,8 +38,7 @@ namespace KidProEdu.API
             {
                 var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Development");
                 config.UseSqlServerStorage(connectionString);
-                //RecurringJob.AddOrUpdate("send-email-job", () => SendEmailUtil.SendEmailJob(), "0 0 * * *");  
-                RecurringJob.AddOrUpdate<IAdviseRequestService>("send-email-job", x => x.AutoSendEmail(), "*/5 * * * * *");
+                RecurringJob.AddOrUpdate<IAdviseRequestService>("send-email-job", x => x.AutoSendEmail(), "0 0 * * *");
             });
             builder.Services.AddHangfireServer();
             /* builder.Services.AddMediatR(r =>

@@ -106,8 +106,18 @@ namespace KidProEdu.Application.Services
         {
             var results = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result
                 .Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
-            var mapper = _mapper.Map<List<AdviseRequestViewModel>>(results);
-            return mapper;
+            List<AdviseRequestViewModel> list = new List<AdviseRequestViewModel>();
+            foreach (var item in results)
+            {
+                var mapper = _mapper.Map<AdviseRequestViewModel>(item);
+                if (mapper.UserId != null)
+                {
+                    mapper.Staff = _mapper.Map<UserViewModel>(await _unitOfWork.UserRepository.GetByIdAsync((Guid)item.UserId));
+                }
+                list.Add(mapper);
+            }
+
+            return list;
         }
 
         public async Task<List<AdviseRequestViewModel>> GetAdviseRequestByTestDate(DateTime testDate)

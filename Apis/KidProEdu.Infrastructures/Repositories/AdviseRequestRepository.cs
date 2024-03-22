@@ -16,7 +16,10 @@ namespace KidProEdu.Infrastructures.Repositories
             _dbContext = context;
         }
 
-
+        public override async Task<List<AdviseRequest>> GetAllAsync()
+        {
+            return await _dbSet.Include(x => x.UserAccount).Where(x => x.IsTested == false).ToListAsync();
+        }
         public async Task<AdviseRequest> GetAdviseRequestByEmail(string email)
         {
             var adviseRequests = await _dbContext.AdviseRequest
