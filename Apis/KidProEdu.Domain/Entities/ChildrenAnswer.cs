@@ -16,7 +16,7 @@ namespace KidProEdu.Domain.Entities
         [ForeignKey("Question")]
         public Guid QuestionId { get; set; }
         public string Answer { get; set; }
-        public double ChildrenScore { get; set; }
+        public double ScorePerQuestion { get; set; }
         public virtual Question Question { get; set; }
         public virtual ChildrenProfile ChildrenProfile { get; set; }
         public virtual Exam Exam { get; set; }
