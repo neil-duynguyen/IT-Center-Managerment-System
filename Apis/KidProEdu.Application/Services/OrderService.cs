@@ -28,7 +28,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<OrderViewModel>> GetOrderByStaffId()
         {
-            var result = _unitOfWork.OrderRepository.GetAllAsync().Result.Where(x => x.UserAccount.Id == _claimsService.GetCurrentUserId).OrderByDescending(x => x.CreationDate).ToList();
+            var result = _unitOfWork.OrderRepository.GetAllAsync().Result.Where(x => x.CreatedBy == _claimsService.GetCurrentUserId).OrderByDescending(x => x.CreationDate).ToList();
             return _mapper.Map<List<OrderViewModel>>(result);
         }
 
