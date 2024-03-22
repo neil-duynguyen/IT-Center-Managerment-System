@@ -91,7 +91,14 @@ namespace KidProEdu.API.Controllers.Staff
         {
             var result = await _orderService.ProcessMomoPaymentReturnHandler(response);
 
-            return Redirect("https://kid-pro-edu-v2.netlify.app/enrollment");
+            var paymentResult = new
+            {
+                Message = result.Message, // Thông báo giao dịch
+                RedirectUrl = "https://kid-pro-edu-v2.netlify.app/enrollment" // URL chuyển hướng
+            };
+
+            // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
+            return RedirectToAction("ShowPaymentResult", paymentResult);
 
         }
     }
