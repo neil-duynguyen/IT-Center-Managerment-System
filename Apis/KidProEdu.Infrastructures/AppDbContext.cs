@@ -231,6 +231,12 @@ namespace KidProEdu.Infrastructures
                 .HasForeignKey(x => x.ChildrenProfileId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            builder.Entity<OrderDetail>()
+                .HasOne(x => x.Order)
+                .WithMany(x => x.OrderDetails)
+                .HasForeignKey(x => x.OrderId).
+                OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<Blog>()
                 .HasMany(p => p.Tags)
                 .WithMany(x => x.Blogs);

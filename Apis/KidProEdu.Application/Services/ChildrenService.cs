@@ -103,6 +103,10 @@ namespace KidProEdu.Application.Services
 
         }
 
-
+        public async Task<List<ChildrenViewModel>> GetChildrenByParentId()
+        {
+            var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.UserId == _claimsService.GetCurrentUserId).ToList();
+            return _mapper.Map<List<ChildrenViewModel>>(getChildrens);
+        }
     }
 }
