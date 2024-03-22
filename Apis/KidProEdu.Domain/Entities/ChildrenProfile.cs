@@ -15,7 +15,7 @@ namespace KidProEdu.Domain.Entities
         public string FullName { get; set; }
         public string ChildrenCode { get; set; }
         public string? GenderType { get; set; }
-        public string BirthDay { get; set; }
+        public DateTime BirthDay { get; set; }
         public string? Avatar { get; set; }
         public string? SpecialSkill { get; set; }
         public virtual UserAccount UserAccount { get; set; }

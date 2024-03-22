@@ -63,6 +63,21 @@ namespace KidProEdu.API.Controllers
             }
         }
 
+        [HttpGet("GetChildrenByParentId")]
+        [Authorize(Roles = ("Parent"))]
+        public async Task<IActionResult> GetChildrenByParentId()
+        {
+            try
+            {
+                var result = await _childrenService.GetChildrenByParentId();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("GetListClassByChildrenId/{id}")]
         public async Task<IActionResult> GetListClassByChildrenId(Guid id)
         {

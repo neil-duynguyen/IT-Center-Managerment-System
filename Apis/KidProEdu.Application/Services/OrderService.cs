@@ -1,22 +1,11 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
-using KidProEdu.Application.PaymentService.Dtos;
-using KidProEdu.Application.PaymentService.Momo.Config;
 using KidProEdu.Application.PaymentService.Momo.Request;
-using KidProEdu.Application.PaymentService.Payment.Commands;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZXing;
 
 namespace KidProEdu.Application.Services
 {
@@ -176,25 +165,26 @@ namespace KidProEdu.Application.Services
                         {
                             result = new BaseResult()
                             {
-                                Info = "Thanh toán thành công.",
-                                ReturnUrl = returnUrl
+                                Message = "Thanh toán thành công.",
+                                RedirectUrl = returnUrl
                             };
                         }
-                        else {
+                        else
+                        {
                             result = new BaseResult()
                             {
-                                Info = "Tạo thông tin giao dịch thất bại.",
-                                ReturnUrl = returnUrl
+                                Message = "Tạo thông tin giao dịch thất bại.",
+                                RedirectUrl = returnUrl
                             };
                         }
-                        
+
                     }
                     else
                     {
                         result = new BaseResult()
                         {
-                            Info = "Thanh toán không thành công",
-                            ReturnUrl = returnUrl
+                            Message = "Thanh toán không thành công",
+                            RedirectUrl = returnUrl
                         };
                     }
                 }
@@ -202,8 +192,8 @@ namespace KidProEdu.Application.Services
                 {
                     result = new BaseResult()
                     {
-                        Info = "Chữ ký phản hồi không hợp lệ",
-                        ReturnUrl = returnUrl
+                        Message = "Chữ ký phản hồi không hợp lệ",
+                        RedirectUrl = returnUrl
                     };
                 }
             }
@@ -304,7 +294,7 @@ namespace KidProEdu.Application.Services
     }
     public class BaseResult
     {
-        public string Info { get; set; }
-        public string ReturnUrl { get; set; }
+        public string Message { get; set; }
+        public string RedirectUrl { get; set; }
     }
 }
