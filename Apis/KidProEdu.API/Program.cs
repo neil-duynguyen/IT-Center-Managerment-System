@@ -14,6 +14,7 @@ using Infrastructures;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Application.Hubs;
 using KidProEdu.Application.Utils;
+using Hangfire;
 
 namespace KidProEdu.API
 {
@@ -31,6 +32,12 @@ namespace KidProEdu.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR();
+            builder.Services.AddHangfire((sp, config) =>
+            {
+                var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Development");
+                config.UseSqlServerStorage(connectionString);
+            });
+            builder.Services.AddHangfireServer();
            /* builder.Services.AddMediatR(r =>
             {
                // r.RegisterServicesFromAssembly(typeof(CreateMerchant).Assembly);
@@ -239,6 +246,9 @@ namespace KidProEdu.API
             {
                 endpoints.MapHub<NotificationHub>("/notificationHub");
             });*/
+
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
 
             app.MapControllers();
 

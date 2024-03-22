@@ -1,4 +1,5 @@
 ﻿using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Utils;
 using KidProEdu.Application.ViewModels.AdviseRequestViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -134,6 +135,22 @@ namespace KidProEdu.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("SendEmail")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> SendEmail()
+        {
+            try
+            {
+                SendEmailUtil.SendEmail("nghia");
+                return Ok();
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
             }
         }
     }
