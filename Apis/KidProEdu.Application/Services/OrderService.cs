@@ -47,8 +47,10 @@ namespace KidProEdu.Application.Services
                 Id = Guid.NewGuid(),
                 OrderDate = _currentTime.GetCurrentTime(),
                 TotalAmount = total,
+                OrderNumber = "Order#" + (_unitOfWork.OrderRepository.GetAllAsync().Result.Count + 1),
                 PaymentStatus = Domain.Enums.StatusPayment.Unpaid,
-                UserId = _claimsService.GetCurrentUserId
+                UserId = orderDetailViewModel.ParentId,
+                CreatedBy = _claimsService.GetCurrentUserId
             };
             await _unitOfWork.OrderRepository.AddAsync(order);
 

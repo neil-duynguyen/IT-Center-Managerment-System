@@ -71,7 +71,7 @@ namespace KidProEdu.API.Controllers.Staff
         }*/
 
         [HttpPost("CreatePayment/{orderId}")]
-        public async Task<IActionResult> Create(Guid orderId)
+        public async Task<IActionResult> CreatePayment(Guid orderId)
         {
             try
             {
