@@ -4,6 +4,7 @@ using KidProEdu.Infrastructures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240322143221_UpdateTableChildre,Order")]
+    partial class UpdateTableChildreOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,9 +66,6 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -89,9 +89,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("StatusAdviseRequest")
                         .HasColumnType("int");
@@ -352,6 +349,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<Guid>("ChildrenProfileId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double>("ChildrenScore")
+                        .HasColumnType("float");
+
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -378,9 +378,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<Guid>("QuestionId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("ScorePerQuestion")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -1079,9 +1076,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int>("TestType")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TotalQuestion")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
@@ -1414,9 +1408,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("OrderNumber")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("int");
@@ -2234,6 +2225,38 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasIndex("UserAccountId");
 
                     b.ToTable("TeachingClassHistory");
+                });
+
+            modelBuilder.Entity("KidProEdu.Domain.Entities.TestTime", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeleteBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModificationBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TestTime");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Transaction", b =>
