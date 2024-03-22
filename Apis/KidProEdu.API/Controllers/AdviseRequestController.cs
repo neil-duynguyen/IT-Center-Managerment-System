@@ -138,8 +138,8 @@ namespace KidProEdu.API.Controllers
             }
         }
 
-        [HttpGet("SendEmail")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[HttpGet("SendEmail")]
+        *//*[Authorize(Roles = ("Admin"))]*//*
         public async Task<IActionResult> SendEmail()
         {
             try
@@ -152,6 +152,6 @@ namespace KidProEdu.API.Controllers
 
                 return BadRequest(e.Message);
             }
-        }
+        }*/
     }
 }
