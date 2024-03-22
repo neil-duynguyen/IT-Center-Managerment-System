@@ -139,13 +139,17 @@ namespace KidProEdu.Application.Services
 
         public async Task AutoSendEmail()
         {
-            /*var advises = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByTestDate(_currentTime.GetCurrentTime().AddDays(1));
+            var advises = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByTestDate(_currentTime.GetCurrentTime().AddDays(1));
             foreach (var item in advises)
-            {*/
-                await SendEmailUtil.SendEmail("tkchoi1312@gmail.com", "Nhắc nhở ngày tham gia làm bài kiểm tra đầu vào của KidPro", 
-                    "hệ thống kidpro kính gửi thông báo đến quý phụ huynh và học viên có lịch hẹn sẽ làm bài kiểm tra đầu vào của kidpro vào lúc 7h ngày 23, chúc bạn 1 ngày tốt lành  " +
-                    "\"<div style=\\\"font-weight: bold;\\\">Trân trọng, <br>\\r\\n        <div style=\\\"color: #FF630E;\\\">Bộ phận hỗ trợ học viên BSMART</div>\\r\\n    </div>\\r\\n<br>    <img src=\\\"cid:image1\\\" alt=\\\"\\\" width=\\\"200px\\\">\\r\\n    <br>\\r\\n    <br>\\r\\n    <div>\\r\\n        Email liên hệ: admin@bsmart.edu.vn\\r\\n    </div>\\r\\n    <div>Số điện thoại: 028 9999 79 39</div>\\r\\n</div>\";");
-            //}
+            {
+                await SendEmailUtil.SendEmail("tkchoi1312@gmail.com", "Nhắc nhở ngày tham gia làm bài kiểm tra đầu vào của KidPro",
+                    "Trân trọng, \n\n" +
+                    "KidPro xin gửi thông báo đến quý phụ huynh có trẻ đã đăng kí lịch làm bài kiểm tra đầu vào của KidPro" +
+                    " lúc: " + item.StartTime + " - " + item.EndTime + " ngày " + item.TestDate.Date + ". \n\n" +
+                    "Xin cảm ơn, \n" +
+                    "KidPro Education!") ;
+                    
+            }
         }
     }
 }

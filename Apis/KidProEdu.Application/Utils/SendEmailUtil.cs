@@ -50,16 +50,10 @@ namespace KidProEdu.Application.Utils
             }
         }
 
-        public async static Task AutoSendEmailJob()
-        {
-            
-
-        }
-
-        public async static Task SendEmailJob()
+        /*public async static Task SendEmailJob()
         {
             // Khởi tạo Hangfire
-            /*GlobalConfiguration.Configuration.UseMemoryStorage();
+            *//*GlobalConfiguration.Configuration.UseMemoryStorage();
             using (var server = new BackgroundJobServer())
             {
                 // Lập lịch công việc gửi email
@@ -68,10 +62,10 @@ namespace KidProEdu.Application.Utils
 
                 Console.WriteLine("Hangfire Server started. ");
                 Console.ReadKey();
-            }*/
+            }*//*
             //RecurringJob.AddOrUpdate("send-email-job", () => SendEmail("tkchoi1312@gmail.com"), "*/5 * * * * *");
             //RecurringJob.AddOrUpdate("send-email-job", () => SendEmail("tkchoi1312@gmail.com"), "0 0 * * *");
 
-        }
+        }*/
     }
 }
