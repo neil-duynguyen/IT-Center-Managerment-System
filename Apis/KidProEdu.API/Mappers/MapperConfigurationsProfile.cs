@@ -14,6 +14,7 @@ using KidProEdu.Application.ViewModels.DivisionViewModels;
 using KidProEdu.Application.ViewModels.EnrollmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.ExamViewModels;
+using KidProEdu.Application.ViewModels.FeedBackViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.LogEquipmentViewModels;
@@ -192,6 +193,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<ChildrenAnswer, ChildrenAnswerViewModel>().ReverseMap();
             CreateMap<CreateChildrenAnswerViewModel, ChildrenAnswer>().ReverseMap();
             CreateMap<UpdateChildrenAnswerViewModel, ChildrenAnswer>().ReverseMap();
+
+            CreateMap<Feedback, FeedBackViewModel>().ReverseMap();
+            CreateMap<CreateFeedBackViewModel, Feedback>().ReverseMap();
+            CreateMap<UpdateFeedBackViewModel, Feedback>().ReverseMap();
 
         }
     }

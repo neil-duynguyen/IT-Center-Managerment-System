@@ -73,8 +73,16 @@ namespace KidProEdu.API.Controllers.Staff
         [HttpPost("CreatePayment/{orderId}")]
         public async Task<IActionResult> Create(Guid orderId)
         {
-            var result = await _orderService.CreatePaymentHandler(orderId);
-            return Ok(result);
+            try
+            {
+                var result = await _orderService.CreatePaymentHandler(orderId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpGet]
@@ -82,7 +90,15 @@ namespace KidProEdu.API.Controllers.Staff
         public async Task<IActionResult> MomoReturn([FromQuery] MomoOneTimePaymentResultRequest response)
         {
             var result = await _orderService.ProcessMomoPaymentReturnHandler(response);
-            return Redirect(result);
+
+            var paymentResult = new
+            {
+                Message = result.Message, // Thông báo giao dịch
+                RedirectUrl = "https://kid-pro-edu-v2.netlify.app/enrollment" // URL chuyển hướng
+            };
+
+            // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
+            return RedirectToAction("ShowPaymentResult", paymentResult);
 
         }
     }

@@ -52,7 +52,6 @@ namespace KidProEdu.Infrastructures
         public DbSet<Schedule> Schedule { get; set; }
         public DbSet<ScheduleRoom> ScheduleRoom { get; set; }
         public DbSet<Tag> Tag { get; set; }
-        public DbSet<TestTime> TestTime { get; set; }
         public DbSet<Transaction> Transaction { get; set; }
         public DbSet<RequestUserAccount> RequestUserAccount { get; set; }
         public DbSet<DivisionUserAccount> DivisionUserAccount { get; set; }
@@ -231,6 +230,12 @@ namespace KidProEdu.Infrastructures
                 .WithMany(x => x.OrderDetails)
                 .HasForeignKey(x => x.ChildrenProfileId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<OrderDetail>()
+                .HasOne(x => x.Order)
+                .WithMany(x => x.OrderDetails)
+                .HasForeignKey(x => x.OrderId).
+                OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Blog>()
                 .HasMany(p => p.Tags)

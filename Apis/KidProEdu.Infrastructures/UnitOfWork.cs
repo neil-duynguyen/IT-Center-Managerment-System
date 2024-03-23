@@ -47,6 +47,7 @@ namespace Infrastructures
         private readonly IScheduleRoomRepository _scheduleRoomRepository;
         private readonly IExamRepository _examRepository;
         private readonly IChildrenAnswerRepository _childrenAnswerRepository;
+        private readonly IFeedbackRepository _feedbackRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -64,7 +65,7 @@ namespace Infrastructures
             IContractRepository contractRepository, IConfigJobTypeRepository configJobTypeRepository, 
             ITeachingClassHistoryRepository teachingClassHistoryRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
             ITransactionRepository transactionRepository, IScheduleRoomRepository scheduleRoomRepository,
-            IExamRepository examRepository,
+            IExamRepository examRepository, IFeedbackRepository feedbackRepository,
             IChildrenAnswerRepository childrenAnswerRepository
             )
         {
@@ -107,6 +108,7 @@ namespace Infrastructures
             _scheduleRoomRepository = scheduleRoomRepository;
             _examRepository = examRepository;
             _childrenAnswerRepository = childrenAnswerRepository;
+            _feedbackRepository = feedbackRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -181,6 +183,8 @@ namespace Infrastructures
         public IExamRepository ExamRepository => _examRepository;
 
         public IChildrenAnswerRepository ChildrenAnswerRepository => _childrenAnswerRepository;
+
+        public IFeedbackRepository FeedbackRepository => _feedbackRepository;
 
         public async Task<int> SaveChangeAsync()
         {

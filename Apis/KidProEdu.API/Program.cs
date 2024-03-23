@@ -14,6 +14,9 @@ using Infrastructures;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Application.Hubs;
 using KidProEdu.Application.Utils;
+using Hangfire;
+using HangfireBasicAuthenticationFilter;
+using KidProEdu.API.Controllers;
 
 namespace KidProEdu.API
 {
@@ -31,10 +34,17 @@ namespace KidProEdu.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR();
-           /* builder.Services.AddMediatR(r =>
+            builder.Services.AddHangfire((sp, config) =>
             {
-               // r.RegisterServicesFromAssembly(typeof(CreateMerchant).Assembly);
-            });*/
+                var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Development");
+                config.UseSqlServerStorage(connectionString);
+                RecurringJob.AddOrUpdate<IAdviseRequestService>("send-email-job", x => x.AutoSendEmail(), "0 0 * * *");
+            });
+            builder.Services.AddHangfireServer();
+            /* builder.Services.AddMediatR(r =>
+             {
+                // r.RegisterServicesFromAssembly(typeof(CreateMerchant).Assembly);
+             });*/
 
             //CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -151,6 +161,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IScheduleRoomRepository, ScheduleRoomRepository>();
             builder.Services.AddScoped<IExamRepository, ExamRepository>();
             builder.Services.AddScoped<IChildrenAnswerRepository, ChildrenAnswerRepository>();
+            builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             #endregion
 
             #region DIService
@@ -194,6 +205,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<ITransactionService, TransactionService>();
             builder.Services.AddScoped<IExamService, ExamService>();
             builder.Services.AddScoped<IChildrenAnswerService, ChildrenAnswerService>();
+            builder.Services.AddScoped<IFeedbackService, FeedbackService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));
@@ -239,6 +251,20 @@ namespace KidProEdu.API
             {
                 endpoints.MapHub<NotificationHub>("/notificationHub");
             });*/
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                DashboardTitle = "KidPro's Education Dashboard",
+                Authorization = new[]
+                {
+                    new HangfireCustomBasicAuthenticationFilter
+                    {
+                        User= "admin",
+                        Pass = "admin123"
+                    }
+                }
+            });
+            app.UseHangfireServer();
 
             app.MapControllers();
 

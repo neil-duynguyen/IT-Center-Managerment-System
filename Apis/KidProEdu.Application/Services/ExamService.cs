@@ -83,7 +83,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<ExamViewModel>> GetExams()
         {
-            var result = await _unitOfWork.ExamRepository.GetAllAsync();
+            var result = _unitOfWork.ExamRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
             var mapper = _mapper.Map<List<ExamViewModel>>(result);
             return mapper;
         }

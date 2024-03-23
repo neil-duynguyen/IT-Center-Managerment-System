@@ -1,21 +1,11 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
-using KidProEdu.Application.PaymentService.Dtos;
-using KidProEdu.Application.PaymentService.Momo.Config;
 using KidProEdu.Application.PaymentService.Momo.Request;
-using KidProEdu.Application.PaymentService.Payment.Commands;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZXing;
 
 namespace KidProEdu.Application.Services
 {
@@ -38,7 +28,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<OrderViewModel>> GetOrderByStaffId()
         {
-            var result = _unitOfWork.OrderRepository.GetAllAsync().Result.Where(x => x.UserAccount.Id == _claimsService.GetCurrentUserId).OrderByDescending(x => x.CreationDate).ToList();
+            var result = _unitOfWork.OrderRepository.GetAllAsync().Result.Where(x => x.CreatedBy == _claimsService.GetCurrentUserId).OrderByDescending(x => x.CreationDate).ToList();
             return _mapper.Map<List<OrderViewModel>>(result);
         }
 
@@ -80,10 +70,143 @@ namespace KidProEdu.Application.Services
 
         }
 
+
+        public async Task<string> CreatePaymentHandler(Guid orderId)
+        {
+
+            string paymentUrl = string.Empty;
+            var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
+
+            var getOrderDetailId = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm > 0).ToList();
+
+            //tính số tiền trả góp hàng tháng của đơn hàng đó
+            decimal totalPrice = 0;
+
+            foreach (var item in getOrderDetailId)
+            {
+                totalPrice += Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
+            }
+
+
+            if (getOrderById is not null)
+            {
+                CreatePayment createPayment = new CreatePayment();
+                createPayment.PaymentDate = DateTime.Now;
+                createPayment.ExpireDate = DateTime.Now.AddMinutes(1);
+                createPayment.PaymentContent = "Thanh toán đơn hàng.";
+                createPayment.RequiredAmount = (decimal?)totalPrice;
+
+                switch (createPayment.PaymentDestinationId)
+                {
+                    /*case "VNPAY":
+                        var vnpayPayRequest = new VnpayPayRequest(vnpayConfig.Version,
+                            vnpayConfig.TmnCode, DateTime.Now, currentUserService.IpAddress ?? string.Empty, request.RequiredAmount ?? 0, request.PaymentCurrency ?? string.Empty,
+                            "other", request.PaymentContent ?? string.Empty, vnpayConfig.ReturnUrl, outputIdParam!.Value?.ToString() ?? string.Empty);
+                        paymentUrl = vnpayPayRequest.GetLink(vnpayConfig.PaymentUrl, vnpayConfig.HashSecret);
+                        break;*/
+                    case "MOMO":
+                        var momoOneTimePayRequest = new MomoOneTimePaymentRequest(
+                            _configuration["Momo:PartnerCode"],
+                            Guid.NewGuid().ToString(),
+                            (long)createPayment.RequiredAmount,
+                            getOrderById.Id.ToString(),
+                            createPayment.PaymentContent ?? string.Empty,
+                            _configuration["Momo:ReturnUrl"],
+                            _configuration["Momo:IpnUrl"],
+                            "captureWallet",
+                            string.Empty);
+                        momoOneTimePayRequest.MakeSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
+                        (bool createMomoLinkResult, string? createMessage) = momoOneTimePayRequest.GetLink(_configuration["Momo:PaymentUrl"]);
+                        if (createMomoLinkResult)
+                        {
+                            paymentUrl = createMessage;
+                        }
+                        else
+                        {
+                            throw new Exception("Tạo thông tin thanh toán thất bại.");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                return paymentUrl;
+            }
+            throw new Exception("Không tìm thấy đơn hàng.");
+
+
+        }
+
+        public async Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response)
+        {
+            string returnUrl = "https://kid-pro-edu-v2.netlify.app/order";
+            string resultData = string.Empty;
+            var result = new BaseResult();
+            try
+            {
+
+                //var resultData = new PaymentReturnDtos();
+                var isValidSignature = response.IsValidSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
+
+                if (isValidSignature)
+                {
+
+                    if (response.resultCode == 0)
+                    {
+
+                        var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(Guid.Parse(response.orderId));
+                        getOrder.PaymentStatus = Domain.Enums.StatusPayment.Paid;
+                        _unitOfWork.OrderRepository.Update(getOrder);
+                        await _unitOfWork.SaveChangeAsync();
+
+                        var createTransaction = await CreateTransaction(Guid.Parse(response.orderId));
+
+                        if (createTransaction)
+                        {
+                            result = new BaseResult()
+                            {
+                                Message = "Thanh toán thành công.",
+                                RedirectUrl = returnUrl
+                            };
+                        }
+                        else
+                        {
+                            result = new BaseResult()
+                            {
+                                Message = "Tạo thông tin giao dịch thất bại.",
+                                RedirectUrl = returnUrl
+                            };
+                        }
+
+                    }
+                    else
+                    {
+                        result = new BaseResult()
+                        {
+                            Message = "Thanh toán không thành công",
+                            RedirectUrl = returnUrl
+                        };
+                    }
+                }
+                else
+                {
+                    result = new BaseResult()
+                    {
+                        Message = "Chữ ký phản hồi không hợp lệ",
+                        RedirectUrl = returnUrl
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
+
         //function này sẽ chạy sau khi thanh toán thành công
         public async Task<bool> CreateTransaction(Guid orderId)
         {
-            //xem INP bên vnpay để làm
             //sau khi check trạng thái thanh toán thành công thì cập nhật db và tạo transaction
             var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
@@ -101,13 +224,13 @@ namespace KidProEdu.Application.Services
                         {
                             Id = Guid.NewGuid(),
                             OrderDetailId = item.Id,
-                            BankingAccountNumber = "test",
-                            BankingNumber = "test",
-                            BankName = "test",
+                            BankingAccountNumber = "",
+                            BankingNumber = "",
+                            BankName = "",
                             CourseName = item.Course.Name,
                             PayDate = _currentTime.GetCurrentTime(), //lấy thời gian thanh toán thành công
                             InstallmentTerm = item.InstallmentTerm,
-                            InstallmentPeriod = DateTime.Now, //alow null
+                            InstallmentPeriod = _currentTime.GetCurrentTime(), //alow null
                             StatusTransaction = Domain.Enums.StatusTransaction.Installment,
 
                         };
@@ -136,9 +259,9 @@ namespace KidProEdu.Application.Services
                         //ko trả góp
                         Transaction transactionparent = new Transaction()
                         {
-                            BankingAccountNumber = "test",
-                            BankingNumber = "test",
-                            BankName = "test",
+                            BankingAccountNumber = "",
+                            BankingNumber = "",
+                            BankName = "",
                             CourseName = item.Course.Name,
                             PayDate = _currentTime.GetCurrentTime(),
                             InstallmentTerm = 0,
@@ -151,109 +274,11 @@ namespace KidProEdu.Application.Services
                 }
                 return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo transaction thất bại");
             }
-            return true;
-        }
-
-
-        public async Task<string> CreatePaymentHandler(Guid orderId)
-        {
-            string result;
-            try
-            {
-                var paymentUrl = string.Empty;
-                var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
-
-                if (getOrderById is not null)
-                {
-
-                    CreatePayment createPayment = new CreatePayment();
-                    createPayment.PaymentDate = DateTime.Now;
-                    createPayment.ExpireDate = DateTime.Now.AddMinutes(1);
-                    createPayment.PaymentContent = "Thanh toán đơn hàng.";
-                    createPayment.RequiredAmount = (decimal?)getOrderById.TotalAmount;
-
-                    switch (createPayment.PaymentDestinationId)
-                    {
-                        /*case "VNPAY":
-                            var vnpayPayRequest = new VnpayPayRequest(vnpayConfig.Version,
-                                vnpayConfig.TmnCode, DateTime.Now, currentUserService.IpAddress ?? string.Empty, request.RequiredAmount ?? 0, request.PaymentCurrency ?? string.Empty,
-                                "other", request.PaymentContent ?? string.Empty, vnpayConfig.ReturnUrl, outputIdParam!.Value?.ToString() ?? string.Empty);
-                            paymentUrl = vnpayPayRequest.GetLink(vnpayConfig.PaymentUrl, vnpayConfig.HashSecret);
-                            break;*/
-                        case "MOMO":
-                            var momoOneTimePayRequest = new MomoOneTimePaymentRequest(
-                                _configuration["Momo:PartnerCode"],
-                                Guid.NewGuid().ToString(),
-                                (long)createPayment.RequiredAmount,
-                                getOrderById.Id.ToString(),
-                                createPayment.PaymentContent ?? string.Empty,
-                                _configuration["Momo:ReturnUrl"],
-                                _configuration["Momo:IpnUrl"],
-                                "captureWallet",
-                                string.Empty);
-                            momoOneTimePayRequest.MakeSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
-                            (bool createMomoLinkResult, string? createMessage) = momoOneTimePayRequest.GetLink(_configuration["Momo:PaymentUrl"]);
-                            if (createMomoLinkResult)
-                            {
-                                paymentUrl = createMessage;
-                            }
-                            else
-                            {
-                                result = createMessage;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-
-                    return result = paymentUrl;
-                }
-                throw new Exception("Không tìm thấy đơn hàng.");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-        }
-
-        public async Task<string> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response)
-        {
-            string returnUrl = string.Empty;
-            string resultData = string.Empty;
-            try
-            {
-               
-                //var resultData = new PaymentReturnDtos();
-                var isValidSignature = response.IsValidSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
-
-                if (isValidSignature)
-                {
-
-                    if (response.resultCode == 0)
-                    {
-
-                        resultData = "https://kid-pro-edu-v2.netlify.app//payment-success";
-                    }
-                    else
-                    {
-
-                        resultData = "Payment process failed";
-                    }
-                }
-                else
-                {
-
-                    resultData = "Invalid signature in response";
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return resultData;
+            return false;
         }
     }
+
+
     public class CreatePayment
     {
         public string PaymentContent { get; set; } = string.Empty;
@@ -266,5 +291,10 @@ namespace KidProEdu.Application.Services
         public string? MerchantId { get; set; } = string.Empty;
         public string? PaymentDestinationId { get; set; } = "MOMO";
         public string? Signature { get; set; } = string.Empty;
+    }
+    public class BaseResult
+    {
+        public string Message { get; set; }
+        public string RedirectUrl { get; set; }
     }
 }

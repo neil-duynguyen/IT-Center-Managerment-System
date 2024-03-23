@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240320090352_UpdateTableOrderDetail,Transaction")]
-    partial class UpdateTableOrderDetailTransaction
+    [Migration("20240321101806_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -403,6 +403,10 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ChildrenCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -571,18 +575,36 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int>("JobType")
                         .HasColumnType("int");
 
-                    b.Property<int>("MinSlot")
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("ModificationBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Slotperweek")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("ConfigJobType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("572184c6-7885-47dc-8dee-8bfad25ae8a7"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            JobType = 2,
+                            Slotperweek = 15
+                        },
+                        new
+                        {
+                            Id = new Guid("c7761baf-4675-4d4d-b61a-584f36835064"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            JobType = 1,
+                            Slotperweek = 30
+                        });
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ConfigSystem", b =>
@@ -2176,7 +2198,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -2188,7 +2210,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("TeachingStatus")
