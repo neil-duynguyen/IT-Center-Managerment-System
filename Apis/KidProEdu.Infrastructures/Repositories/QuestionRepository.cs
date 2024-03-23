@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,15 @@ namespace KidProEdu.Infrastructures.Repositories
         {
             var questions = await _dbContext.Question
                 .Where(x => x.LessionId == id && x.IsDeleted == false)
+                .ToListAsync();
+
+            return questions;
+        }
+
+        public async Task<List<Question>> GetQuestionByType(QuestionType type)
+        {
+            var questions = await _dbContext.Question
+                .Where(x => x.Type.Equals(type) && x.IsDeleted == false)
                 .ToListAsync();
 
             return questions;

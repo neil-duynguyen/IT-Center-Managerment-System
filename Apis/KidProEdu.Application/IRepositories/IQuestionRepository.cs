@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Repositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace KidProEdu.Application.IRepositories
         Task<List<Question>> GetQuestionByTitle(string title);
 
         Task<List<Question>> GetQuestionByLesson(Guid id);
+        Task<List<Question>> GetQuestionByType(QuestionType type);
 
     }
 }
