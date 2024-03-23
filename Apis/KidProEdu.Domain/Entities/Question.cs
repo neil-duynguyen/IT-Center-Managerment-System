@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KidProEdu.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace KidProEdu.Domain.Entities
         public string? Answer4 { get; set; }
         public string? RightAnswer { get; set; }
         public int? Level { get; set; }
+        public TestType? Type { get; set; }
 
         public virtual Lesson Lesson { get; set; }
         public IList<ChildrenAnswer> ChildrenAnswer { get; set; }
