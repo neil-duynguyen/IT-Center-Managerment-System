@@ -93,8 +93,8 @@ namespace KidProEdu.API.Controllers.Staff
 
             var paymentResult = new
             {
-                Message = result.Message, // Thông báo giao dịch
-                RedirectUrl = "https://kid-pro-edu-v2.netlify.app/enrollment" // URL chuyển hướng
+                message = result.Message, // Thông báo giao dịch
+                redirectUrl = result.RedirectUrl // URL chuyển hướng
             };
 
             // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
