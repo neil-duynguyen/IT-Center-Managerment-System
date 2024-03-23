@@ -28,7 +28,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<OrderViewModel>> GetOrderByStaffId()
         {
-            var result = _unitOfWork.OrderRepository.GetAllAsync().Result.Where(x => x.UserAccount.Id == _claimsService.GetCurrentUserId).OrderByDescending(x => x.CreationDate).ToList();
+            var result = _unitOfWork.OrderRepository.GetAllAsync().Result.Where(x => x.CreatedBy == _claimsService.GetCurrentUserId).OrderByDescending(x => x.CreationDate).ToList();
             return _mapper.Map<List<OrderViewModel>>(result);
         }
 
@@ -79,16 +79,11 @@ namespace KidProEdu.Application.Services
             string paymentUrl = string.Empty;
             var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
-            var getOrderDetailId = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm > 0).ToList();
-
             //tính số tiền trả góp hàng tháng của đơn hàng đó
-            decimal totalPrice = 0;
+            var totalAmountInstallment = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm > 0).Sum(x => Math.Ceiling((decimal)(x.TotalPrice / x.InstallmentTerm)));
 
-            foreach (var item in getOrderDetailId)
-            {
-                totalPrice += Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
-            }
-
+            //tính số tiền đơn hàng không trả góp
+            var totalAmount = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm == 0).Sum(x => x.TotalPrice);
 
             if (getOrderById is not null)
             {
@@ -96,7 +91,7 @@ namespace KidProEdu.Application.Services
                 createPayment.PaymentDate = DateTime.Now;
                 createPayment.ExpireDate = DateTime.Now.AddMinutes(1);
                 createPayment.PaymentContent = "Thanh toán đơn hàng.";
-                createPayment.RequiredAmount = (decimal?)totalPrice;
+                createPayment.RequiredAmount =  (decimal?)totalAmountInstallment > 0 ? totalAmountInstallment : (decimal)totalAmount;
 
                 switch (createPayment.PaymentDestinationId)
                 {

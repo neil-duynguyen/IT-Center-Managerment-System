@@ -101,5 +101,20 @@ namespace KidProEdu.API.Controllers.Staff
             return RedirectToAction("ShowPaymentResult", paymentResult);
 
         }
+
+        [HttpGet]
+        public IActionResult ShowPaymentResult(string message, string redirectUrl)
+        {
+            // Đảm bảo rằng thông báo giao dịch và URL chuyển hướng được truyền vào
+            if (string.IsNullOrEmpty(message) || string.IsNullOrEmpty(redirectUrl))
+            {
+                // Nếu thiếu thông tin, bạn có thể chuyển hướng người dùng đến trang lỗi hoặc trang khác
+                return RedirectToAction("Error");
+            }
+
+            // Chuyển hướng đến trang web thứ ba
+            return Redirect(redirectUrl);
+        }
+
     }
 }
