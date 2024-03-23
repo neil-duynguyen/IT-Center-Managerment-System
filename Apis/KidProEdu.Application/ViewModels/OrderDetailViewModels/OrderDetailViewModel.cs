@@ -16,6 +16,7 @@ namespace KidProEdu.Application.ViewModels.OrderDetailViewModels
         public double? UnitPrice { get; set; }
         public int? InstallmentTerm { get; set; }
         public string? PayType { get; set; }
-        public Guid? ChildrenProfileId { get; set; }
+        public Guid? ParentId { get; set; }
+        public string? ChildrenName { get; set; }
     }
 }

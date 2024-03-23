@@ -16,7 +16,10 @@ namespace KidProEdu.Infrastructures.Repositories
             _dbContext = context;
         }
 
-
+        public override async Task<List<AdviseRequest>> GetAllAsync()
+        {
+            return await _dbSet.Include(x => x.UserAccount).Where(x => x.IsTested == false).ToListAsync();
+        }
         public async Task<AdviseRequest> GetAdviseRequestByEmail(string email)
         {
             var adviseRequests = await _dbContext.AdviseRequest
@@ -34,12 +37,12 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return adviseRequests;
         }
-        
+
         public async Task<List<AdviseRequest>> GetAdviseRequestByTestDate(DateTime testDate)
         {
             var adviseRequests = await _dbContext.AdviseRequest
                 .Where(x => x.TestDate.Date == testDate.Date && x.IsDeleted == false)
-                .ToListAsync();
+                .OrderByDescending(x => x.TestDate).ToListAsync();
 
             return adviseRequests;
         }

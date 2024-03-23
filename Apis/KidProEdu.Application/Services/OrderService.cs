@@ -136,8 +136,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response)
         {
-            string returnUrl = "https://kid-pro-edu-v2.netlify.app/order";
-            string resultData = string.Empty;
+            string returnUrl = _configuration["Momo:RedirectUrl"];
             var result = new BaseResult();
             try
             {

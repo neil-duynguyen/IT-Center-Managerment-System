@@ -16,10 +16,10 @@ namespace KidProEdu.API.Controllers.Staff
             _orderDetailService = orderDetailService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetOrderDetailByOrderId(Guid orderId)
+        [HttpGet("GetOrderDetailByOrderId/{id}")]
+        public async Task<IActionResult> GetOrderDetailByOrderId(Guid id)
         { 
-            var result = await _orderDetailService.GetOrderDetailByOrderId(orderId);
+            var result = await _orderDetailService.GetOrderDetailByOrderId(id);
             return Ok(result);
         }
 

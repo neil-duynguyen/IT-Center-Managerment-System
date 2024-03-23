@@ -77,7 +77,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<ChildrenViewModel, ChildrenProfile>().ReverseMap();
             CreateMap<ChildrenProfile, ChildrenProfileViewModel>();
 
-            CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null)); 
+            CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null));
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<Equipment, EquipmentViewModel>().ReverseMap();
             CreateMap<EquipmentManagementViewModel, Equipment>().ReverseMap();
@@ -157,7 +157,7 @@ namespace KidProEdu.API.Mappers
                                                             //.ForMember(x => x.chid, src => src.MapFrom(x => x.ChildrenProfileId))
                                                             .ForMember(x => x.Avatar, src => src.MapFrom(x => x.ChildrenProfile.Avatar))
                                                             .ForMember(x => x.NameChildren, src => src.MapFrom(x => x.ChildrenProfile.FullName));
-           
+
             CreateMap<Contract, ContractViewModel>().ReverseMap()
                 .ForMember(des => des.StatusOfContract, src => src.MapFrom(x => x.StatusOfContract != null ? (string)x.StatusOfContract.ToString() : (string?)null));
             CreateMap<CreateContractViewModel, Contract>().ReverseMap();
@@ -188,7 +188,9 @@ namespace KidProEdu.API.Mappers
             CreateMap<OrderDetailViewModel, OrderDetail>().ReverseMap()
                 .ForMember(des => des.OrderDetailId, src => src.MapFrom(x => x.Id))
                 .ForMember(des => des.PayType, src => src.MapFrom(x => x.PayType != null ? (string)x.PayType.ToString() : (string?)null))
-                .ForMember(des => des.CourseName, src => src.MapFrom(x => x.Course.Name));
+                .ForMember(des => des.CourseName, src => src.MapFrom(x => x.Course.Name))
+                .ForMember(des => des.ChildrenName, src => src.MapFrom(x => x.ChildrenProfile.FullName))
+                .ForMember(des => des.ParentId, src => src.MapFrom(x => x.Order.UserAccount.Id));
 
             CreateMap<ChildrenAnswer, ChildrenAnswerViewModel>().ReverseMap();
             CreateMap<CreateChildrenAnswerViewModel, ChildrenAnswer>().ReverseMap();
