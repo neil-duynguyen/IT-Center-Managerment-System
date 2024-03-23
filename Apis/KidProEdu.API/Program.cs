@@ -34,17 +34,13 @@ namespace KidProEdu.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR();
-            builder.Services.AddHangfire((sp, config) =>
+           /* builder.Services.AddHangfire((sp, config) =>
             {
                 var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Development");
                 config.UseSqlServerStorage(connectionString);
                 RecurringJob.AddOrUpdate<IAdviseRequestService>("send-email-job", x => x.AutoSendEmail(), "0 0 * * *");
             });
-            builder.Services.AddHangfireServer();
-            /* builder.Services.AddMediatR(r =>
-             {
-                // r.RegisterServicesFromAssembly(typeof(CreateMerchant).Assembly);
-             });*/
+            builder.Services.AddHangfireServer();*/
 
             //CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -252,7 +248,7 @@ namespace KidProEdu.API
                 endpoints.MapHub<NotificationHub>("/notificationHub");
             });*/
 
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            /*app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
                 DashboardTitle = "KidPro's Education Dashboard",
                 Authorization = new[]
@@ -263,8 +259,8 @@ namespace KidProEdu.API
                         Pass = "admin123"
                     }
                 }
-            });
-            app.UseHangfireServer();
+            });*/
+            //app.UseHangfireServer();
 
             app.MapControllers();
 
