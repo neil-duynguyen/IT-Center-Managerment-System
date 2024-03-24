@@ -53,9 +53,9 @@ namespace KidProEdu.Application.Services
             {
                 var adviseRequests = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result.Where(x => x.IsTested == false
                && x.TestDate.Date.Equals(createAdviseRequestViewModel.TestDate.Value)
-               && x.StartTime.Value.Hour == createAdviseRequestViewModel.StartTime.Value.Hour
+               && x.SlotId == createAdviseRequestViewModel.SlotId
                && x.IsTested == false).ToList();
-                if (adviseRequests != null && adviseRequests.Count == 5)
+                if (adviseRequests != null && adviseRequests.Count >= 5)
                 {
                     throw new Exception("Lịch đánh giá cho thời gian này đã đủ số lượng");
                 }
@@ -160,6 +160,7 @@ namespace KidProEdu.Application.Services
             if (updateAdviseRequestViewModel.TestDate != null && updateAdviseRequestViewModel.StartTime != null)
             {
                 if (updateAdviseRequestViewModel.TestDate.Value.Equals(adviseRequest.TestDate.Date) &&
+                    updateAdviseRequestViewModel.SlotId.Equals(adviseRequest.SlotId) &&
                     updateAdviseRequestViewModel.StartTime.Value.Equals(adviseRequest.StartTime.Value))
                 {
 
@@ -168,9 +169,9 @@ namespace KidProEdu.Application.Services
                 {
                     var adviseRequests = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result.Where(x => x.IsTested == false
                     && x.TestDate.Date.Equals(updateAdviseRequestViewModel.TestDate.Value)
-                    && x.StartTime.Value.Hour == updateAdviseRequestViewModel.StartTime.Value.Hour
+                    && x.SlotId == updateAdviseRequestViewModel.SlotId
                     && x.IsTested == false).ToList();
-                    if (adviseRequests != null && adviseRequests.Count == 5)
+                    if (adviseRequests != null && adviseRequests.Count >= 5)
                     {
                         throw new Exception("Lịch đánh giá cho thời gian này đã đủ số lượng");
                     }

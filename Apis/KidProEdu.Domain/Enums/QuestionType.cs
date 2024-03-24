@@ -8,7 +8,7 @@ namespace KidProEdu.Domain.Enums
 {
     public enum QuestionType
     {
-        Entry = 1, //câu hỏi cho bài test đầu vào
-        Course = 2 //câu hỏi cho bài test của khóa học
+        Course = 1, //câu hỏi cho bài test của khóa học
+        Entry = 2 //câu hỏi cho bài test đầu vào
     }
 }
