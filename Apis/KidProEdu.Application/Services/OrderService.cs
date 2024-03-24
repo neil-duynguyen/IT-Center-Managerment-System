@@ -47,8 +47,10 @@ namespace KidProEdu.Application.Services
                 Id = Guid.NewGuid(),
                 OrderDate = _currentTime.GetCurrentTime(),
                 TotalAmount = total,
+                OrderNumber = "Order#" + (_unitOfWork.OrderRepository.GetAllAsync().Result.Count + 1),
                 PaymentStatus = Domain.Enums.StatusPayment.Unpaid,
-                UserId = _claimsService.GetCurrentUserId
+                UserId = orderDetailViewModel.ParentId,
+                CreatedBy = _claimsService.GetCurrentUserId
             };
             await _unitOfWork.OrderRepository.AddAsync(order);
 
@@ -77,16 +79,11 @@ namespace KidProEdu.Application.Services
             string paymentUrl = string.Empty;
             var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
-            var getOrderDetailId = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm > 0).ToList();
-
             //tính số tiền trả góp hàng tháng của đơn hàng đó
-            decimal totalPrice = 0;
+            var totalAmountInstallment = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm > 0).Sum(x => Math.Ceiling((decimal)(x.TotalPrice / x.InstallmentTerm)));
 
-            foreach (var item in getOrderDetailId)
-            {
-                totalPrice += Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
-            }
-
+            //tính số tiền đơn hàng không trả góp
+            var totalAmount = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm == 0).Sum(x => x.TotalPrice);
 
             if (getOrderById is not null)
             {
@@ -94,7 +91,7 @@ namespace KidProEdu.Application.Services
                 createPayment.PaymentDate = DateTime.Now;
                 createPayment.ExpireDate = DateTime.Now.AddMinutes(1);
                 createPayment.PaymentContent = "Thanh toán đơn hàng.";
-                createPayment.RequiredAmount = (decimal?)totalPrice;
+                createPayment.RequiredAmount =  (decimal?)totalAmountInstallment > 0 ? totalAmountInstallment : (decimal)totalAmount;
 
                 switch (createPayment.PaymentDestinationId)
                 {
@@ -139,8 +136,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response)
         {
-            string returnUrl = "https://kid-pro-edu-v2.netlify.app/order";
-            string resultData = string.Empty;
+            string returnUrl = _configuration["Momo:RedirectUrl"];
             var result = new BaseResult();
             try
             {
