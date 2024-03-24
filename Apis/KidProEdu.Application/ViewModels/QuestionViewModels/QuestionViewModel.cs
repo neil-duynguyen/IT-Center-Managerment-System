@@ -16,5 +16,6 @@ namespace KidProEdu.Application.ViewModels.QuestionViewModels
         public string Answer4 { get; set; }
         public string RightAnswer { get; set; }
         public int Level { get; set; }
+        public string Type { get; set; }
     }
 }

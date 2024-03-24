@@ -8,7 +8,10 @@ namespace KidProEdu.Domain.Enums
 {
     public enum TestType
     {
-        TestExam = 1,
-        FinalExam = 2
+        EntranceExam = 1, //kiểm tra đầu vào
+        FifteenMinuteExam = 2, //kiểm tra 15p
+        FortyFiveMinuteExam = 3, //kiểm tra 45p
+        MidTermExam = 4, //kiểm tra giữa kì
+        FinalExam = 5 //kiểm tra cuối kì
     }
 }

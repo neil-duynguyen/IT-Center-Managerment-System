@@ -106,7 +106,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateLessonViewModel, Lesson>().ReverseMap();
             CreateMap<UpdateLessonViewModel, Lesson>().ReverseMap();
 
-            CreateMap<QuestionViewModel, Question>().ReverseMap();
+            CreateMap<QuestionViewModel, Question>().ReverseMap().ForMember(des => des.Type, src => src.MapFrom(x => x.Type != null ? (string)x.Type.ToString() : (string?)null));
             CreateMap<CreateQuestionViewModel, Question>().ReverseMap();
             CreateMap<UpdateQuestionViewModel, Question>().ReverseMap();
 

@@ -69,23 +69,84 @@ namespace KidProEdu.Application.Services
             return question;
         }
 
-        public async Task<List<QuestionByLessonViewModel>> CreateExam(List<CreateExamViewModel> createExamViewModels)
+        public async Task<List<QuestionByLessonViewModel>> CreateTest(List<CreateExamViewModel> createExamViewModels)
         {
+
+            /*
+              CreateExamViewModel
+                        - lấy test đầu vào (truyền type Entry bắt buộc):
+                                => lấy list question đầu vào chỉ cần truyền mảng 1 phần tử type Entry là bắt buộc còn lại null
+                                => lấy list 50 questions đầu vào lessonId = null, total = 50, type = Entry
+                        - lấy test theo lesson (truyền type Course bắt buộc):
+                                => lấy all list question theo lesson => truyền mảng 1 phần tử lessonId với totalQuestion = null
+                                => lấy list 50 questions theo lesson => truyền mảng 1 phần tử lessonId kèm totalQuestion = 50
+                                => lấy list 50 questions theo list lesson => truyền list (lessonId kèm totalQuestion = 50)
+            */
+
             //var questions = new List<Question> { };
             var listModel = new List<QuestionByLessonViewModel>();
-            if (createExamViewModels == null)
+            if (createExamViewModels.IsNullOrEmpty())
             {
                 throw new Exception("Dữ liệu không hợp lệ");
             }
 
-            if (createExamViewModels.Count == 1 && createExamViewModels.FirstOrDefault().TotalQuestion == null)
+            if (createExamViewModels.Count == 1)
             {
-                var vm = new QuestionByLessonViewModel
+                if (createExamViewModels.FirstOrDefault().Type.Equals(Domain.Enums.QuestionType.Entry)
+                    && createExamViewModels.FirstOrDefault().TotalQuestion == null)
                 {
-                    LessonId = createExamViewModels.FirstOrDefault().LessonId,
-                    Questions = await _unitOfWork.QuestionRepository.GetQuestionByLesson(createExamViewModels.FirstOrDefault().LessonId)
-                };
-                listModel.Add(vm);
+                    var vm = new QuestionByLessonViewModel
+                    {
+                        Questions = await _unitOfWork.QuestionRepository.GetQuestionByType(createExamViewModels[0].Type),
+                        Type = "Entry"
+                    };
+                    listModel.Add(vm);
+                }
+                else if (createExamViewModels.FirstOrDefault().Type.Equals(Domain.Enums.QuestionType.Entry)
+                    && createExamViewModels.FirstOrDefault().TotalQuestion != null)
+                {
+                    Random random = new Random();
+
+                    var questions = await _unitOfWork.QuestionRepository.GetQuestionByType(Domain.Enums.QuestionType.Entry);
+
+                    // phân chia danh sách câu hỏi thành các danh sách con theo cấp độ
+                    var level1Questions = questions.Where(q => q.Level == 1).ToList();
+                    var level2Questions = questions.Where(q => q.Level == 2).ToList();
+                    var level3Questions = questions.Where(q => q.Level == 3).ToList();
+
+                    // tính số lượng câu hỏi mong muốn cho mỗi cấp độ dựa trên tỉ lệ
+                    int totalQuestions = (int)createExamViewModels[0].TotalQuestion;
+                    int level1Count = (int)(totalQuestions * 0.4);
+                    int level2Count = (int)(totalQuestions * 0.4);
+                    int level3Count = totalQuestions - level1Count - level2Count; // còn lại cho cấp độ 3
+
+                    // lấy ngẫu nhiên các câu hỏi từ mỗi danh sách con
+                    var randomLevel1Questions = level1Questions.OrderBy(x => random.Next()).Take(level1Count);
+                    var randomLevel2Questions = level2Questions.OrderBy(x => random.Next()).Take(level2Count);
+                    var randomLevel3Questions = level3Questions.OrderBy(x => random.Next()).Take(level3Count);
+
+                    // kết hợp danh sách câu hỏi từ mỗi cấp độ vào danh sách câu hỏi cuối cùng
+                    var randomList = randomLevel1Questions.Concat(randomLevel2Questions).Concat(randomLevel3Questions).ToList();
+
+                    var vm = new QuestionByLessonViewModel
+                    {
+                        Questions = randomList,
+                        Type = "Entry"
+                    };
+                    listModel.Add(vm);
+
+                }
+                else if (createExamViewModels.FirstOrDefault().Type.Equals(Domain.Enums.QuestionType.Course)
+                    && createExamViewModels.FirstOrDefault().TotalQuestion == null)
+                {
+                    var vm = new QuestionByLessonViewModel
+                    {
+                        LessonId = createExamViewModels.FirstOrDefault().LessonId,
+                        Questions = await _unitOfWork.QuestionRepository.GetQuestionByLesson((Guid)createExamViewModels.FirstOrDefault().LessonId),
+                        Type = "Course"
+                    };
+                    listModel.Add(vm);
+                }
             }
             else
             {
@@ -93,11 +154,33 @@ namespace KidProEdu.Application.Services
 
                 foreach (var item in createExamViewModels)
                 {
-                    var vm = new QuestionByLessonViewModel();
-                    var questions = await _unitOfWork.QuestionRepository.GetQuestionByLesson(item.LessonId);
-                    var randomList = questions.OrderBy(x => random.Next()).Take((int)item.TotalQuestion).ToList();
-                    vm.LessonId = item.LessonId;
-                    vm.Questions = randomList;
+                    var questions = await _unitOfWork.QuestionRepository.GetQuestionByLesson((Guid)item.LessonId);
+
+                    // phân chia danh sách câu hỏi thành các danh sách con theo cấp độ
+                    var level1Questions = questions.Where(q => q.Level == 1).ToList();
+                    var level2Questions = questions.Where(q => q.Level == 2).ToList();
+                    var level3Questions = questions.Where(q => q.Level == 3).ToList();
+
+                    // tính số lượng câu hỏi mong muốn cho mỗi cấp độ dựa trên tỉ lệ
+                    int totalQuestions = (int)item.TotalQuestion;
+                    int level1Count = (int)(totalQuestions * 0.4);
+                    int level2Count = (int)(totalQuestions * 0.4);
+                    int level3Count = totalQuestions - level1Count - level2Count; // còn lại cho cấp độ 3
+
+                    // lấy ngẫu nhiên các câu hỏi từ mỗi danh sách con
+                    var randomLevel1Questions = level1Questions.OrderBy(x => random.Next()).Take(level1Count);
+                    var randomLevel2Questions = level2Questions.OrderBy(x => random.Next()).Take(level2Count);
+                    var randomLevel3Questions = level3Questions.OrderBy(x => random.Next()).Take(level3Count);
+
+                    // kết hợp danh sách câu hỏi từ mỗi cấp độ vào danh sách câu hỏi cuối cùng
+                    var randomList = randomLevel1Questions.Concat(randomLevel2Questions).Concat(randomLevel3Questions).ToList();
+
+                    var vm = new QuestionByLessonViewModel
+                    {
+                        LessonId = item.LessonId,
+                        Questions = randomList,
+                        Type = "Course"
+                    };
                     listModel.Add(vm);
                 }
             }
