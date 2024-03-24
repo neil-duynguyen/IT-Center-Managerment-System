@@ -18,6 +18,8 @@ namespace KidProEdu.Domain.Entities
         public DateTime? EndTime { get; set; }
         public bool? IsTested { get; set; }
         public StatusAdviseRequest StatusAdviseRequest { get; set; }
+        public Guid? SlotId { get; set; }
         public virtual UserAccount? UserAccount { get; set; }
+        public virtual Slot? Slot { get; set; }
     }
 }
