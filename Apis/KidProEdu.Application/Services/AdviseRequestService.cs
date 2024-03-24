@@ -71,7 +71,12 @@ namespace KidProEdu.Application.Services
             {
                 await SendEmailUtil.SendEmail(mapper.Email, "Xác nhận yêu cầu tư vấn",
                     "Kính gửi quý phụ huynh, \n\n" +
-                    "Yêu cầu tư vấn của bạn đã được xác nhận, nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất \n\n" +
+                    "Yêu cầu tư vấn của bạn đã được xác nhận, \n" +
+                    "Thông tin:, \n" +
+                    "         Người đăng kí: " + createAdviseRequestViewModel.FullName + "\n" +
+                    "         Email: " + createAdviseRequestViewModel.Email + "\n" +
+                    "         Sđt: " + createAdviseRequestViewModel.Phone + "\n" +
+                    "Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
                     "Trân trọng, \n" +
                     "KidPro Education!");
                 return true;
