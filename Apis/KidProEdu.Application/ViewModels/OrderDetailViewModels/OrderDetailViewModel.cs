@@ -11,12 +11,13 @@ namespace KidProEdu.Application.ViewModels.OrderDetailViewModels
     {
         public Guid OrderDetailId { get; set; }
         public Guid CourseId { get; set; }
-        public string CourseName { get; set; }
+        public string CourseCode { get; set; }
         public int? Quantity { get; set; }
         public double? UnitPrice { get; set; }
         public int? InstallmentTerm { get; set; }
         public string? PayType { get; set; }
         public Guid? ParentId { get; set; }
+        public string? ParentName { get; set; }
         public string? ChildrenName { get; set; }
     }
 }

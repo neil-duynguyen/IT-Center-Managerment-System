@@ -57,5 +57,12 @@ namespace KidProEdu.API.Controllers
             List<EnumViewModel> enums = ((JobType[])Enum.GetValues(typeof(TestType))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
             return Ok(enums);
         }
+
+        [HttpGet("PayType")]
+        public async Task<IActionResult> PayType()
+        {
+            List<EnumViewModel> enums = ((PayType[])Enum.GetValues(typeof(PayType))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            return Ok(enums);
+        }
     }
 }

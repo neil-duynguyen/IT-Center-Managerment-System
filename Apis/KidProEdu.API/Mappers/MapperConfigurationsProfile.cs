@@ -188,9 +188,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<OrderDetailViewModel, OrderDetail>().ReverseMap()
                 .ForMember(des => des.OrderDetailId, src => src.MapFrom(x => x.Id))
                 .ForMember(des => des.PayType, src => src.MapFrom(x => x.PayType != null ? (string)x.PayType.ToString() : (string?)null))
-                .ForMember(des => des.CourseName, src => src.MapFrom(x => x.Course.Name))
+                .ForMember(des => des.CourseCode, src => src.MapFrom(x => x.Course.CourseCode))
                 .ForMember(des => des.ChildrenName, src => src.MapFrom(x => x.ChildrenProfile.FullName))
-                .ForMember(des => des.ParentId, src => src.MapFrom(x => x.Order.UserAccount.Id));
+                .ForMember(des => des.ParentId, src => src.MapFrom(x => x.Order.UserAccount.Id))
+                .ForMember(des => des.ParentName, src => src.MapFrom(x => x.Order.UserAccount.FullName));
 
             CreateMap<ChildrenAnswer, ChildrenAnswerViewModel>().ReverseMap();
             CreateMap<CreateChildrenAnswerViewModel, ChildrenAnswer>().ReverseMap();
