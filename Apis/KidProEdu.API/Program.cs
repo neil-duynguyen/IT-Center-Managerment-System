@@ -41,10 +41,6 @@ namespace KidProEdu.API
                 RecurringJob.AddOrUpdate<IAdviseRequestService>("send-email-job", x => x.AutoSendEmail(), "0 0 * * *");
             });
             builder.Services.AddHangfireServer();
-            /* builder.Services.AddMediatR(r =>
-             {
-                // r.RegisterServicesFromAssembly(typeof(CreateMerchant).Assembly);
-             });*/
 
             //CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";

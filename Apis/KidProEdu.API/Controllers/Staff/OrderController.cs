@@ -71,7 +71,7 @@ namespace KidProEdu.API.Controllers.Staff
         }*/
 
         [HttpPost("CreatePayment/{orderId}")]
-        public async Task<IActionResult> Create(Guid orderId)
+        public async Task<IActionResult> CreatePayment(Guid orderId)
         {
             try
             {
@@ -93,13 +93,28 @@ namespace KidProEdu.API.Controllers.Staff
 
             var paymentResult = new
             {
-                Message = result.Message, // Thông báo giao dịch
-                RedirectUrl = "https://kid-pro-edu-v2.netlify.app/enrollment" // URL chuyển hướng
+                message = result.Message, // Thông báo giao dịch
+                redirectUrl = result.RedirectUrl // URL chuyển hướng
             };
 
             // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
             return RedirectToAction("ShowPaymentResult", paymentResult);
 
         }
+
+        [HttpGet]
+        public IActionResult ShowPaymentResult(string message, string redirectUrl)
+        {
+            // Đảm bảo rằng thông báo giao dịch và URL chuyển hướng được truyền vào
+            if (string.IsNullOrEmpty(message) || string.IsNullOrEmpty(redirectUrl))
+            {
+                // Nếu thiếu thông tin, bạn có thể chuyển hướng người dùng đến trang lỗi hoặc trang khác
+                return RedirectToAction("Error");
+            }
+
+            // Chuyển hướng đến trang web thứ ba
+            return Redirect(redirectUrl);
+        }
+
     }
 }
