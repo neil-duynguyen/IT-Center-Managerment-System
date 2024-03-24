@@ -2164,7 +2164,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 8, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot1E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 7, 0, 0, 0)
                         },
@@ -2174,7 +2174,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 9, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot2E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 8, 0, 0, 0)
                         },
@@ -2184,7 +2184,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 10, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot3E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 9, 0, 0, 0)
                         },
@@ -2194,7 +2194,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 11, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot4E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 10, 0, 0, 0)
                         },
@@ -2204,7 +2204,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 14, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot5E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 13, 0, 0, 0)
                         },
@@ -2214,7 +2214,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 15, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot6E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 14, 0, 0, 0)
                         },
@@ -2224,7 +2224,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 16, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot7E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 15, 0, 0, 0)
                         },
@@ -2234,7 +2234,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 17, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot8E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 16, 0, 0, 0)
                         },
@@ -2244,7 +2244,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 19, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot9E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 18, 0, 0, 0)
                         },
@@ -2254,7 +2254,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 20, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot10E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 19, 0, 0, 0)
                         });
