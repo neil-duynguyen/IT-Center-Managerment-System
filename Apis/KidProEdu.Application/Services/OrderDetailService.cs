@@ -44,10 +44,10 @@ namespace KidProEdu.Application.Services
                 Timeout = TimeSpan.FromSeconds(30)
             };
 
-            /*using (var scope = new TransactionScope(TransactionScopeOption.Required, transactionOptions))
+            using (var scope = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
-                {*/
+                {
                     foreach (var orderDetail in updateOrderDetailView)
                     {
                         //check xem children có học trùng course ko khi trong DB đã có rồi
@@ -83,7 +83,6 @@ namespace KidProEdu.Application.Services
                             getOrderDetail.PayType = (Domain.Enums.PayType?)orderDetail.PayType;
                             getOrderDetail.InstallmentTerm = orderDetail.InstallmentTerm;
                             _unitOfWork.OrderDetailRepository.Update(getOrderDetail);
-
                             await _unitOfWork.SaveChangeAsync();
                         }
 
@@ -96,13 +95,15 @@ namespace KidProEdu.Application.Services
                         await _unitOfWork.SaveChangeAsync();
 
                     }
-               // }
-                /*catch (Exception ex)
+                    scope.Complete();
+                }
+                catch (Exception ex)
                 {
                     // Nếu có lỗi, transaction scope sẽ tự động rollback
                     Console.WriteLine("Transaction scope rolled back. Error: " + ex.Message);
-                }*/
-           // }
+                    throw new Exception(ex.Message);
+                }
+            }
             return true;
         }
 
