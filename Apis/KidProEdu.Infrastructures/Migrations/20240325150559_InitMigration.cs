@@ -236,7 +236,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RequestDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: true),
                     RequestType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LeaveDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EquimentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -942,6 +941,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RecieverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
