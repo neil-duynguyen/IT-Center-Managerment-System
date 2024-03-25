@@ -4,7 +4,7 @@ using KidProEdu.Application.PaymentService.Momo.Request;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
-
+using KidProEdu.Domain.Enums;
 using Microsoft.Extensions.Configuration;
 
 namespace KidProEdu.Application.Services
@@ -77,13 +77,26 @@ namespace KidProEdu.Application.Services
         {
 
             string paymentUrl = string.Empty;
+            decimal totalPrice = 0;
             var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
+            //var totalAmountInstallment = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm > 0).Sum(x => Math.Ceiling((decimal)(x.TotalPrice / x.InstallmentTerm)));
+
+            var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
+            foreach (var item in getOrderDetail)
+            {
+                if (item.InstallmentTerm > 0)
+                {
+                    totalPrice += Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
+                }
+                if (item.InstallmentTerm == 0 && item.PayType.Value == PayType.Banking) {
+                    totalPrice += (decimal)item.TotalPrice;
+                }
+            }
             //tính số tiền trả góp hàng tháng của đơn hàng đó
-            var totalAmountInstallment = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm > 0).Sum(x => Math.Ceiling((decimal)(x.TotalPrice / x.InstallmentTerm)));
 
             //tính số tiền đơn hàng không trả góp
-            var totalAmount = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm == 0).Sum(x => x.TotalPrice);
+            //var totalAmount = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm == 0).Sum(x => x.TotalPrice);
 
             if (getOrderById is not null)
             {
@@ -91,7 +104,7 @@ namespace KidProEdu.Application.Services
                 createPayment.PaymentDate = DateTime.Now;
                 createPayment.ExpireDate = DateTime.Now.AddMinutes(1);
                 createPayment.PaymentContent = "Thanh toán đơn hàng.";
-                createPayment.RequiredAmount =  (decimal?)totalAmountInstallment > 0 ? totalAmountInstallment : (decimal)totalAmount;
+                createPayment.RequiredAmount = totalPrice;
 
                 switch (createPayment.PaymentDestinationId)
                 {
