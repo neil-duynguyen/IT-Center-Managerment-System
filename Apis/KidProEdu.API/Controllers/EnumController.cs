@@ -54,7 +54,28 @@ namespace KidProEdu.API.Controllers
         [HttpGet("TestType")]
         public async Task<IActionResult> TestType()
         {
-            List<EnumViewModel> enums = ((JobType[])Enum.GetValues(typeof(TestType))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            List<EnumViewModel> enums = ((TestType[])Enum.GetValues(typeof(TestType))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            return Ok(enums);
+        }
+
+        [HttpGet("PayType")]
+        public async Task<IActionResult> PayType()
+        {
+            List<EnumViewModel> enums = ((PayType[])Enum.GetValues(typeof(PayType))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            return Ok(enums);
+        }
+
+        [HttpGet("QuestionType")]
+        public async Task<IActionResult> QuestionType()
+        {
+            List<EnumViewModel> enums = ((QuestionType[])Enum.GetValues(typeof(QuestionType))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            return Ok(enums);
+        }
+
+        [HttpGet("SlotType")]
+        public async Task<IActionResult> SlotType()
+        {
+            List<EnumViewModel> enums = ((SlotType[])Enum.GetValues(typeof(SlotType))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
             return Ok(enums);
         }
 

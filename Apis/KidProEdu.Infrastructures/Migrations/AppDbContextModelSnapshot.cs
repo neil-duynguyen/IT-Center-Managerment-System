@@ -76,9 +76,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<bool?>("IsTested")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ModificationBy")
                         .HasColumnType("uniqueidentifier");
@@ -106,6 +105,8 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
 
                     b.HasIndex("SlotId");
 
@@ -2163,7 +2164,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 8, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot1E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 7, 0, 0, 0)
                         },
@@ -2173,7 +2174,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 9, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot2E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 8, 0, 0, 0)
                         },
@@ -2183,7 +2184,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 10, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot3E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 9, 0, 0, 0)
                         },
@@ -2193,7 +2194,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 11, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot4E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 10, 0, 0, 0)
                         },
@@ -2203,7 +2204,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 14, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot5E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 13, 0, 0, 0)
                         },
@@ -2213,7 +2214,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 15, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot6E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 14, 0, 0, 0)
                         },
@@ -2223,7 +2224,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 16, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot7E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 15, 0, 0, 0)
                         },
@@ -2233,7 +2234,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 17, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot8E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 16, 0, 0, 0)
                         },
@@ -2243,7 +2244,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 19, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot9E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 18, 0, 0, 0)
                         },
@@ -2253,7 +2254,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EndTime = new TimeSpan(0, 20, 0, 0, 0),
                             IsDeleted = false,
-                            Name = "Slot5",
+                            Name = "Slot10E",
                             SlotType = 2,
                             StartTime = new TimeSpan(0, 19, 0, 0, 0)
                         });
@@ -2574,6 +2575,10 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.AdviseRequest", b =>
                 {
+                    b.HasOne("KidProEdu.Domain.Entities.Location", "Location")
+                        .WithMany("AdviseRequests")
+                        .HasForeignKey("LocationId");
+
                     b.HasOne("KidProEdu.Domain.Entities.Slot", "Slot")
                         .WithMany("AdviseRequests")
                         .HasForeignKey("SlotId");
@@ -2581,6 +2586,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
                         .WithMany("AdviseRequests")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Location");
 
                     b.Navigation("Slot");
 
@@ -3089,6 +3096,8 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Location", b =>
                 {
+                    b.Navigation("AdviseRequests");
+
                     b.Navigation("UserAccount");
                 });
 

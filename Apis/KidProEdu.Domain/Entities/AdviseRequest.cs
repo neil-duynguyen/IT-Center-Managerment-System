@@ -12,7 +12,7 @@ namespace KidProEdu.Domain.Entities
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
-        public string Location { get; set; }
+        public Guid? LocationId { get; set; }
         public DateTime TestDate { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
@@ -21,5 +21,6 @@ namespace KidProEdu.Domain.Entities
         public Guid? SlotId { get; set; }
         public virtual UserAccount? UserAccount { get; set; }
         public virtual Slot? Slot { get; set; }
+        public virtual Location? Location { get; set; }
     }
 }

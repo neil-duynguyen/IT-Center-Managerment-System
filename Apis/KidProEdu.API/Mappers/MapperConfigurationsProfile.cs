@@ -141,7 +141,10 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<TagViewModel, Tag>().ReverseMap().ForMember(des => des.TagType, src => src.MapFrom(x => x.TagType != null ? (string)x.TagType.ToString() : (string?)null)); ;
 
-            CreateMap<AdviseRequestViewModel, AdviseRequest>().ReverseMap().ForMember(des => des.StatusAdviseRequest, src => src.MapFrom(x => x.StatusAdviseRequest != null ? (string)x.StatusAdviseRequest.ToString() : (string?)null));
+            CreateMap<AdviseRequestViewModel, AdviseRequest>().ReverseMap()
+                .ForMember(des => des.StatusAdviseRequest, src => src.MapFrom(x => x.StatusAdviseRequest != null ? (string)x.StatusAdviseRequest.ToString() : (string?)null))
+                .ForMember(x => x.Location, src => src.MapFrom(x => x.Location.Name))
+                .ForMember(x => x.Slot, src => src.MapFrom(x => x.Slot.Name));
             CreateMap<CreateAdviseRequestViewModel, AdviseRequest>().ReverseMap();
             CreateMap<UpdateAdviseRequestViewModel, AdviseRequest>().ReverseMap();
 
