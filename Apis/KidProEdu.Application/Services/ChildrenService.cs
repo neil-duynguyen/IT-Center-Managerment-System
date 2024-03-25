@@ -95,10 +95,10 @@ namespace KidProEdu.Application.Services
                 mapper.Classes = listClass;
             }
 
-            foreach (var item in collection)
+            /*foreach (var item in collection)
             {
 
-            }
+            }*/
 
             return mapper;
 
