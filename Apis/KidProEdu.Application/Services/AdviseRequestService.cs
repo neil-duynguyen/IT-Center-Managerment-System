@@ -52,7 +52,7 @@ namespace KidProEdu.Application.Services
             if (createAdviseRequestViewModel.TestDate != null && createAdviseRequestViewModel.StartTime != null)
             {
                 var adviseRequests = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result.Where(x => x.IsTested == false
-               && x.TestDate.Date.Equals(createAdviseRequestViewModel.TestDate.Value)
+               && x.TestDate.Date.Equals(createAdviseRequestViewModel.TestDate.Value.Date)
                && x.SlotId == createAdviseRequestViewModel.SlotId
                && x.IsTested == false).ToList();
                 if (adviseRequests != null && adviseRequests.Count >= 5)
@@ -159,7 +159,7 @@ namespace KidProEdu.Application.Services
 
             if (updateAdviseRequestViewModel.TestDate != null && updateAdviseRequestViewModel.StartTime != null)
             {
-                if (updateAdviseRequestViewModel.TestDate.Value.Equals(adviseRequest.TestDate.Date) &&
+                if (updateAdviseRequestViewModel.TestDate.Value.Date.Equals(adviseRequest.TestDate.Date) &&
                     updateAdviseRequestViewModel.SlotId.Equals(adviseRequest.SlotId) &&
                     updateAdviseRequestViewModel.StartTime.Value.Equals(adviseRequest.StartTime.Value))
                 {
@@ -168,7 +168,7 @@ namespace KidProEdu.Application.Services
                 else
                 {
                     var adviseRequests = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result.Where(x => x.IsTested == false
-                    && x.TestDate.Date.Equals(updateAdviseRequestViewModel.TestDate.Value)
+                    && x.TestDate.Date.Equals(updateAdviseRequestViewModel.TestDate.Value.Date)
                     && x.SlotId == updateAdviseRequestViewModel.SlotId
                     && x.IsTested == false).ToList();
                     if (adviseRequests != null && adviseRequests.Count >= 5)

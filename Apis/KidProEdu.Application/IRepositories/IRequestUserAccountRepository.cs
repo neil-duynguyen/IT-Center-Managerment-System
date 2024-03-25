@@ -10,5 +10,6 @@ namespace KidProEdu.Application.IRepositories
 {
     public interface IRequestUserAccountRepository : IGenericRepository<RequestUserAccount>
     {
+        Task<List<RequestUserAccount>> GetRequestUserByRequestId(Guid requestId);
     }
 }
