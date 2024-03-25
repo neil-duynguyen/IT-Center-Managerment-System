@@ -41,7 +41,7 @@ namespace KidProEdu.Application.Services
             var transactionOptions = new TransactionOptions
             {
                 IsolationLevel = IsolationLevel.ReadCommitted,
-                Timeout = TimeSpan.FromSeconds(30)
+                Timeout = TimeSpan.FromMinutes(5)
             };
 
             using (var scope = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))

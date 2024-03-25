@@ -4,7 +4,7 @@ using KidProEdu.Application.PaymentService.Momo.Request;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
-
+using KidProEdu.Domain.Enums;
 using Microsoft.Extensions.Configuration;
 
 namespace KidProEdu.Application.Services
@@ -89,7 +89,7 @@ namespace KidProEdu.Application.Services
                 {
                     totalPrice += Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
                 }
-                else {
+                if (item.InstallmentTerm == 0 && item.PayType.Value == PayType.Banking) {
                     totalPrice += (decimal)item.TotalPrice;
                 }
             }
