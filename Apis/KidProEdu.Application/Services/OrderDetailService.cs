@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace KidProEdu.Application.Services
 {
@@ -38,71 +37,119 @@ namespace KidProEdu.Application.Services
             //check xem children có học trùng course ko khi chưa vào DB
             if (updateOrderDetailView.GroupBy(x => new { x.CourseId, x.ChildrenProfildId }).Any(g => g.Count() > 1)) throw new Exception("Có trẻ đăng kí khoá học trùng nhau.");
 
-            var transactionOptions = new TransactionOptions
+            foreach (var orderDetail in updateOrderDetailView)
             {
-                IsolationLevel = IsolationLevel.ReadCommitted,
-                Timeout = TimeSpan.FromMinutes(5)
-            };
+                //check xem children có học trùng course ko khi trong DB đã có rồi
+                if (_unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.ChildrenProfileId == orderDetail.ChildrenProfildId && x.CourseId == orderDetail.CourseId).Count() > 0)
+                    throw new Exception("Trẻ đã đăng kí khoá học này.");
 
-            using (var scope = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
-            {
-                try
+                var getPrice = await _unitOfWork.CourseRepository.GetByIdAsync(orderDetail.CourseId);
+                var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderDetail.OrderId).FirstOrDefault(x => x.CourseId == orderDetail.CourseId);
+
+                //trường hợp course là spec
+                /*if (orderDetail.ListChildCourseId.Count > 0)
                 {
-                    foreach (var orderDetail in updateOrderDetailView)
+                    if (getOrderDetail.ChildrenProfileId is not null)
                     {
-                        //check xem children có học trùng course ko khi trong DB đã có rồi
-                        if (_unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.ChildrenProfileId == orderDetail.ChildrenProfildId && x.CourseId == orderDetail.CourseId).Count() > 0)
-                            throw new Exception("Trẻ đã đăng kí khoá học này.");
-
-                        var getPrice = await _unitOfWork.CourseRepository.GetByIdAsync(orderDetail.CourseId);
-                        var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderDetail.OrderId).FirstOrDefault(x => x.CourseId == orderDetail.CourseId);
-
-                        //nếu orderDetaiId đó đã tồn tại
-                        if (getOrderDetail.ChildrenProfileId is not null)
+                        double totalPriceChildCourse = 0;
+                        OrderDetail newParentOrderDetail = new()
                         {
-                            OrderDetail newOrderDetail = new()
+                            Id = Guid.NewGuid(),
+                            OrderId = orderDetail.OrderId,
+                            ChildrenProfileId = orderDetail.ChildrenProfildId,
+                            CourseId = orderDetail.ParentCourseId,
+                            UnitPrice = getPrice.Price,
+                            PayType = (Domain.Enums.PayType?)orderDetail.PayType,
+                            InstallmentTerm = orderDetail.InstallmentTerm
+                        };
+                        await _unitOfWork.OrderDetailRepository.AddAsync(newParentOrderDetail);
+
+                        foreach (var item in orderDetail.ListChildCourseId)
+                        {
+                            var getPriceChildCourse = await _unitOfWork.CourseRepository.GetByIdAsync(item);
+                            OrderDetail newChildOrderDetail = new()
                             {
                                 Id = Guid.NewGuid(),
-                                OrderId = orderDetail.OrderId,
-                                CourseId = orderDetail.CourseId,
-                                UnitPrice = getPrice.Price,
-                                TotalPrice = getPrice.Price,
                                 ChildrenProfileId = orderDetail.ChildrenProfildId,
-                                PayType = (Domain.Enums.PayType?)orderDetail.PayType,
-                                InstallmentTerm = orderDetail.InstallmentTerm
+                                CourseId = item,
+                                UnitPrice = getPriceChildCourse.Price,
+                                ParentOrderDetail = newParentOrderDetail.Id
                             };
-                            await _unitOfWork.OrderDetailRepository.AddAsync(newOrderDetail);
-                            await _unitOfWork.SaveChangeAsync();
-                        }
-                        else
-                        {
-                            //update OrderDetail
-                            getOrderDetail.ChildrenProfileId = orderDetail.ChildrenProfildId;
-                            getOrderDetail.UnitPrice = getPrice.Price;
-                            getOrderDetail.TotalPrice = getPrice.Price;
-                            getOrderDetail.PayType = (Domain.Enums.PayType?)orderDetail.PayType;
-                            getOrderDetail.InstallmentTerm = orderDetail.InstallmentTerm;
-                            _unitOfWork.OrderDetailRepository.Update(getOrderDetail);
-                            await _unitOfWork.SaveChangeAsync();
+                            totalPriceChildCourse += getPriceChildCourse.Price;
+                            await _unitOfWork.OrderDetailRepository.AddAsync(newChildOrderDetail);
                         }
 
-                        //Update TotalAmount bên Order
-                        var updateTotalOrder = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderDetail.OrderId).Sum(x => x.TotalPrice);
-                        var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderDetail.OrderId);
-                        if (getOrderById == null) throw new Exception("Đã xảy ra lỗi không thế thanh toán đơn hàng.");
-                        getOrderById.TotalAmount = (double)updateTotalOrder;
-                        _unitOfWork.OrderRepository.Update(getOrderById);
+                        newParentOrderDetail.TotalPrice = totalPriceChildCourse;                        
                         await _unitOfWork.SaveChangeAsync();
-
                     }
-                    scope.Complete();
-                }
-                catch (Exception ex)
+                    else
+                    {
+                        double totalPriceChildCourse = 0;
+                        getOrderDetail.ChildrenProfileId = orderDetail.ChildrenProfildId;
+                        getOrderDetail.UnitPrice = getPrice.Price;                       
+                        getOrderDetail.PayType = (Domain.Enums.PayType?)orderDetail.PayType;
+                        getOrderDetail.InstallmentTerm = orderDetail.InstallmentTerm;
+
+                        foreach (var item in orderDetail.ListChildCourseId)
+                        {
+                            var getPriceChildCourse = await _unitOfWork.CourseRepository.GetByIdAsync(item);
+                            OrderDetail newChildOrderDetail = new()
+                            {
+                                Id = Guid.NewGuid(),
+                                ChildrenProfileId = orderDetail.ChildrenProfildId,
+                                CourseId = item,
+                                UnitPrice = getPriceChildCourse.Price,
+                                ParentOrderDetail = getOrderDetail.Id
+                            };
+
+                            totalPriceChildCourse += getPriceChildCourse.Price;
+                            await _unitOfWork.OrderDetailRepository.AddAsync(newChildOrderDetail);                            
+                        }
+                        getOrderDetail.TotalPrice = totalPriceChildCourse;
+                        _unitOfWork.OrderDetailRepository.Update(getOrderDetail);
+                        await _unitOfWork.SaveChangeAsync();
+                    }
+
+                }*/
+
+                //nếu orderDetaiId đó đã tồn tại
+                if (getOrderDetail.ChildrenProfileId is not null)
                 {
-                    // Nếu có lỗi, transaction scope sẽ tự động rollback
-                    Console.WriteLine("Transaction scope rolled back. Error: " + ex.Message);
-                    throw new Exception(ex.Message);
+                    OrderDetail newOrderDetail = new()
+                    {
+                        Id = Guid.NewGuid(),
+                        OrderId = orderDetail.OrderId,
+                        CourseId = orderDetail.CourseId,
+                        UnitPrice = getPrice.Price,
+                        TotalPrice = getPrice.Price,
+                        ChildrenProfileId = orderDetail.ChildrenProfildId,
+                        PayType = (Domain.Enums.PayType?)orderDetail.PayType,
+                        InstallmentTerm = orderDetail.InstallmentTerm
+                    };
+                    await _unitOfWork.OrderDetailRepository.AddAsync(newOrderDetail);
+                    await _unitOfWork.SaveChangeAsync();
                 }
+                else
+                {
+                    //update OrderDetail
+                    getOrderDetail.ChildrenProfileId = orderDetail.ChildrenProfildId;
+                    getOrderDetail.UnitPrice = getPrice.Price;
+                    getOrderDetail.TotalPrice = getPrice.Price;
+                    getOrderDetail.PayType = (Domain.Enums.PayType?)orderDetail.PayType;
+                    getOrderDetail.InstallmentTerm = orderDetail.InstallmentTerm;
+                    _unitOfWork.OrderDetailRepository.Update(getOrderDetail);
+
+                    await _unitOfWork.SaveChangeAsync();
+                }
+
+                //Update TotalAmount bên Order
+                var updateTotalOrder = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderDetail.OrderId).Sum(x => x.TotalPrice);
+                var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderDetail.OrderId);
+                if (getOrderById == null) throw new Exception("Đã xảy ra lỗi không thế thanh toán đơn hàng.");
+                getOrderById.TotalAmount = (double)updateTotalOrder;
+                _unitOfWork.OrderRepository.Update(getOrderById);
+                await _unitOfWork.SaveChangeAsync();
+
             }
             return true;
         }

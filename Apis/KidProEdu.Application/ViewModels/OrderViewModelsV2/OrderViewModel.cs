@@ -11,8 +11,7 @@ namespace KidProEdu.Application.ViewModels.OrderViewModelsV2
     {
         public Guid Id { get; set; }
         public string? OrderNumber { get; set; }
-        public Guid UserId { get; set; } // id parent
-        public string FullName { get; set; } //fullname parent
+        public Guid UserId { get; set; }
         public DateTime OrderDate { get; set; }
         public double TotalAmount { get; set; }
         public string PaymentStatus { get; set; }

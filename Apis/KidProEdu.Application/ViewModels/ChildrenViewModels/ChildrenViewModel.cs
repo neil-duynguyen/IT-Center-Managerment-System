@@ -15,18 +15,11 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
         public string? Avatar { get; set; }
         public string? SpecialSkill { get; set; }
         public IList<ClassViewModelInChildren> Classes { get; set; }
-        public IList<CourseViewModelInChildren> Courses { get; set; }
     }
 
     public class ClassViewModelInChildren
     {
         public Guid? ClassId { get; set; }
         public string ClassCode { get; set; }
-    }
-
-    public class CourseViewModelInChildren
-    {
-        public Guid? CourseId { get; set; }
-        public string CourseCode { get; set; }
     }
 }

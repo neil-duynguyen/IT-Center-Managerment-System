@@ -14,8 +14,9 @@ namespace KidProEdu.Application.Interfaces
         Task<List<ChildrenViewModel>> GetChildrensByStaffId();
         Task<bool> CreateChildren(CreateChildrenViewModel createChildrenViewModel);
         Task<bool> UpdateChildren(UpdateChildrenViewModel updateChildrenViewModel);
+        Task<Location> GetChildrenById(Guid childrenId);
         Task<bool> DeleteChildren(Guid childrenId);
-        Task<ChildrenViewModel> GetChildrenById(Guid childrenId);
+        Task<ChildrenViewModel> GetListClassByChildrenId(Guid childrenId);
         Task<List<ChildrenViewModel>> GetChildrenByParentId(Guid Id);
     }
 }
