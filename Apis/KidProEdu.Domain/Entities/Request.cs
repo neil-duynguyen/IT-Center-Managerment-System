@@ -11,7 +11,6 @@ namespace KidProEdu.Domain.Entities
     public class Request : BaseEntity
     {
         public string? RequestDescription { get; set; }
-        public StatusOfRequest? Status { get; set; }
         public string? RequestType { get; set; }
         public DateTime? LeaveDate { get; set; }
         public string? EquimentType { get; set; }

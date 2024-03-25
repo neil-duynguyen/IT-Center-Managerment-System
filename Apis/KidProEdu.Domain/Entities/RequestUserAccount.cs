@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KidProEdu.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace KidProEdu.Domain.Entities
         public Guid RecieverId { get; set; }
         [ForeignKey("Request")]     
         public Guid RequestId { get; set; }
+        public StatusOfRequest? Status { get; set; }
         public virtual UserAccount UserAccount { get; set; }
         public virtual Request Request { get; set; }
     }

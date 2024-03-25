@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KidProEdu.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace KidProEdu.Application.ViewModels.RequestUserAccountViewModels
     {
         public Guid[] RecieverIds { get; set; }
         public Guid RequestId { get; set; }
+        public StatusOfRequest Status {  get; set; }
     }
 }

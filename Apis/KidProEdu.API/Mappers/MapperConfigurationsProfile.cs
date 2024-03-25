@@ -110,7 +110,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateQuestionViewModel, Question>().ReverseMap();
             CreateMap<UpdateQuestionViewModel, Question>().ReverseMap();
 
-            CreateMap<RequestViewModel, Request>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null));
+            CreateMap<RequestViewModel, Request>().ReverseMap();
             //CreateMap<CreateRequestViewModel, Request>().ReverseMap();
             CreateMap<UpdateRequestViewModel, Request>().ReverseMap();
 
@@ -143,8 +143,9 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<AdviseRequestViewModel, AdviseRequest>().ReverseMap()
                 .ForMember(des => des.StatusAdviseRequest, src => src.MapFrom(x => x.StatusAdviseRequest != null ? (string)x.StatusAdviseRequest.ToString() : (string?)null))
-                .ForMember(x => x.Location, src => src.MapFrom(x => x.Location.Name))
-                .ForMember(x => x.Slot, src => src.MapFrom(x => x.Slot.Name));
+                //.ForMember(x => x.Location, src => src.MapFrom(x => x.Location.Name))
+                //.ForMember(x => x.Slot, src => src.MapFrom(x => x.Slot.Name))
+                ;
             CreateMap<CreateAdviseRequestViewModel, AdviseRequest>().ReverseMap();
             CreateMap<UpdateAdviseRequestViewModel, AdviseRequest>().ReverseMap();
 
