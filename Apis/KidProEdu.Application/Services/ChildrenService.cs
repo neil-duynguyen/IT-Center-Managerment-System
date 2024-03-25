@@ -75,13 +75,17 @@ namespace KidProEdu.Application.Services
             throw new NotImplementedException();
         }
 
+        public Task<Location> GetChildrenById(Guid childrenId)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<List<ChildrenViewModel>> GetChildrensByStaffId()
         {
             var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.CreatedBy == _claimsService.GetCurrentUserId).ToList();
             return _mapper.Map<List<ChildrenViewModel>>(getChildrens);
         }
 
-        public async Task<ChildrenViewModel> GetChildrenById(Guid childrenId)
+        public async Task<ChildrenViewModel> GetListClassByChildrenId(Guid childrenId)
         {
             var result = await _unitOfWork.ChildrenRepository.GetByIdAsync(childrenId);
 
@@ -94,11 +98,6 @@ namespace KidProEdu.Application.Services
                 listClass.Add(new ClassViewModelInChildren() { ClassId = enrollment.Class.Id, ClassCode = enrollment.Class.ClassCode });
                 mapper.Classes = listClass;
             }
-
-            /*foreach (var item in collection)
-            {
-
-            }*/
 
             return mapper;
 
