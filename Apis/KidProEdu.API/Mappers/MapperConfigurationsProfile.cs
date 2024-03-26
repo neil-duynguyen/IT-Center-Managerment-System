@@ -33,6 +33,7 @@ using KidProEdu.Application.ViewModels.ScheduleViewModels;
 using KidProEdu.Application.ViewModels.SkillCertificateViewModels;
 using KidProEdu.Application.ViewModels.SkillViewModels;
 using KidProEdu.Application.ViewModels.TagViewModels;
+using KidProEdu.Application.ViewModels.TransactionViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
 
@@ -205,6 +206,9 @@ namespace KidProEdu.API.Mappers
             CreateMap<Feedback, FeedBackViewModel>().ReverseMap();
             CreateMap<CreateFeedBackViewModel, Feedback>().ReverseMap();
             CreateMap<UpdateFeedBackViewModel, Feedback>().ReverseMap();
+
+            CreateMap<TransactionViewModel, Transaction>().ReverseMap()
+                                                .ForMember(des => des.StatusTransaction, src => src.MapFrom(x => x.StatusTransaction != null ? (string)x.StatusTransaction.ToString() : (string?)null));
 
         }
     }

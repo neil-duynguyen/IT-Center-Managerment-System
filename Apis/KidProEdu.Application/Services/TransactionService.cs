@@ -26,9 +26,9 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public async Task GetAllTransaction()
+        public async Task<List<TransactionViewModel>> GetAllTransaction()
         {
-            var listTransaction = await _unitOfWork.TransactionRepository.GetAllAsync();
+            var listTransaction = _unitOfWork.TransactionRepository.GetAllAsync().Result.Where(x => x.OrderDetail is not null);
 
             var getCurrentUserId = _unitOfWork.UserRepository.GetByIdAsync(_claimsService.GetCurrentUserId).Result.Role.Name;
 
@@ -41,10 +41,21 @@ namespace KidProEdu.Application.Services
 
             if (getCurrentUserId.Equals("Staff"))
             {
-                transaction = listTransaction.Where(x => x.).ToList();
+                transaction = listTransaction.Where(x => x.OrderDetail.Order.CreatedBy == _claimsService.GetCurrentUserId && x.ParentsTransaction is null).ToList();
             }
 
-            return _mapper.Map<List<UserViewModel>>(users);
+            if (getCurrentUserId.Equals("Parent"))
+            {
+                transaction = listTransaction.Where(x => x.OrderDetail.Order.UserId == _claimsService.GetCurrentUserId && x.ParentsTransaction is null).ToList();
+            }
+
+            return _mapper.Map<List<TransactionViewModel>>(transaction);
+        }
+
+        public async Task<List<TransactionViewModel>> GetTransactionDetailByTransactionId(Guid id)
+        {
+            var listTransaction = _unitOfWork.TransactionRepository.GetAllAsync().Result.Where(x => x.ParentsTransaction == id);
+            return _mapper.Map<List<TransactionViewModel>>(listTransaction);
         }
     }
 }
