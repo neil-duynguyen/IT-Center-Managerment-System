@@ -17,7 +17,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpPost]
-        /*[Authorize(Roles = ("Staff"))]*/
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> CreateChildren(CreateChildrenViewModel createChildrenViewModel) 
         {
             try
@@ -34,7 +34,7 @@ namespace KidProEdu.API.Controllers
 
 
         [HttpPut]
-        /*[Authorize(Roles = ("Staff"))]*/
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> UpdateChildren(UpdateChildrenViewModel updateChildrenViewModel)
         {
             try

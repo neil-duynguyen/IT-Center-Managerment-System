@@ -88,6 +88,7 @@ namespace KidProEdu.Application.Services
             var mapper = _mapper.Map<ChildrenViewModel>(result);
 
             List<ClassViewModelInChildren> listClass = new List<ClassViewModelInChildren>();
+            List<CourseViewModelInChildren> listCourse = new List<CourseViewModelInChildren>();
 
             foreach (var enrollment in result.Enrollments)
             {
@@ -95,10 +96,11 @@ namespace KidProEdu.Application.Services
                 mapper.Classes = listClass;
             }
 
-            /*foreach (var item in collection)
+            foreach (var course in result.Enrollments)
             {
-
-            }*/
+                listCourse.Add(new CourseViewModelInChildren() { CourseId = course.Class.Course.Id, CourseCode = course.Class.Course.CourseCode });
+                mapper.Courses = listCourse;
+            }
 
             return mapper;
 

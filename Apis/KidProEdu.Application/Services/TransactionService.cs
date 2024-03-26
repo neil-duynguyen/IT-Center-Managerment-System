@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.ViewModels.TransactionViewModels;
+using KidProEdu.Application.ViewModels.UserViewModels;
+using KidProEdu.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +26,25 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        /*public async Task<> GetAllTransaction()
-        { 
-            
-        }*/
+        public async Task GetAllTransaction()
+        {
+            var listTransaction = await _unitOfWork.TransactionRepository.GetAllAsync();
+
+            var getCurrentUserId = _unitOfWork.UserRepository.GetByIdAsync(_claimsService.GetCurrentUserId).Result.Role.Name;
+
+            List<Transaction> transaction = new List<Transaction>();
+
+            if (getCurrentUserId.Equals("Admin") || getCurrentUserId.Equals("Manager"))
+            {
+                transaction = listTransaction.Where(x => x.ParentsTransaction is null).ToList();
+            }
+
+            if (getCurrentUserId.Equals("Staff"))
+            {
+                transaction = listTransaction.Where(x => x.).ToList();
+            }
+
+            return _mapper.Map<List<UserViewModel>>(users);
+        }
     }
 }

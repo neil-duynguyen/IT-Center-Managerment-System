@@ -153,7 +153,6 @@ namespace KidProEdu.Application.Services
             var result = new BaseResult();
             try
             {
-
                 //var resultData = new PaymentReturnDtos();
                 var isValidSignature = response.IsValidSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
 
