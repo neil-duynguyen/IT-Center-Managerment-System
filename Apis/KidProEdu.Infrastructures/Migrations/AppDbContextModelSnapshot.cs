@@ -1541,7 +1541,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("LessionId")
+                    b.Property<Guid?>("LessionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Level")
@@ -2879,9 +2879,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.HasOne("KidProEdu.Domain.Entities.Lesson", "Lesson")
                         .WithMany("Questions")
-                        .HasForeignKey("LessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LessionId");
 
                     b.Navigation("Lesson");
                 });

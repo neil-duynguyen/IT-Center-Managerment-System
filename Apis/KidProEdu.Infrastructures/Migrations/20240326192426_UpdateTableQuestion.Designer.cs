@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240326101130_UpdateTableOrder")]
-    partial class UpdateTableOrder
+    [Migration("20240326192426_UpdateTableQuestion")]
+    partial class UpdateTableQuestion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1544,7 +1544,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("LessionId")
+                    b.Property<Guid?>("LessionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Level")
@@ -2882,9 +2882,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.HasOne("KidProEdu.Domain.Entities.Lesson", "Lesson")
                         .WithMany("Questions")
-                        .HasForeignKey("LessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LessionId");
 
                     b.Navigation("Lesson");
                 });
