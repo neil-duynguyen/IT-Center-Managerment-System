@@ -100,51 +100,53 @@ namespace KidProEdu.Application.Services
 
             if (getOrderById is not null)
             {
-                CreatePayment createPayment = new CreatePayment();
-                createPayment.PaymentDate = DateTime.Now;
-                createPayment.ExpireDate = DateTime.Now.AddMinutes(1);
-                createPayment.PaymentContent = "Thanh toán đơn hàng.";
-                createPayment.RequiredAmount = totalPrice;
-
-                switch (createPayment.PaymentDestinationId)
+                if (getOrderById.PaymentStatus != StatusPayment.Paid)
                 {
-                    /*case "VNPAY":
-                        var vnpayPayRequest = new VnpayPayRequest(vnpayConfig.Version,
-                            vnpayConfig.TmnCode, DateTime.Now, currentUserService.IpAddress ?? string.Empty, request.RequiredAmount ?? 0, request.PaymentCurrency ?? string.Empty,
-                            "other", request.PaymentContent ?? string.Empty, vnpayConfig.ReturnUrl, outputIdParam!.Value?.ToString() ?? string.Empty);
-                        paymentUrl = vnpayPayRequest.GetLink(vnpayConfig.PaymentUrl, vnpayConfig.HashSecret);
-                        break;*/
-                    case "MOMO":
-                        var momoOneTimePayRequest = new MomoOneTimePaymentRequest(
-                            _configuration["Momo:PartnerCode"],
-                            Guid.NewGuid().ToString(),
-                            (long)createPayment.RequiredAmount,
-                            getOrderById.Id.ToString(),
-                            createPayment.PaymentContent ?? string.Empty,
-                            _configuration["Momo:ReturnUrl"],
-                            _configuration["Momo:IpnUrl"],
-                            "captureWallet",
-                            string.Empty);
-                        momoOneTimePayRequest.MakeSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
-                        (bool createMomoLinkResult, string? createMessage) = momoOneTimePayRequest.GetLink(_configuration["Momo:PaymentUrl"]);
-                        if (createMomoLinkResult)
-                        {
-                            paymentUrl = createMessage;
-                        }
-                        else
-                        {
-                            throw new Exception("Tạo thông tin thanh toán thất bại.");
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                    CreatePayment createPayment = new CreatePayment();
+                    createPayment.PaymentDate = DateTime.Now;
+                    createPayment.ExpireDate = DateTime.Now.AddMinutes(1);
+                    createPayment.PaymentContent = "Thanh toán đơn hàng.";
+                    createPayment.RequiredAmount = totalPrice;
 
-                return paymentUrl;
+                    switch (createPayment.PaymentDestinationId)
+                    {
+                        /*case "VNPAY":
+                            var vnpayPayRequest = new VnpayPayRequest(vnpayConfig.Version,
+                                vnpayConfig.TmnCode, DateTime.Now, currentUserService.IpAddress ?? string.Empty, request.RequiredAmount ?? 0, request.PaymentCurrency ?? string.Empty,
+                                "other", request.PaymentContent ?? string.Empty, vnpayConfig.ReturnUrl, outputIdParam!.Value?.ToString() ?? string.Empty);
+                            paymentUrl = vnpayPayRequest.GetLink(vnpayConfig.PaymentUrl, vnpayConfig.HashSecret);
+                            break;*/
+                        case "MOMO":
+                            var momoOneTimePayRequest = new MomoOneTimePaymentRequest(
+                                _configuration["Momo:PartnerCode"],
+                                Guid.NewGuid().ToString(),
+                                (long)createPayment.RequiredAmount,
+                                getOrderById.Id.ToString(),
+                                createPayment.PaymentContent ?? string.Empty,
+                                _configuration["Momo:ReturnUrl"],
+                                _configuration["Momo:IpnUrl"],
+                                "captureWallet",
+                                string.Empty);
+                            momoOneTimePayRequest.MakeSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
+                            (bool createMomoLinkResult, string? createMessage) = momoOneTimePayRequest.GetLink(_configuration["Momo:PaymentUrl"]);
+                            if (createMomoLinkResult)
+                            {
+                                paymentUrl = createMessage;
+                            }
+                            else
+                            {
+                                throw new Exception("Tạo thông tin thanh toán thất bại.");
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                    return paymentUrl;
+                }
+                throw new Exception("Đơn hàng đã được thanh toán.");
             }
             throw new Exception("Không tìm thấy đơn hàng.");
-
-
         }
 
         public async Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response)
