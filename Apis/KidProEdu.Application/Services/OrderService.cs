@@ -80,8 +80,6 @@ namespace KidProEdu.Application.Services
             decimal totalPrice = 0;
             var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
-            //var totalAmountInstallment = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm > 0).Sum(x => Math.Ceiling((decimal)(x.TotalPrice / x.InstallmentTerm)));
-
             var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
             foreach (var item in getOrderDetail)
             {
@@ -93,10 +91,6 @@ namespace KidProEdu.Application.Services
                     totalPrice += (decimal)item.TotalPrice;
                 }
             }
-            //tính số tiền trả góp hàng tháng của đơn hàng đó
-
-            //tính số tiền đơn hàng không trả góp
-            //var totalAmount = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm == 0).Sum(x => x.TotalPrice);
 
             if (getOrderById is not null)
             {
@@ -163,7 +157,6 @@ namespace KidProEdu.Application.Services
 
                     if (response.resultCode == 0)
                     {
-
                         var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(Guid.Parse(response.orderId));
                         getOrder.PaymentStatus = Domain.Enums.StatusPayment.Paid;
                         _unitOfWork.OrderRepository.Update(getOrder);
@@ -183,7 +176,7 @@ namespace KidProEdu.Application.Services
                         {
                             result = new BaseResult()
                             {
-                                Message = "Tạo thông tin giao dịch thất bại.",
+                                Message = "Tạo giao dịch thất bại.",
                                 RedirectUrl = returnUrl
                             };
                         }
@@ -191,6 +184,11 @@ namespace KidProEdu.Application.Services
                     }
                     else
                     {
+                        var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(Guid.Parse(response.orderId));
+                        getOrder.PaymentStatus = Domain.Enums.StatusPayment.Cancel;
+                        _unitOfWork.OrderRepository.Update(getOrder);
+                        await _unitOfWork.SaveChangeAsync();
+
                         result = new BaseResult()
                         {
                             Message = "Thanh toán không thành công",
