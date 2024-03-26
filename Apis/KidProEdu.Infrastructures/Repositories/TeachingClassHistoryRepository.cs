@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,22 @@ namespace KidProEdu.Infrastructures.Repositories
         {
             var teachingHistorys = await _dbContext.TeachingClassHistory.Where(x => x.UserAccountId == id
             && x.IsDeleted == false && x.TeachingStatus.Equals(Domain.Enums.TeachingStatus.Teaching)).ToListAsync();
+
+            return teachingHistorys;
+        }
+
+        public async Task<List<TeachingClassHistory>> GetTeachingHistoryByClassId(Guid id)
+        {
+            var teachingHistorys = await _dbContext.TeachingClassHistory.Where(x => x.ClassId == id
+            && x.IsDeleted == false).ToListAsync();
+
+            return teachingHistorys;
+        }
+
+        public async Task<List<TeachingClassHistory>> GetTeachingHistoryByStatus(TeachingStatus status)
+        {
+            var teachingHistorys = await _dbContext.TeachingClassHistory.Where(x => x.TeachingStatus.Equals(status)
+            && x.IsDeleted == false).ToListAsync();
 
             return teachingHistorys;
         }

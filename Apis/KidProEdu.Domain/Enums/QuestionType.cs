@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Enums
 {
-    public enum TeachingStatus
+    public enum QuestionType
     {
-        Pending = 1,
-        Teaching = 2,
-        Leaved = 3,
-        Substitute = 4
+        Course = 1, //câu hỏi cho bài test của khóa học
+        Entry = 2 //câu hỏi cho bài test đầu vào
     }
 }

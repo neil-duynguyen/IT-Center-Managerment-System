@@ -52,10 +52,10 @@ namespace KidProEdu.Application.Services
             if (createAdviseRequestViewModel.TestDate != null && createAdviseRequestViewModel.StartTime != null)
             {
                 var adviseRequests = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result.Where(x => x.IsTested == false
-               && x.TestDate.Date.Equals(createAdviseRequestViewModel.TestDate.Value)
-               && x.StartTime.Value.Hour == createAdviseRequestViewModel.StartTime.Value.Hour
+               && x.TestDate.Date.Equals(createAdviseRequestViewModel.TestDate.Value.Date)
+               && x.SlotId == createAdviseRequestViewModel.SlotId
                && x.IsTested == false).ToList();
-                if (adviseRequests != null && adviseRequests.Count == 5)
+                if (adviseRequests != null && adviseRequests.Count >= 5)
                 {
                     throw new Exception("Lịch đánh giá cho thời gian này đã đủ số lượng");
                 }
@@ -71,7 +71,12 @@ namespace KidProEdu.Application.Services
             {
                 await SendEmailUtil.SendEmail(mapper.Email, "Xác nhận yêu cầu tư vấn",
                     "Kính gửi quý phụ huynh, \n\n" +
-                    "Yêu cầu tư vấn của bạn đã được xác nhận, nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất \n\n" +
+                    "Yêu cầu tư vấn của bạn đã được xác nhận, \n" +
+                    "Thông tin:, \n" +
+                    "         Người đăng kí: " + createAdviseRequestViewModel.FullName + "\n" +
+                    "         Email: " + createAdviseRequestViewModel.Email + "\n" +
+                    "         Sđt: " + createAdviseRequestViewModel.Phone + "\n" +
+                    "Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
                     "Trân trọng, \n" +
                     "KidPro Education!");
                 return true;
@@ -154,7 +159,8 @@ namespace KidProEdu.Application.Services
 
             if (updateAdviseRequestViewModel.TestDate != null && updateAdviseRequestViewModel.StartTime != null)
             {
-                if (updateAdviseRequestViewModel.TestDate.Value.Equals(adviseRequest.TestDate.Date) &&
+                if (updateAdviseRequestViewModel.TestDate.Value.Date.Equals(adviseRequest.TestDate.Date) &&
+                    updateAdviseRequestViewModel.SlotId.Equals(adviseRequest.SlotId) &&
                     updateAdviseRequestViewModel.StartTime.Value.Equals(adviseRequest.StartTime.Value))
                 {
 
@@ -162,10 +168,10 @@ namespace KidProEdu.Application.Services
                 else
                 {
                     var adviseRequests = _unitOfWork.AdviseRequestRepository.GetAllAsync().Result.Where(x => x.IsTested == false
-                    && x.TestDate.Date.Equals(updateAdviseRequestViewModel.TestDate.Value)
-                    && x.StartTime.Value.Hour == updateAdviseRequestViewModel.StartTime.Value.Hour
+                    && x.TestDate.Date.Equals(updateAdviseRequestViewModel.TestDate.Value.Date)
+                    && x.SlotId == updateAdviseRequestViewModel.SlotId
                     && x.IsTested == false).ToList();
-                    if (adviseRequests != null && adviseRequests.Count == 5)
+                    if (adviseRequests != null && adviseRequests.Count >= 5)
                     {
                         throw new Exception("Lịch đánh giá cho thời gian này đã đủ số lượng");
                     }

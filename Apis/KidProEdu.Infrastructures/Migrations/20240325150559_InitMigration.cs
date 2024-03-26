@@ -236,7 +236,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RequestDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: true),
                     RequestType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LeaveDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EquimentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -326,6 +325,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    SlotType = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -358,24 +358,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tag", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TestTime",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModificationBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeleteBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TestTime", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -419,6 +401,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     TestName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TestDuration = table.Column<int>(type: "int", nullable: false),
+                    TotalQuestion = table.Column<int>(type: "int", nullable: true),
                     TestType = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -626,6 +609,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Answer4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RightAnswer = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Level = table.Column<int>(type: "int", nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -655,10 +639,13 @@ namespace KidProEdu.Infrastructures.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     TestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsTested = table.Column<bool>(type: "bit", nullable: true),
                     StatusAdviseRequest = table.Column<int>(type: "int", nullable: false),
+                    SlotId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -670,6 +657,16 @@ namespace KidProEdu.Infrastructures.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AdviseRequest", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AdviseRequest_Location_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Location",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AdviseRequest_Slot_SlotId",
+                        column: x => x.SlotId,
+                        principalTable: "Slot",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AdviseRequest_UserAccount_UserId",
                         column: x => x.UserId,
@@ -714,7 +711,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ChildrenCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GenderType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BirthDay = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SpecialSkill = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -878,6 +875,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalAmount = table.Column<double>(type: "float", nullable: false),
                     PaymentStatus = table.Column<int>(type: "int", nullable: false),
@@ -943,6 +941,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RecieverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1206,7 +1205,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     ExamId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     QuestionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Answer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ChildrenScore = table.Column<double>(type: "float", nullable: false),
+                    ScorePerQuestion = table.Column<double>(type: "float", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1316,7 +1315,8 @@ namespace KidProEdu.Infrastructures.Migrations
                         name: "FK_OrderDetail_Order_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Order",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1378,14 +1378,24 @@ namespace KidProEdu.Infrastructures.Migrations
 
             migrationBuilder.InsertData(
                 table: "Slot",
-                columns: new[] { "Id", "CreatedBy", "CreationDate", "DeleteBy", "DeletionDate", "EndTime", "IsDeleted", "ModificationBy", "ModificationDate", "Name", "StartTime" },
+                columns: new[] { "Id", "CreatedBy", "CreationDate", "DeleteBy", "DeletionDate", "EndTime", "IsDeleted", "ModificationBy", "ModificationDate", "Name", "SlotType", "StartTime" },
                 values: new object[,]
                 {
-                    { new Guid("2758033d-7eef-41d6-a6ca-b9586fe3749d"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 17, 15, 0, 0), false, null, null, "Slot4", new TimeSpan(0, 15, 0, 0, 0) },
-                    { new Guid("2c22f784-57ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 21, 15, 0, 0), false, null, null, "Slot5", new TimeSpan(0, 19, 0, 0, 0) },
-                    { new Guid("85dd1d22-518b-4949-bf99-46d173caf3fe"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 9, 15, 0, 0), false, null, null, "Slot1", new TimeSpan(0, 7, 0, 0, 0) },
-                    { new Guid("d42e7c30-ffd4-4a09-ac73-1d175f89a200"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 14, 45, 0, 0), false, null, null, "Slot3", new TimeSpan(0, 12, 30, 0, 0) },
-                    { new Guid("dd5e5665-6522-4625-8d87-a807d856a318"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 11, 45, 0, 0), false, null, null, "Slot2", new TimeSpan(0, 9, 30, 0, 0) }
+                    { new Guid("2758033d-7eef-41d6-a6ca-b9586fe3749d"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 17, 15, 0, 0), false, null, null, "Slot4", 1, new TimeSpan(0, 15, 0, 0, 0) },
+                    { new Guid("2c22f722-57ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 14, 0, 0, 0), false, null, null, "Slot5E", 2, new TimeSpan(0, 13, 0, 0, 0) },
+                    { new Guid("2c22f733-57ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 15, 0, 0, 0), false, null, null, "Slot6E", 2, new TimeSpan(0, 14, 0, 0, 0) },
+                    { new Guid("2c22f744-57ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 16, 0, 0, 0), false, null, null, "Slot7E", 2, new TimeSpan(0, 15, 0, 0, 0) },
+                    { new Guid("2c22f755-57ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 17, 0, 0, 0), false, null, null, "Slot8E", 2, new TimeSpan(0, 16, 0, 0, 0) },
+                    { new Guid("2c22f784-23ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 20, 0, 0, 0), false, null, null, "Slot10E", 2, new TimeSpan(0, 19, 0, 0, 0) },
+                    { new Guid("2c22f784-57ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 21, 15, 0, 0), false, null, null, "Slot5", 1, new TimeSpan(0, 19, 0, 0, 0) },
+                    { new Guid("2c22f784-66ee-336c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 19, 0, 0, 0), false, null, null, "Slot9E", 2, new TimeSpan(0, 18, 0, 0, 0) },
+                    { new Guid("2c33f784-57ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 8, 0, 0, 0), false, null, null, "Slot1E", 2, new TimeSpan(0, 7, 0, 0, 0) },
+                    { new Guid("2c44f784-57ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 9, 0, 0, 0), false, null, null, "Slot2E", 2, new TimeSpan(0, 8, 0, 0, 0) },
+                    { new Guid("2c55f784-57ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 10, 0, 0, 0), false, null, null, "Slot3E", 2, new TimeSpan(0, 9, 0, 0, 0) },
+                    { new Guid("2c66f784-57ee-476c-a630-7c080b721db5"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 11, 0, 0, 0), false, null, null, "Slot4E", 2, new TimeSpan(0, 10, 0, 0, 0) },
+                    { new Guid("85dd1d22-518b-4949-bf99-46d173caf3fe"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 9, 15, 0, 0), false, null, null, "Slot1", 1, new TimeSpan(0, 7, 0, 0, 0) },
+                    { new Guid("d42e7c30-ffd4-4a09-ac73-1d175f89a200"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 14, 45, 0, 0), false, null, null, "Slot3", 1, new TimeSpan(0, 12, 30, 0, 0) },
+                    { new Guid("dd5e5665-6522-4625-8d87-a807d856a318"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, new TimeSpan(0, 11, 45, 0, 0), false, null, null, "Slot2", 1, new TimeSpan(0, 9, 30, 0, 0) }
                 });
 
             migrationBuilder.InsertData(
@@ -1397,6 +1407,16 @@ namespace KidProEdu.Infrastructures.Migrations
                     { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca83"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1985), null, null, "dunghoang@gmail.com", "HoangQuocDung", null, false, null, null, null, null, "e8392925a98c9c22795d1fc5d0dfee5b9a6943f6b768ec5a2a0c077e5ed119cf", "0975844796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a51"), 1, "Manager" },
                     { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca84"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979), null, null, "linhchi@gmail.com", "LinhChi", null, false, null, null, null, null, "dfd48f36338aa36228ebb9e204bba6b4e18db0b623e25c458901edc831fb18e9", "0356724796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"), 1, "Staff" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AdviseRequest_LocationId",
+                table: "AdviseRequest",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AdviseRequest_SlotId",
+                table: "AdviseRequest",
+                column: "SlotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AdviseRequest_UserId",
@@ -1714,9 +1734,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
             migrationBuilder.DropTable(
                 name: "TeachingClassHistory");
-
-            migrationBuilder.DropTable(
-                name: "TestTime");
 
             migrationBuilder.DropTable(
                 name: "Transaction");

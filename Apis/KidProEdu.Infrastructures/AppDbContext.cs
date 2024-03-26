@@ -130,35 +130,121 @@ namespace KidProEdu.Infrastructures
                     Id = new Guid("85dd1d22-518b-4949-bf99-46d173caf3fe"),
                     Name = "Slot1",
                     StartTime = new TimeSpan(7, 0, 0),
-                    EndTime = new TimeSpan(9, 15, 0)
+                    EndTime = new TimeSpan(9, 15, 0),
+                    SlotType = Domain.Enums.SlotType.Course
                 },
                 new Slot
                 {
                     Id = new Guid("dd5e5665-6522-4625-8d87-a807d856a318"),
                     Name = "Slot2",
                     StartTime = new TimeSpan(9, 30, 0),
-                    EndTime = new TimeSpan(11, 45, 0)
+                    EndTime = new TimeSpan(11, 45, 0),
+                    SlotType = Domain.Enums.SlotType.Course
                 },
                 new Slot
                 {
                     Id = new Guid("d42e7c30-ffd4-4a09-ac73-1d175f89a200"),
                     Name = "Slot3",
                     StartTime = new TimeSpan(12, 30, 0),
-                    EndTime = new TimeSpan(14, 45, 0)
+                    EndTime = new TimeSpan(14, 45, 0),
+                    SlotType = Domain.Enums.SlotType.Course
                 },
                 new Slot
                 {
                     Id = new Guid("2758033d-7eef-41d6-a6ca-b9586fe3749d"),
                     Name = "Slot4",
                     StartTime = new TimeSpan(15, 0, 0),
-                    EndTime = new TimeSpan(17, 15, 0)
+                    EndTime = new TimeSpan(17, 15, 0),
+                    SlotType = Domain.Enums.SlotType.Course
                 },
                 new Slot
                 {
                     Id = new Guid("2c22f784-57ee-476c-a630-7c080b721db5"),
                     Name = "Slot5",
                     StartTime = new TimeSpan(19, 00, 0),
-                    EndTime = new TimeSpan(21, 15, 0)
+                    EndTime = new TimeSpan(21, 15, 0),
+                    SlotType = Domain.Enums.SlotType.Course
+                },
+                //slot type entry
+                new Slot
+                {
+                    Id = new Guid("2c33f784-57ee-476c-a630-7c080b721db5"),
+                    Name = "Slot1E",
+                    StartTime = new TimeSpan(7, 00, 0),
+                    EndTime = new TimeSpan(8, 00, 0),
+                    SlotType = Domain.Enums.SlotType.Entry
+                },
+                new Slot
+                {
+                    Id = new Guid("2c44f784-57ee-476c-a630-7c080b721db5"),
+                    Name = "Slot2E",
+                    StartTime = new TimeSpan(8, 00, 0),
+                    EndTime = new TimeSpan(9, 0, 0),
+                    SlotType = Domain.Enums.SlotType.Entry
+                },
+                new Slot
+                {
+                    Id = new Guid("2c55f784-57ee-476c-a630-7c080b721db5"),
+                    Name = "Slot3E",
+                    StartTime = new TimeSpan(9, 00, 0),
+                    EndTime = new TimeSpan(10, 0, 0),
+                    SlotType = Domain.Enums.SlotType.Entry
+                },
+                new Slot
+                {
+                    Id = new Guid("2c66f784-57ee-476c-a630-7c080b721db5"),
+                    Name = "Slot4E",
+                    StartTime = new TimeSpan(10, 00, 0),
+                    EndTime = new TimeSpan(11, 0, 0),
+                    SlotType = Domain.Enums.SlotType.Entry
+                },
+                new Slot
+                {
+                    Id = new Guid("2c22f722-57ee-476c-a630-7c080b721db5"),
+                    Name = "Slot5E",
+                    StartTime = new TimeSpan(13, 00, 0),
+                    EndTime = new TimeSpan(14, 0, 0),
+                    SlotType = Domain.Enums.SlotType.Entry
+                },
+                new Slot
+                {
+                    Id = new Guid("2c22f733-57ee-476c-a630-7c080b721db5"),
+                    Name = "Slot6E",
+                    StartTime = new TimeSpan(14, 00, 0),
+                    EndTime = new TimeSpan(15, 0, 0),
+                    SlotType = Domain.Enums.SlotType.Entry
+                },
+                new Slot
+                {
+                    Id = new Guid("2c22f744-57ee-476c-a630-7c080b721db5"),
+                    Name = "Slot7E",
+                    StartTime = new TimeSpan(15, 00, 0),
+                    EndTime = new TimeSpan(16, 0, 0),
+                    SlotType = Domain.Enums.SlotType.Entry
+                },
+                new Slot
+                {
+                    Id = new Guid("2c22f755-57ee-476c-a630-7c080b721db5"),
+                    Name = "Slot8E",
+                    StartTime = new TimeSpan(16, 00, 0),
+                    EndTime = new TimeSpan(17, 0, 0),
+                    SlotType = Domain.Enums.SlotType.Entry
+                },
+                new Slot
+                {
+                    Id = new Guid("2c22f784-66ee-336c-a630-7c080b721db5"),
+                    Name = "Slot9E",
+                    StartTime = new TimeSpan(18, 00, 0),
+                    EndTime = new TimeSpan(19, 0, 0),
+                    SlotType = Domain.Enums.SlotType.Entry
+                },
+                new Slot
+                {
+                    Id = new Guid("2c22f784-23ee-476c-a630-7c080b721db5"),
+                    Name = "Slot10E",
+                    StartTime = new TimeSpan(19, 00, 0),
+                    EndTime = new TimeSpan(20, 0, 0),
+                    SlotType = Domain.Enums.SlotType.Entry
                 }
                 );
 

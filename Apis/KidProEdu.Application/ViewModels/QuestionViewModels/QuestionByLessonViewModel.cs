@@ -9,7 +9,8 @@ namespace KidProEdu.Application.ViewModels.QuestionViewModels
 {
     public class QuestionByLessonViewModel
     {
-        public Guid LessonId { get; set; }
+        public Guid? LessonId { get; set; }
         public List<Question> Questions { get; set; }   
+        public string? Type { get; set; }
     }
 }

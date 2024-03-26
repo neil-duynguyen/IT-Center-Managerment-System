@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Domain.Enums
 {
-    public enum TeachingStatus
+    public enum SlotType
     {
-        Pending = 1,
-        Teaching = 2,
-        Leaved = 3,
-        Substitute = 4
+        Course = 1, //slot thời gian dành cho kiểm tra đầu vào
+        Entry = 2 // slot thời gian dành cho 1 buổi học
     }
 }

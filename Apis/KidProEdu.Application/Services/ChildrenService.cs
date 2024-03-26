@@ -75,23 +75,20 @@ namespace KidProEdu.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<Location> GetChildrenById(Guid childrenId)
-        {
-            throw new NotImplementedException();
-        }
         public async Task<List<ChildrenViewModel>> GetChildrensByStaffId()
         {
             var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.CreatedBy == _claimsService.GetCurrentUserId).ToList();
             return _mapper.Map<List<ChildrenViewModel>>(getChildrens);
         }
 
-        public async Task<ChildrenViewModel> GetListClassByChildrenId(Guid childrenId)
+        public async Task<ChildrenViewModel> GetChildrenById(Guid childrenId)
         {
             var result = await _unitOfWork.ChildrenRepository.GetByIdAsync(childrenId);
 
             var mapper = _mapper.Map<ChildrenViewModel>(result);
 
             List<ClassViewModelInChildren> listClass = new List<ClassViewModelInChildren>();
+            List<CourseViewModelInChildren> listCourse = new List<CourseViewModelInChildren>();
 
             foreach (var enrollment in result.Enrollments)
             {
@@ -99,13 +96,19 @@ namespace KidProEdu.Application.Services
                 mapper.Classes = listClass;
             }
 
+            foreach (var course in result.Enrollments)
+            {
+                listCourse.Add(new CourseViewModelInChildren() { CourseId = course.Class.Course.Id, CourseCode = course.Class.Course.CourseCode });
+                mapper.Courses = listCourse;
+            }
+
             return mapper;
 
         }
 
-        public async Task<List<ChildrenViewModel>> GetChildrenByParentId()
+        public async Task<List<ChildrenViewModel>> GetChildrenByParentId(Guid Id)
         {
-            var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.UserId == _claimsService.GetCurrentUserId).ToList();
+            var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.UserId == Id).ToList();
             return _mapper.Map<List<ChildrenViewModel>>(getChildrens);
         }
     }

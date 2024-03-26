@@ -11,7 +11,7 @@ namespace KidProEdu.Application.Validations.AdviseRequests
             RuleFor(x => x.Phone).NotEmpty().WithMessage("Phone không thể bỏ trống");
             RuleFor(x => x.FullName).NotEmpty().WithMessage("FullName không thể bỏ trống");
             RuleFor(x => x.Address).NotEmpty().WithMessage("Address không thể bỏ trống");
-            RuleFor(x => x.Location).NotEmpty().WithMessage("Location không thể bỏ trống");
+            RuleFor(x => x.LocationId).NotEmpty().WithMessage("Location không thể bỏ trống");
         }
     }
 }

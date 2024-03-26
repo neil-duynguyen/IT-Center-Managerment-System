@@ -4,7 +4,7 @@ using KidProEdu.Application.PaymentService.Momo.Request;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
-
+using KidProEdu.Domain.Enums;
 using Microsoft.Extensions.Configuration;
 
 namespace KidProEdu.Application.Services
@@ -47,8 +47,10 @@ namespace KidProEdu.Application.Services
                 Id = Guid.NewGuid(),
                 OrderDate = _currentTime.GetCurrentTime(),
                 TotalAmount = total,
+                OrderNumber = "Order#" + (_unitOfWork.OrderRepository.GetAllAsync().Result.Count + 1),
                 PaymentStatus = Domain.Enums.StatusPayment.Unpaid,
-                UserId = _claimsService.GetCurrentUserId
+                UserId = orderDetailViewModel.ParentId,
+                CreatedBy = _claimsService.GetCurrentUserId
             };
             await _unitOfWork.OrderRepository.AddAsync(order);
 
@@ -75,18 +77,26 @@ namespace KidProEdu.Application.Services
         {
 
             string paymentUrl = string.Empty;
+            decimal totalPrice = 0;
             var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
-            var getOrderDetailId = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm > 0).ToList();
+            //var totalAmountInstallment = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm > 0).Sum(x => Math.Ceiling((decimal)(x.TotalPrice / x.InstallmentTerm)));
 
-            //tính số tiền trả góp hàng tháng của đơn hàng đó
-            decimal totalPrice = 0;
-
-            foreach (var item in getOrderDetailId)
+            var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
+            foreach (var item in getOrderDetail)
             {
-                totalPrice += Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
+                if (item.InstallmentTerm > 0)
+                {
+                    totalPrice += Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
+                }
+                if (item.InstallmentTerm == 0 && item.PayType.Value == PayType.Banking) {
+                    totalPrice += (decimal)item.TotalPrice;
+                }
             }
+            //tính số tiền trả góp hàng tháng của đơn hàng đó
 
+            //tính số tiền đơn hàng không trả góp
+            //var totalAmount = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.InstallmentTerm == 0).Sum(x => x.TotalPrice);
 
             if (getOrderById is not null)
             {
@@ -94,7 +104,7 @@ namespace KidProEdu.Application.Services
                 createPayment.PaymentDate = DateTime.Now;
                 createPayment.ExpireDate = DateTime.Now.AddMinutes(1);
                 createPayment.PaymentContent = "Thanh toán đơn hàng.";
-                createPayment.RequiredAmount = (decimal?)totalPrice;
+                createPayment.RequiredAmount = totalPrice;
 
                 switch (createPayment.PaymentDestinationId)
                 {
@@ -139,12 +149,10 @@ namespace KidProEdu.Application.Services
 
         public async Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response)
         {
-            string returnUrl = "https://kid-pro-edu-v2.netlify.app/order";
-            string resultData = string.Empty;
+            string returnUrl = _configuration["Momo:RedirectUrl"];
             var result = new BaseResult();
             try
             {
-
                 //var resultData = new PaymentReturnDtos();
                 var isValidSignature = response.IsValidSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
 

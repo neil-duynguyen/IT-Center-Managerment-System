@@ -4,6 +4,8 @@ using KidProEdu.Application.Validations.Requests;
 using KidProEdu.Application.ViewModels.RequestUserAccountViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Domain.Entities;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Diagnostics;
 
 namespace KidProEdu.Application.Services
 {
@@ -55,7 +57,6 @@ namespace KidProEdu.Application.Services
                 ToClassId = createRequestViewModel.ToClassId,
                 ScheduleId = createRequestViewModel.ScheduleId,
                 ReceiverRefundId = createRequestViewModel.ReceiverRefundId,
-                Status = Domain.Enums.StatusOfRequest.Pending
             };
 
             await _unitOfWork.RequestRepository.AddAsync(request);
@@ -64,7 +65,8 @@ namespace KidProEdu.Application.Services
             CreateRequestUserAccountViewModel model = new()
             {
                 RequestId = request.Id,
-                RecieverIds = createRequestViewModel.UserIds
+                RecieverIds = createRequestViewModel.UserIds,
+                Status = Domain.Enums.StatusOfRequest.Pending
             };
             RequestUserAccountService service = new(_unitOfWork, _currentTime, _claimsService, _mapper);
             await service.CreateRequestUserAccount(model);
@@ -112,6 +114,9 @@ namespace KidProEdu.Application.Services
 
             var request = await _unitOfWork.RequestRepository.GetByIdAsync(updateRequestViewModel.Id)
                 ?? throw new Exception("Không tìm thấy yêu cầu");
+            var requestUser = _unitOfWork.RequestUserAccountRepository.GetAllAsync().Result
+                .FirstOrDefault(x => x.RequestId == request.Id && x.IsDeleted == false
+                && x.Status != Domain.Enums.StatusOfRequest.Pending);
 
             /*var existingRequest = await _unitOfWork.RequestRepository.GetRequestByRequestType(updateRequestViewModel.RequestType);
             if (!existingRequest.IsNullOrEmpty())
@@ -122,7 +127,7 @@ namespace KidProEdu.Application.Services
                 }
             }*/
 
-            if (request.Status != Domain.Enums.StatusOfRequest.Pending)
+            if (requestUser.Status != null)
                 throw new Exception("Cập nhật yêu cầu thất bại, yêu cầu này đã được xử lý");
 
             /*Request.RequestName = updateRequestViewModel.RequestName;
@@ -147,6 +152,7 @@ namespace KidProEdu.Application.Services
                     foreach (var idRequest in changeStatusRequestViewModel.RequestIds)
                     {
                         var request = await _unitOfWork.RequestRepository.GetByIdAsync(idRequest);
+                        var requestUsers = await _unitOfWork.RequestUserAccountRepository.GetRequestUserByRequestId(idRequest);
                         switch (request.RequestType)
                         {
                             case "Location":
@@ -155,27 +161,119 @@ namespace KidProEdu.Application.Services
                                 _unitOfWork.UserRepository.Update(user);
                                 break;
                             case "Class":
-                                var currentClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)request.FromClassId);
-                                var newClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)request.ToClassId);
-                                //currentClass.UserId = newClass.UserId; //lớp cũ đổi thành gv lớp mới
-                                //newClass.UserId = request.CreatedBy; //lớp mới đổi thành gv cũ
+                                var teacher = request.CreatedBy;
+                                var currentTeaching = _unitOfWork.TeachingClassHistoryRepository
+                                    .GetTeachingHistoryByStatus(Domain.Enums.TeachingStatus.Pending).Result
+                                    .FirstOrDefault(x => x.ClassId == request.FromClassId);
+                                var newTeaching = _unitOfWork.TeachingClassHistoryRepository
+                                    .GetTeachingHistoryByStatus(Domain.Enums.TeachingStatus.Pending).Result
+                                    .FirstOrDefault(x => x.ClassId == request.ToClassId);
+                                if (currentTeaching != null && newTeaching != null)
+                                {
+                                    //đổi lớp ở đây là chưa bắt đầu, còn khi đã bắt đầu r mà gv khác vô dạy thì thêm 
+                                    //record history r đổi status cũ
+                                    currentTeaching.UserAccountId = newTeaching.UserAccountId; //lớp cũ đổi thành gv lớp mới
+                                    newTeaching.UserAccountId = (Guid)teacher; //lớp mới đổi thành giáo viên cũ
+                                }
+                                else
+                                {
+                                    throw new Exception("Không thể thực hiện đổi khi đã có lớp không còn ở trạng thái chờ");
+                                }
+
+                                _unitOfWork.TeachingClassHistoryRepository.Update(currentTeaching);
+                                _unitOfWork.TeachingClassHistoryRepository.Update(newTeaching);
                                 break;
                             case "Schedule":
+                                // đổi lịch thì update endDate và status leaved cho record TeachingHistory cũ và
+                                // add 1 record mới cho gv mới sau khi add xong mới thêm 1 record lại cho gv cũ với
+                                // trạng thái teaching
+                                var schedule = await _unitOfWork.ScheduleRepository.GetByIdAsync((Guid)request.ScheduleId);
+                                var tc = request.CreatedBy;
+                                var currentHistory = _unitOfWork.TeachingClassHistoryRepository
+                                    .GetTeachingHistoryByStatus(Domain.Enums.TeachingStatus.Teaching).Result
+                                    .FirstOrDefault(x => x.ClassId == schedule.ClassId);
+                                if (currentHistory != null)
+                                {
+                                    if (schedule.DayInWeek.Equals("5") // 5 8
+                                        || schedule.DayInWeek.Equals("3") // 3 6
+                                        || schedule.DayInWeek.Equals("4")) // 4 7
+                                    {
+
+                                        currentHistory.EndDate = changeStatusRequestViewModel.TeachingDate.Value.AddDays(-4);
+                                        currentHistory.TeachingStatus = Domain.Enums.TeachingStatus.Leaved;
+
+                                        var newHistory = new TeachingClassHistory
+                                        {
+                                            ClassId = currentHistory.ClassId,
+                                            UserAccountId = requestUsers.FirstOrDefault(x => x.Status == Domain.Enums.StatusOfRequest.Pending).RecieverId,
+                                            StartDate = (DateTime)changeStatusRequestViewModel.TeachingDate,
+                                            EndDate = (DateTime)changeStatusRequestViewModel.TeachingDate,
+                                            TeachingStatus = Domain.Enums.TeachingStatus.Substitute
+                                        };
+
+                                        var continueHistory = new TeachingClassHistory
+                                        {
+                                            ClassId = currentHistory.ClassId,
+                                            UserAccountId = currentHistory.UserAccountId,
+                                            StartDate = changeStatusRequestViewModel.TeachingDate.Value.AddDays(3),
+                                            TeachingStatus = Domain.Enums.TeachingStatus.Teaching
+                                        };
+
+                                        _unitOfWork.TeachingClassHistoryRepository.Update(currentHistory);
+                                        await _unitOfWork.TeachingClassHistoryRepository.AddAsync(newHistory);
+                                        await _unitOfWork.TeachingClassHistoryRepository.AddAsync(continueHistory);
+
+                                    }
+                                    else
+                                    {
+                                        currentHistory.EndDate = changeStatusRequestViewModel.TeachingDate.Value.AddDays(-3);
+                                        currentHistory.TeachingStatus = Domain.Enums.TeachingStatus.Leaved;
+
+                                        var newHistory = new TeachingClassHistory
+                                        {
+                                            ClassId = currentHistory.ClassId,
+                                            UserAccountId = requestUsers.FirstOrDefault(x => x.Status == Domain.Enums.StatusOfRequest.Pending).RecieverId,
+                                            StartDate = (DateTime)changeStatusRequestViewModel.TeachingDate,
+                                            EndDate = (DateTime)changeStatusRequestViewModel.TeachingDate,
+                                            TeachingStatus = Domain.Enums.TeachingStatus.Substitute
+                                        };
+
+                                        var continueHistory = new TeachingClassHistory
+                                        {
+                                            ClassId = currentHistory.ClassId,
+                                            UserAccountId = currentHistory.UserAccountId,
+                                            StartDate = changeStatusRequestViewModel.TeachingDate.Value.AddDays(4),
+                                            TeachingStatus = Domain.Enums.TeachingStatus.Teaching
+                                        };
+
+                                        _unitOfWork.TeachingClassHistoryRepository.Update(currentHistory);
+                                        await _unitOfWork.TeachingClassHistoryRepository.AddAsync(newHistory);
+                                        await _unitOfWork.TeachingClassHistoryRepository.AddAsync(continueHistory);
+
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception("không tìm thấy hay gì đó");
+                                }
                                 break;
-                            case "Equipment":
+                            case "Equipment": //khi approved quét mã cho mượn thì cập nhật lại trạng thái phía dưới
                                 break;
-                            case "Leave":
+                            case "Leave": //approved thì nghỉ
                                 break;
-                            case "Refund":
+                            case "Refund": //approved thì refund 
                                 break;
                             default:
                                 //throw new Exception("Loại request không được hỗ trợ");
                                 break;
                         }
 
-                        request.Status = status;
+                        foreach (var item in requestUsers)
+                        {
+                            item.Status = status;
+                            _unitOfWork.RequestUserAccountRepository.Update(item);
+                        }
 
-                        _unitOfWork.RequestRepository.Update(request);
                     }
 
                     break;
@@ -184,6 +282,16 @@ namespace KidProEdu.Application.Services
                     break;*/
                 case "Cancel":
                     status = Domain.Enums.StatusOfRequest.Cancel;
+                    foreach (var idRequest in changeStatusRequestViewModel.RequestIds)
+                    {
+                        var requestUsers = await _unitOfWork.RequestUserAccountRepository.GetRequestUserByRequestId(idRequest);
+                        foreach (var item in requestUsers)
+                        {
+                            item.Status = status;
+                            _unitOfWork.RequestUserAccountRepository.Update(item);
+                        }
+                    }
+
                     break;
                 default:
                     throw new Exception("Trạng thái không được hỗ trợ");

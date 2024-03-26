@@ -17,7 +17,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpPost]
-        /*[Authorize(Roles = ("Staff"))]*/
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> CreateChildren(CreateChildrenViewModel createChildrenViewModel) 
         {
             try
@@ -34,7 +34,7 @@ namespace KidProEdu.API.Controllers
 
 
         [HttpPut]
-        /*[Authorize(Roles = ("Staff"))]*/
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> UpdateChildren(UpdateChildrenViewModel updateChildrenViewModel)
         {
             try
@@ -63,13 +63,12 @@ namespace KidProEdu.API.Controllers
             }
         }
 
-        [HttpGet("GetChildrenByParentId")]
-        [Authorize(Roles = ("Parent"))]
-        public async Task<IActionResult> GetChildrenByParentId()
+        [HttpGet("GetChildrenByParentId/{id}")]
+        public async Task<IActionResult> GetChildrenByParentId(Guid id)
         {
             try
             {
-                var result = await _childrenService.GetChildrenByParentId();
+                var result = await _childrenService.GetChildrenByParentId(id);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -78,10 +77,10 @@ namespace KidProEdu.API.Controllers
             }
         }
 
-        [HttpGet("GetListClassByChildrenId/{id}")]
-        public async Task<IActionResult> GetListClassByChildrenId(Guid id)
+        [HttpGet("GetChildrenById/{id}")]
+        public async Task<IActionResult> GetChildrenById(Guid id)
         {
-            return Ok(await _childrenService.GetListClassByChildrenId(id));
+            return Ok(await _childrenService.GetChildrenById(id));
         }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240321101806_InitMigration")]
+    [Migration("20240325150559_InitMigration")]
     partial class InitMigration
     {
         /// <inheritdoc />
@@ -66,6 +66,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -76,9 +79,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<bool?>("IsTested")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ModificationBy")
                         .HasColumnType("uniqueidentifier");
@@ -90,6 +92,12 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("SlotId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("StatusAdviseRequest")
                         .HasColumnType("int");
 
@@ -100,6 +108,10 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("SlotId");
 
                     b.HasIndex("UserId");
 
@@ -349,9 +361,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<Guid>("ChildrenProfileId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("ChildrenScore")
-                        .HasColumnType("float");
-
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -379,6 +388,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<Guid>("QuestionId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double>("ScorePerQuestion")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ChildrenProfileId");
@@ -399,9 +411,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("BirthDay")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("BirthDay")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ChildrenCode")
                         .IsRequired()
@@ -1077,6 +1088,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int>("TestType")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TotalQuestion")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
@@ -1410,6 +1424,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("OrderNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("int");
 
@@ -1542,6 +1559,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Type")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LessionId");
@@ -1654,9 +1674,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("Status")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("TeachingDay")
                         .HasColumnType("datetime2");
 
@@ -1700,6 +1717,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<Guid>("RequestId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2080,6 +2100,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SlotType")
+                        .HasColumnType("int");
+
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
@@ -2095,6 +2118,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             EndTime = new TimeSpan(0, 9, 15, 0, 0),
                             IsDeleted = false,
                             Name = "Slot1",
+                            SlotType = 1,
                             StartTime = new TimeSpan(0, 7, 0, 0, 0)
                         },
                         new
@@ -2104,6 +2128,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             EndTime = new TimeSpan(0, 11, 45, 0, 0),
                             IsDeleted = false,
                             Name = "Slot2",
+                            SlotType = 1,
                             StartTime = new TimeSpan(0, 9, 30, 0, 0)
                         },
                         new
@@ -2113,6 +2138,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             EndTime = new TimeSpan(0, 14, 45, 0, 0),
                             IsDeleted = false,
                             Name = "Slot3",
+                            SlotType = 1,
                             StartTime = new TimeSpan(0, 12, 30, 0, 0)
                         },
                         new
@@ -2122,6 +2148,7 @@ namespace KidProEdu.Infrastructures.Migrations
                             EndTime = new TimeSpan(0, 17, 15, 0, 0),
                             IsDeleted = false,
                             Name = "Slot4",
+                            SlotType = 1,
                             StartTime = new TimeSpan(0, 15, 0, 0, 0)
                         },
                         new
@@ -2131,6 +2158,107 @@ namespace KidProEdu.Infrastructures.Migrations
                             EndTime = new TimeSpan(0, 21, 15, 0, 0),
                             IsDeleted = false,
                             Name = "Slot5",
+                            SlotType = 1,
+                            StartTime = new TimeSpan(0, 19, 0, 0, 0)
+                        },
+                        new
+                        {
+                            Id = new Guid("2c33f784-57ee-476c-a630-7c080b721db5"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new TimeSpan(0, 8, 0, 0, 0),
+                            IsDeleted = false,
+                            Name = "Slot1E",
+                            SlotType = 2,
+                            StartTime = new TimeSpan(0, 7, 0, 0, 0)
+                        },
+                        new
+                        {
+                            Id = new Guid("2c44f784-57ee-476c-a630-7c080b721db5"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new TimeSpan(0, 9, 0, 0, 0),
+                            IsDeleted = false,
+                            Name = "Slot2E",
+                            SlotType = 2,
+                            StartTime = new TimeSpan(0, 8, 0, 0, 0)
+                        },
+                        new
+                        {
+                            Id = new Guid("2c55f784-57ee-476c-a630-7c080b721db5"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new TimeSpan(0, 10, 0, 0, 0),
+                            IsDeleted = false,
+                            Name = "Slot3E",
+                            SlotType = 2,
+                            StartTime = new TimeSpan(0, 9, 0, 0, 0)
+                        },
+                        new
+                        {
+                            Id = new Guid("2c66f784-57ee-476c-a630-7c080b721db5"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new TimeSpan(0, 11, 0, 0, 0),
+                            IsDeleted = false,
+                            Name = "Slot4E",
+                            SlotType = 2,
+                            StartTime = new TimeSpan(0, 10, 0, 0, 0)
+                        },
+                        new
+                        {
+                            Id = new Guid("2c22f722-57ee-476c-a630-7c080b721db5"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new TimeSpan(0, 14, 0, 0, 0),
+                            IsDeleted = false,
+                            Name = "Slot5E",
+                            SlotType = 2,
+                            StartTime = new TimeSpan(0, 13, 0, 0, 0)
+                        },
+                        new
+                        {
+                            Id = new Guid("2c22f733-57ee-476c-a630-7c080b721db5"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new TimeSpan(0, 15, 0, 0, 0),
+                            IsDeleted = false,
+                            Name = "Slot6E",
+                            SlotType = 2,
+                            StartTime = new TimeSpan(0, 14, 0, 0, 0)
+                        },
+                        new
+                        {
+                            Id = new Guid("2c22f744-57ee-476c-a630-7c080b721db5"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new TimeSpan(0, 16, 0, 0, 0),
+                            IsDeleted = false,
+                            Name = "Slot7E",
+                            SlotType = 2,
+                            StartTime = new TimeSpan(0, 15, 0, 0, 0)
+                        },
+                        new
+                        {
+                            Id = new Guid("2c22f755-57ee-476c-a630-7c080b721db5"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new TimeSpan(0, 17, 0, 0, 0),
+                            IsDeleted = false,
+                            Name = "Slot8E",
+                            SlotType = 2,
+                            StartTime = new TimeSpan(0, 16, 0, 0, 0)
+                        },
+                        new
+                        {
+                            Id = new Guid("2c22f784-66ee-336c-a630-7c080b721db5"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new TimeSpan(0, 19, 0, 0, 0),
+                            IsDeleted = false,
+                            Name = "Slot9E",
+                            SlotType = 2,
+                            StartTime = new TimeSpan(0, 18, 0, 0, 0)
+                        },
+                        new
+                        {
+                            Id = new Guid("2c22f784-23ee-476c-a630-7c080b721db5"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new TimeSpan(0, 20, 0, 0, 0),
+                            IsDeleted = false,
+                            Name = "Slot10E",
+                            SlotType = 2,
                             StartTime = new TimeSpan(0, 19, 0, 0, 0)
                         });
                 });
@@ -2226,38 +2354,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasIndex("UserAccountId");
 
                     b.ToTable("TeachingClassHistory");
-                });
-
-            modelBuilder.Entity("KidProEdu.Domain.Entities.TestTime", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModificationBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TestTime");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Transaction", b =>
@@ -2482,9 +2578,21 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.AdviseRequest", b =>
                 {
+                    b.HasOne("KidProEdu.Domain.Entities.Location", "Location")
+                        .WithMany("AdviseRequests")
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("KidProEdu.Domain.Entities.Slot", "Slot")
+                        .WithMany("AdviseRequests")
+                        .HasForeignKey("SlotId");
+
                     b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
                         .WithMany("AdviseRequests")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Slot");
 
                     b.Navigation("UserAccount");
                 });
@@ -2757,7 +2865,8 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.HasOne("KidProEdu.Domain.Entities.Order", "Order")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("ChildrenProfile");
 
@@ -2990,6 +3099,8 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Location", b =>
                 {
+                    b.Navigation("AdviseRequests");
+
                     b.Navigation("UserAccount");
                 });
 
@@ -3044,6 +3155,8 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.Slot", b =>
                 {
+                    b.Navigation("AdviseRequests");
+
                     b.Navigation("Schedule");
                 });
 
