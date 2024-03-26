@@ -16,6 +16,7 @@ namespace KidProEdu.Domain.Entities
         public DateTime OrderDate { get; set; }
         public double TotalAmount { get; set; }
         public StatusPayment PaymentStatus { get; set; }
+        public string? URLPayment { get; set; }
         public virtual UserAccount UserAccount { get; set; }
         public IList<OrderDetail> OrderDetails { get; set; }
     }
