@@ -40,7 +40,8 @@ namespace KidProEdu.Application.Services
                 var question = await _unitOfWork.QuestionRepository.GetQuestionByTitle(item.Title);
                 if (!question.IsNullOrEmpty())
                 {
-                    continue;
+                    //continue;
+                    throw new Exception("Câu hỏi này đã tồn tại trong 1 bài học");
                 }
 
                 var mapper = _mapper.Map<Question>(item);
