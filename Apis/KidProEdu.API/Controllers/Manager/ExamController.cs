@@ -63,22 +63,8 @@ namespace KidProEdu.API.Controllers.Manager
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> PostExam(CreateExamViewModel2 createExamViewModel)
         {
-            try
-            {
-                var result = await _examService.CreateExam(createExamViewModel);
-                if (result)
-                {
-                    return Ok("Bài kiểm tra đã được tạo thành công.");
-                }
-                else
-                {
-                    return BadRequest("Bài kiểm tra đã được tạo thất bại.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await _examService.CreateExam(createExamViewModel);
+            return Ok(result);
         }
 
         [HttpPut]

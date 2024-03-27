@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.ViewModels.ExamViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
+using KidProEdu.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace KidProEdu.Application.Interfaces
     public interface IExamService
     {
         Task<List<ExamViewModel>> GetExams();
-        Task<bool> CreateExam(CreateExamViewModel2 createExamViewModel);
+        Task<Exam> CreateExam(CreateExamViewModel2 createExamViewModel);
         Task<bool> UpdateExam(UpdateExamViewModel updateExamViewModel);
         Task<ExamViewModel> GetExamById(Guid id);
         Task<bool> DeleteExam(Guid id);
