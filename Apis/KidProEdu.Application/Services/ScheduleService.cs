@@ -124,101 +124,284 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật lịch thất bại");
         }
 
-        public async Task<AutoScheduleViewModel> AutomaticalySchedule()
+        /* public async Task<AutoScheduleViewModel> CreateAutomaticalySchedule()
+         {
+             int countSchedule = 0;
+             int countRoom = 0;
+             var slots = _unitOfWork.SlotRepository.GetAllAsync().Result.Where(x => x.SlotType == SlotType.Course).ToList();
+             for (var i = 1; i <= slots.Count; i++)
+             {
+                 var classes = await _unitOfWork.ClassRepository.GetClassBySlot(i); //lấy list lớp học theo từng slot
+                 var fullTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.FullTime); //lấy list giáo viên fulltime
+                 var partTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.PartTime); //lấy list giáo viên parttime
+                 var rooms = await _unitOfWork.RoomRepository.GetRoomByStatus(StatusOfRoom.Empty);
+                 foreach (var item in classes)
+                 {
+                     if (fullTeachers.Count != 0)
+                     {
+                         foreach (var teacher in fullTeachers)
+                         {
+
+                             var countSlotPerWeek = (await _unitOfWork.TeachingClassHistoryRepository
+                                 .GetClassByTeacherId(teacher.Id))
+                                 .Count * 2;//2 là số slot học trong 1 tuần của 1 lớp, có thể thay đổi
+                             if (countSlotPerWeek < 24)//24 là số slot dạy trong 1 tuần, slotperweek trong configjobtype
+                             {
+                                 var teachingHistory = new TeachingClassHistory
+                                 {
+                                     ClassId = item.Id,
+                                     UserAccountId = teacher.Id,
+                                     StartDate = _currentTime.GetCurrentTime()
+                                 };
+                                 await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
+                                 fullTeachers.Remove(teacher);
+                                 break;
+                             }
+
+                         }
+                     }
+                     else if (partTeachers.Count != 0)
+                     {
+                         foreach (var teacher in partTeachers)
+                         {
+
+                             var countSlotPerWeek = (await _unitOfWork.TeachingClassHistoryRepository
+                                 .GetClassByTeacherId(teacher.Id)).Count * 2;//2 là số slot học 1 lớp trong 1 tuần
+                             if (countSlotPerWeek < 15)//15 là số slot dạy trong 1 tuần, slotperweek trong configjobtype
+                             {
+                                 var teachingHistory = new TeachingClassHistory
+                                 {
+                                     ClassId = item.Id,
+                                     UserAccountId = teacher.Id,
+                                     StartDate = _currentTime.GetCurrentTime()
+                                 };
+                                 await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
+                                 partTeachers.Remove(teacher);
+                                 break;
+                             }
+                         }
+                     }
+                     else
+                     {
+                         countSchedule++;
+                     }
+
+                     if (rooms.Count != 0)
+                     {
+                         foreach (var room in rooms)
+                         {
+                             foreach (var perSchedule in item.Schedules)
+                             {
+                                 var scheduleRoom = new ScheduleRoom
+                                 {
+                                     RoomId = room.Id,
+                                     ScheduleId = perSchedule.Id
+                                 };
+
+                                 await _unitOfWork.ScheduleRoomRepository.AddAsync(scheduleRoom);
+                             }
+                             rooms.Remove(room);
+                             break;
+                         }
+                     }
+                     else
+                     {
+                         countRoom++;
+                     }
+                 }
+
+             }
+
+             await _unitOfWork.SaveChangeAsync();
+
+             return new AutoScheduleViewModel
+             {
+                 CountSchedule = countSchedule,
+                 CountRoom = countRoom
+             };
+         }*/
+
+        public async Task<List<AutoScheduleViewModel>> CreateAutomaticalySchedule()
         {
             int countSchedule = 0;
             int countRoom = 0;
-            var slots = await _unitOfWork.SlotRepository.GetAllAsync();
+            var slots = _unitOfWork.SlotRepository.GetAllAsync().Result.Where(x => x.SlotType == SlotType.Course).ToList();
+
+            var rooms = await _unitOfWork.RoomRepository.GetRoomByStatus(StatusOfRoom.Empty); //lấy list phòng trống
+            var fullTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.FullTime); //lấy list giáo viên fulltime
+            var partTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.PartTime); //lấy list giáo viên parttime
+
+            //add 2 list giáo viên vào Queue để xếp xoay vòng
+            Queue<UserAccount> fullTimeQueue = new();
+            Queue<UserAccount> partTimeQueue = new();
+            foreach (var fullTeacher in fullTeachers)
+            {
+                fullTimeQueue.Enqueue(fullTeacher);
+            }
+            foreach (var partTeacher in partTeachers)
+            {
+                partTimeQueue.Enqueue(partTeacher);
+            }
+
+            List<AutoScheduleViewModel> list = new();
+
             for (var i = 1; i <= slots.Count; i++)
             {
+                var tempFullTeachers = new Queue<UserAccount>();
+                var tempPartTeachers = new Queue<UserAccount>();
                 var classes = await _unitOfWork.ClassRepository.GetClassBySlot(i); //lấy list lớp học theo từng slot
-                var fullTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.FullTime); //lấy list giáo viên fulltime
-                var partTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.PartTime); //lấy list giáo viên parttime
-                var rooms = await _unitOfWork.RoomRepository.GetRoomByStatus(StatusOfRoom.Empty);
-                foreach (var item in classes)
+
+                //add lại queue chính từ queue tạm cho full/part
+                while (tempFullTeachers.Count > 0)
                 {
-                    if (fullTeachers.Count != 0)
+                    fullTimeQueue.Enqueue(tempFullTeachers.Dequeue());
+
+                }
+
+                while (tempPartTeachers.Count > 0)
+                {
+                    partTimeQueue.Enqueue(tempPartTeachers.Dequeue());
+
+                }
+
+                if (i != (slots.Count)) // nếu không phải là slot cuối
+                {
+                    foreach (var item in classes)
                     {
-                        foreach (var teacher in fullTeachers)
+                        if (fullTimeQueue.Count != 0)
                         {
+                            var teacher = fullTimeQueue.Dequeue(); //lấy teacher ra khỏi queue
+
                             var teachingHistory = new TeachingClassHistory
                             {
                                 ClassId = item.Id,
                                 UserAccountId = teacher.Id,
                                 StartDate = _currentTime.GetCurrentTime()
                             };
+                            await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
 
-                            var countSlotPerWeek = (await _unitOfWork.TeachingClassHistoryRepository
-                                .GetClassByTeacherId(teacher.Id))
-                                .Count * 2;//2 là số slot học trong 1 tuần của 1 lớp, có thể thay đổi
-                            if (countSlotPerWeek < 24)//24 là số slot dạy trong 1 tuần, slotperweek trong configjobtype
-                            {
-                                await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
-                                fullTeachers.Remove(teacher);
-                                break;
-                            }
-
+                            tempFullTeachers.Enqueue(teacher); //add lại teacher đã xếp vào list tạm
                         }
-                    }
-                    else if (partTeachers.Count != 0)
-                    {
-                        foreach (var teacher in partTeachers)
+                        else if (partTimeQueue.Count != 0)
                         {
+                            var teacher = partTimeQueue.Dequeue();
+
                             var teachingHistory = new TeachingClassHistory
                             {
                                 ClassId = item.Id,
                                 UserAccountId = teacher.Id,
                                 StartDate = _currentTime.GetCurrentTime()
                             };
+                            await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
 
-                            var countSlotPerWeek = (await _unitOfWork.TeachingClassHistoryRepository
-                                .GetClassByTeacherId(teacher.Id)).Count * 2;//2 là số slot học 1 lớp trong 1 tuần
-                            if (countSlotPerWeek < 15)//15 là số slot dạy trong 1 tuần, slotperweek trong configjobtype
-                            {
-                                await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
-                                partTeachers.Remove(teacher);
-                                break;
-                            }
+                            tempPartTeachers.Enqueue(teacher);
                         }
-                    }
-                    else
-                    {
-                        countSchedule++;
-                    }
-
-                    if (rooms.Count != 0)
-                    {
-                        foreach (var room in rooms)
+                        else
                         {
-                            foreach (var perSchedule in item.Schedules)
+                            countSchedule++;
+                        }
+
+                        if (rooms.Count != 0)
+                        {
+                            foreach (var room in rooms) //duyệt danh sách phòng
                             {
-                                var scheduleRoom = new ScheduleRoom
+                                foreach (var perSchedule in item.Schedules) //mỗi lớp học 2 slot nên có 2 lịch xếp cho học 1 phòng
                                 {
-                                    RoomId = room.Id,
-                                    ScheduleId = perSchedule.Id
-                                };
+                                    var scheduleRoom = new ScheduleRoom
+                                    {
+                                        RoomId = room.Id,
+                                        ScheduleId = perSchedule.Id
+                                    };
 
-                                await _unitOfWork.ScheduleRoomRepository.AddAsync(scheduleRoom);
+                                    await _unitOfWork.ScheduleRoomRepository.AddAsync(scheduleRoom);
+                                }
+                                rooms.Remove(room);
+                                break;
                             }
-                            rooms.Remove(room);
-                            break;
+                        }
+                        else
+                        {
+                            countRoom++;
                         }
                     }
-                    else
+                }
+                else //khi là slot cuối thì chỉ xếp lịch cho gv partTime thôi
+                {
+                    foreach (var item in classes)
                     {
-                        countRoom++;
+                        if (partTimeQueue.Count != 0)
+                        {
+                            var teacher = partTimeQueue.Dequeue();
+
+                            var teachingHistory = new TeachingClassHistory
+                            {
+                                ClassId = item.Id,
+                                UserAccountId = teacher.Id,
+                                StartDate = _currentTime.GetCurrentTime()
+                            };
+                            await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
+
+                            tempPartTeachers.Enqueue(teacher);
+
+
+                        }
+                        else if (fullTimeQueue.Count != 0)
+                        {
+                            var teacher = fullTimeQueue.Dequeue();
+
+                            var teachingHistory = new TeachingClassHistory
+                            {
+                                ClassId = item.Id,
+                                UserAccountId = teacher.Id,
+                                StartDate = _currentTime.GetCurrentTime()
+                            };
+                            await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
+                            partTeachers.Remove(teacher);
+
+                            tempFullTeachers.Enqueue(teacher);
+                        }
+                        else
+                        {
+                            countSchedule++;
+                        }
+
+                        if (rooms.Count != 0)
+                        {
+                            foreach (var room in rooms)
+                            {
+                                foreach (var perSchedule in item.Schedules)
+                                {
+                                    var scheduleRoom = new ScheduleRoom
+                                    {
+                                        RoomId = room.Id,
+                                        ScheduleId = perSchedule.Id
+                                    };
+
+                                    await _unitOfWork.ScheduleRoomRepository.AddAsync(scheduleRoom);
+                                }
+                                rooms.Remove(room);
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            countRoom++;
+                        }
                     }
                 }
 
+                if (countRoom != 0 || countSchedule != 0)
+                {
+                    list.Add(new AutoScheduleViewModel()
+                    {
+                        Slot = i,
+                        CountSchedule = countSchedule,
+                        CountRoom = countRoom
+                    });
+                }
             }
 
-            await _unitOfWork.SaveChangeAsync();
-
-            return new AutoScheduleViewModel
-            {
-                CountSchedule = countSchedule,
-                CountRoom = countRoom
-            };
+            return await _unitOfWork.SaveChangeAsync() > 0 ? list : throw new Exception("Tạo lịch thất bại, hãy đảm bảo đã có lớp, lịch, phòng và giáo viên");
         }
     }
 }
