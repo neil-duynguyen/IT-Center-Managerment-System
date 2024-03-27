@@ -3,9 +3,11 @@ using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -33,7 +35,7 @@ namespace KidProEdu.Application.Services
             return _mapper.Map<List<OrderDetailViewModel>>(result);
         }
 
-        public async Task<bool> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView)
+        public async Task<List<PaymentInformationView>> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView)
         {
             //check xem children có học trùng course ko khi chưa vào DB
             if (updateOrderDetailView.GroupBy(x => new { x.CourseId, x.ChildrenProfildId }).Any(g => g.Count() > 1)) throw new Exception("Có trẻ đăng kí khoá học trùng nhau.");
@@ -44,12 +46,14 @@ namespace KidProEdu.Application.Services
                 Timeout = TimeSpan.FromMinutes(5)
             };
 
+            Guid orderId = Guid.Empty;
             using (var scope = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
                     foreach (var orderDetail in updateOrderDetailView)
                     {
+                        orderId = orderDetail.OrderId;
                         //check xem children có học trùng course ko khi trong DB đã có rồi
                         if (_unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.ChildrenProfileId == orderDetail.ChildrenProfildId && x.CourseId == orderDetail.CourseId).Count() > 0)
                             throw new Exception("Trẻ đã đăng kí khoá học này.");
@@ -85,16 +89,16 @@ namespace KidProEdu.Application.Services
                             _unitOfWork.OrderDetailRepository.Update(getOrderDetail);
                             await _unitOfWork.SaveChangeAsync();
                         }
-
-                        //Update TotalAmount bên Order
-                        var updateTotalOrder = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderDetail.OrderId).Sum(x => x.TotalPrice);
-                        var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderDetail.OrderId);
-                        if (getOrderById == null) throw new Exception("Đã xảy ra lỗi không thế thanh toán đơn hàng.");
-                        getOrderById.TotalAmount = (double)updateTotalOrder;
-                        _unitOfWork.OrderRepository.Update(getOrderById);
-                        await _unitOfWork.SaveChangeAsync();
-
                     }
+
+                    //Update TotalAmount bên Order
+                    var updateTotalOrder = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).Sum(x => x.TotalPrice);
+                    var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
+                    if (getOrderById == null) throw new Exception("Đã xảy ra lỗi không thế cập nhật đơn hàng.");
+                    getOrderById.TotalAmount = (double)updateTotalOrder;
+                    _unitOfWork.OrderRepository.Update(getOrderById);
+                    await _unitOfWork.SaveChangeAsync();
+
                     scope.Complete();
                 }
                 catch (Exception ex)
@@ -104,7 +108,37 @@ namespace KidProEdu.Application.Services
                     throw new Exception(ex.Message);
                 }
             }
-            return true;
+            var result = await PaymentInformation(orderId);
+            return result;
+
+        }
+
+        public async Task<List<PaymentInformationView>> PaymentInformation(Guid orderId)
+        {
+
+            List<PaymentInformationView> paymentInformationViews = new List<PaymentInformationView>();
+            //tính tổng tiền cần thanh toán
+            var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
+            foreach (var item in getOrderDetail)
+            {
+                if (item.InstallmentTerm > 0)
+                {
+                    paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, TotalAmount = Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm)), Month = "1 tháng" });
+                }
+                if (item.InstallmentTerm == 0 && item.PayType.Value == PayType.Banking)
+                {
+                    paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, TotalAmount = (decimal)item.TotalPrice, Month = "0 tháng" });
+                }
+            }
+            return paymentInformationViews;
+
+        }
+
+        public class PaymentInformationView
+        {
+            public string CourseCode { get; set; }
+            public decimal TotalAmount { get; set; }
+            public string Month { get; set; }
         }
 
 
