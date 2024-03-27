@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Children;
+using KidProEdu.Application.ViewModels.AttendanceViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.EnrollmentViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +46,43 @@ namespace KidProEdu.Application.Services
             mapper.RegisterDate = _currentTime.GetCurrentTime();
             mapper.Commission = getPriceClass * 0.1;
             mapper.UserId = _claimsService.GetCurrentUserId;
+
+            var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(createEnrollmentViewModel.ClassId);
+            var course = await _unitOfWork.CourseRepository.GetByIdAsync(getNumbderChildren.CourseId);
+            DateTime startDate = (DateTime)schedules.FirstOrDefault().StartDate;
+
+            int slot = 0;
+            while (slot < course.DurationTotal)
+            {
+                // Kiểm tra xem ngày hiện tại là ngày trong tuần đã chỉ định trong lịch trình hay không
+                if (schedules.Any(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())))
+                {
+                    // Kiểm tra xem điểm danh cho ngày này đã được tạo hay chưa
+                    var attendance = new CreateAttendanceViewModel
+                    {
+                        ScheduleId = schedules.FirstOrDefault(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())).Id,
+                        ChildrenProfileId = createEnrollmentViewModel.ChildrenProfileId,
+                        Date = startDate,
+                        StatusAttendance = StatusAttendance.Future,
+                        Note = ""
+                    };
+
+                    // Lưu danh sách điểm danh vào cơ sở dữ liệu
+                    var attendanceEntity = _mapper.Map<Attendance>(attendance);
+                    await _unitOfWork.AttendanceRepository.AddAsync(attendanceEntity);
+                    slot++;
+                }
+
+                // Tăng ngày startdate lên 1 để chuyển sang ngày tiếp theo
+                startDate = startDate.AddDays(1);
+
+                // Kiểm tra xem số buổi học đã điểm danh có bằng tổng số buổi học không
+                if (slot == course.DurationTotal)
+                {
+                    break; // Kết thúc vòng lặp nếu đã điểm danh đủ số buổi học
+                }
+            }
+
 
             await _unitOfWork.EnrollmentRepository.AddAsync(mapper);
 
