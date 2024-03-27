@@ -28,5 +28,10 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return equipments;
         }
+
+        public override async Task<Equipment> GetByIdAsync(Guid id)
+        {
+            return await _dbContext.Equipment.Include(x => x.LogEquipments).ThenInclude(x => x.UserAccount).FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        }
     }
 }

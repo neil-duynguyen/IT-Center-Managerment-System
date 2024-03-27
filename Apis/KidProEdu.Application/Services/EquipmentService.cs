@@ -293,10 +293,10 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật thất bại");
         }*/
 
-        public async Task<EquipmentViewModel> GetEquipmentById(Guid id)
+        public async Task<EquipmentViewModel2> GetEquipmentById(Guid id)
         {
             var result = await _unitOfWork.EquipmentRepository.GetByIdAsync(id);
-            var mapper = _mapper.Map<EquipmentViewModel>(result);
+            var mapper = _mapper.Map<EquipmentViewModel2>(result);
             return mapper;
 
         }

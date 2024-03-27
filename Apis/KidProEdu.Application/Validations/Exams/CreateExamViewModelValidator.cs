@@ -14,7 +14,6 @@ namespace KidProEdu.Application.Validations.Exams
     {
         public CreateExamViewModelValidator()
         {
-            RuleFor(x => x.CourseId).NotEmpty().WithMessage("Khóa học không được để trống.");
             RuleFor(x => x.TestName).NotEmpty().WithMessage("Tên bài kiểm tra không được để trống.")
                 .MaximumLength(100).WithMessage("Địa chỉ không quá 100 ký tự.");
             RuleFor(x => x.TestName).NotEmpty().WithMessage("Tên bài kiểm tra không được để trống.")

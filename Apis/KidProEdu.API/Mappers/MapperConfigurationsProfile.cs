@@ -84,6 +84,15 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null));
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<Equipment, EquipmentViewModel>().ReverseMap();
+            CreateMap<Equipment, EquipmentViewModel2>()
+                .ForMember(dest => dest.UserAccountId, opt => opt.MapFrom(src => src.LogEquipments.FirstOrDefault().UserAccountId))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.LogEquipments.FirstOrDefault().UserAccount.UserName))
+                .ForMember(dest => dest.BorrowedDate, opt => opt.MapFrom(src => src.LogEquipments.FirstOrDefault().BorrowedDate))
+                .ForMember(dest => dest.RepairDate, opt => opt.MapFrom(src => src.LogEquipments.FirstOrDefault().RepairDate))
+                .ForMember(dest => dest.ReturnedDate, opt => opt.MapFrom(src => src.LogEquipments.FirstOrDefault().ReturnedDate))
+                .ForMember(dest => dest.ReturnedDealine, opt => opt.MapFrom(src => src.LogEquipments.FirstOrDefault().ReturnedDealine))
+                .ReverseMap();
+
             CreateMap<EquipmentManagementViewModel, Equipment>().ReverseMap();
 
             CreateMap<BlogViewModel, Blog>().ReverseMap().ForMember(des => des.Tags, src => src.MapFrom(x => x.Tags.Select(x => x.TagName)))
