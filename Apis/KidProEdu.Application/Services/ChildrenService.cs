@@ -19,13 +19,15 @@ namespace KidProEdu.Application.Services
         private readonly ICurrentTime _currentTime;
         private readonly IClaimsService _claimsService;
         private readonly IMapper _mapper;
+        private readonly IChildrenAnswerService _childrenAnswerService;
 
-        public ChildrenService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper)
+        public ChildrenService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, IChildrenAnswerService childrenAnswerService)
         {
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
             _claimsService = claimsService;
             _mapper = mapper;
+            _childrenAnswerService = childrenAnswerService;
         }
 
         public async Task<bool> CreateChildren(CreateChildrenViewModel createChildrenViewModel)
@@ -89,6 +91,7 @@ namespace KidProEdu.Application.Services
 
             List<ClassViewModelInChildren> listClass = new List<ClassViewModelInChildren>();
             List<CourseViewModelInChildren> listCourse = new List<CourseViewModelInChildren>();
+            List<ExamViewModelInChildren> listExam = new List<ExamViewModelInChildren>();
 
             foreach (var enrollment in result.Enrollments)
             {
@@ -101,6 +104,17 @@ namespace KidProEdu.Application.Services
                 listCourse.Add(new CourseViewModelInChildren() { CourseId = course.Class.Course.Id, CourseCode = course.Class.Course.CourseCode });
                 mapper.Courses = listCourse;
             }
+
+            listExam = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result
+                 .Where(x => x.ChildrenProfileId == childrenId)
+                 .GroupBy(x => x.ExamId)
+                 .Select(group => new ExamViewModelInChildren
+                 {
+                     ExamName = group.FirstOrDefault()?.Exam.TestName,
+                     ExamDate = group.FirstOrDefault()?.Exam.CreationDate,
+                     Score = group.Sum(x => x.ScorePerQuestion)
+                 })
+                 .ToList();
 
             return mapper;
 

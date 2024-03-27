@@ -24,5 +24,10 @@ namespace KidProEdu.Infrastructures.Repositories
             var childrenAnswer = await _dbContext.ChildrenAnswer.FirstOrDefaultAsync(x => x.ChildrenProfileId == childId && x.ExamId == examId && x.QuestionId == questionId && !x.IsDeleted);
             return childrenAnswer;
         }
+
+        public override async Task<List<ChildrenAnswer>> GetAllAsync()
+        {
+            return await _dbSet.Include(x => x.Exam).Include(x => x.ChildrenProfile).Where(x => !x.IsDeleted).ToListAsync();
+        }
     }
 }
