@@ -13,6 +13,6 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
         public Guid CourseId { get; set; }
         public string ClassCode { get; set; }
         public string StatusOfClass { get; set; }
-        public List<ScheduleForAutoViewModel> ScheduleForAuto { get; set; }
+        public List<ScheduleForAutoViewModel> Schedules { get; set; }
     }
 }

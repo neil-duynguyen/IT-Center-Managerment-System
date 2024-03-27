@@ -74,6 +74,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<RoomViewModel, Room>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null));
             CreateMap<CreateRoomViewModel, Room>().ReverseMap();
             CreateMap<UpdateRoomViewModel, Room>().ReverseMap();
+            CreateMap<RoomForScheduleViewModel, Room>().ReverseMap();
 
             CreateMap<CreateChildrenViewModel, ChildrenProfile>().ReverseMap();
             CreateMap<UpdateChildrenViewModel, ChildrenProfile>().ReverseMap();

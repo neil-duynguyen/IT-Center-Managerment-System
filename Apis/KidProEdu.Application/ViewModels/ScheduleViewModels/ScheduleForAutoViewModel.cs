@@ -14,8 +14,8 @@ namespace KidProEdu.Application.ViewModels.ScheduleViewModels
         public Guid Id { get; set; }
         public string DayInWeek { get; set; }
         public DateTime StartDate { get; set; }
-        public SlotForScheduleViewModel SlotForSchedule { get; set; }
-        public RoomForScheduleViewModel RoomForSchedule { get; set; }
+        public SlotForScheduleViewModel Slot { get; set; }
+        public List<RoomForScheduleViewModel> Rooms { get; set; }
        
     }
 }

@@ -10,8 +10,8 @@ namespace KidProEdu.Application.ViewModels.SlotViewModels
     {
         public Guid Id { get; set; }
         public string SlotName { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
         public string SlotType { get; set; }
 
     }

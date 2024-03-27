@@ -281,7 +281,7 @@ namespace KidProEdu.Application.Services
                             {
                                 ClassId = item.Id,
                                 UserAccountId = teacher.Id,
-                                StartDate = _currentTime.GetCurrentTime(),
+                                StartDate = (DateTime)item.Schedules.FirstOrDefault().StartDate,
                                 TeachingStatus = TeachingStatus.Pending
                             };
                             await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
@@ -296,7 +296,7 @@ namespace KidProEdu.Application.Services
                             {
                                 ClassId = item.Id,
                                 UserAccountId = teacher.Id,
-                                StartDate = _currentTime.GetCurrentTime(),
+                                StartDate = (DateTime)item.Schedules.FirstOrDefault().StartDate,
                                 TeachingStatus = TeachingStatus.Pending
                             };
                             await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
@@ -317,7 +317,9 @@ namespace KidProEdu.Application.Services
                                     var scheduleRoom = new ScheduleRoom
                                     {
                                         RoomId = room.Id,
-                                        ScheduleId = perSchedule.Id
+                                        ScheduleId = perSchedule.Id,
+                                        StartDate = (DateTime)item.Schedules.FirstOrDefault().StartDate,
+                                        Status = ScheduleRoomStatus.Pending
                                     };
 
                                     await _unitOfWork.ScheduleRoomRepository.AddAsync(scheduleRoom);
@@ -344,7 +346,7 @@ namespace KidProEdu.Application.Services
                             {
                                 ClassId = item.Id,
                                 UserAccountId = teacher.Id,
-                                StartDate = _currentTime.GetCurrentTime(),
+                                StartDate = (DateTime)item.Schedules.FirstOrDefault().StartDate,
                                 TeachingStatus = TeachingStatus.Pending
                             };
                             await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
@@ -361,7 +363,7 @@ namespace KidProEdu.Application.Services
                             {
                                 ClassId = item.Id,
                                 UserAccountId = teacher.Id,
-                                StartDate = _currentTime.GetCurrentTime(),
+                                StartDate = (DateTime)item.Schedules.FirstOrDefault().StartDate,
                                 TeachingStatus = TeachingStatus.Pending
                             };
                             await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
@@ -383,7 +385,9 @@ namespace KidProEdu.Application.Services
                                     var scheduleRoom = new ScheduleRoom
                                     {
                                         RoomId = room.Id,
-                                        ScheduleId = perSchedule.Id
+                                        ScheduleId = perSchedule.Id,
+                                        StartDate = (DateTime)item.Schedules.FirstOrDefault().StartDate,
+                                        Status = ScheduleRoomStatus.Pending
                                     };
 
                                     await _unitOfWork.ScheduleRoomRepository.AddAsync(scheduleRoom);
@@ -418,8 +422,8 @@ namespace KidProEdu.Application.Services
             var getAutoSchedule = new GetAutoScheduleViewModel();
             var classesModel = new List<ClassForScheduleViewModel>();
             var schedulesModel = new List<ScheduleForAutoViewModel>();
-            var slotModel = new SlotForScheduleViewModel();
-            var roomModel = new RoomForScheduleViewModel();
+            //var slotModel = new SlotForScheduleViewModel();
+            var roomsModel = new List<RoomForScheduleViewModel>();
             var histories = await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(new Guid("B01AF4AE-0D7D-4A49-940D-08DC4A7E376A"));
 
             foreach (var history in histories)
@@ -430,14 +434,20 @@ namespace KidProEdu.Application.Services
                 {
                     var sm = _mapper.Map<ScheduleForAutoViewModel>(schedule);
                     var slot = _unitOfWork.SlotRepository.GetAllAsync().Result.FirstOrDefault(x => x.Id == schedule.SlotId && x.IsDeleted == false);
-                    var room = _unitOfWork.ScheduleRoomRepository.GetAllAsync().Result.Where(x => x.ScheduleId == schedule.Id && x.IsDeleted == false).ToList();
+                    var scheduleRooms = _unitOfWork.ScheduleRoomRepository.GetAllAsync().Result
+                        .Where(x => x.ScheduleId == schedule.Id && x.IsDeleted == false && x.Status != ScheduleRoomStatus.Expired).ToList();
 
-                    sm.SlotForSchedule = _mapper.Map<SlotForScheduleViewModel>(slot);
-                    sm.RoomForSchedule = _mapper.Map<RoomForScheduleViewModel>(room);
+                    foreach (var scheduleRoom in scheduleRooms)
+                    {
+                        roomsModel.Add(_mapper.Map<RoomForScheduleViewModel>(await _unitOfWork.RoomRepository.GetByIdAsync((Guid)scheduleRoom.RoomId)));
+                    }
+
+                    sm.Slot = _mapper.Map<SlotForScheduleViewModel>(slot);
+                    sm.Rooms = roomsModel;
                     schedulesModel.Add(sm);
 
                 }
-                mapper.ScheduleForAuto = schedulesModel;
+                mapper.Schedules = schedulesModel;
                 classesModel.Add(mapper);
 
             }
