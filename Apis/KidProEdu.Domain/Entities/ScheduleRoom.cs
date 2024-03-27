@@ -14,8 +14,8 @@ namespace KidProEdu.Domain.Entities
         public Guid? RoomId { get; set; }
         [ForeignKey("Schedule")]
         public Guid? ScheduleId { get; set; }
-        public DateTime? StartDate { get; set; } //ngày mà lịch đó đổi phòng học tạm thời 1 hôm
-        public DateTime? EndDate { get; set; } //ngày mà lịch đó đổi phòng học tạm thời 1 hôm
+        public DateTime? StartDate { get; set; } 
+        public DateTime? EndDate { get; set; } 
         public ScheduleRoomStatus? Status { get; set; }
         public virtual Room? Room { get; set; }
         public virtual Schedule? Schedule { get; set; }
