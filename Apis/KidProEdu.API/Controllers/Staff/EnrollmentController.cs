@@ -1,5 +1,7 @@
 ﻿using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.EnrollmentViewModels;
+using KidProEdu.Application.ViewModels.SkillCertificateViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,6 +46,28 @@ namespace KidProEdu.API.Controllers.Staff
             {
                 var result = await _enrollmentServices.CreateEnrollment(createEnrollmentViewModel);
                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> PutEnrollment(UpdateEnrollmentViewModel updateEnrollmentViewModel)
+        {
+            try
+            {
+                var result = await _enrollmentServices.UpdateEnrollment(updateEnrollmentViewModel);
+                if (result)
+                {
+                    return Ok("Tham gia đã được cập nhật thành công.");
+                }
+                else
+                {
+                    return BadRequest("Tham gia đã được cập nhật thất bại.");
+                }
             }
             catch (Exception ex)
             {

@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Children;
+using KidProEdu.Application.Validations.Enrollments;
+using KidProEdu.Application.Validations.SkillCertificates;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.EnrollmentViewModels;
+using KidProEdu.Application.ViewModels.SkillCertificateViewModels;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
 using System;
@@ -122,6 +125,77 @@ namespace KidProEdu.Application.Services
             var getEnrollments = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassId(Id);
             var mapper = _mapper.Map<List<EnrollmentViewModel>>(getEnrollments);
             return mapper;
+        }
+
+        public async Task<bool> UpdateEnrollment(UpdateEnrollmentViewModel updateEnrollmentViewModel)
+        {
+            var validator = new UpdateEnrollmentViewModelValidator();
+            var validationResult = validator.Validate(updateEnrollmentViewModel);
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    throw new Exception(error.ErrorMessage);
+                }
+            }
+
+            var result = await _unitOfWork.EnrollmentRepository.GetByIdAsync(updateEnrollmentViewModel.Id);
+            if (result == null)
+            {
+                throw new Exception("Không tìm thấy tham gia này");
+            }
+
+            var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);
+            foreach(var schedule in schedules)
+            {
+                var attendances = await _unitOfWork.AttendanceRepository.GetListAttendanceByScheduleIdAndChilId(schedule.Id, result.ChildrenProfileId);
+                _unitOfWork.AttendanceRepository.RemoveRange(attendances);
+                await _unitOfWork.SaveChangeAsync();
+            }
+
+            var mapper = _mapper.Map<Enrollment>(result);
+            mapper.ClassId = updateEnrollmentViewModel.ClassId;
+            mapper.ChildrenProfileId = result.ChildrenProfileId;
+            var schedules1 = await _unitOfWork.ScheduleRepository.GetScheduleByClass(mapper.ClassId);
+            var classed = await _unitOfWork.ClassRepository.GetByIdAsync(mapper.ClassId);
+            var course = await _unitOfWork.CourseRepository.GetByIdAsync(classed.CourseId);
+            DateTime startDate = (DateTime)schedules1.FirstOrDefault().StartDate;
+
+            int slot = 0;
+            while (slot < course.DurationTotal)
+            {
+                // Kiểm tra xem ngày hiện tại là ngày trong tuần đã chỉ định trong lịch trình hay không
+                if (schedules1.Any(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())))
+                {
+                    // Kiểm tra xem điểm danh cho ngày này đã được tạo hay chưa
+                    var attendance = new CreateAttendanceViewModel
+                    {
+                        ScheduleId = schedules1.FirstOrDefault(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())).Id,
+                        ChildrenProfileId = mapper.ChildrenProfileId,
+                        Date = startDate,
+                        StatusAttendance = StatusAttendance.Future,
+                        Note = ""
+                    };
+
+                    // Lưu danh sách điểm danh vào cơ sở dữ liệu
+                    var attendanceEntity = _mapper.Map<Attendance>(attendance);
+                    await _unitOfWork.AttendanceRepository.AddAsync(attendanceEntity);
+                    slot++;
+                }
+
+                // Tăng ngày startdate lên 1 để chuyển sang ngày tiếp theo
+                startDate = startDate.AddDays(1);
+
+                // Kiểm tra xem số buổi học đã điểm danh có bằng tổng số buổi học không
+                if (slot == course.DurationTotal)
+                {
+                    break; // Kết thúc vòng lặp nếu đã điểm danh đủ số buổi học
+                }
+            }
+
+
+            _unitOfWork.EnrollmentRepository.Update(mapper);
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật tham gia này thất bại");
         }
     }
 }
