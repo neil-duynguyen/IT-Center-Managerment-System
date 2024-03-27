@@ -429,7 +429,7 @@ namespace KidProEdu.Application.Services
                 foreach (var schedule in schedules)
                 {
                     var sm = _mapper.Map<ScheduleForAutoViewModel>(schedule);
-                    var slot = _unitOfWork.SlotRepository.GetAllAsync().Result.Where(x => x.Id == schedule.SlotId && x.IsDeleted == false).ToList();
+                    var slot = _unitOfWork.SlotRepository.GetAllAsync().Result.FirstOrDefault(x => x.Id == schedule.SlotId && x.IsDeleted == false);
                     var room = _unitOfWork.ScheduleRoomRepository.GetAllAsync().Result.Where(x => x.ScheduleId == schedule.Id && x.IsDeleted == false).ToList();
 
                     sm.SlotForSchedule = _mapper.Map<SlotForScheduleViewModel>(slot);
