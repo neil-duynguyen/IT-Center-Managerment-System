@@ -2,7 +2,10 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Schedules;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
+using KidProEdu.Application.ViewModels.ClassViewModels;
+using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
+using KidProEdu.Application.ViewModels.SlotViewModels;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
 using MediatR;
@@ -151,7 +154,8 @@ namespace KidProEdu.Application.Services
                                  {
                                      ClassId = item.Id,
                                      UserAccountId = teacher.Id,
-                                     StartDate = _currentTime.GetCurrentTime()
+                                     StartDate = _currentTime.GetCurrentTime(),
+                                     TeachingStatus = TeachingStatus.Pending
                                  };
                                  await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
                                  fullTeachers.Remove(teacher);
@@ -173,7 +177,8 @@ namespace KidProEdu.Application.Services
                                  {
                                      ClassId = item.Id,
                                      UserAccountId = teacher.Id,
-                                     StartDate = _currentTime.GetCurrentTime()
+                                     StartDate = _currentTime.GetCurrentTime(),
+                                     TeachingStatus = TeachingStatus.Pending
                                  };
                                  await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
                                  partTeachers.Remove(teacher);
@@ -276,7 +281,8 @@ namespace KidProEdu.Application.Services
                             {
                                 ClassId = item.Id,
                                 UserAccountId = teacher.Id,
-                                StartDate = _currentTime.GetCurrentTime()
+                                StartDate = _currentTime.GetCurrentTime(),
+                                TeachingStatus = TeachingStatus.Pending
                             };
                             await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
 
@@ -290,7 +296,8 @@ namespace KidProEdu.Application.Services
                             {
                                 ClassId = item.Id,
                                 UserAccountId = teacher.Id,
-                                StartDate = _currentTime.GetCurrentTime()
+                                StartDate = _currentTime.GetCurrentTime(),
+                                TeachingStatus = TeachingStatus.Pending
                             };
                             await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
 
@@ -337,7 +344,8 @@ namespace KidProEdu.Application.Services
                             {
                                 ClassId = item.Id,
                                 UserAccountId = teacher.Id,
-                                StartDate = _currentTime.GetCurrentTime()
+                                StartDate = _currentTime.GetCurrentTime(),
+                                TeachingStatus = TeachingStatus.Pending
                             };
                             await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
 
@@ -353,7 +361,8 @@ namespace KidProEdu.Application.Services
                             {
                                 ClassId = item.Id,
                                 UserAccountId = teacher.Id,
-                                StartDate = _currentTime.GetCurrentTime()
+                                StartDate = _currentTime.GetCurrentTime(),
+                                TeachingStatus = TeachingStatus.Pending
                             };
                             await _unitOfWork.TeachingClassHistoryRepository.AddAsync(teachingHistory);
                             partTeachers.Remove(teacher);
@@ -403,5 +412,44 @@ namespace KidProEdu.Application.Services
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? list : throw new Exception("Tạo lịch thất bại, hãy đảm bảo đã có lớp, lịch, phòng và giáo viên");
         }
+
+        public async Task<GetAutoScheduleViewModel> GetAutomaticalySchedule()
+        {
+            var getAutoSchedule = new GetAutoScheduleViewModel();
+            var classesModel = new List<ClassForScheduleViewModel>();
+            var schedulesModel = new List<ScheduleForAutoViewModel>();
+            var slotModel = new SlotForScheduleViewModel();
+            var roomModel = new RoomForScheduleViewModel();
+            var histories = await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(new Guid("B01AF4AE-0D7D-4A49-940D-08DC4A7E376A"));
+
+            foreach (var history in histories)
+            {
+                var mapper = _mapper.Map<ClassForScheduleViewModel>(history.Class);
+                var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(history.ClassId);
+                foreach (var schedule in schedules)
+                {
+                    var sm = _mapper.Map<ScheduleForAutoViewModel>(schedule);
+                    var slot = _unitOfWork.SlotRepository.GetAllAsync().Result.Where(x => x.Id == schedule.SlotId && x.IsDeleted == false).ToList();
+                    var room = _unitOfWork.ScheduleRoomRepository.GetAllAsync().Result.Where(x => x.ScheduleId == schedule.Id && x.IsDeleted == false).ToList();
+
+                    sm.SlotForSchedule = _mapper.Map<SlotForScheduleViewModel>(slot);
+                    sm.RoomForSchedule = _mapper.Map<RoomForScheduleViewModel>(room);
+                    schedulesModel.Add(sm);
+
+                }
+                mapper.ScheduleForAuto = schedulesModel;
+                classesModel.Add(mapper);
+
+            }
+            if (histories == null) { }
+
+
+            getAutoSchedule.TeacherId = new Guid("B01AF4AE-0D7D-4A49-940D-08DC4A7E376A");
+            getAutoSchedule.Classes = classesModel;
+
+
+            return getAutoSchedule;
+        }
+
     }
 }

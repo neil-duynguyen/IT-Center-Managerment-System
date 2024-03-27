@@ -22,8 +22,12 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<TeachingClassHistory>> GetClassByTeacherId(Guid id)
         {
-            var teachingHistorys = await _dbContext.TeachingClassHistory.Where(x => x.UserAccountId == id
-            && x.IsDeleted == false && x.TeachingStatus.Equals(Domain.Enums.TeachingStatus.Teaching)).ToListAsync();
+            var teachingHistorys = await _dbContext.TeachingClassHistory
+                .Include(x => x.Class).ThenInclude(x => x.Schedules).ThenInclude(x => x.Slot)
+                .Where(x => x.UserAccountId == id
+                && (x.IsDeleted == false && x.TeachingStatus.Equals(Domain.Enums.TeachingStatus.Teaching)
+                || x.TeachingStatus.Equals(Domain.Enums.TeachingStatus.Pending)))
+                .ToListAsync();
 
             return teachingHistorys;
         }
