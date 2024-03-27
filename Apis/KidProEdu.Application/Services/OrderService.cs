@@ -80,6 +80,24 @@ namespace KidProEdu.Application.Services
             decimal totalPrice = 0;
             var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
+            //kiếm tra xem order đã có url payment chưa
+            if (getOrderById.URLPayment is not null)
+            {
+                //nếu có và quá hạn 7 ngày từ ngày tạo url thanh toán thì reset lại url = null
+                TimeSpan difference = _currentTime.GetCurrentTime().Subtract((DateTime)getOrderById.ModificationDate);
+                if (difference.Days == 7)
+                {
+                    getOrderById.URLPayment = null;
+                    _unitOfWork.OrderRepository.Update(getOrderById);
+                    await _unitOfWork.SaveChangeAsync();
+                }
+                else
+                {
+                    return paymentUrl = getOrderById.URLPayment;
+                }
+            }
+
+            //tính tổng tiền cần thanh toán
             var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
             foreach (var item in getOrderDetail)
             {
@@ -87,7 +105,8 @@ namespace KidProEdu.Application.Services
                 {
                     totalPrice += Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
                 }
-                if (item.InstallmentTerm == 0 && item.PayType.Value == PayType.Banking) {
+                if (item.InstallmentTerm == 0 && item.PayType.Value == PayType.Banking)
+                {
                     totalPrice += (decimal)item.TotalPrice;
                 }
             }
@@ -98,7 +117,7 @@ namespace KidProEdu.Application.Services
                 {
                     CreatePayment createPayment = new CreatePayment();
                     createPayment.PaymentDate = DateTime.Now;
-                    createPayment.ExpireDate = DateTime.Now.AddMinutes(1);
+                    createPayment.ExpireDate = DateTime.Now.AddMinutes(2);
                     createPayment.PaymentContent = "Thanh toán đơn hàng.";
                     createPayment.RequiredAmount = totalPrice;
 
@@ -126,6 +145,9 @@ namespace KidProEdu.Application.Services
                             if (createMomoLinkResult)
                             {
                                 paymentUrl = createMessage;
+                                getOrderById.URLPayment = paymentUrl;
+                                _unitOfWork.OrderRepository.Update(getOrderById);
+                                await _unitOfWork.SaveChangeAsync();
                             }
                             else
                             {
