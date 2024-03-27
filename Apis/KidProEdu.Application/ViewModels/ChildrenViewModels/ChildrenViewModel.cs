@@ -16,6 +16,7 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
         public string? SpecialSkill { get; set; }
         public IList<ClassViewModelInChildren> Classes { get; set; }
         public IList<CourseViewModelInChildren> Courses { get; set; }
+        public IList<ExamViewModelInChildren> Exams { get; set; }
     }
 
     public class ClassViewModelInChildren
@@ -28,5 +29,12 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
     {
         public Guid? CourseId { get; set; }
         public string CourseCode { get; set; }
+    }
+
+    public class ExamViewModelInChildren
+    { 
+        public string? ExamName { get; set;}
+        public DateTime? ExamDate { get; set; }
+        public double Score { get; set; }
     }
 }
