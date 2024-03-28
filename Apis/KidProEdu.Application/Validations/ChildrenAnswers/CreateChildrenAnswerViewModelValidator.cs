@@ -20,7 +20,6 @@ namespace KidProEdu.Application.Validations.ChildrenAnswers
             RuleFor(x => x.QuestionId).NotEmpty().WithMessage("Câu hỏi không được để trống.");
             RuleFor(x => x.Answer).NotEmpty().WithMessage("Câu trả lời không được để trống.");
             RuleFor(x => x.ScorePerQuestion)
-                .NotEmpty().WithMessage("Điểm không được để trống.")
                 .GreaterThanOrEqualTo(0).WithMessage("Điểm phải lớn hơn hoặc bằng 0.");
         }
 
