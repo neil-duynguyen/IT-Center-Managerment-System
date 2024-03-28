@@ -130,7 +130,7 @@ namespace KidProEdu.Application.Services
                     "         Người mượn: " + teacher.FullName + "\n" +
                     "         Email: " + teacher.Email + "\n" +
                     "         Sđt: " + teacher.Phone + "\n" +
-                    "         Mã thiết bị: " + equipment.Code + "\n" +
+                    //"         Mã thiết bị: " + equipment.Code + "\n" +
                     "         Tên thiết bị: " + equipment.Name + "\n" +
                     //"         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
                     "         Ngày hẹn trả: " + equipmentWithLogEquipmentBorrowedViewModel.Log.ReturnedDealine + "\n" +
@@ -266,7 +266,7 @@ namespace KidProEdu.Application.Services
                     "         Người trả: " + teacher.FullName + "\n" +
                     "         Email: " + teacher.Email + "\n" +
                     "         Sđt: " + teacher.Phone + "\n" +
-                    "         Mã thiết bị: " + equipment.Code + "\n" +
+                    //"         Mã thiết bị: " + equipment.Code + "\n" +
                     "         Tên thiết bị: " + equipment.Name + "\n" +
                     //"         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
                     "         Ngày trả: " + mapper2.ReturnedDate + "\n" +
@@ -409,7 +409,7 @@ namespace KidProEdu.Application.Services
                     "         Người mượn: " + teacher.FullName + "\n" +
                     "         Email: " + teacher.Email + "\n" +
                     "         Sđt: " + teacher.Phone + "\n" +
-                    "         Mã thiết bị: " + item.Code + "\n" +
+                    //"         Mã thiết bị: " + item.Code + "\n" +
                     "         Tên thiết bị: " + item.Name + "\n" +
                     "         Ngày hẹn trả: " + item.ReturnedDealine + "\n" +
                     "Vui lòng bỏ qua email nếu bạn đã trả thiết bị rồi. \n\n" +
