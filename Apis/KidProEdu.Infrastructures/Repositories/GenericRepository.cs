@@ -98,5 +98,17 @@ namespace Infrastructures.Repositories
             }
             _dbSet.UpdateRange(entities);
         }
+
+        public void RemoveAsync(TEntity entity)
+        {
+            _dbSet.Remove(entity);
+        }
+
+        public void RemoveRange(List<TEntity> entities)
+        {
+            _dbSet.RemoveRange(entities);
+        }
+
+
     }
 }

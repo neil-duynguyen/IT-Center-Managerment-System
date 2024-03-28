@@ -31,7 +31,7 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateExam(CreateExamViewModel2 createExamViewModel)
+        public async Task<Exam> CreateExam(CreateExamViewModel2 createExamViewModel)
         {
             var validator = new CreateExamViewModelValidator();
             var validationResult = validator.Validate(createExamViewModel);
@@ -51,7 +51,7 @@ namespace KidProEdu.Application.Services
 
             var mapper = _mapper.Map<Exam>(createExamViewModel);
             await _unitOfWork.ExamRepository.AddAsync(mapper);
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo bài kiểm tra thất bại");
+            return await _unitOfWork.SaveChangeAsync() > 0 ? mapper : throw new Exception("Tạo bài kiểm tra thất bại");
         }
 
         public async Task<bool> DeleteExam(Guid id)

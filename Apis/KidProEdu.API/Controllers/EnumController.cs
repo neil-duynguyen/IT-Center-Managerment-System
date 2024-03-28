@@ -78,5 +78,12 @@ namespace KidProEdu.API.Controllers
             List<EnumViewModel> enums = ((SlotType[])Enum.GetValues(typeof(SlotType))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
             return Ok(enums);
         }
+        
+        [HttpGet("TeachingStatus")]
+        public async Task<IActionResult> TeachingStatus()
+        {
+            List<EnumViewModel> enums = ((TeachingStatus[])Enum.GetValues(typeof(TeachingStatus))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            return Ok(enums);
+        }
     }
 }
