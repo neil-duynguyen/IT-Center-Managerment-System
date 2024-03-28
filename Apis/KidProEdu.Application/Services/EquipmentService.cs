@@ -132,7 +132,7 @@ namespace KidProEdu.Application.Services
                     "         Sđt: " + teacher.Phone + "\n" +
                     "         Mã thiết bị: " + equipment.Code + "\n" +
                     "         Tên thiết bị: " + equipment.Name + "\n" +
-                    "         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
+                    //"         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
                     "         Ngày hẹn trả: " + equipmentWithLogEquipmentBorrowedViewModel.Log.ReturnedDealine + "\n" +
                     "Vui lòng trả thiết bị đúng trong thời hạn đã hẹn, xin cảm ơn!. \n\n" +
                     "Trân trọng, \n" +
@@ -268,7 +268,7 @@ namespace KidProEdu.Application.Services
                     "         Sđt: " + teacher.Phone + "\n" +
                     "         Mã thiết bị: " + equipment.Code + "\n" +
                     "         Tên thiết bị: " + equipment.Name + "\n" +
-                    "         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
+                    //"         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
                     "         Ngày trả: " + mapper2.ReturnedDate + "\n" +
                     "Xác nhận yêu cầu trả thành công, xin cảm ơn!. \n\n" +
                     "Trân trọng, \n" +
