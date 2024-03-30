@@ -69,16 +69,36 @@ namespace KidProEdu.Application.Services
             var result = await _unitOfWork.SaveChangeAsync();
             if (result > 0)
             {
-                await SendEmailUtil.SendEmail(mapper.Email, "Xác nhận yêu cầu tư vấn",
-                    "Kính gửi quý phụ huynh, \n\n" +
-                    "Yêu cầu tư vấn của bạn đã được xác nhận, \n" +
-                    "Thông tin:, \n" +
-                    "         Người đăng kí: " + createAdviseRequestViewModel.FullName + "\n" +
-                    "         Email: " + createAdviseRequestViewModel.Email + "\n" +
-                    "         Sđt: " + createAdviseRequestViewModel.Phone + "\n" +
-                    "Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
-                    "Trân trọng, \n" +
-                    "KidPro Education!");
+                if (createAdviseRequestViewModel.TestDate == null && createAdviseRequestViewModel.StartTime == null
+                    && createAdviseRequestViewModel.SlotId == null && createAdviseRequestViewModel.EndTime == null)
+                {
+                    await SendEmailUtil.SendEmail(mapper.Email, "Xác nhận yêu cầu tư vấn",
+                        "Kính gửi quý phụ huynh, \n\n" +
+                        "Yêu cầu tư vấn của bạn đã được xác nhận, \n" +
+                        "Thông tin:, \n" +
+                        "         Người đăng kí: " + createAdviseRequestViewModel.FullName + "\n" +
+                        "         Email: " + createAdviseRequestViewModel.Email + "\n" +
+                        "         Sđt: " + createAdviseRequestViewModel.Phone + "\n" +
+                        "Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
+                        "Trân trọng, \n" +
+                        "KidPro Education!");
+                }
+                else
+                {
+                    await SendEmailUtil.SendEmail(mapper.Email, "Xác nhận yêu cầu tư vấn",
+                        "Kính gửi quý phụ huynh, \n\n" +
+                        "Yêu cầu tư vấn của bạn đã được xác nhận, \n" +
+                        "Thông tin:, \n" +
+                        "         Người đăng kí: " + createAdviseRequestViewModel.FullName + "\n" +
+                        "         Email: " + createAdviseRequestViewModel.Email + "\n" +
+                        "         Sđt: " + createAdviseRequestViewModel.Phone + "\n" +
+                        "         Vào ngày: " + createAdviseRequestViewModel.TestDate + "\n" +
+                        "         Từ " + createAdviseRequestViewModel.StartTime.Value.ToShortTimeString() + "" +
+                        " đến " + createAdviseRequestViewModel.EndTime.Value.ToShortTimeString() + "\n" +
+                        "Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
+                        "Trân trọng, \n" +
+                        "KidPro Education!");
+                }
                 return true;
             }
             else
