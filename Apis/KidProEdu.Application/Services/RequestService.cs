@@ -194,9 +194,9 @@ namespace KidProEdu.Application.Services
                                     .FirstOrDefault(x => x.ClassId == schedule.ClassId);
                                 if (currentHistory != null)
                                 {
-                                    if (schedule.DayInWeek.Equals("5") // 5 8
-                                        || schedule.DayInWeek.Equals("3") // 3 6
-                                        || schedule.DayInWeek.Equals("4")) // 4 7
+                                    if (schedule.DayInWeek.ToLower().Equals("thursday") // 5 8
+                                        || schedule.DayInWeek.ToLower().Equals("tuesday") // 3 6
+                                        || schedule.DayInWeek.ToLower().Equals("wednesday")) // 4 7
                                     {
 
                                         currentHistory.EndDate = changeStatusRequestViewModel.TeachingDate.Value.AddDays(-4);

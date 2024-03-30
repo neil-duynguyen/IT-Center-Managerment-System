@@ -18,5 +18,6 @@ namespace KidProEdu.Application.IRepositories
         Task<List<LogEquipment>> GetLogEquipmentByName(string name);
         Task<List<LogEquipment>> GetLogEquipmentByCode(string code);
         Task<List<LogEquipment>> GetLogEquipmentByStatus(StatusOfEquipment statusOfEquipment);
+        Task<List<LogEquipment>> GetLogEquipmentByReturnDeadline(DateTime returnDeadline);
     }
 }

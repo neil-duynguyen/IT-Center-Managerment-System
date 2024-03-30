@@ -40,5 +40,11 @@ namespace KidProEdu.Infrastructures.Repositories
             var result = await _dbContext.Attendance.FirstOrDefaultAsync(x => x.ScheduleId == scheduleId && x.ChildrenProfileId == childId && x.IsDeleted == false);
             return result;
         }
+
+        public async Task<List<Attendance>> GetListAttendanceByScheduleIdAndChilId(Guid scheduleId, Guid childId)
+        {
+            var attendances = await _dbContext.Attendance.Where(x => x.ChildrenProfileId == childId && x.ScheduleId == scheduleId && !x.IsDeleted).ToListAsync();
+            return attendances;
+        }
     }
 }

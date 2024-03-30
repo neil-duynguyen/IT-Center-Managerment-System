@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240325150559_InitMigration")]
-    partial class InitMigration
+    [Migration("20240327145918_UpdateTableScheduleRoom")]
+    partial class UpdateTableScheduleRoom
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1433,6 +1433,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<double>("TotalAmount")
                         .HasColumnType("float");
 
+                    b.Property<string>("URLPayment")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1541,7 +1544,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("LessionId")
+                    b.Property<Guid?>("LessionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Level")
@@ -1956,6 +1959,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -1970,6 +1976,12 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2879,9 +2891,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     b.HasOne("KidProEdu.Domain.Entities.Lesson", "Lesson")
                         .WithMany("Questions")
-                        .HasForeignKey("LessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LessionId");
 
                     b.Navigation("Lesson");
                 });

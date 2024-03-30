@@ -13,5 +13,7 @@ namespace KidProEdu.Application.Repositories
         void SoftRemove(TEntity entity);
         Task AddRangeAsync(List<TEntity> entities);
         void SoftRemoveRange(List<TEntity> entities);
+        void RemoveAsync(TEntity entity);
+        void RemoveRange(List<TEntity> entities);
     }
 }

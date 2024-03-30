@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KidProEdu.Infrastructures.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigration : Migration
+    public partial class UpdateTableQuestion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -601,7 +601,7 @@ namespace KidProEdu.Infrastructures.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LessionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LessionId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Answer1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Answer2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -625,8 +625,7 @@ namespace KidProEdu.Infrastructures.Migrations
                         name: "FK_Question_Lesson_LessionId",
                         column: x => x.LessionId,
                         principalTable: "Lesson",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -879,6 +878,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalAmount = table.Column<double>(type: "float", nullable: false),
                     PaymentStatus = table.Column<int>(type: "int", nullable: false),
+                    URLPayment = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),

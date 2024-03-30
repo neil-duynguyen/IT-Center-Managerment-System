@@ -73,6 +73,16 @@ namespace KidProEdu.Infrastructures.Repositories
             return logEquipments;
         }
 
+        public async Task<List<LogEquipment>> GetLogEquipmentByReturnDeadline(DateTime returnDeadline)
+        {
+            var logEquipments = await _dbContext.LogEquipment
+                .Where(x => x.ReturnedDealine.Value.Date == returnDeadline.Date
+                && x.Status == StatusOfEquipment.Borrowed && x.IsDeleted == false)
+                .ToListAsync();
+
+            return logEquipments;
+        }
+
 
     }
 }

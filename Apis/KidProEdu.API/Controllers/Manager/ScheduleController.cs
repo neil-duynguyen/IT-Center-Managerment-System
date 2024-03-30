@@ -1,6 +1,7 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KidProEdu.API.Controllers.Manager
 {
@@ -21,17 +22,32 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _scheduleService.GetSchedules());
         }
 
-        [HttpGet("AutomaticalySchedule")]
+        [HttpGet("GetAutomaticalySchedule")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> AutomaticalySchedule()
+        public async Task<IActionResult> GetAutomaticalySchedule()
         {
             try
             {
-                var model = await _scheduleService.AutomaticalySchedule();
-                if (model.CountSchedule > 0 || model.CountRoom > 0)
+                return Ok(await _scheduleService.GetAutomaticalySchedule());
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("CreateAutomaticalySchedule")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> CreateAutomaticalySchedule()
+        {
+            try
+            {
+                var model = await _scheduleService.CreateAutomaticalySchedule();
+                if (!model.IsNullOrEmpty())
                 {
-                    return Ok("Còn " + model.CountSchedule + " lớp chưa được xếp giáo viên \n" +
-                              "Còn " + model.CountRoom + " lớp chưa được xếp phòng");
+                    return Ok("Còn " + model.FirstOrDefault().CountSchedule + " lớp chưa được xếp giáo viên \n" +
+                              "Còn " + model.FirstOrDefault().CountRoom + " lớp chưa được xếp phòng");
                 }
                 else
                 {

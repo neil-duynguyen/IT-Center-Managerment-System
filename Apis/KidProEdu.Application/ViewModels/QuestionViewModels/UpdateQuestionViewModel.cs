@@ -10,7 +10,7 @@ namespace KidProEdu.Application.ViewModels.QuestionViewModels
     public class UpdateQuestionViewModel
     {
         public Guid Id { get; set; }
-        public Guid LessionId { get; set; }
+        public Guid? LessionId { get; set; }
         public string Title { get; set; }
         public string? Answer1 { get; set; }
         public string? Answer2 { get; set; }
