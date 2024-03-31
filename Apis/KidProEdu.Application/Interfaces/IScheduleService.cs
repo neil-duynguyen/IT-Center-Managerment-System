@@ -16,5 +16,6 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> DeleteSchedule(Guid scheduleId);
         Task<List<AutoScheduleViewModel>> CreateAutomaticalySchedule();
         Task<GetAutoScheduleViewModel> GetAutomaticalySchedule();
+        Task<bool> ChangeRoomForSchedule(ChangeRoomForScheduleViewModel changeRoomForScheduleViewModel);
     }
 }
