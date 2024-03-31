@@ -477,5 +477,14 @@ namespace KidProEdu.Application.Services
             return getAutoSchedule;
         }
 
+
+        public async Task<bool> ChangeRoomForSchedule(ChangeRoomForScheduleViewModel changeRoomForScheduleViewModel)
+        {
+
+
+
+
+            return true;
+        }
     }
 }
