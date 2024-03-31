@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240327145918_UpdateTableScheduleRoom")]
-    partial class UpdateTableScheduleRoom
+    [Migration("20240331071125_InitMirgation")]
+    partial class InitMirgation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -448,6 +448,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<string>("SpecialSkill")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
