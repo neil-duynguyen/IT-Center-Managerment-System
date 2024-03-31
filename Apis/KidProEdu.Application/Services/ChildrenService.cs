@@ -146,6 +146,11 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Không tìm thấy học sinh này");
             }
 
+            if (children.Status == StatusChildrenProfile.Reserve)
+            {
+                throw new Exception("Học sinh này đã bảo lưu rồi");
+            }
+
 
             foreach (var schedule in schedules)
             {

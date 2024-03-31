@@ -12,6 +12,7 @@ namespace KidProEdu.Application.Interfaces
     {
         Task<bool> CreateEnrollment(CreateEnrollmentViewModel createEnrollmentViewModel);
         Task<bool> UpdateEnrollment(UpdateEnrollmentViewModel updateEnrollmentViewModel);
+        Task<bool> UpdateEnrollmentStudying(UpdateEnrollmentViewModel updateEnrollmentViewModel);
         Task<List<EnrollmentViewModel>> GetEnrollment();
         Task<List<EnrollmentViewModel>> GetEnrollmentById(Guid Id);
         Task<List<EnrollmentViewModel>> GetEnrollmentsByClassId(Guid Id);

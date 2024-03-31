@@ -16,5 +16,6 @@ namespace KidProEdu.Application.IRepositories
         Task<Attendance> GetAttendanceByScheduleIdAndChilId(Guid scheduleId, Guid childId);
         Task<List<Attendance>> GetListAttendanceByScheduleIdAndChilId(Guid scheduleId, Guid childId);
         Task<List<Attendance>> GetListAttendanceByScheduleIdAndChilIdAndStatusFuture(Guid scheduleId, Guid childId);
+        Task<Attendance> GetListAttendanceByClassIdAndChilIdAndOutOfStatusFuture(Guid classId, Guid childId);
     }
 }
