@@ -137,8 +137,8 @@ namespace KidProEdu.Application.Services
         public class PaymentInformationView
         {
             public string CourseCode { get; set; }
-            public decimal TotalAmount { get; set; }
             public string Month { get; set; }
+            public decimal AmountPerMonth { get; set; }
         }
 
 
