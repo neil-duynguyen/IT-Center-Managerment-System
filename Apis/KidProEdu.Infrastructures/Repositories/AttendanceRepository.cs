@@ -59,6 +59,26 @@ namespace KidProEdu.Infrastructures.Repositories
             var attendance = _dbContext.Attendance.Include(x => x.Schedule).Where(x => x.ChildrenProfileId == childId && x.Schedule.ClassId == classId && x.StatusAttendance != StatusAttendance.Future && !x.IsDeleted).OrderByDescending(x => x.Date).FirstOrDefault();
             return attendance;
         }
+
+        public async Task<List<Attendance>> GetListAttendanceByCourseIdAndChildId(Guid courseId, Guid childId)
+        {
+            var attendanceList = await _dbContext.Attendance
+                .Include(x => x.Schedule)
+                    .ThenInclude(x => x.Slot)
+                .Include(x => x.Schedule.Class)
+                    .ThenInclude(x => x.Course)
+                .Include(x => x.Schedule.Class)
+                    .ThenInclude(x => x.TeachingClassHistories)
+                        .ThenInclude(x => x.UserAccount)
+                .Include(x => x.Schedule)
+                    .ThenInclude(x => x.ScheduleRooms)
+                        .ThenInclude(x => x.Room)
+                .Where(x => x.ChildrenProfileId == childId && x.Schedule.Class.CourseId == courseId && !x.IsDeleted)
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+
+            return attendanceList;
+        }
     }
     
 }
