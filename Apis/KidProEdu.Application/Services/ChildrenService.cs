@@ -4,6 +4,7 @@ using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Children;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -124,6 +125,39 @@ namespace KidProEdu.Application.Services
         {
             var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.UserId == Id).ToList();
             return _mapper.Map<List<ChildrenViewModel>>(getChildrens);
+        }
+
+        public async Task<bool> ChildrenReserve(ChildrenReserveViewModel childrenReserveViewModel)
+        {
+            var validator = new ChildrenReserveViewModelValidator();
+            var validatorResult = await validator.ValidateAsync(childrenReserveViewModel);
+            if (!validatorResult.IsValid)
+            {
+                foreach (var error in validatorResult.Errors)
+                {
+                    throw new Exception(error.ErrorMessage);
+                }
+            }
+
+            var children = await _unitOfWork.ChildrenRepository.GetByIdAsync(childrenReserveViewModel.ChildrenProfileId);
+            var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(childrenReserveViewModel.ClassId);
+            if(children == null)
+            {
+                throw new Exception("Không tìm thấy học sinh này");
+            }
+
+
+            foreach (var schedule in schedules)
+            {
+                var attendances = await _unitOfWork.AttendanceRepository.GetListAttendanceByScheduleIdAndChilIdAndStatusFuture(schedule.Id, childrenReserveViewModel.ChildrenProfileId);
+                _unitOfWork.AttendanceRepository.RemoveRange(attendances);
+                await _unitOfWork.SaveChangeAsync();
+            }
+
+            children.Status = StatusChildrenProfile.Reserve;
+            _unitOfWork.ChildrenRepository.Update(children);
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật bảo lưu thất bại");
+
         }
     }
 }

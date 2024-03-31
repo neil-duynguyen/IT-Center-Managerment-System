@@ -48,6 +48,21 @@ namespace KidProEdu.API.Controllers
             }
         }
 
+        [HttpPut("/ChildrenReserve")]
+        //[Authorize(Roles = ("Staff"))]
+        public async Task<IActionResult> ChildrenReserve(ChildrenReserveViewModel childrenReserveViewModel)
+        {
+            try
+            {
+                var result = await _childrenService.ChildrenReserve(childrenReserveViewModel);
+                return Ok("Cập nhật bảo lưu thành công.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("GetChildrensByStaffId")]
         [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> GetChildrensByStaffId()

@@ -3,6 +3,7 @@ using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Application.Repositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,12 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<Attendance>> GetListAttendanceByScheduleIdAndChilId(Guid scheduleId, Guid childId)
         {
             var attendances = await _dbContext.Attendance.Where(x => x.ChildrenProfileId == childId && x.ScheduleId == scheduleId && !x.IsDeleted).ToListAsync();
+            return attendances;
+        }
+
+        public async Task<List<Attendance>> GetListAttendanceByScheduleIdAndChilIdAndStatusFuture(Guid scheduleId, Guid childId)
+        {
+            var attendances = await _dbContext.Attendance.Where(x => x.ChildrenProfileId == childId && x.ScheduleId == scheduleId && x.StatusAttendance == StatusAttendance.Future && !x.IsDeleted).ToListAsync();
             return attendances;
         }
     }
