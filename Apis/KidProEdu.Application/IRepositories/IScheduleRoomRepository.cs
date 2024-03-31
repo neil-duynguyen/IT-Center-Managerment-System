@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Repositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace KidProEdu.Application.IRepositories
 {
     public interface IScheduleRoomRepository : IGenericRepository<ScheduleRoom>
     {
+        Task<List<ScheduleRoom>> GetScheduleRoomByStatus(ScheduleRoomStatus status);
     }
 }
