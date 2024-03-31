@@ -2,6 +2,7 @@
 using KidProEdu.Application.PaymentService.Dtos;
 using KidProEdu.Application.PaymentService.Momo.Request;
 using KidProEdu.Application.PaymentService.Payment.Commands;
+using KidProEdu.Application.PaymentService.VnPay.Response;
 using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using MediatR;
@@ -99,7 +100,22 @@ namespace KidProEdu.API.Controllers.Staff
 
             // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
             return RedirectToAction("ShowPaymentResult", paymentResult);
+        }
 
+        [HttpGet]
+        [Route("vnpay-return")]
+        public async Task<IActionResult> VnPayReturn([FromQuery] VnpayPayResponse response)
+        {
+            var result = await _orderService.ProcessVnPaymentReturnHandler(response);
+
+            var paymentResult = new
+            {
+                message = result.Message, // Thông báo giao dịch
+                redirectUrl = result.RedirectUrl // URL chuyển hướng
+            };
+
+            // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
+            return RedirectToAction("ShowPaymentResult", paymentResult);
         }
 
         [HttpGet]

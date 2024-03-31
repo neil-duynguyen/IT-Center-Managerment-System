@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.PaymentService.Momo.Request;
+using KidProEdu.Application.PaymentService.VnPay.Request;
+using KidProEdu.Application.PaymentService.VnPay.Response;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 namespace KidProEdu.Application.Services
@@ -17,14 +21,16 @@ namespace KidProEdu.Application.Services
         private readonly IClaimsService _claimsService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public OrderService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, IConfiguration configuration)
+        public OrderService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
             _claimsService = claimsService;
             _mapper = mapper;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<OrderViewModel>> GetOrderByStaffId()
@@ -124,12 +130,28 @@ namespace KidProEdu.Application.Services
 
                     switch (PaymentDestination)
                     {
-                        /*case "VNPAY":
-                            var vnpayPayRequest = new VnpayPayRequest(vnpayConfig.Version,
-                                vnpayConfig.TmnCode, DateTime.Now, currentUserService.IpAddress ?? string.Empty, request.RequiredAmount ?? 0, request.PaymentCurrency ?? string.Empty,
-                                "other", request.PaymentContent ?? string.Empty, vnpayConfig.ReturnUrl, outputIdParam!.Value?.ToString() ?? string.Empty);
-                            paymentUrl = vnpayPayRequest.GetLink(vnpayConfig.PaymentUrl, vnpayConfig.HashSecret);
-                            break;*/
+                        case "VNPAY":
+                            var vnpayPayRequest = new VnpayPayRequest(_configuration["Vnpay:Version"],
+                                _configuration["Vnpay:TmnCode"], 
+                                DateTime.Now, _httpContextAccessor?.HttpContext?.Connection?.LocalIpAddress?.ToString(), 
+                                createPayment.RequiredAmount ?? 0,
+                                "other", createPayment.PaymentContent ?? string.Empty, 
+                                _configuration["Vnpay:ReturnUrl"], getOrderById.Id.ToString() ?? string.Empty);
+
+                            paymentUrl = vnpayPayRequest.GetLink(_configuration["Vnpay:PaymentUrl"], _configuration["Vnpay:HashSecret"]);
+
+                            if (paymentUrl is not null)
+                            {
+                                getOrderById.URLPayment = paymentUrl;
+                                _unitOfWork.OrderRepository.Update(getOrderById);
+                                await _unitOfWork.SaveChangeAsync();
+                            }
+                            else
+                            {
+                                throw new Exception("Tạo thông tin thanh toán thất bại.");
+                            }
+
+                            break;
 
                         case "MOMO":
                             var momoOneTimePayRequest = new MomoOneTimePaymentRequest(
@@ -153,7 +175,7 @@ namespace KidProEdu.Application.Services
                             }
                             else
                             {
-                                throw new Exception(createMessage);
+                                throw new Exception("Tạo thông tin thanh toán thất bại.");
                             }
                             break;
 
@@ -184,6 +206,7 @@ namespace KidProEdu.Application.Services
             throw new Exception("Không tìm thấy đơn hàng.");
         }
 
+        //xử lý giao dịch momo
         public async Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response)
         {
             string returnUrl = _configuration["Momo:RedirectUrl"];
@@ -226,6 +249,76 @@ namespace KidProEdu.Application.Services
                     else
                     {
                         var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(Guid.Parse(response.orderId));
+                        getOrder.PaymentStatus = Domain.Enums.StatusPayment.Cancel;
+                        _unitOfWork.OrderRepository.Update(getOrder);
+                        await _unitOfWork.SaveChangeAsync();
+
+                        result = new BaseResult()
+                        {
+                            Message = "Thanh toán không thành công",
+                            RedirectUrl = returnUrl
+                        };
+                    }
+                }
+                else
+                {
+                    result = new BaseResult()
+                    {
+                        Message = "Chữ ký phản hồi không hợp lệ",
+                        RedirectUrl = returnUrl
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
+
+        //xử lý giao dịch vnpay
+        public async Task<BaseResult> ProcessVnPaymentReturnHandler(VnpayPayResponse response)
+        {
+            string returnUrl = _configuration["Momo:RedirectUrl"];
+            var result = new BaseResult();
+            try
+            {
+                //var resultData = new PaymentReturnDtos();
+                var isValidSignature = response.IsValidSignature(_configuration["Vnpay:HashSecret"]);
+
+                if (isValidSignature)
+                {
+
+                    if (response.vnp_ResponseCode == "00")
+                    {
+                        var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(Guid.Parse(response.vnp_TxnRef));
+                        getOrder.PaymentStatus = Domain.Enums.StatusPayment.Paid;
+                        _unitOfWork.OrderRepository.Update(getOrder);
+                        await _unitOfWork.SaveChangeAsync();
+
+                        var createTransaction = await CreateTransaction(Guid.Parse(response.vnp_TxnRef));
+
+                        if (createTransaction)
+                        {
+                            result = new BaseResult()
+                            {
+                                Message = "Thanh toán thành công.",
+                                RedirectUrl = returnUrl
+                            };
+                        }
+                        else
+                        {
+                            result = new BaseResult()
+                            {
+                                Message = "Tạo giao dịch thất bại.",
+                                RedirectUrl = returnUrl
+                            };
+                        }
+
+                    }
+                    else
+                    {
+                        var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(Guid.Parse(response.vnp_TxnRef));
                         getOrder.PaymentStatus = Domain.Enums.StatusPayment.Cancel;
                         _unitOfWork.OrderRepository.Update(getOrder);
                         await _unitOfWork.SaveChangeAsync();
@@ -326,7 +419,6 @@ namespace KidProEdu.Application.Services
             return false;
         }
     }
-
 
     public class CreatePayment
     {
