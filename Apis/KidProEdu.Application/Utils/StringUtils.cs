@@ -56,5 +56,10 @@ namespace KidProEdu.Application.Utils
             // Chuyển đổi StringBuilder thành chuỗi và trả về
             return builder.ToString();
         }
+
+        public static long GetTimeStamp(this DateTime date)
+        {
+            return (long)(date.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
+        }
     }
 }

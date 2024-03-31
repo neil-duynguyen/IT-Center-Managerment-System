@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.PaymentService.Momo.Request;
+using KidProEdu.Application.Utils;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
@@ -73,7 +74,7 @@ namespace KidProEdu.Application.Services
         }
 
 
-        public async Task<string> CreatePaymentHandler(Guid orderId)
+        public async Task<string> CreatePaymentHandler(string PaymentDestination, Guid orderId)
         {
 
             string paymentUrl = string.Empty;
@@ -121,7 +122,7 @@ namespace KidProEdu.Application.Services
                     createPayment.PaymentContent = "Thanh toán đơn hàng.";
                     createPayment.RequiredAmount = totalPrice;
 
-                    switch (createPayment.PaymentDestinationId)
+                    switch (PaymentDestination)
                     {
                         /*case "VNPAY":
                             var vnpayPayRequest = new VnpayPayRequest(vnpayConfig.Version,
@@ -129,6 +130,7 @@ namespace KidProEdu.Application.Services
                                 "other", request.PaymentContent ?? string.Empty, vnpayConfig.ReturnUrl, outputIdParam!.Value?.ToString() ?? string.Empty);
                             paymentUrl = vnpayPayRequest.GetLink(vnpayConfig.PaymentUrl, vnpayConfig.HashSecret);
                             break;*/
+
                         case "MOMO":
                             var momoOneTimePayRequest = new MomoOneTimePaymentRequest(
                                 _configuration["Momo:PartnerCode"],
@@ -148,6 +150,23 @@ namespace KidProEdu.Application.Services
                                 getOrderById.URLPayment = paymentUrl;
                                 _unitOfWork.OrderRepository.Update(getOrderById);
                                 await _unitOfWork.SaveChangeAsync();
+                            }
+                            else
+                            {
+                                throw new Exception(createMessage);
+                            }
+                            break;
+
+                        case "ZALOPAY":
+                            var zalopayPayRequest = new CreateZalopayPayRequest(int.Parse(_configuration["ZaloPay:AppId"]), _configuration["ZaloPay:AppUser"],
+                                DateTime.Now.GetTimeStamp(), (long)createPayment.RequiredAmount!, DateTime.Now.ToString("yyMMdd") + "_" + Guid.NewGuid().ToString(),
+                                "zalopayapp", createPayment.PaymentContent ?? string.Empty);
+
+                            zalopayPayRequest.MakeSignature(_configuration["ZaloPay:Key1"]);
+                            (bool createZaloPayLinkResult, string? createZaloPayMessage) = zalopayPayRequest.GetLink(_configuration["ZaloPay:PaymentUrl"]);
+                            if (createZaloPayLinkResult)
+                            {
+                                paymentUrl = createZaloPayMessage;
                             }
                             else
                             {
@@ -319,7 +338,6 @@ namespace KidProEdu.Application.Services
         public DateTime ExpireDate { get; set; }
         public string? PaymentLanguage { get; set; } = "vn";
         public string? MerchantId { get; set; } = string.Empty;
-        public string? PaymentDestinationId { get; set; } = "MOMO";
         public string? Signature { get; set; } = string.Empty;
     }
     public class BaseResult

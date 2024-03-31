@@ -70,12 +70,12 @@ namespace KidProEdu.API.Controllers.Staff
             }
         }*/
 
-        [HttpPost("CreatePayment/{orderId}")]
-        public async Task<IActionResult> CreatePayment(Guid orderId)
+        [HttpPost("CreatePayment")]
+        public async Task<IActionResult> CreatePayment(string PaymentDestination, Guid orderId)
         {
             try
             {
-                var result = await _orderService.CreatePaymentHandler(orderId);
+                var result = await _orderService.CreatePaymentHandler(PaymentDestination, orderId);
                 return Ok(result);
             }
             catch (Exception ex)
