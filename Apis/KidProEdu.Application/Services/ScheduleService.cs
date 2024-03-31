@@ -44,11 +44,11 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var schedule = await _unitOfWork.ScheduleRepository.GetScheduleByClass(createScheduleViewModel.ClassId);
+            /*var schedule = await _unitOfWork.ScheduleRepository.GetScheduleByClass(createScheduleViewModel.ClassId);
             if (!schedule.IsNullOrEmpty())
             {
                 throw new Exception("Lịch đã tồn tại");
-            }
+            }*/
 
             var mapper = _mapper.Map<Schedule>(createScheduleViewModel);
             // Thêm danh sách Attendance vào unitOfWork           
@@ -123,7 +123,7 @@ namespace KidProEdu.Application.Services
             /* schedule.Name = updateScheduleViewModel.Name;
              schedule.Status = updateScheduleViewModel.Status;*/
 
-            _unitOfWork.ScheduleRepository.Update(schedule);
+            _unitOfWork.ScheduleRepository.Update(_mapper.Map(updateScheduleViewModel, schedule));
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật lịch thất bại");
         }
 
@@ -230,6 +230,22 @@ namespace KidProEdu.Application.Services
         {
             int countSchedule = 0;
             int countRoom = 0;
+
+            var pendingHistory = await _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByStatus(TeachingStatus.Pending);
+            var anotherStatusHistory = _unitOfWork.TeachingClassHistoryRepository.GetAllAsync().Result.Any(x => x.TeachingStatus == TeachingStatus.Teaching || x.TeachingStatus == TeachingStatus.Substitute);
+            var pendingScheduleRoom = await _unitOfWork.ScheduleRoomRepository.GetScheduleRoomByStatus(ScheduleRoomStatus.Pending);
+            var anotherStatusScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetAllAsync().Result.Any(x => x.Status == ScheduleRoomStatus.Using || x.Status == ScheduleRoomStatus.Temp);
+
+            if (anotherStatusHistory || anotherStatusScheduleRoom) //nếu có bất kì lịch hoặc phòng nào được xếp trước đó mà đã hoạt động
+            {
+                throw new Exception("Xếp lịch không thành công, đã có lịch hoặc phòng được xếp trước đó và đã hoạt động");
+            }
+            else // ngược lại khi cả lịch và phòng chỉ mới được xếp mà chưa hoạt động (pending) thì xóa đi xếp lại 
+            {
+                _unitOfWork.TeachingClassHistoryRepository.RemoveRange(pendingHistory);
+                _unitOfWork.ScheduleRoomRepository.RemoveRange(pendingScheduleRoom);
+            }
+
             var slots = _unitOfWork.SlotRepository.GetAllAsync().Result.Where(x => x.SlotType == SlotType.Course).ToList();
 
             var rooms = await _unitOfWork.RoomRepository.GetRoomByStatus(StatusOfRoom.Empty); //lấy list phòng trống
@@ -254,7 +270,7 @@ namespace KidProEdu.Application.Services
             {
                 var tempFullTeachers = new Queue<UserAccount>();
                 var tempPartTeachers = new Queue<UserAccount>();
-                var classes = await _unitOfWork.ClassRepository.GetClassBySlot(i); //lấy list lớp học theo từng slot
+                var classes = await _unitOfWork.ClassRepository.GetClassBySlot(i); //lấy list lớp học pending theo từng slot
 
                 //add lại queue chính từ queue tạm cho full/part
                 while (tempFullTeachers.Count > 0)
@@ -423,7 +439,6 @@ namespace KidProEdu.Application.Services
             var classesModel = new List<ClassForScheduleViewModel>();
             var schedulesModel = new List<ScheduleForAutoViewModel>();
             //var slotModel = new SlotForScheduleViewModel();
-            var roomsModel = new List<RoomForScheduleViewModel>();
             var histories = await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(new Guid("B01AF4AE-0D7D-4A49-940D-08DC4A7E376A"));
 
             foreach (var history in histories)
@@ -432,6 +447,7 @@ namespace KidProEdu.Application.Services
                 var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(history.ClassId);
                 foreach (var schedule in schedules)
                 {
+                    var roomsModel = new List<RoomForScheduleViewModel>();
                     var sm = _mapper.Map<ScheduleForAutoViewModel>(schedule);
                     var slot = _unitOfWork.SlotRepository.GetAllAsync().Result.FirstOrDefault(x => x.Id == schedule.SlotId && x.IsDeleted == false);
                     var scheduleRooms = _unitOfWork.ScheduleRoomRepository.GetAllAsync().Result

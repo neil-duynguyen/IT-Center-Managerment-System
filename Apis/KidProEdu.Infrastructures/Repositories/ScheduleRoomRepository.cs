@@ -2,6 +2,8 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,14 @@ namespace KidProEdu.Infrastructures.Repositories
         public ScheduleRoomRepository(AppDbContext context, ICurrentTime timeService, IClaimsService claimsService) : base(context, timeService, claimsService)
         {
             _dbContext = context;
+        }
+
+        public async Task<List<ScheduleRoom>> GetScheduleRoomByStatus(ScheduleRoomStatus status)
+        {
+            var scheduleRooms = await _dbContext.ScheduleRoom.Where(x => x.Status.Equals(status)
+            && x.IsDeleted == false).ToListAsync();
+
+            return scheduleRooms;
         }
     }
 }
