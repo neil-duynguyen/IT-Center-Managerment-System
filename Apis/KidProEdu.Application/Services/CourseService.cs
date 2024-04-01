@@ -120,15 +120,24 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
-       /* public async Task<bool> UpdateCourseAsync(CreateCourseViewModel createCourseViewModel)
+        public async Task<List<CourseViewModel>> GetAllCourseByChildId(Guid childId)
         {
-            //check duplicate course name
-            var checkName = await _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.Id != );
+            var courses = await _unitOfWork.CourseRepository.GetListCourseByChildrenId(childId);
+            var mapper = _mapper.Map<List<CourseViewModel>>(courses);
+            return mapper;
+        }
 
-            checkName.FirstOrDefault(x => x.Name.Equals(createCourseViewModel.Name, StringComparison.OrdinalIgnoreCase));
 
 
-            return true;
-        }*/
+        /* public async Task<bool> UpdateCourseAsync(CreateCourseViewModel createCourseViewModel)
+         {
+             //check duplicate course name
+             var checkName = await _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.Id != );
+
+             checkName.FirstOrDefault(x => x.Name.Equals(createCourseViewModel.Name, StringComparison.OrdinalIgnoreCase));
+
+
+             return true;
+         }*/
     }
 }

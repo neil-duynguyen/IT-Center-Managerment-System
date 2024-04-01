@@ -48,6 +48,12 @@ namespace KidProEdu.API.Controllers.Admin
             return Ok(await _courseService.GetAllCourse());
         }
 
+        [HttpGet("Courses/{childrenId}")]
+        public async Task<IActionResult> GetAllCoursesByChilrenId(Guid childrenId)
+        {
+            return Ok(await _courseService.GetAllCourseByChildId(childrenId));
+        }
+
         [HttpGet("GetCourseById/{Id}")]
         public async Task<IActionResult> GetCOurseById(Guid Id)
         {
