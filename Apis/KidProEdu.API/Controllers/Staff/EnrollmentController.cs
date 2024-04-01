@@ -96,5 +96,28 @@ namespace KidProEdu.API.Controllers.Staff
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpDelete]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> DeleteEnrolled(Guid classId, Guid childId)
+        {
+            try
+            {
+                var result = await _enrollmentServices.DeleteEnrollment(classId, childId);
+                if (result)
+                {
+                    return Ok("Tham gia lớp học đã được xóa thành công");
+                }
+                else
+                {
+                    return BadRequest("Tham gia lớp học đã được xóa thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

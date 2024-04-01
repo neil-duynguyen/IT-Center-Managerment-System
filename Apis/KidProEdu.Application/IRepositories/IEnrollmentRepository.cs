@@ -12,5 +12,7 @@ namespace KidProEdu.Application.IRepositories
     public interface IEnrollmentRepository : IGenericRepository<Enrollment>
     {
         Task<List<Enrollment>> GetEnrollmentsByClassId(Guid Id);
+
+        Task<Enrollment> GetEnrollmentsByClassIdAndChildrenProfileId(Guid classId, Guid childId);
     }
 }

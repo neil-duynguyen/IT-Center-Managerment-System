@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZXing;
 
 namespace KidProEdu.Application.Services
 {
@@ -34,6 +35,14 @@ namespace KidProEdu.Application.Services
 
         public async Task<bool> CreateEnrollment(CreateEnrollmentViewModel createEnrollmentViewModel)
         {
+            //check enrolled
+            var enrolled = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassIdAndChildrenProfileId(createEnrollmentViewModel.ClassId, createEnrollmentViewModel.ChildrenProfileId);
+            if (enrolled != null)
+            {
+                throw new Exception("Bạn đã tham gia lớp này rồi!");
+            }
+
+
             //check number children in class
             var getNumbderChildren = await _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId);
 
@@ -42,8 +51,9 @@ namespace KidProEdu.Application.Services
             var getPriceClass = _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId).Result.Course.Price;
 
             //update ActualNumber in class
-            var updateActualNumber = await _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId);
-            updateActualNumber.ActualNumber = getNumbderChildren.Enrollments.Count + 1;
+            var updateActualNumberClass = await _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId);
+            updateActualNumberClass.ActualNumber += 1;
+            _unitOfWork.ClassRepository.Update(updateActualNumberClass);
 
             var mapper = _mapper.Map<Enrollment>(createEnrollmentViewModel);
             mapper.RegisterDate = _currentTime.GetCurrentTime();
@@ -92,7 +102,38 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Đăng kí thất bại.");
         }
 
-        public async Task<bool> DeleteEnrollment(Guid idChildren)
+        public async Task<bool> DeleteEnrollment(Guid classId, Guid childId)
+        {
+            var getEnrollment = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassIdAndChildrenProfileId(classId, childId);
+            if (getEnrollment == null)
+            {
+                throw new Exception("Không tìm thấy tham gia của học sinh ở lớp này");
+            }
+            else
+            {
+                //update ActualNumber in class
+                var updateActualNumberClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
+                updateActualNumberClass.ActualNumber = updateActualNumberClass.ActualNumber - 1;
+                _unitOfWork.ClassRepository.Update(updateActualNumberClass);
+
+                //delete attendance 
+                var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(classId);
+                foreach (var schedule in schedules)
+                {
+                    var attendances = await _unitOfWork.AttendanceRepository.GetListAttendanceByScheduleIdAndChilId(schedule.Id, childId);
+                    _unitOfWork.AttendanceRepository.RemoveRange(attendances);
+                    await _unitOfWork.SaveChangeAsync();
+                }
+
+                //delete enrolled
+                _unitOfWork.EnrollmentRepository.SoftRemove(getEnrollment);
+                return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
+            }
+
+
+        }
+
+        /*public async Task<bool> DeleteEnrollment(Guid idChildren)
         { 
             var getEnrollment = await _unitOfWork.EnrollmentRepository.GetByIdAsync(idChildren);
 
@@ -100,7 +141,7 @@ namespace KidProEdu.Application.Services
 
             _unitOfWork.EnrollmentRepository.SoftRemove(getEnrollment);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
-        }
+        }*/
 
         //Lấy những children mà staff đã đăng kí dành cho staff dùng để quản lý n children là staff chụi trách nhiệm quản lý
         public async Task<List<EnrollmentViewModel>> GetEnrollment()
@@ -145,6 +186,13 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Không tìm thấy tham gia này");
             }
 
+            if(result.ClassId == updateEnrollmentViewModel.ClassId)
+            {
+                throw new Exception("Bạn đang học lớp này");
+            }
+
+
+            //delete attendance old schedule
             var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);
             foreach(var schedule in schedules)
             {
@@ -152,6 +200,16 @@ namespace KidProEdu.Application.Services
                 _unitOfWork.AttendanceRepository.RemoveRange(attendances);
                 await _unitOfWork.SaveChangeAsync();
             }
+
+            //update ActualNumber in new class
+            var updateActualNumberNewClass = await _unitOfWork.ClassRepository.GetByIdAsync(updateEnrollmentViewModel.ClassId);
+            updateActualNumberNewClass.ActualNumber = updateActualNumberNewClass.ActualNumber + 1;
+            _unitOfWork.ClassRepository.Update(updateActualNumberNewClass);
+
+            //update ActualNumber in old class
+            var updateActualNumberOldClass = await _unitOfWork.ClassRepository.GetByIdAsync(result.ClassId);
+            updateActualNumberOldClass.ActualNumber = updateActualNumberOldClass.ActualNumber - 1;
+            _unitOfWork.ClassRepository.Update(updateActualNumberOldClass);
 
             var mapper = _mapper.Map<Enrollment>(result);
             mapper.ClassId = updateEnrollmentViewModel.ClassId;
@@ -216,6 +274,8 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Không tìm thấy tham gia này");
             }
             int slot = 0;
+
+            //delete old schedule chua hoc
             var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);
             foreach (var schedule in schedules)
             {
@@ -224,6 +284,17 @@ namespace KidProEdu.Application.Services
                 _unitOfWork.AttendanceRepository.RemoveRange(attendances);
                 await _unitOfWork.SaveChangeAsync();
             }
+
+            //update ActualNumber in new class
+            var updateActualNumberNewClass = await _unitOfWork.ClassRepository.GetByIdAsync(updateEnrollmentViewModel.ClassId);
+            updateActualNumberNewClass.ActualNumber = updateActualNumberNewClass.ActualNumber + 1;
+            _unitOfWork.ClassRepository.Update(updateActualNumberNewClass);
+
+            //update ActualNumber in old class
+            var updateActualNumberOldClass = await _unitOfWork.ClassRepository.GetByIdAsync(result.ClassId);
+            updateActualNumberOldClass.ActualNumber = updateActualNumberOldClass.ActualNumber - 1;
+            _unitOfWork.ClassRepository.Update(updateActualNumberOldClass);
+
             var attendanceCheckTime = await _unitOfWork.AttendanceRepository.GetListAttendanceByClassIdAndChilIdAndOutOfStatusFuture(result.ClassId, result.ChildrenProfileId);
             result.ClassId = updateEnrollmentViewModel.ClassId;
             var schedules1 = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);
@@ -231,6 +302,7 @@ namespace KidProEdu.Application.Services
             var course = await _unitOfWork.CourseRepository.GetByIdAsync(classed.CourseId);            
             DateTime startDate = attendanceCheckTime.Date;
 
+            //add new schedule 
             int slot1 = 0;
             while (slot1 < course.DurationTotal - slot)
             {

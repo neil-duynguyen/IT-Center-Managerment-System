@@ -16,5 +16,6 @@ namespace KidProEdu.Application.Interfaces
         Task<List<EnrollmentViewModel>> GetEnrollment();
         Task<List<EnrollmentViewModel>> GetEnrollmentById(Guid Id);
         Task<List<EnrollmentViewModel>> GetEnrollmentsByClassId(Guid Id);
+        Task<bool> DeleteEnrollment(Guid classId, Guid childId);
     }
 }
