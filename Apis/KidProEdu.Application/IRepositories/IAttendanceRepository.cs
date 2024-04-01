@@ -12,6 +12,7 @@ namespace KidProEdu.Application.IRepositories
 
     public interface IAttendanceRepository : IGenericRepository<Attendance>
     {
+        Task<List<Attendance>> GetListAttendanceByClassIdAndDate(Guid classId, DateTime date);
         Task<List<Attendance>> GetListAttendanceByCourseIdAndChildId(Guid courseId, Guid childId);
         Task<List<Attendance>> GetAttendanceByScheduleId(Guid id);
         Task<Attendance> GetAttendanceByScheduleIdAndChilId(Guid scheduleId, Guid childId);

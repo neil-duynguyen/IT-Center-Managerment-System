@@ -215,8 +215,12 @@ namespace KidProEdu.API.Mappers
                 .ForMember(dest => dest.ClassCode, opt => opt.MapFrom(src => src.Schedule.Class.ClassCode))
                 .ForMember(dest => dest.TeacherComment, opt => opt.MapFrom(src => src.Note))
                 .ForMember(dest => dest.AttendanceStatus, opt => opt.MapFrom(src => src.StatusAttendance != null ? src.StatusAttendance.ToString() : null));
-
-
+            CreateMap<Attendance, AttendanceWithChildrenProfileViewModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.ChildrenProfile.FullName))
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.ChildrenProfile.Avatar))
+                .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Note))
+                .ForMember(dest => dest.StatusAttendance, opt => opt.MapFrom(src => src.StatusAttendance != null ? src.StatusAttendance.ToString() : null));
 
             CreateMap<OrderViewModel, Order>().ReverseMap().ForMember(des => des.PaymentStatus, src => src.MapFrom(x => x.PaymentStatus != null ? (string)x.PaymentStatus.ToString() : (string?)null))
                                                             .ForMember(des => des.FullName, src => src.MapFrom(x => x.UserAccount.FullName));

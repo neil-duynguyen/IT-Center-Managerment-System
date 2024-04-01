@@ -12,9 +12,6 @@ namespace KidProEdu.Application.ViewModels.AttendanceViewModels
         public Guid Id { get; set; }
         public string ChildrenName { get; set; }
         public string Avatar {  get; set; }
-        public string? GenderType { get; set; }
-        public DateTime BirthDay { get; set; }
-        public DateTime Date { get; set; }
         public StatusAttendance StatusAttendance { get; set; }
         public string? Note { get; set; }
     }

@@ -25,6 +25,14 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _attendanceService.GetAttendances());
         }
 
+        [HttpGet("/ListAttendanceByClassIdAndDate/{classId}/{date}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> ListAttendanceByClassIdAndDate(Guid classId, DateTime date)
+        {
+            return Ok(await _attendanceService.GetListAttendanceByClassIdAndDate(classId, date));
+        }
+
+
         [HttpGet("Details/{courseId}/{childId}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> AttendanceDetails(Guid courseId, Guid childId)
