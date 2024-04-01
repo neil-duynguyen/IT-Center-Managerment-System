@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KidProEdu.Infrastructures.Repositories
 {
@@ -112,6 +113,15 @@ namespace KidProEdu.Infrastructures.Repositories
                 .OrderBy(x => x.Date)
                 .ToListAsync();
 
+            return attendanceList;
+        }
+
+        public async Task<List<Attendance>> GetListAttendancesByChildId(Guid childId)
+        {
+            var attendanceList = await _dbContext.Attendance
+                .Include(x => x.Schedule)
+                .Where(x => x.ChildrenProfileId == childId && !x.IsDeleted)
+                .ToListAsync();
             return attendanceList;
         }
     }
