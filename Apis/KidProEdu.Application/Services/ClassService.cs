@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Classes;
+using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
+using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
@@ -139,6 +141,8 @@ namespace KidProEdu.Application.Services
                 _ => throw new Exception("Trạng thái không được hỗ trợ"),
             };
 
+            var listChildrenPassed = new List<ChildrenPassedViewModel>();
+
             switch (status)
             {
                 /*case Domain.Enums.StatusOfClass.Pending:
@@ -211,9 +215,6 @@ namespace KidProEdu.Application.Services
                         var childrensInClass = await GetChildrenByClassId(classId);
                         var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
                         var exams = await _unitOfWork.ExamRepository.GetExamByCourseId(findClass.CourseId);
-                        /*var pt = exams.Where(x => x.TestType.Equals(Domain.Enums.TestType.Progress)).ToList();
-                        var midTerm = exams.Where(x => x.TestType.Equals(Domain.Enums.TestType.Progress)).ToList();
-                        var final = exams.Where(x => x.TestType.Equals(Domain.Enums.TestType.Progress)).ToList();*/
 
                         foreach (var children in childrensInClass) // duyệt từng children trong class để check pass/not pass => cấp chứng chỉ
                         {
@@ -256,17 +257,33 @@ namespace KidProEdu.Application.Services
                                     default:
                                         break;
                                 }
-
-
                             }
 
+                            // 2 bài pt mỗi bài 15%, 1 bài midterm 30%, 1 bài final 40%
                             var totalScore = ptPoint * 0.15 + midTermPoint * 0.3 + finalPoint * 0.4;
 
                             // lấy tình trạng điểm danh của children trong course đó
-
-
-                            if (totalScore >= 5 && attendance)
+                            var listAttendances = new List<Attendance>();
+                            foreach (var schedule in findClass.Schedules)
                             {
+                                listAttendances.AddRange(await _unitOfWork.AttendanceRepository
+                                    .GetListAttendanceByScheduleIdAndChilId(schedule.Id, children.Id));
+                            }
+
+                            var listAbsent = new List<Attendance>();
+                            if (listAttendances.Count > 0)
+                            {
+                                listAbsent = listAttendances.Where(x => x.StatusAttendance == Domain.Enums.StatusAttendance.Absent).ToList();
+                            }
+
+                            // trả ra list children để cấp certificate nếu đủ điều kiện pass (trung bình >=5, k nghỉ quá 20%)
+                            if (totalScore >= 5 && (listAbsent.Count <= (listAttendances.Count * 0.2))) 
+                            {
+                                listChildrenPassed.Add(new ChildrenPassedViewModel()
+                                {
+                                    ChildrenProfile = _mapper.Map<ChildrenProfileViewModel>(children),
+                                    Course = _mapper.Map<CourseViewModel>(await _unitOfWork.CourseRepository.GetByIdAsync(findClass.CourseId))
+                                }) ;
 
                             }
 

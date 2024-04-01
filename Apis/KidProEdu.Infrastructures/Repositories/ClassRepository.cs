@@ -75,7 +75,11 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public override async Task<Class> GetByIdAsync(Guid id)
         {
-            return await _dbContext.Class.Include(x => x.Course).Include(x => x.Enrollments).Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Class
+                .Include(x => x.Course)
+                .Include(x => x.Enrollments)
+                .Include(x => x.Schedules)
+                .Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public override async Task<List<Class>> GetAllAsync()
