@@ -105,12 +105,17 @@ namespace KidProEdu.Application.Services
 
             if (getCurrentUserId.Equals("Admin"))
             {
-                users = listUser.Where(x => x.Role.Name.Equals("Manager") || x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).ToList();
+                users = listUser.Where(x => x.Role.Name.Equals("Manager") || x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
             }
 
             if (getCurrentUserId.Equals("Manager"))
             {
-                users = listUser.Where(x => x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).ToList();
+                users = listUser.Where(x => x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
+            }
+
+            if (getCurrentUserId.Equals("Staff"))
+            {
+                users = listUser.Where(x => x.Role.Name.Equals("Parent") && !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
             }
 
             return _mapper.Map<List<UserViewModel>>(users);
