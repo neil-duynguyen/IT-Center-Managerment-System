@@ -130,7 +130,8 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateCourseViewModel, Course>().ReverseMap();
             CreateMap<CourseViewModel, Course>().ReverseMap().ForMember(des => des.CourseType, src => src.MapFrom(x => x.CourseType != null ? (string)x.CourseType.ToString() : (string?)null));
 
-            CreateMap<ClassViewModel, Class>().ReverseMap().ForMember(des => des.StatusOfClass, src => src.MapFrom(x => x.StatusOfClass != null ? (string)x.StatusOfClass.ToString() : (string?)null));
+            CreateMap<ClassViewModel, Class>().ReverseMap().ForMember(des => des.StatusOfClass, src => src.MapFrom(x => x.StatusOfClass != null ? (string)x.StatusOfClass.ToString() : (string?)null))
+                                                            .ForMember(des => des.CourseCode, src => src.MapFrom(x => x.Course.CourseCode));
             CreateMap<CreateClassViewModel, Class>().ReverseMap();
             CreateMap<UpdateClassViewModel, Class>().ReverseMap();
             CreateMap<ClassForScheduleViewModel, Class>().ReverseMap();
