@@ -14,8 +14,6 @@ namespace KidProEdu.Application.Validations.Children
         public ChildrenReserveViewModelValidator()
         {
             RuleFor(x => x.ChildrenProfileId).NotEmpty().WithMessage("Học sinh không được để trống.");
-
-            RuleFor(x => x.ClassId).NotEmpty().WithMessage("Lớp không được để trống.");
         }
     }
 }

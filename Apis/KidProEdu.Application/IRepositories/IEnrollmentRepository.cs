@@ -14,5 +14,7 @@ namespace KidProEdu.Application.IRepositories
         Task<List<Enrollment>> GetEnrollmentsByClassId(Guid Id);
 
         Task<Enrollment> GetEnrollmentsByClassIdAndChildrenProfileId(Guid classId, Guid childId);
+
+        Task<List<Enrollment>> GetEnrollmentsByChildId(Guid Id);
     }
 }

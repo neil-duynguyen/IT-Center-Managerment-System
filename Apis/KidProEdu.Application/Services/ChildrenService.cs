@@ -140,7 +140,7 @@ namespace KidProEdu.Application.Services
             }
 
             var children = await _unitOfWork.ChildrenRepository.GetByIdAsync(childrenReserveViewModel.ChildrenProfileId);
-            var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(childrenReserveViewModel.ClassId);
+     
             if(children == null)
             {
                 throw new Exception("Không tìm thấy học sinh này");
@@ -152,12 +152,15 @@ namespace KidProEdu.Application.Services
             }
 
 
-            foreach (var schedule in schedules)
-            {
-                var attendances = await _unitOfWork.AttendanceRepository.GetListAttendanceByScheduleIdAndChilIdAndStatusFuture(schedule.Id, childrenReserveViewModel.ChildrenProfileId);
-                _unitOfWork.AttendanceRepository.RemoveRange(attendances);
-                await _unitOfWork.SaveChangeAsync();
-            }
+            //delete attendance
+            var attendances = await _unitOfWork.AttendanceRepository.GetListAttendanceByChilIdAndStatusFuture(childrenReserveViewModel.ChildrenProfileId);
+            _unitOfWork.AttendanceRepository.RemoveRange(attendances);
+            await _unitOfWork.SaveChangeAsync();
+
+            //delete enrolled
+            var enrolled = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByChildId(childrenReserveViewModel.ChildrenProfileId);
+            _unitOfWork.EnrollmentRepository.SoftRemoveRange(enrolled);
+            await _unitOfWork.SaveChangeAsync();
 
             children.Status = StatusChildrenProfile.Reserve;
             _unitOfWork.ChildrenRepository.Update(children);
