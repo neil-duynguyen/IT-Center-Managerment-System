@@ -279,7 +279,7 @@ namespace KidProEdu.Application.Services
         //xử lý giao dịch vnpay
         public async Task<BaseResult> ProcessVnPaymentReturnHandler(VnpayPayResponse response)
         {
-            string returnUrl = _configuration["Momo:RedirectUrl"];
+            string returnUrl = _configuration["Vnpay:RedirectUrl"];
             var result = new BaseResult();
             try
             {

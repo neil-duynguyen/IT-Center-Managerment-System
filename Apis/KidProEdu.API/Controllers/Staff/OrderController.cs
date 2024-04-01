@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Web;
 
 namespace KidProEdu.API.Controllers.Staff
 {
@@ -108,14 +109,16 @@ namespace KidProEdu.API.Controllers.Staff
         {
             var result = await _orderService.ProcessVnPaymentReturnHandler(response);
 
-            var paymentResult = new
+           /* var paymentResult = new
             {
                 message = result.Message, // Thông báo giao dịch
                 redirectUrl = result.RedirectUrl // URL chuyển hướng
-            };
+            };*/
+
+            var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}";
 
             // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
-            return RedirectToAction("ShowPaymentResult", paymentResult);
+            return Redirect(redirectUrlWithMessage);
         }
 
         [HttpGet]
