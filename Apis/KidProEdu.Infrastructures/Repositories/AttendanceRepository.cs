@@ -94,6 +94,26 @@ namespace KidProEdu.Infrastructures.Repositories
                 .ToListAsync();
             return attendanceList;
         }
+
+        public async Task<List<Attendance>> GetAttendancesByChildId(Guid childId, DateTime startDate, DateTime endDate)
+        {
+            var attendanceList = await _dbContext.Attendance
+                .Include(x => x.Schedule)
+                    .ThenInclude(x => x.Slot)
+                .Include(x => x.Schedule.Class)
+                    .ThenInclude(x => x.Course)
+                .Include(x => x.Schedule.Class)
+                    .ThenInclude(x => x.TeachingClassHistories)
+                        .ThenInclude(x => x.UserAccount)
+                .Include(x => x.Schedule)
+                    .ThenInclude(x => x.ScheduleRooms)
+                        .ThenInclude(x => x.Room)
+                .Where(x => x.ChildrenProfileId == childId && x.Date.Date >= startDate.Date && x.Date.Date <= endDate.Date && !x.IsDeleted)
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+
+            return attendanceList;
+        }
     }
     
 }

@@ -60,6 +60,11 @@ namespace KidProEdu.Application.Services
             mapper.Commission = getPriceClass * 0.1;
             mapper.UserId = _claimsService.GetCurrentUserId;
 
+            //update status childrenProfile
+            var children = await _unitOfWork.ChildrenRepository.GetByIdAsync(createEnrollmentViewModel.ChildrenProfileId);
+            children.Status = StatusChildrenProfile.Studying;
+            _unitOfWork.ChildrenRepository.Update(children);
+
             var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(createEnrollmentViewModel.ClassId);
             var course = await _unitOfWork.CourseRepository.GetByIdAsync(getNumbderChildren.CourseId);
             DateTime startDate = (DateTime)schedules.FirstOrDefault().StartDate;
@@ -125,6 +130,14 @@ namespace KidProEdu.Application.Services
                     await _unitOfWork.SaveChangeAsync();
                 }
 
+                //update children status
+                var getEnrollments = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByChildId(childId);
+                if (getEnrollments.Count <= 1)
+                {
+                    var children = await _unitOfWork.ChildrenRepository.GetByIdAsync(childId);
+                    children.Status = StatusChildrenProfile.Waiting;
+                    _unitOfWork.ChildrenRepository.Update(children);
+                }
                 //delete enrolled
                 _unitOfWork.EnrollmentRepository.SoftRemove(getEnrollment);
                 return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;

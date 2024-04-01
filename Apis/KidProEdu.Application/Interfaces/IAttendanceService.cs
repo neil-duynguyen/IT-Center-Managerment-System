@@ -22,5 +22,6 @@ namespace KidProEdu.Application.Interfaces
         Task<List<AttendanceDetailsViewModel>> GetAttendanceDetailsByCourseIdAndChildrenId(Guid courseId, Guid childId);
         Task<List<AttendanceWithChildrenProfileViewModel>> GetListAttendanceByClassIdAndDate(Guid classId, DateTime date);
         //Task<List<AttendanceViewModel>> GetAttendanceDetailsByCourseIdAndChildrenId(Guid courseId, Guid childId);
+        Task<List<AttendanceDetailsViewModel>> GetAttendancesByChildId(Guid childId, DateTime startDate, DateTime endDate);
     }
 }
