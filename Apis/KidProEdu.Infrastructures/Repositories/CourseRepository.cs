@@ -20,5 +20,16 @@ namespace KidProEdu.Infrastructures.Repositories
         }
 
         public Task<bool> CheckNameExited(string name) => _dbContext.Course.AnyAsync(u => u.Name == name);
+
+        public async Task<List<Course>> GetListCourseByChildrenId(Guid childrenId)
+        {
+            var courses = await _dbContext.Course
+            .Where(x => x.Classes
+            .Any(c => c.Course.Classes
+            .Any(cp => cp.Enrollments
+            .Any(ci => ci.ChildrenProfileId == childrenId && !ci.IsDeleted))))
+            .ToListAsync();
+            return courses;
+        }
     }
 }

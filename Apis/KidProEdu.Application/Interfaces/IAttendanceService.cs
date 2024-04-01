@@ -19,5 +19,6 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> CreateAttendances(List<CreateAttendanceViewModel> createAttendanceViewModel);
         Task<bool> UpdateAttendances(List<UpdateAttendanceViewModel> updateAttendanceViewModel);
         Task<bool> DeleteAttendance(Guid id);
+        Task<List<AttendanceDetailsViewModel>> GetAttendanceDetailsByCourseIdAndChildrenId(Guid courseId, Guid childId);
     }
 }

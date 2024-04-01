@@ -130,7 +130,8 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateCourseViewModel, Course>().ReverseMap();
             CreateMap<CourseViewModel, Course>().ReverseMap().ForMember(des => des.CourseType, src => src.MapFrom(x => x.CourseType != null ? (string)x.CourseType.ToString() : (string?)null));
 
-            CreateMap<ClassViewModel, Class>().ReverseMap().ForMember(des => des.StatusOfClass, src => src.MapFrom(x => x.StatusOfClass != null ? (string)x.StatusOfClass.ToString() : (string?)null));
+            CreateMap<ClassViewModel, Class>().ReverseMap().ForMember(des => des.StatusOfClass, src => src.MapFrom(x => x.StatusOfClass != null ? (string)x.StatusOfClass.ToString() : (string?)null))
+                                                            .ForMember(des => des.CourseCode, src => src.MapFrom(x => x.Course.CourseCode));
             CreateMap<CreateClassViewModel, Class>().ReverseMap();
             CreateMap<UpdateClassViewModel, Class>().ReverseMap();
             CreateMap<ClassForScheduleViewModel, Class>().ReverseMap();
@@ -203,6 +204,19 @@ namespace KidProEdu.API.Mappers
                     dest.ChildrenProfile.SpecialSkill = src.ChildrenProfile.SpecialSkill;
                 })
                 .ForMember(des => des.StatusAttendance, src => src.MapFrom(x => x.StatusAttendance != null ? (string)x.StatusAttendance.ToString() : (string?)null)).ReverseMap();
+            CreateMap<Attendance, AttendanceDetailsViewModel>()
+                .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Schedule.Class.Course.Name))
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))
+                .ForMember(dest => dest.Slot, opt => opt.MapFrom(src => src.Schedule.Slot.Name))
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Schedule.Slot.StartTime))
+                .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.Schedule.Slot.EndTime))
+                .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.Schedule.ScheduleRooms.FirstOrDefault().Room.Name))
+                .ForMember(dest => dest.TeacherName, opt => opt.MapFrom(src => src.Schedule.Class.TeachingClassHistories.FirstOrDefault().UserAccount.FullName))
+                .ForMember(dest => dest.ClassCode, opt => opt.MapFrom(src => src.Schedule.Class.ClassCode))
+                .ForMember(dest => dest.TeacherComment, opt => opt.MapFrom(src => src.Note))
+                .ForMember(dest => dest.AttendanceStatus, opt => opt.MapFrom(src => src.StatusAttendance != null ? src.StatusAttendance.ToString() : null));
+
+
 
             CreateMap<OrderViewModel, Order>().ReverseMap().ForMember(des => des.PaymentStatus, src => src.MapFrom(x => x.PaymentStatus != null ? (string)x.PaymentStatus.ToString() : (string?)null))
                                                             .ForMember(des => des.FullName, src => src.MapFrom(x => x.UserAccount.FullName));

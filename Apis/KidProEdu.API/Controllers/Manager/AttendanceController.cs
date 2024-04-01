@@ -25,6 +25,21 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _attendanceService.GetAttendances());
         }
 
+        [HttpGet("Details/{courseId}/{childId}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> AttendanceDetails(Guid courseId, Guid childId)
+        {
+            // Assuming _attendanceService is an instance of your service class that contains the GetAttendanceDetailsByCourseIdAndChildrenId method
+            var attendanceDetails = await _attendanceService.GetAttendanceDetailsByCourseIdAndChildrenId(courseId, childId);
+
+            if (attendanceDetails == null)
+            {
+                return NotFound(); // Or any appropriate response indicating that the resource was not found
+            }
+
+            return Ok(attendanceDetails);
+        }
+
         [HttpGet("AttendanceByScheduleId/{id}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> AttendanceByScheduleId(Guid id)

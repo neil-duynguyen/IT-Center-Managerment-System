@@ -3,6 +3,7 @@ using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Application.Repositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -46,5 +47,38 @@ namespace KidProEdu.Infrastructures.Repositories
             var attendances = await _dbContext.Attendance.Where(x => x.ChildrenProfileId == childId && x.ScheduleId == scheduleId && !x.IsDeleted).ToListAsync();
             return attendances;
         }
+
+        public async Task<List<Attendance>> GetListAttendanceByScheduleIdAndChilIdAndStatusFuture(Guid scheduleId, Guid childId)
+        {
+            var attendances = await _dbContext.Attendance.Where(x => x.ChildrenProfileId == childId && x.ScheduleId == scheduleId && x.StatusAttendance == StatusAttendance.Future && !x.IsDeleted).ToListAsync();
+            return attendances;
+        }
+
+        public async Task<Attendance> GetListAttendanceByClassIdAndChilIdAndOutOfStatusFuture(Guid classId, Guid childId)
+        {
+            var attendance = _dbContext.Attendance.Include(x => x.Schedule).Where(x => x.ChildrenProfileId == childId && x.Schedule.ClassId == classId && x.StatusAttendance != StatusAttendance.Future && !x.IsDeleted).OrderByDescending(x => x.Date).FirstOrDefault();
+            return attendance;
+        }
+
+        public async Task<List<Attendance>> GetListAttendanceByCourseIdAndChildId(Guid courseId, Guid childId)
+        {
+            var attendanceList = await _dbContext.Attendance
+                .Include(x => x.Schedule)
+                    .ThenInclude(x => x.Slot)
+                .Include(x => x.Schedule.Class)
+                    .ThenInclude(x => x.Course)
+                .Include(x => x.Schedule.Class)
+                    .ThenInclude(x => x.TeachingClassHistories)
+                        .ThenInclude(x => x.UserAccount)
+                .Include(x => x.Schedule)
+                    .ThenInclude(x => x.ScheduleRooms)
+                        .ThenInclude(x => x.Room)
+                .Where(x => x.ChildrenProfileId == childId && x.Schedule.Class.CourseId == courseId && !x.IsDeleted)
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+
+            return attendanceList;
+        }
     }
+    
 }

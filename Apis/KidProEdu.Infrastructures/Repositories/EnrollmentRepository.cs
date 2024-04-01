@@ -26,7 +26,15 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Enrollment>> GetEnrollmentsByClassId(Guid Id)
         {
-            return await _dbContext.Enrollment.Where(x => x.ClassId == Id && !x.IsDeleted).ToListAsync();
+            return await _dbContext.Enrollment
+                .Include(x => x.Class)
+                .Include(x => x.ChildrenProfile)
+                .Where(x => x.ClassId == Id && !x.IsDeleted).ToListAsync();
+        }
+
+        public async Task<Enrollment> GetEnrollmentsByClassIdAndChildrenProfileId(Guid classId, Guid childId)
+        {
+            return _dbContext.Enrollment.FirstOrDefault(x => x.ClassId == classId && x.ChildrenProfileId == childId && !x.IsDeleted);
         }
     }
 }

@@ -71,6 +71,13 @@ namespace KidProEdu.Application.Services
             return mapper;
         }
 
+        public async Task<List<AttendanceDetailsViewModel>> GetAttendanceDetailsByCourseIdAndChildrenId(Guid courseId, Guid childId)
+        {
+            var result = await _unitOfWork.AttendanceRepository.GetListAttendanceByCourseIdAndChildId(courseId, childId);
+            var mapper = _mapper.Map<List<AttendanceDetailsViewModel>>(result);
+            return mapper;
+        }
+
         public async Task<List<AttendanceViewModel>> GetAttendances()
         {
             var result = await _unitOfWork.AttendanceRepository.GetAllAsync();
