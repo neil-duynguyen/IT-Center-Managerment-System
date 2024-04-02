@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Classes;
+using KidProEdu.Application.ViewModels.AdviseRequestViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
@@ -130,7 +132,7 @@ namespace KidProEdu.Application.Services
         }
 
         //api này dùng để làm api start/end class luôn
-        public async Task<bool> ChangeStatusClass(ChangeStatusClassViewModel changeStatusClassViewModel)
+        public async Task<List<ChildrenPassedViewModel>> ChangeStatusClass(ChangeStatusClassViewModel changeStatusClassViewModel)
         {
             Domain.Enums.StatusOfClass status = changeStatusClassViewModel.status switch
             {
@@ -178,6 +180,34 @@ namespace KidProEdu.Application.Services
                     // hủy lớp học
                     // hủy thì chỉ đổi status lớp học thôi, còn lịch và phòng thì vẫn pending và có thể xếp lại
                     // gửi thông báo đến cho staff để xử lí nghiệp vụ chuyển lớp hay gì đó
+
+                    foreach (var classId in changeStatusClassViewModel.ids)
+                    {
+                        var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
+
+                        // lấy list học sinh theo lớp
+                        var childrenInClass = _unitOfWork.EnrollmentRepository.GetAllAsync().Result.Where(x => x.ClassId == classId).ToList();
+
+                        // lấy ra những staff mà add children đó vô lớp bằng enrollment
+                        var listStaffForChildren = childrenInClass.DistinctBy(x => x.UserId);
+                        foreach (var enrollment in listStaffForChildren)
+                        {
+                            var staff = await _unitOfWork.UserRepository.GetByIdAsync(enrollment.UserId);
+                            await SendEmailUtil.SendEmail(staff.Email, "Thông báo về việc lớp học bị hủy",
+                                "Thông báo đến thầy/cô phụ trách học sinh, \n\n" +
+                                "Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name + 
+                                " đã bị hủy do không đủ điều kiện để mở lớp, \n" +
+                                /*"Thông tin:, \n" +
+                                "         Người đăng kí: " + createAdviseRequestViewModel.FullName + "\n" +
+                                "         Email: " + createAdviseRequestViewModel.Email + "\n" +
+                                "         Sđt: " + createAdviseRequestViewModel.Phone + "\n" +
+                                "Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +*/
+                                "Trân trọng, \n" +
+                                "KidPro Education!");
+                        }
+
+                    }
+
                     break;
                 case Domain.Enums.StatusOfClass.Expired:
                     // end class
@@ -277,13 +307,13 @@ namespace KidProEdu.Application.Services
                             }
 
                             // trả ra list children để cấp certificate nếu đủ điều kiện pass (trung bình >=5, k nghỉ quá 20%)
-                            if (totalScore >= 5 && (listAbsent.Count <= (listAttendances.Count * 0.2))) 
+                            if (totalScore >= 5 && (listAbsent.Count <= (listAttendances.Count * 0.2)))
                             {
                                 listChildrenPassed.Add(new ChildrenPassedViewModel()
                                 {
                                     ChildrenProfile = _mapper.Map<ChildrenProfileViewModel>(children),
                                     Course = _mapper.Map<CourseViewModel>(await _unitOfWork.CourseRepository.GetByIdAsync(findClass.CourseId))
-                                }) ;
+                                });
 
                             }
 
@@ -311,7 +341,7 @@ namespace KidProEdu.Application.Services
                 _unitOfWork.ClassRepository.Update(findClass);
             }
 
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trạng thái lớp thất bại");
+            return await _unitOfWork.SaveChangeAsync() > 0 ? listChildrenPassed : throw new Exception("Cập nhật trạng thái lớp thất bại");
         }
 
         //api này dùng để get childen trong classid

@@ -106,14 +106,7 @@ namespace KidProEdu.API.Controllers.Manager
             try
             {
                 var result = await _classService.ChangeStatusClass(changeStatusClassViewModel);
-                if (result)
-                {
-                    return Ok("Lớp đã được cập nhật trạng thái thành công.");
-                }
-                else
-                {
-                    return BadRequest("Lớp cập nhật trạng thái thất bại.");
-                }
+                return Ok(result);
             }
             catch (Exception ex)
             {
