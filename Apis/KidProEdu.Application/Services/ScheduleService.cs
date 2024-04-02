@@ -63,7 +63,7 @@ namespace KidProEdu.Application.Services
             }).ToList();
             var mapper2 = _mapper.Map<List<Attendance>>(attendanceList);
             await _unitOfWork.AttendanceRepository.AddRangeAsync(mapper2);*/
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo lịch thất bại");
+            return true;
         }
 
         public async Task<bool> DeleteSchedule(Guid ScheduleId)

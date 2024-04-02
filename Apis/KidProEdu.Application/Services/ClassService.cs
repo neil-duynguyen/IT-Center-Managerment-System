@@ -53,6 +53,9 @@ namespace KidProEdu.Application.Services
 
             await _unitOfWork.ClassRepository.AddAsync(mapper);
 
+            ScheduleService sv = new ScheduleService(_unitOfWork, _currentTime, _claimsService, _mapper);
+            await sv.CreateSchedule(createClassViewModel.createScheduleViewModel);
+             
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo lớp thất bại");
 
         }
