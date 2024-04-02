@@ -37,6 +37,8 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<PaymentInformationView>> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView)
         {
+            var EWalletMethod = string.Empty;
+
             //check xem children có học trùng course ko khi chưa vào DB
             if (updateOrderDetailView.GroupBy(x => new { x.CourseId, x.ChildrenProfildId }).Any(g => g.Count() > 1)) throw new Exception("Có trẻ đăng kí khoá học trùng nhau.");
 
@@ -53,6 +55,7 @@ namespace KidProEdu.Application.Services
                 {
                     foreach (var orderDetail in updateOrderDetailView)
                     {
+                        EWalletMethod = orderDetail.EWalletMethod;
                         orderId = orderDetail.OrderId;
                         //check xem children có học trùng course ko khi trong DB đã có rồi
                         if (_unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.ChildrenProfileId == orderDetail.ChildrenProfildId && x.CourseId == orderDetail.CourseId).Count() > 0)
@@ -94,8 +97,11 @@ namespace KidProEdu.Application.Services
                     //Update TotalAmount bên Order
                     var updateTotalOrder = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).Sum(x => x.TotalPrice);
                     var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
+
                     if (getOrderById == null) throw new Exception("Đã xảy ra lỗi không thế cập nhật đơn hàng.");
+
                     getOrderById.TotalAmount = (double)updateTotalOrder;
+                    getOrderById.EWalletMethod = EWalletMethod;
                     _unitOfWork.OrderRepository.Update(getOrderById);
                     await _unitOfWork.SaveChangeAsync();
 

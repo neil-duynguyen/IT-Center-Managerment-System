@@ -80,7 +80,7 @@ namespace KidProEdu.Application.Services
         }
 
 
-        public async Task<string> CreatePaymentHandler(string PaymentDestination, Guid orderId)
+        public async Task<string> CreatePaymentHandler(Guid orderId)
         {
 
             string paymentUrl = string.Empty;
@@ -113,7 +113,7 @@ namespace KidProEdu.Application.Services
                     createPayment.PaymentContent = "Thanh toán đơn hàng.";
                     createPayment.RequiredAmount = totalPrice;
 
-                    switch (PaymentDestination)
+                    switch (getOrderById.EWalletMethod)
                     {
                         case "VNPAY":
                             var vnpayPayRequest = new VnpayPayRequest(_configuration["Vnpay:Version"],
