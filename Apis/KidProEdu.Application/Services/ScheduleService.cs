@@ -32,7 +32,7 @@ namespace KidProEdu.Application.Services
             _claimsService = claimsService;
             _mapper = mapper;
         }
-        public async Task<bool> CreateSchedule(CreateScheduleViewModel createScheduleViewModel)
+        public async Task<bool> CreateSchedule(CreateScheduleViewModel createScheduleViewModel, Guid classId)
         {
             var validator = new CreateScheduleViewModelValidator();
             var validationResult = validator.Validate(createScheduleViewModel);
@@ -51,6 +51,7 @@ namespace KidProEdu.Application.Services
             }*/
 
             var mapper = _mapper.Map<Schedule>(createScheduleViewModel);
+            mapper.ClassId = classId;
             // Thêm danh sách Attendance vào unitOfWork           
             await _unitOfWork.ScheduleRepository.AddAsync(mapper);
             /*var attendanceList = getListEnrollment.Select(enrollment => new CreateAttendanceViewModel

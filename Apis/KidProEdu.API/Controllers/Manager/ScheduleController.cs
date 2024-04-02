@@ -72,13 +72,13 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(result);
         }
 
-        [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PostSchedule(CreateScheduleViewModel createScheduleViewModel)
+        /*[HttpPost]
+        [Authorize(Roles = ("Admin"))]
+        public async Task<IActionResult> PostSchedule(CreateScheduleViewModel createScheduleViewModel, Guid classId)
         {
             try
             {
-                var result = await _scheduleService.CreateSchedule(createScheduleViewModel);
+                var result = await _scheduleService.CreateSchedule(createScheduleViewModel, classId);
                 if (result)
                 {
                     return Ok("Lịch đã được tạo thành công.");
@@ -92,7 +92,7 @@ namespace KidProEdu.API.Controllers.Manager
             {
                 return BadRequest(ex.Message);
             }
-        }
+        }*/
 
         [HttpPut]
         /*[Authorize(Roles = ("Admin"))]*/

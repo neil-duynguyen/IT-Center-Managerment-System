@@ -54,8 +54,11 @@ namespace KidProEdu.Application.Services
             await _unitOfWork.ClassRepository.AddAsync(mapper);
 
             ScheduleService sv = new ScheduleService(_unitOfWork, _currentTime, _claimsService, _mapper);
-            await sv.CreateSchedule(createClassViewModel.createScheduleViewModel);
-             
+            foreach (var item in createClassViewModel.createScheduleViewModel)
+            {
+                await sv.CreateSchedule(item, mapper.Id);
+            }
+
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo lớp thất bại");
 
         }
@@ -198,7 +201,7 @@ namespace KidProEdu.Application.Services
                             var staff = await _unitOfWork.UserRepository.GetByIdAsync(enrollment.UserId);
                             await SendEmailUtil.SendEmail(staff.Email, "Thông báo về việc lớp học bị hủy",
                                 "Thông báo đến thầy/cô phụ trách học sinh, \n\n" +
-                                "Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name + 
+                                "Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
                                 " đã bị hủy do không đủ điều kiện để mở lớp, \n" +
                                 /*"Thông tin:, \n" +
                                 "         Người đăng kí: " + createAdviseRequestViewModel.FullName + "\n" +

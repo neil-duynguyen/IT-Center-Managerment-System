@@ -10,7 +10,7 @@ namespace KidProEdu.Application.Interfaces
     public interface IScheduleService
     {
         Task<List<ScheduleViewModel>> GetSchedules();
-        Task<bool> CreateSchedule(CreateScheduleViewModel createScheduleViewModel);
+        Task<bool> CreateSchedule(CreateScheduleViewModel createScheduleViewModel, Guid classId);
         Task<bool> UpdateSchedule(UpdateScheduleViewModel updateScheduleViewModel);
         Task<ScheduleViewModel> GetScheduleById(Guid scheduleId);
         Task<bool> DeleteSchedule(Guid scheduleId);
