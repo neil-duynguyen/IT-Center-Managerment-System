@@ -10,10 +10,21 @@ namespace KidProEdu.Application.ViewModels.OrderDetailViewModels
     {
         public Guid OrderId { get; set; }
         public Guid CourseId { get; set; }
+        public int Quantity { get; set; }
         public int PayType { get; set; }
         public int? InstallmentTerm { get; set; }
         public Guid ChildrenProfildId { get; set; }
         public string? EWalletMethod { get; set; }
+    }
+    public class ReturnOrderDetailViewModel
+    {
+        public string CourseCode { get; set; }
+        public int? Quantity { get; set; }
+        public double? UnitPrice { get; set; }
+        public int? InstallmentTerm { get; set; }
+        public string? PayType { get; set; }
+        public string? ChildrenName { get; set; }
+
     }
 
     public class PaymentInformationView
@@ -25,8 +36,10 @@ namespace KidProEdu.Application.ViewModels.OrderDetailViewModels
 
     public class ReturnPaymentInformationView
     {
-        public List<UpdateOrderDetailViewModel> orderDetailViewModels { get; set; }
+        public Guid OrderId { get; set; }
+        public List<ReturnOrderDetailViewModel> returnOrderDetailViews { get; set; }
         public List<PaymentInformationView> paymentInformation { get; set; }
-
+        public string? EWalletMethod { get; set; }
+        public decimal Total { get;set; }
     }
 }
