@@ -1,4 +1,5 @@
-﻿using KidProEdu.Domain.Enums;
+﻿using KidProEdu.Application.ViewModels.ScheduleViewModels;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,6 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
         public int MaxNumber { get; set; }
         public int ExpectedNumber { get; set; }
         //public int ActualNumber { get; set; }
+        public List<CreateScheduleViewModel> createScheduleViewModel { get; set; }
     }
 }

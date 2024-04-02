@@ -10,7 +10,7 @@ namespace KidProEdu.Application.ViewModels.ScheduleViewModels
 {
     public class CreateScheduleViewModel
     {
-        public Guid ClassId { get; set; }
+        //public Guid ClassId { get; set; }
         public Guid SlotId { get; set; }
         public DateTime? StartDate { get; set; }
         public string? DayInWeek { get; set; }

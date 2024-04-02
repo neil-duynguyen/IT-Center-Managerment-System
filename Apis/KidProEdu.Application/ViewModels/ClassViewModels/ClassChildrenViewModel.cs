@@ -9,6 +9,7 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
 {
     public class ClassChildrenViewModel
     {
+        public Guid Id { get; set; }
         public Guid ClassId { get; set; }
         public string Code { get; set; }
         public ChildrenProfile Children { get; set; }
