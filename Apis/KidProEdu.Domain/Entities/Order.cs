@@ -17,6 +17,7 @@ namespace KidProEdu.Domain.Entities
         public double TotalAmount { get; set; }
         public StatusPayment PaymentStatus { get; set; }
         public string? URLPayment { get; set; }
+        public string? EWalletMethod { get; set; }
         public virtual UserAccount UserAccount { get; set; }
         public IList<OrderDetail> OrderDetails { get; set; }
     }
