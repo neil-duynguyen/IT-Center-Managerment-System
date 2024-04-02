@@ -11,6 +11,6 @@ namespace KidProEdu.Application.Interfaces
     public interface IOrderDetailService
     {
         Task<List<OrderDetailViewModel>> GetOrderDetailByOrderId(Guid orderId);
-        Task<List<PaymentInformationView>> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView);
+        Task<ReturnPaymentInformationView> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView);
     }
 }

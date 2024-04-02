@@ -170,7 +170,7 @@ namespace KidProEdu.Application.Services
 
                             momoOneTimePayRequest.MakeSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
 
-                            (bool createMomoLinkResult, string? createMessage) = momoOneTimePayRequest.GetLink(_configuration["Momo:PaymentUrl"]);
+                            (bool createMomoLinkResult, string? createMessage) = momoOneTimePayRequest.GetLink(_configuration["Momo:PaymentUrl"])   ;
 
                             if (createMomoLinkResult)
                             {
@@ -187,7 +187,7 @@ namespace KidProEdu.Application.Services
 
                         case "ZALOPAY":
                             var zalopayPayRequest = new CreateZalopayPayRequest(int.Parse(_configuration["ZaloPay:AppId"]), _configuration["ZaloPay:AppUser"],
-                                DateTime.Now.GetTimeStamp(), (long)createPayment.RequiredAmount!, DateTime.Now.ToString("yyMMdd") + "_" + Guid.NewGuid().ToString(),
+                                _currentTime.GetCurrentTime().GetTimeStamp(), (long)createPayment.RequiredAmount!, _currentTime.GetCurrentTime().ToString("yyMMdd") + "_" + Guid.NewGuid().ToString(),
                                 "zalopayapp", createPayment.PaymentContent ?? string.Empty);
 
                             zalopayPayRequest.MakeSignature(_configuration["ZaloPay:Key1"]);

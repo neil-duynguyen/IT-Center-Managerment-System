@@ -35,7 +35,7 @@ namespace KidProEdu.Application.Services
             return _mapper.Map<List<OrderDetailViewModel>>(result);
         }
 
-        public async Task<List<PaymentInformationView>> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView)
+        public async Task<ReturnPaymentInformationView> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView)
         {
             var EWalletMethod = string.Empty;
 
@@ -114,12 +114,12 @@ namespace KidProEdu.Application.Services
                     throw new Exception(ex.Message);
                 }
             }
-            var result = await PaymentInformation(orderId);
+            var result = await PaymentInformation(orderId, updateOrderDetailView);
             return result;
 
         }
 
-        public async Task<List<PaymentInformationView>> PaymentInformation(Guid orderId)
+        public async Task<ReturnPaymentInformationView> PaymentInformation(Guid orderId, List<UpdateOrderDetailViewModel> updateOrderDetailView)
         {
 
             List<PaymentInformationView> paymentInformationViews = new List<PaymentInformationView>();
@@ -136,15 +136,13 @@ namespace KidProEdu.Application.Services
                     paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, AmountPerMonth = (decimal)item.TotalPrice, Month = "0 tháng" });
                 }
             }
-            return paymentInformationViews;
 
-        }
+            ReturnPaymentInformationView returnPaymentInformationView = new ReturnPaymentInformationView() {
+                orderDetailViewModels = updateOrderDetailView,
+                paymentInformation = paymentInformationViews
+            };
 
-        public class PaymentInformationView
-        {
-            public string CourseCode { get; set; }
-            public string Month { get; set; }
-            public decimal AmountPerMonth { get; set; }
+            return returnPaymentInformationView;
         }
 
 
