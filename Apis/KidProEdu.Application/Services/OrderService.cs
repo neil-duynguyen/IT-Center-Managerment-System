@@ -87,22 +87,7 @@ namespace KidProEdu.Application.Services
             decimal totalPrice = 0;
             var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
-            //kiếm tra xem order đã có url payment chưa
-            if (getOrderById.URLPayment is not null)
-            {
-                //nếu có và quá hạn 7 ngày từ ngày tạo url thanh toán thì reset lại url = null
-                TimeSpan difference = _currentTime.GetCurrentTime().Subtract((DateTime)getOrderById.ModificationDate);
-                if (difference.Days == 7)
-                {
-                    getOrderById.URLPayment = null;
-                    _unitOfWork.OrderRepository.Update(getOrderById);
-                    await _unitOfWork.SaveChangeAsync();
-                }
-                else
-                {
-                    return paymentUrl = getOrderById.URLPayment;
-                }
-            }
+            
 
             //tính tổng tiền cần thanh toán
             var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
@@ -154,6 +139,24 @@ namespace KidProEdu.Application.Services
                             break;
 
                         case "MOMO":
+
+                            //kiếm tra xem order đã có url payment chưa
+                            if (getOrderById.URLPayment is not null)
+                            {
+                                //nếu có và quá hạn 7 ngày từ ngày tạo url thanh toán thì reset lại url = null
+                                TimeSpan difference = _currentTime.GetCurrentTime().Subtract((DateTime)getOrderById.ModificationDate);
+                                if (difference.Days == 7)
+                                {
+                                    getOrderById.URLPayment = null;
+                                    _unitOfWork.OrderRepository.Update(getOrderById);
+                                    await _unitOfWork.SaveChangeAsync();
+                                }
+                                else
+                                {
+                                    return paymentUrl = getOrderById.URLPayment;
+                                }
+                            }
+
                             var momoOneTimePayRequest = new MomoOneTimePaymentRequest(
                                 _configuration["Momo:PartnerCode"],
                                 Guid.NewGuid().ToString(),
@@ -164,8 +167,11 @@ namespace KidProEdu.Application.Services
                                 _configuration["Momo:IpnUrl"],
                                 "captureWallet",
                                 string.Empty);
+
                             momoOneTimePayRequest.MakeSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
+
                             (bool createMomoLinkResult, string? createMessage) = momoOneTimePayRequest.GetLink(_configuration["Momo:PaymentUrl"]);
+
                             if (createMomoLinkResult)
                             {
                                 paymentUrl = createMessage;

@@ -35,11 +35,14 @@ namespace KidProEdu.Application.Services
 
         public async Task<bool> CreateEnrollment(CreateEnrollmentViewModel createEnrollmentViewModel)
         {
-            //check enrolled
-            var enrolled = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassIdAndChildrenProfileId(createEnrollmentViewModel.ClassId, createEnrollmentViewModel.ChildrenProfileId);
-            if (enrolled != null)
+            foreach (var item in createEnrollmentViewModel.ChildrenProfileId)
             {
-                throw new Exception("Bạn đã tham gia lớp này rồi!");
+                //check enrolled
+                var enrolled = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassIdAndChildrenProfileId(createEnrollmentViewModel.ClassId, item);
+                if (enrolled != null)
+                {
+                    throw new Exception("Bạn đã tham gia lớp này rồi!");
+                }
             }
 
 
@@ -64,35 +67,38 @@ namespace KidProEdu.Application.Services
             var course = await _unitOfWork.CourseRepository.GetByIdAsync(getNumbderChildren.CourseId);
             DateTime startDate = (DateTime)schedules.FirstOrDefault().StartDate;
 
-            int slot = 0;
-            while (slot < course.DurationTotal)
+            foreach (var item in createEnrollmentViewModel.ChildrenProfileId)
             {
-                // Kiểm tra xem ngày hiện tại là ngày trong tuần đã chỉ định trong lịch trình hay không
-                if (schedules.Any(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())))
+            int slot = 0;
+                while (slot < course.DurationTotal)
                 {
-                    // Kiểm tra xem điểm danh cho ngày này đã được tạo hay chưa
-                    var attendance = new CreateAttendanceViewModel
+                    // Kiểm tra xem ngày hiện tại là ngày trong tuần đã chỉ định trong lịch trình hay không
+                    if (schedules.Any(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())))
                     {
-                        ScheduleId = schedules.FirstOrDefault(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())).Id,
-                        ChildrenProfileId = createEnrollmentViewModel.ChildrenProfileId,
-                        Date = startDate,
-                        StatusAttendance = StatusAttendance.Future,
-                        Note = ""
-                    };
+                        // Kiểm tra xem điểm danh cho ngày này đã được tạo hay chưa
+                        var attendance = new CreateAttendanceViewModel
+                        {
+                            ScheduleId = schedules.FirstOrDefault(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())).Id,
+                            ChildrenProfileId = item,
+                            Date = startDate,
+                            StatusAttendance = StatusAttendance.Future,
+                            Note = ""
+                        };
 
-                    // Lưu danh sách điểm danh vào cơ sở dữ liệu
-                    var attendanceEntity = _mapper.Map<Attendance>(attendance);
-                    await _unitOfWork.AttendanceRepository.AddAsync(attendanceEntity);
-                    slot++;
-                }
+                        // Lưu danh sách điểm danh vào cơ sở dữ liệu
+                        var attendanceEntity = _mapper.Map<Attendance>(attendance);
+                        await _unitOfWork.AttendanceRepository.AddAsync(attendanceEntity);
+                        slot++;
+                    }
 
-                // Tăng ngày startdate lên 1 để chuyển sang ngày tiếp theo
-                startDate = startDate.AddDays(1);
+                    // Tăng ngày startdate lên 1 để chuyển sang ngày tiếp theo
+                    startDate = startDate.AddDays(1);
 
-                // Kiểm tra xem số buổi học đã điểm danh có bằng tổng số buổi học không
-                if (slot == course.DurationTotal)
-                {
-                    break; // Kết thúc vòng lặp nếu đã điểm danh đủ số buổi học
+                    // Kiểm tra xem số buổi học đã điểm danh có bằng tổng số buổi học không
+                    if (slot == course.DurationTotal)
+                    {
+                        break; // Kết thúc vòng lặp nếu đã điểm danh đủ số buổi học
+                    }
                 }
             }
 
