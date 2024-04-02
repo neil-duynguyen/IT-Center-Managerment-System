@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.PaymentService.Momo.Request;
+using KidProEdu.Application.PaymentService.VnPay.Request;
 using KidProEdu.Application.PaymentService.VnPay.Response;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 namespace KidProEdu.Application.Services
@@ -18,14 +20,16 @@ namespace KidProEdu.Application.Services
         private readonly IClaimsService _claimsService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public OrderService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, IConfiguration configuration)
+        public OrderService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
             _claimsService = claimsService;
             _mapper = mapper;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<OrderViewModel>> GetOrderByStaffId()
@@ -82,23 +86,6 @@ namespace KidProEdu.Application.Services
             decimal totalPrice = 0;
             var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
-            //kiếm tra xem order đã có url payment chưa
-            if (getOrderById.URLPayment is not null)
-            {
-                //nếu có và quá hạn 7 ngày từ ngày tạo url thanh toán thì reset lại url = null
-                TimeSpan difference = _currentTime.GetCurrentTime().Subtract((DateTime)getOrderById.ModificationDate);
-                if (difference.Days == 7)
-                {
-                    getOrderById.URLPayment = null;
-                    _unitOfWork.OrderRepository.Update(getOrderById);
-                    await _unitOfWork.SaveChangeAsync();
-                }
-                else
-                {
-                    return paymentUrl = getOrderById.URLPayment;
-                }
-            }
-
             //tính tổng tiền cần thanh toán
             var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
             foreach (var item in getOrderDetail)
@@ -123,15 +110,50 @@ namespace KidProEdu.Application.Services
                     createPayment.PaymentContent = "Thanh toán đơn hàng.";
                     createPayment.RequiredAmount = totalPrice;
 
-                    switch (createPayment.PaymentDestinationId)
+                    switch (getOrderById.EWalletMethod)
                     {
-                        /*case "VNPAY":
-                            var vnpayPayRequest = new VnpayPayRequest(vnpayConfig.Version,
-                                vnpayConfig.TmnCode, DateTime.Now, currentUserService.IpAddress ?? string.Empty, request.RequiredAmount ?? 0, request.PaymentCurrency ?? string.Empty,
-                                "other", request.PaymentContent ?? string.Empty, vnpayConfig.ReturnUrl, outputIdParam!.Value?.ToString() ?? string.Empty);
-                            paymentUrl = vnpayPayRequest.GetLink(vnpayConfig.PaymentUrl, vnpayConfig.HashSecret);
-                            break;*/
+                        case "VNPAY":
+                            var vnpayPayRequest = new VnpayPayRequest(_configuration["Vnpay:Version"],
+                                _configuration["Vnpay:TmnCode"],
+                                DateTime.Now, _httpContextAccessor?.HttpContext?.Connection?.LocalIpAddress?.ToString(),
+                                createPayment.RequiredAmount ?? 0,
+                                "other", createPayment.PaymentContent ?? string.Empty,
+                                _configuration["Vnpay:ReturnUrl"], getOrderById.Id.ToString() ?? string.Empty);
+
+                            paymentUrl = vnpayPayRequest.GetLink(_configuration["Vnpay:PaymentUrl"], _configuration["Vnpay:HashSecret"]);
+
+                            if (paymentUrl is not null)
+                            {
+                                getOrderById.URLPayment = paymentUrl;
+                                _unitOfWork.OrderRepository.Update(getOrderById);
+                                await _unitOfWork.SaveChangeAsync();
+                            }
+                            else
+                            {
+                                throw new Exception("Tạo thông tin thanh toán thất bại.");
+                            }
+
+                            break;
+
                         case "MOMO":
+
+                            //kiếm tra xem order đã có url payment chưa
+                            if (getOrderById.URLPayment is not null)
+                            {
+                                //nếu có và quá hạn 7 ngày từ ngày tạo url thanh toán thì reset lại url = null
+                                TimeSpan difference = _currentTime.GetCurrentTime().Subtract((DateTime)getOrderById.ModificationDate);
+                                if (difference.Days == 7)
+                                {
+                                    getOrderById.URLPayment = null;
+                                    _unitOfWork.OrderRepository.Update(getOrderById);
+                                    await _unitOfWork.SaveChangeAsync();
+                                }
+                                else
+                                {
+                                    return paymentUrl = getOrderById.URLPayment;
+                                }
+                            }
+
                             var momoOneTimePayRequest = new MomoOneTimePaymentRequest(
                                 _configuration["Momo:PartnerCode"],
                                 Guid.NewGuid().ToString(),
@@ -142,9 +164,10 @@ namespace KidProEdu.Application.Services
                                 _configuration["Momo:IpnUrl"],
                                 "captureWallet",
                                 string.Empty);
+
                             momoOneTimePayRequest.MakeSignature(_configuration["Momo:AccessKey"], _configuration["Momo:SecretKey"]);
 
-                            (bool createMomoLinkResult, string? createMessage) = momoOneTimePayRequest.GetLink(_configuration["Momo:PaymentUrl"])   ;
+                            (bool createMomoLinkResult, string? createMessage) = momoOneTimePayRequest.GetLink(_configuration["Momo:PaymentUrl"]);
 
                             if (createMomoLinkResult)
                             {
@@ -159,7 +182,7 @@ namespace KidProEdu.Application.Services
                             }
                             break;
 
-                        case "ZALOPAY":
+                        /*case "ZALOPAY":
                             var zalopayPayRequest = new CreateZalopayPayRequest(int.Parse(_configuration["ZaloPay:AppId"]), _configuration["ZaloPay:AppUser"],
                                 _currentTime.GetCurrentTime().GetTimeStamp(), (long)createPayment.RequiredAmount!, _currentTime.GetCurrentTime().ToString("yyMMdd") + "_" + Guid.NewGuid().ToString(),
                                 "zalopayapp", createPayment.PaymentContent ?? string.Empty);
@@ -174,7 +197,7 @@ namespace KidProEdu.Application.Services
                             {
                                 throw new Exception("Tạo thông tin thanh toán thất bại.");
                             }
-                            break;
+                            break;*/
                         default:
                             break;
                     }
@@ -186,6 +209,7 @@ namespace KidProEdu.Application.Services
             throw new Exception("Không tìm thấy đơn hàng.");
         }
 
+        //xử lý giao dịch momo
         public async Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response)
         {
             string returnUrl = _configuration["Momo:RedirectUrl"];
@@ -324,6 +348,7 @@ namespace KidProEdu.Application.Services
             }
             return result;
         }
+
         //function này sẽ chạy sau khi thanh toán thành công
         public async Task<bool> CreateTransaction(Guid orderId)
         {

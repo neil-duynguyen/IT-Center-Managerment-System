@@ -72,6 +72,7 @@ namespace KidProEdu.Application.Services
                                 Id = Guid.NewGuid(),
                                 OrderId = orderDetail.OrderId,
                                 CourseId = orderDetail.CourseId,
+                                Quantity = orderDetail.Quantity,
                                 UnitPrice = getPrice.Price,
                                 TotalPrice = getPrice.Price,
                                 ChildrenProfileId = orderDetail.ChildrenProfildId,
@@ -85,6 +86,7 @@ namespace KidProEdu.Application.Services
                         {
                             //update OrderDetail
                             getOrderDetail.ChildrenProfileId = orderDetail.ChildrenProfildId;
+                            getOrderDetail.Quantity = orderDetail.Quantity;
                             getOrderDetail.UnitPrice = getPrice.Price;
                             getOrderDetail.TotalPrice = getPrice.Price;
                             getOrderDetail.PayType = (Domain.Enums.PayType?)orderDetail.PayType;
@@ -114,12 +116,12 @@ namespace KidProEdu.Application.Services
                     throw new Exception(ex.Message);
                 }
             }
-            var result = await PaymentInformation(orderId, updateOrderDetailView);
+            var result = await PaymentInformation(orderId, EWalletMethod);
             return result;
 
         }
 
-        public async Task<ReturnPaymentInformationView> PaymentInformation(Guid orderId, List<UpdateOrderDetailViewModel> updateOrderDetailView)
+        public async Task<ReturnPaymentInformationView> PaymentInformation(Guid orderId, string EWalletMethod)
         {
 
             List<PaymentInformationView> paymentInformationViews = new List<PaymentInformationView>();
@@ -137,9 +139,19 @@ namespace KidProEdu.Application.Services
                 }
             }
 
+            List<ReturnOrderDetailViewModel> returnOrderDetailViews = new List<ReturnOrderDetailViewModel>();
+            foreach (var item in getOrderDetail)
+            {
+                returnOrderDetailViews.Add(new ReturnOrderDetailViewModel() { CourseCode = item.Course.CourseCode, Quantity = item.Quantity, UnitPrice = item.UnitPrice, InstallmentTerm = item.InstallmentTerm, PayType = item.PayType.ToString(), ChildrenName = item.ChildrenProfile.FullName});
+            }
+
+
             ReturnPaymentInformationView returnPaymentInformationView = new ReturnPaymentInformationView() {
-                orderDetailViewModels = updateOrderDetailView,
-                paymentInformation = paymentInformationViews
+                OrderId = orderId,
+                returnOrderDetailViews = returnOrderDetailViews,
+                paymentInformation = paymentInformationViews,
+                EWalletMethod = EWalletMethod,
+                Total = paymentInformationViews.Sum(x => x.AmountPerMonth)
             };
 
             return returnPaymentInformationView;
