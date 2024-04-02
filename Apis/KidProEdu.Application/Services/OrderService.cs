@@ -186,7 +186,6 @@ namespace KidProEdu.Application.Services
             throw new Exception("Không tìm thấy đơn hàng.");
         }
 
-        //xử lý giao dịch momo
         public async Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response)
         {
             string returnUrl = _configuration["Momo:RedirectUrl"];
