@@ -10,8 +10,5 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
     {
         public Guid ChildrenProfileId { get; set; }
 
-        public Guid ClassId { get; set; }
-
-
     }
 }

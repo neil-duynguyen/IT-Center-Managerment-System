@@ -15,7 +15,6 @@ namespace KidProEdu.Application.Validations.Attendances
         public UpdateAttendanceViewModelValidator()
         {
             RuleFor(x => x.Id).NotEmpty().WithMessage("Id không được để trống.");
-            RuleFor(x => x.Date).NotEmpty().WithMessage("Ngày không được để trống.");
             RuleFor(x => x.StatusAttendance).NotEmpty().WithMessage("Trạng thái không được để trống.");
         }
 

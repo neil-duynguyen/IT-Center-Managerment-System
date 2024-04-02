@@ -25,6 +25,14 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _attendanceService.GetAttendances());
         }
 
+        [HttpGet("/ListAttendanceByClassIdAndDate/{classId}/{date}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> ListAttendanceByClassIdAndDate(Guid classId, DateTime date)
+        {
+            return Ok(await _attendanceService.GetListAttendanceByClassIdAndDate(classId, date));
+        }
+
+
         [HttpGet("Details/{courseId}/{childId}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> AttendanceDetails(Guid courseId, Guid childId)
@@ -45,6 +53,13 @@ namespace KidProEdu.API.Controllers.Manager
         public async Task<IActionResult> AttendanceByScheduleId(Guid id)
         {
             return Ok(await _attendanceService.GetAttendanceByScheduleId(id));
+        }
+
+        [HttpGet("AttendanceByChildrenId/{childId}/{startDate}/{endDate}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> AttendanceByChildrenId(Guid childId, DateTime startDate, DateTime endDate)
+        {
+            return Ok(await _attendanceService.GetAttendancesByChildId(childId, startDate, endDate));
         }
 
         [HttpPost]

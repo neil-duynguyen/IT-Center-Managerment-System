@@ -85,6 +85,20 @@ namespace KidProEdu.Application.Services
             return mapper;
         }
 
+        public async Task<List<AttendanceDetailsViewModel>> GetAttendancesByChildId(Guid childId, DateTime startDate, DateTime endDate)
+        {
+            var result = await _unitOfWork.AttendanceRepository.GetAttendancesByChildId(childId, startDate, endDate);
+            var mapper = _mapper.Map<List<AttendanceDetailsViewModel>>(result);
+            return mapper;
+        }
+
+        public async Task<List<AttendanceWithChildrenProfileViewModel>> GetListAttendanceByClassIdAndDate(Guid classId, DateTime date)
+        {
+            var result = await _unitOfWork.AttendanceRepository.GetListAttendanceByClassIdAndDate(classId, date);
+            var mapper = _mapper.Map<List<AttendanceWithChildrenProfileViewModel>>(result);
+            return mapper;
+        }
+
         public async Task<bool> UpdateAttendances(List<UpdateAttendanceViewModel> updateAttendanceViewModel)
         {
             foreach (var updateAttendance in updateAttendanceViewModel)
@@ -101,7 +115,6 @@ namespace KidProEdu.Application.Services
 
                 var attendanceUpdate = await _unitOfWork.AttendanceRepository.GetByIdAsync(updateAttendance.Id);
                 var mapper = _mapper.Map<Attendance>(attendanceUpdate);
-                mapper.Date = updateAttendance.Date;
                 mapper.StatusAttendance = updateAttendance.StatusAttendance;
                 mapper.Note = updateAttendance.Note;
                 _unitOfWork.AttendanceRepository.Update(attendanceUpdate);
