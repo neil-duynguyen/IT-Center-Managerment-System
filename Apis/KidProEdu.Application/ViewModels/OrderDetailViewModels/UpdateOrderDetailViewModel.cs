@@ -13,5 +13,6 @@ namespace KidProEdu.Application.ViewModels.OrderDetailViewModels
         public int PayType { get; set; }
         public int? InstallmentTerm { get; set; }
         public Guid ChildrenProfildId { get; set; }
+        public string? EWalletMethod { get; set; }
     }
 }

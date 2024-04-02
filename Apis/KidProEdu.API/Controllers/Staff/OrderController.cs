@@ -2,6 +2,7 @@
 using KidProEdu.Application.PaymentService.Dtos;
 using KidProEdu.Application.PaymentService.Momo.Request;
 using KidProEdu.Application.PaymentService.Payment.Commands;
+using KidProEdu.Application.PaymentService.VnPay.Response;
 using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using MediatR;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Web;
 
 namespace KidProEdu.API.Controllers.Staff
 {
@@ -70,7 +72,7 @@ namespace KidProEdu.API.Controllers.Staff
             }
         }*/
 
-        [HttpPost("CreatePayment/{orderId}")]
+        [HttpPost("CreatePayment")]
         public async Task<IActionResult> CreatePayment(Guid orderId)
         {
             try
@@ -99,7 +101,24 @@ namespace KidProEdu.API.Controllers.Staff
 
             // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
             return RedirectToAction("ShowPaymentResult", paymentResult);
+        }
 
+        [HttpGet]
+        [Route("vnpay-return")]
+        public async Task<IActionResult> VnPayReturn([FromQuery] VnpayPayResponse response)
+        {
+            var result = await _orderService.ProcessVnPaymentReturnHandler(response);
+
+           /* var paymentResult = new
+            {
+                message = result.Message, // Thông báo giao dịch
+                redirectUrl = result.RedirectUrl // URL chuyển hướng
+            };*/
+
+            var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}";
+
+            // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
+            return Redirect(redirectUrlWithMessage);
         }
 
         [HttpGet]
