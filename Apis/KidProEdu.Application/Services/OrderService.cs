@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.PaymentService.Momo.Request;
+using KidProEdu.Application.PaymentService.VnPay.Response;
+using KidProEdu.Application.Utils;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
@@ -24,7 +26,6 @@ namespace KidProEdu.Application.Services
             _claimsService = claimsService;
             _mapper = mapper;
             _configuration = configuration;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<OrderViewModel>> GetOrderByStaffId()
@@ -254,6 +255,75 @@ namespace KidProEdu.Application.Services
             return result;
         }
 
+        //xử lý giao dịch vnpay
+        public async Task<BaseResult> ProcessVnPaymentReturnHandler(VnpayPayResponse response)
+        {
+            string returnUrl = _configuration["Vnpay:RedirectUrl"];
+            var result = new BaseResult();
+            try
+            {
+                //var resultData = new PaymentReturnDtos();
+                var isValidSignature = response.IsValidSignature(_configuration["Vnpay:HashSecret"]);
+
+                if (isValidSignature)
+                {
+
+                    if (response.vnp_ResponseCode == "00")
+                    {
+                        var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(Guid.Parse(response.vnp_TxnRef));
+                        getOrder.PaymentStatus = Domain.Enums.StatusPayment.Paid;
+                        _unitOfWork.OrderRepository.Update(getOrder);
+                        await _unitOfWork.SaveChangeAsync();
+
+                        var createTransaction = await CreateTransaction(Guid.Parse(response.vnp_TxnRef));
+
+                        if (createTransaction)
+                        {
+                            result = new BaseResult()
+                            {
+                                Message = "Thanh toán thành công.",
+                                RedirectUrl = returnUrl
+                            };
+                        }
+                        else
+                        {
+                            result = new BaseResult()
+                            {
+                                Message = "Tạo giao dịch thất bại.",
+                                RedirectUrl = returnUrl
+                            };
+                        }
+
+                    }
+                    else
+                    {
+                        var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(Guid.Parse(response.vnp_TxnRef));
+                        getOrder.PaymentStatus = Domain.Enums.StatusPayment.Cancel;
+                        _unitOfWork.OrderRepository.Update(getOrder);
+                        await _unitOfWork.SaveChangeAsync();
+
+                        result = new BaseResult()
+                        {
+                            Message = "Thanh toán không thành công",
+                            RedirectUrl = returnUrl
+                        };
+                    }
+                }
+                else
+                {
+                    result = new BaseResult()
+                    {
+                        Message = "Chữ ký phản hồi không hợp lệ",
+                        RedirectUrl = returnUrl
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
         //function này sẽ chạy sau khi thanh toán thành công
         public async Task<bool> CreateTransaction(Guid orderId)
         {

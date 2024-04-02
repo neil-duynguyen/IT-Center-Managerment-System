@@ -28,7 +28,8 @@ namespace KidProEdu.API.Controllers.Staff
         {
             try
             {
-                return Ok(await _orderDetailService.UpdateOrderDetail(updateOrderDetailView));
+                var result = await _orderDetailService.UpdateOrderDetail(updateOrderDetailView);
+                return Ok(result);
             }
             catch (Exception ex)
             {
