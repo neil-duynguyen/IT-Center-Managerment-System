@@ -31,10 +31,12 @@ namespace KidProEdu.Application.Services
             _claimsService = claimsService;
         }
 
+        //Tạo con
         public async Task<bool> CreateCourseAsync(CreateCourseViewModel createCourseViewModel)
         {
             // check name exited
             var isExited = await _unitOfWork.CourseRepository.CheckNameExited(createCourseViewModel.Name);
+            var getCourse = await _unitOfWork.CourseRepository.GetAllAsync();
 
             if (isExited)
             {
@@ -42,13 +44,21 @@ namespace KidProEdu.Application.Services
             }
 
             var mapper = _mapper.Map<Course>(createCourseViewModel);
+            mapper.Level = getCourse.Where(x => x.ParentCourse == createCourseViewModel.ParentCourse).Count() + 1;
+            mapper.CourseType = Domain.Enums.CourseType.Single;
 
             await _unitOfWork.CourseRepository.AddAsync(mapper);
+
+            var getCourseByParentCourse = getCourse.FirstOrDefault(x => x.Id == createCourseViewModel.ParentCourse && x.ParentCourse is null);
+            getCourseByParentCourse.DurationTotal = (getCourse.Where(x => x.ParentCourse == createCourseViewModel.ParentCourse).Sum(x => x.DurationTotal)) + createCourseViewModel.DurationTotal;
+            getCourseByParentCourse.Price = (getCourse.Where(x => x.ParentCourse == createCourseViewModel.ParentCourse).Sum(x => x.Price)) + createCourseViewModel.Price;
+            _unitOfWork.CourseRepository.Update(getCourseByParentCourse);
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
-        /*public async Task<bool> CreateCourseParentAsync(CreateCourseParentViewModel createCourseParentViewModel)
+        //Tạo cha
+        public async Task<bool> CreateCourseParentAsync(CreateCourseParentViewModel createCourseParentViewModel)
         {
             // check name exited
             var isExited = await _unitOfWork.CourseRepository.CheckNameExited(createCourseParentViewModel.Name);
@@ -63,7 +73,7 @@ namespace KidProEdu.Application.Services
             await _unitOfWork.CourseRepository.AddAsync(mapper);
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
-        }*/
+        }
 
         public async Task<CourseViewModel> GetCourseById(Guid Id)
         {
@@ -129,15 +139,15 @@ namespace KidProEdu.Application.Services
 
 
 
-        /* public async Task<bool> UpdateCourseAsync(CreateCourseViewModel createCourseViewModel)
-         {
-             //check duplicate course name
-             var checkName = await _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.Id != );
+        public async Task<bool> UpdateCourseAsync(CreateCourseViewModel createCourseViewModel)
+        {
+            //check duplicate course name
+            var checkName = await _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.Id != );
 
-             checkName.FirstOrDefault(x => x.Name.Equals(createCourseViewModel.Name, StringComparison.OrdinalIgnoreCase));
+            checkName.FirstOrDefault(x => x.Name.Equals(createCourseViewModel.Name, StringComparison.OrdinalIgnoreCase));
 
 
-             return true;
-         }*/
+            return true;
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace KidProEdu.API.Controllers.Admin
             }
         }
 
-       /* [HttpPost("CourseParent")]
+       [HttpPost("CourseParent")]
         public async Task<IActionResult> PostCourseParent(CreateCourseParentViewModel createCourseParentViewModel)
         {
             try
@@ -40,7 +40,7 @@ namespace KidProEdu.API.Controllers.Admin
             {
                 return BadRequest(ex.Message);
             }
-        }*/
+        }
 
         [HttpGet("Courses")]
         public async Task<IActionResult> GetAllCourse()
