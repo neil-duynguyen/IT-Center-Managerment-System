@@ -21,6 +21,14 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
         public int MaxNumber { get; set; }
         public int ExpectedNumber { get; set; }
         public int ActualNumber { get; set; }
+        public List<ScheduleClassViewModel> scheduleClassViews { get; set; }
+    }
 
+    public class ScheduleClassViewModel
+    { 
+        public string Slot { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public string? DayInWeek { get; set; }
     }
 }

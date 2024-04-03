@@ -85,8 +85,16 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<ClassViewModel>> GetClasses()
         {
-            var Classs = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
-            return _mapper.Map<List<ClassViewModel>>(Classs);
+            var classs = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
+
+            var mapper = _mapper.Map<List<ClassViewModel>>(classs);
+
+            /*foreach (var item in mapper)
+            {
+                item.scheduleClassViews
+            }*/
+
+            return mapper;
         }
 
         public async Task<bool> UpdateClass(UpdateClassViewModel updateClassViewModel)
