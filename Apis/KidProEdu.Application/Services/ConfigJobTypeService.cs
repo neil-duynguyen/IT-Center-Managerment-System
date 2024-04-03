@@ -21,10 +21,10 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<List<ConfigJobType>> GetConfigJobTypes()
+        public async Task<List<ConfigJobTypeViewModel>> GetConfigJobTypes()
         {
             var results = _unitOfWork.ConfigJobTypeRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
-            var mapper = _mapper.Map<List<ConfigJobType>>(results);
+            var mapper = _mapper.Map<List<ConfigJobTypeViewModel>>(results);
             return mapper;
         }
 

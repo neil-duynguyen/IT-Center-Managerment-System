@@ -5,7 +5,7 @@ namespace KidProEdu.Application.Interfaces
 {
     public interface IConfigJobTypeService
     {
-        Task<List<ConfigJobType>> GetConfigJobTypes();
+        Task<List<ConfigJobTypeViewModel>> GetConfigJobTypes();
         Task<bool> UpdateConfigJobType(UpdateConfigJobTypeViewModel updateConfigJobTypeViewModel);
     }
 }
