@@ -232,6 +232,41 @@ namespace KidProEdu.Application.Services
             int countSchedule = 0;
             int countRoom = 0;
 
+            // bắt đầu đoạn code lấy data và check điều kiện xếp lịch
+            var slots = _unitOfWork.SlotRepository.GetAllAsync().Result.Where(x => x.SlotType == SlotType.Course).ToList();
+
+            var rooms = await _unitOfWork.RoomRepository.GetRoomByStatus(StatusOfRoom.Empty); //lấy list phòng trống
+            var fullTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.FullTime); //lấy list giáo viên fulltime
+            var partTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.PartTime); //lấy list giáo viên parttime
+            var checkClasses = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.StatusOfClass == StatusOfClass.Pending);
+
+            if (rooms.IsNullOrEmpty())
+            {
+                throw new Exception("Không có phòng trống để xếp lịch");
+            }
+            else if (checkClasses.IsNullOrEmpty())
+            {
+                throw new Exception("Không có lớp chờ để xếp lịch");
+            }
+            else if (fullTeachers.IsNullOrEmpty() && partTeachers.IsNullOrEmpty())
+            {
+                throw new Exception("Không đủ giáo viên để xếp lịch");
+            }
+            // kết thúc đoạn code lấy data và check điều kiện xếp lịch
+
+            //add 2 list giáo viên vào Queue để xếp xoay vòng
+            Queue<UserAccount> fullTimeQueue = new();
+            Queue<UserAccount> partTimeQueue = new();
+            foreach (var fullTeacher in fullTeachers)
+            {
+                fullTimeQueue.Enqueue(fullTeacher);
+            }
+            foreach (var partTeacher in partTeachers)
+            {
+                partTimeQueue.Enqueue(partTeacher);
+            }
+
+            // bắt đầu đoạn code check đã tạo lịch hay chưa để tiếp tục xếp lịch hay văng lỗi
             var pendingHistory = await _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByStatus(TeachingStatus.Pending);
             var anotherStatusHistory = _unitOfWork.TeachingClassHistoryRepository.GetAllAsync().Result.Any(x => x.TeachingStatus == TeachingStatus.Teaching || x.TeachingStatus == TeachingStatus.Substitute);
             var pendingScheduleRoom = await _unitOfWork.ScheduleRoomRepository.GetScheduleRoomByStatus(ScheduleRoomStatus.Pending);
@@ -246,28 +281,13 @@ namespace KidProEdu.Application.Services
                 _unitOfWork.TeachingClassHistoryRepository.RemoveRange(pendingHistory);
                 _unitOfWork.ScheduleRoomRepository.RemoveRange(pendingScheduleRoom);
             }
+            // kết thúc đoạn code check đã tạo lịch hay chưa
 
-            var slots = _unitOfWork.SlotRepository.GetAllAsync().Result.Where(x => x.SlotType == SlotType.Course).ToList();
-
-            var rooms = await _unitOfWork.RoomRepository.GetRoomByStatus(StatusOfRoom.Empty); //lấy list phòng trống
-            var fullTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.FullTime); //lấy list giáo viên fulltime
-            var partTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.PartTime); //lấy list giáo viên parttime
-
-            //add 2 list giáo viên vào Queue để xếp xoay vòng
-            Queue<UserAccount> fullTimeQueue = new();
-            Queue<UserAccount> partTimeQueue = new();
-            foreach (var fullTeacher in fullTeachers)
-            {
-                fullTimeQueue.Enqueue(fullTeacher);
-            }
-            foreach (var partTeacher in partTeachers)
-            {
-                partTimeQueue.Enqueue(partTeacher);
-            }
 
             List<AutoScheduleViewModel> list = new();
 
-            for (var i = 1; i <= slots.Count; i++)
+            // băt đầu xếp lịch
+            for (var i = 1; i <= slots.Count; i++) // cho vòng lặp chạy theo từng slot
             {
                 var tempFullTeachers = new Queue<UserAccount>();
                 var tempPartTeachers = new Queue<UserAccount>();
@@ -440,6 +460,8 @@ namespace KidProEdu.Application.Services
             var classesModel = new List<ClassForScheduleViewModel>();
             var schedulesModel = new List<ScheduleForAutoViewModel>();
             //var slotModel = new SlotForScheduleViewModel();
+
+            // lấy lịch sử những lớp gv đang dạy hoặc được xếp lịch (pending, teaching)
             var histories = await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(id);
 
             foreach (var history in histories)
@@ -468,12 +490,8 @@ namespace KidProEdu.Application.Services
                 classesModel.Add(mapper);
 
             }
-            if (histories == null) { }
-
-
             getAutoSchedule.TeacherId = id;
             getAutoSchedule.Classes = classesModel;
-
 
             return getAutoSchedule;
         }
