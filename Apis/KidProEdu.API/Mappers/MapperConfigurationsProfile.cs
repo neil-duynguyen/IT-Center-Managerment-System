@@ -130,8 +130,9 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateCourseViewModel, Course>().ReverseMap();
             CreateMap<CourseViewModel, Course>().ReverseMap().ForMember(des => des.CourseType, src => src.MapFrom(x => x.CourseType != null ? (string)x.CourseType.ToString() : (string?)null));
 
-            CreateMap<ClassViewModel, Class>().ReverseMap().ForMember(des => des.StatusOfClass, src => src.MapFrom(x => x.StatusOfClass != null ? (string)x.StatusOfClass.ToString() : (string?)null))
-                                                            .ForMember(des => des.CourseCode, src => src.MapFrom(x => x.Course.CourseCode));
+            CreateMap<ClassViewModel, Class>().ReverseMap()
+                                    .ForMember(des => des.StatusOfClass, src => src.MapFrom(x => x.StatusOfClass != null ? (string)x.StatusOfClass.ToString() : (string?)null))
+                                    .ForMember(des => des.CourseCode, src => src.MapFrom(x => x.Course.CourseCode));
             CreateMap<CreateClassViewModel, Class>().ReverseMap();
             CreateMap<UpdateClassViewModel, Class>().ReverseMap();
             CreateMap<ClassForScheduleViewModel, Class>().ReverseMap();
@@ -176,7 +177,8 @@ namespace KidProEdu.API.Mappers
                                                             .ForMember(x => x.Code, src => src.MapFrom(x => x.Class.ClassCode))
                                                             //.ForMember(x => x.chid, src => src.MapFrom(x => x.ChildrenProfileId))
                                                             .ForMember(x => x.Avatar, src => src.MapFrom(x => x.ChildrenProfile.Avatar))
-                                                            .ForMember(x => x.NameChildren, src => src.MapFrom(x => x.ChildrenProfile.FullName));
+                                                            .ForMember(x => x.FullName, src => src.MapFrom(x => x.ChildrenProfile.FullName))
+                                                            .ForMember(x => x.ChildrenCode, src => src.MapFrom(x => x.ChildrenProfile.ChildrenCode));
 
             CreateMap<Contract, ContractViewModel>().ReverseMap()
                 .ForMember(des => des.StatusOfContract, src => src.MapFrom(x => x.StatusOfContract != null ? (string)x.StatusOfContract.ToString() : (string?)null));
@@ -234,7 +236,8 @@ namespace KidProEdu.API.Mappers
                 .ForMember(des => des.CourseCode, src => src.MapFrom(x => x.Course.CourseCode))
                 .ForMember(des => des.ChildrenName, src => src.MapFrom(x => x.ChildrenProfile.FullName))
                 .ForMember(des => des.ParentId, src => src.MapFrom(x => x.Order.UserAccount.Id))
-                .ForMember(des => des.ParentName, src => src.MapFrom(x => x.Order.UserAccount.FullName));
+                .ForMember(des => des.ParentName, src => src.MapFrom(x => x.Order.UserAccount.FullName))
+                .ForMember(des => des.EWalletMethod, src => src.MapFrom(x => x.Order.EWalletMethod));
 
             CreateMap<ChildrenAnswer, ChildrenAnswerViewModel>().ReverseMap();
             CreateMap<CreateChildrenAnswerViewModel, ChildrenAnswer>().ReverseMap();

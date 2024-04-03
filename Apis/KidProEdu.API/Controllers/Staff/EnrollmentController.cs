@@ -40,12 +40,19 @@ namespace KidProEdu.API.Controllers.Staff
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostEnrollment(CreateEnrollmentViewModel createEnrollmentViewModel)
+        public async Task<IActionResult> PostEnrollment(List<CreateEnrollmentViewModel> createEnrollmentViewModels)
         {
             try
             {
-                var result = await _enrollmentServices.CreateEnrollment(createEnrollmentViewModel);
-                return Ok(result);
+                var result = await _enrollmentServices.CreateEnrollment(createEnrollmentViewModels);
+                if (result.Any())
+                {
+                    return BadRequest(string.Join("\n", result));
+                }
+                else
+                {
+                    return Ok("Thêm danh sách học sinh vào lớp thành công");
+                }
             }
             catch (Exception ex)
             {

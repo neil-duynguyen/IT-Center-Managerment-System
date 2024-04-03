@@ -84,7 +84,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public override async Task<List<Class>> GetAllAsync()
         {
-            return await _dbSet.Include(x => x.Course).Include(x => x.Enrollments).ThenInclude(x => x.ChildrenProfile).Where(x => !x.IsDeleted).ToListAsync();
+            return await _dbSet.Include(x => x.Course).Include(x => x.Schedules).ThenInclude(x => x.Slot).Include(x => x.Enrollments).ThenInclude(x => x.ChildrenProfile).Where(x => !x.IsDeleted).ToListAsync();
         }
     }
 }
