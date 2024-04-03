@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hangfire.Logging;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Children;
 using KidProEdu.Application.Validations.Enrollments;
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZXing;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KidProEdu.Application.Services
 {
@@ -33,91 +35,117 @@ namespace KidProEdu.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateEnrollment(CreateEnrollmentViewModel createEnrollmentViewModel)
+        public async Task<List<string>> CreateEnrollment(List<CreateEnrollmentViewModel> createEnrollmentViewModels)
         {
-            //check enrolled
-            var enrolled = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassIdAndChildrenProfileId(createEnrollmentViewModel.ClassId, createEnrollmentViewModel.ChildrenProfileId);
-            if (enrolled != null)
+            List<string> failedEnrollments = new List<string>();          
+            foreach (var createEnrollmentViewModel in createEnrollmentViewModels)
             {
-                throw new Exception("Bạn đã tham gia lớp này rồi!");
-            }
-
-
-            //check number children in class
-            var getNumbderChildren = await _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId);
-
-            if (getNumbderChildren.ActualNumber == getNumbderChildren.MaxNumber) throw new Exception($"Lớp học {getNumbderChildren.ClassCode} đã đủ số lượng trẻ.");
-
-            var getPriceClass = _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId).Result.Course.Price;
-
-            //update ActualNumber in class
-            var updateActualNumberClass = await _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId);
-            updateActualNumberClass.ActualNumber += 1;
-            _unitOfWork.ClassRepository.Update(updateActualNumberClass);
-
-            var mapper = _mapper.Map<Enrollment>(createEnrollmentViewModel);
-            mapper.RegisterDate = _currentTime.GetCurrentTime();
-            mapper.Commission = getPriceClass * 0.1;
-            mapper.UserId = _claimsService.GetCurrentUserId;
-
-            //update status childrenProfile
-            var children = await _unitOfWork.ChildrenRepository.GetByIdAsync(createEnrollmentViewModel.ChildrenProfileId);
-            children.Status = StatusChildrenProfile.Studying;
-            _unitOfWork.ChildrenRepository.Update(children);
-
-            var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(createEnrollmentViewModel.ClassId);
-            var course = await _unitOfWork.CourseRepository.GetByIdAsync(getNumbderChildren.CourseId);
-            DateTime startDate = (DateTime)schedules.FirstOrDefault().StartDate;
-
-            int slot = 0;
-            while (slot < course.DurationTotal)
-            {
-                // Kiểm tra xem ngày hiện tại là ngày trong tuần đã chỉ định trong lịch trình hay không
-                if (schedules.Any(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())))
+                try
                 {
-                    // Kiểm tra xem điểm danh cho ngày này đã được tạo hay chưa
-                    var attendance = new CreateAttendanceViewModel
+                    var enrolled = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassIdAndChildrenProfileId(createEnrollmentViewModel.ClassId, createEnrollmentViewModel.ChildrenProfileId);
+                    if (enrolled != null)
                     {
-                        ScheduleId = schedules.FirstOrDefault(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())).Id,
-                        ChildrenProfileId = createEnrollmentViewModel.ChildrenProfileId,
-                        Date = startDate,
-                        StatusAttendance = StatusAttendance.Future,
-                        Note = ""
-                    };
-
-                    //check trùng lịch khác
-                    var attendances = await _unitOfWork.AttendanceRepository.GetListAttendancesByChildId(createEnrollmentViewModel.ChildrenProfileId);
-                    foreach (var atten in attendances)
-                    {
-                        if (atten.Date.Date == startDate.Date)
-                        {
-                            if (schedules.Any(x => x.SlotId.ToString().Contains(atten.Schedule.SlotId.ToString())))
-                            {
-                                throw new Exception("Lớp học này có lịch trùng với lịch học bạn đã đăng kí ");
-                            }
-                        }
+                        var child = await _unitOfWork.ChildrenRepository.GetByIdAsync(enrolled.ChildrenProfileId);
+                        failedEnrollments.Add($"{child.FullName} đã tham gia lớp này rồi!");
                     }
 
-                    // Lưu danh sách điểm danh vào cơ sở dữ liệu
-                    var attendanceEntity = _mapper.Map<Attendance>(attendance);
-                    await _unitOfWork.AttendanceRepository.AddAsync(attendanceEntity);
-                    slot++;
+
+                    //check number children in class
+                    var getNumbderChildren = await _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId);
+
+                    if (getNumbderChildren.ActualNumber == getNumbderChildren.MaxNumber) throw new Exception($"Lớp học {getNumbderChildren.ClassCode} đã đủ số lượng trẻ.");
+
+                    var getPriceClass = _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId).Result.Course.Price;
+
+                    //update ActualNumber in class
+                    var updateActualNumberClass = await _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId);
+                    updateActualNumberClass.ActualNumber += 1;
+                    _unitOfWork.ClassRepository.Update(updateActualNumberClass);
+
+                    var mapper = _mapper.Map<Enrollment>(createEnrollmentViewModel);
+                    mapper.RegisterDate = _currentTime.GetCurrentTime();
+                    mapper.Commission = getPriceClass * 0.1;
+                    mapper.UserId = _claimsService.GetCurrentUserId;
+
+                    //update status childrenProfile
+                    var children = await _unitOfWork.ChildrenRepository.GetByIdAsync(createEnrollmentViewModel.ChildrenProfileId);
+                    children.Status = StatusChildrenProfile.Studying;
+                    _unitOfWork.ChildrenRepository.Update(children);
+
+                    var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(createEnrollmentViewModel.ClassId);
+                    var course = await _unitOfWork.CourseRepository.GetByIdAsync(getNumbderChildren.CourseId);
+                    DateTime startDate = (DateTime)schedules.FirstOrDefault().StartDate;
+
+                    int slot = 0;
+                    bool duplicateScheduleError = false;
+                    while (slot < course.DurationTotal)
+                    {
+                        // Kiểm tra xem ngày hiện tại là ngày trong tuần đã chỉ định trong lịch trình hay không
+                        if (schedules.Any(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())))
+                        {
+                            // Kiểm tra xem điểm danh cho ngày này đã được tạo hay chưa
+                            var attendance = new CreateAttendanceViewModel
+                            {
+                                ScheduleId = schedules.FirstOrDefault(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())).Id,
+                                ChildrenProfileId = createEnrollmentViewModel.ChildrenProfileId,
+                                Date = startDate,
+                                StatusAttendance = StatusAttendance.Future,
+                                Note = ""
+                            };
+
+                            var attendances = await _unitOfWork.AttendanceRepository.GetListAttendancesByChildId(createEnrollmentViewModel.ChildrenProfileId);
+                            foreach (var atten in attendances)
+                            {                                 
+                                if (atten.Date.Date == startDate.Date)
+                                {
+                                    if (schedules.Any(x => x.SlotId.ToString().Contains(atten.Schedule.SlotId.ToString())))
+                                    {
+                                        if (!duplicateScheduleError)
+                                        {
+                                            var child = await _unitOfWork.ChildrenRepository.GetByIdAsync(createEnrollmentViewModel.ChildrenProfileId);
+                                            failedEnrollments.Add($"{child.FullName} có lịch học bị trùng với lịch khác");
+                                            duplicateScheduleError = true;
+                                        }
+                                    }
+                                }
+                                if (duplicateScheduleError == true)
+                                {
+                                    break;
+                                }
+                            }
+
+                            // Lưu danh sách điểm danh vào cơ sở dữ liệu
+                            var attendanceEntity = _mapper.Map<Attendance>(attendance);
+                            await _unitOfWork.AttendanceRepository.AddAsync(attendanceEntity);
+                            slot++;
+                            }
+                        
+                        // Tăng ngày startdate lên 1 để chuyển sang ngày tiếp theo
+                        startDate = startDate.AddDays(1);
+
+                        // Kiểm tra xem số buổi học đã điểm danh có bằng tổng số buổi học không
+                        if (slot == course.DurationTotal)
+                        {
+                            break; // Kết thúc vòng lặp nếu đã điểm danh đủ số buổi học
+                        }
+                    }
+                    await _unitOfWork.EnrollmentRepository.AddAsync(mapper);
                 }
-
-                // Tăng ngày startdate lên 1 để chuyển sang ngày tiếp theo
-                startDate = startDate.AddDays(1);
-
-                // Kiểm tra xem số buổi học đã điểm danh có bằng tổng số buổi học không
-                if (slot == course.DurationTotal)
+                catch (Exception ex)
                 {
-                    break; // Kết thúc vòng lặp nếu đã điểm danh đủ số buổi học
+                    failedEnrollments.Add(ex.Message);
                 }
             }
-
-
-            await _unitOfWork.EnrollmentRepository.AddAsync(mapper);
-
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Đăng kí thất bại.");
+            if (failedEnrollments.Any())
+            {
+                return failedEnrollments;
+            }
+            else
+            {
+                await _unitOfWork.SaveChangeAsync();
+                return new List<string>();
+            }
+            
         }
 
         public async Task<bool> DeleteEnrollment(Guid classId, Guid childId)
@@ -211,7 +239,7 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Không tìm thấy tham gia này");
             }
 
-            if(result.ClassId == updateEnrollmentViewModel.ClassId)
+            if (result.ClassId == updateEnrollmentViewModel.ClassId)
             {
                 throw new Exception("Bạn đang học lớp này");
             }
@@ -219,7 +247,7 @@ namespace KidProEdu.Application.Services
 
             //delete attendance old schedule
             var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);
-            foreach(var schedule in schedules)
+            foreach (var schedule in schedules)
             {
                 var attendances = await _unitOfWork.AttendanceRepository.GetListAttendanceByScheduleIdAndChilId(schedule.Id, result.ChildrenProfileId);
                 _unitOfWork.AttendanceRepository.RemoveRange(attendances);
@@ -340,7 +368,7 @@ namespace KidProEdu.Application.Services
             result.ClassId = updateEnrollmentViewModel.ClassId;
             var schedules1 = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);
             var classed = await _unitOfWork.ClassRepository.GetByIdAsync(result.ClassId);
-            var course = await _unitOfWork.CourseRepository.GetByIdAsync(classed.CourseId);            
+            var course = await _unitOfWork.CourseRepository.GetByIdAsync(classed.CourseId);
             DateTime startDate = attendanceCheckTime.Date;
 
             //add new schedule 
@@ -362,11 +390,11 @@ namespace KidProEdu.Application.Services
 
                     //check trùng lịch khác
                     var attendances = await _unitOfWork.AttendanceRepository.GetListAttendancesByChildId(result.ChildrenProfileId);
-                    foreach(var atten in attendances)
+                    foreach (var atten in attendances)
                     {
-                        if(atten.Date.Date == startDate.Date)
+                        if (atten.Date.Date == startDate.Date)
                         {
-                            if(schedules1.Any(x => x.SlotId.ToString().Contains(atten.Schedule.SlotId.ToString())))
+                            if (schedules1.Any(x => x.SlotId.ToString().Contains(atten.Schedule.SlotId.ToString())))
                             {
                                 throw new Exception("Lớp học này có lịch trùng với lịch học bạn đã đăng kí ");
                             }
