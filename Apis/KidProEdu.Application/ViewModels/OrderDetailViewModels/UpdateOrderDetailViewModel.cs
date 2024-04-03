@@ -39,6 +39,7 @@ namespace KidProEdu.Application.ViewModels.OrderDetailViewModels
         public Guid OrderId { get; set; }
         public List<ReturnOrderDetailViewModel> returnOrderDetailViews { get; set; }
         public List<PaymentInformationView> paymentInformation { get; set; }
+        public DateTime CreationDate { get; set; }
         public string? EWalletMethod { get; set; }
         public decimal Total { get;set; }
     }

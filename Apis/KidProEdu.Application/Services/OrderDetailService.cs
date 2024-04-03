@@ -150,6 +150,7 @@ namespace KidProEdu.Application.Services
                 OrderId = orderId,
                 returnOrderDetailViews = returnOrderDetailViews,
                 paymentInformation = paymentInformationViews,
+                CreationDate = _unitOfWork.OrderRepository.GetByIdAsync(orderId).Result.CreationDate,
                 EWalletMethod = EWalletMethod,
                 Total = paymentInformationViews.Sum(x => x.AmountPerMonth)
             };
