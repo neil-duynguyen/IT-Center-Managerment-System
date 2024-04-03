@@ -37,5 +37,12 @@ namespace KidProEdu.API.Controllers.Staff
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("GetOrderDetailByOrderIdAfterUpdate/{id}")]
+        public async Task<IActionResult> GetOrderDetailByOrderIdAfterUpdate(Guid id)
+        {
+            var result = await _orderDetailService.GetOrderDetailByOrderIdAfterUpdate(id);
+            return Ok(result);
+        }
     }
 }
