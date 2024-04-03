@@ -116,6 +116,7 @@ namespace KidProEdu.Application.Services
                      Score = group.Sum(x => x.ScorePerQuestion)
                  })
                  .ToList();
+            mapper.Exams = listExam;
 
             return mapper;
 
