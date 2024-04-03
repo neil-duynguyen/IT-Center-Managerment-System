@@ -9,6 +9,7 @@ using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
 using System.Linq.Expressions;
 
 namespace KidProEdu.Application.Services
@@ -356,6 +357,41 @@ namespace KidProEdu.Application.Services
             var result = _unitOfWork.EnrollmentRepository.GetAllAsync().Result.Where(x => x.ClassId == classId).ToList();
             var mapper = _mapper.Map<List<ClassChildrenViewModel>>(result);
             return mapper;
+        }
+
+        public async Task<Stream> ExportExcelFileAsync(Guid classId)
+        {
+            string[] columnNames = new string[] { "ChildrenCode", "FullName", "ScorePerQuestion" };
+
+            var stream = new MemoryStream();
+
+            using (var package = new ExcelPackage(stream))
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Nhập điểm");
+
+                // Add header
+                for (int i = 0; i < columnNames.Length; i++)
+                {
+                    worksheet.Cells[1, i + 1].Value = columnNames[i];
+                }
+
+                var getClassById = _unitOfWork.ClassRepository.GetAllAsync().Result.FirstOrDefault(x => x.Id == classId);
+                var getListChildren = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassId(getClassById.Id);
+
+                // Add data
+                for (int i = 0; i < getListChildren.Count; i++)
+                {
+                    worksheet.Cells[i + 2, 1].Value = getListChildren[i].ChildrenProfile.ChildrenCode;
+                    worksheet.Cells[i + 2, 2].Value = getListChildren[i].ChildrenProfile.FullName;
+                }
+
+                await package.SaveAsync();
+            }
+
+            stream.Position = 0;
+
+            return stream;
+
         }
     }
 }
