@@ -19,5 +19,6 @@ namespace KidProEdu.Application.ViewModels.OrderDetailViewModels
         public Guid? ParentId { get; set; }
         public string? ParentName { get; set; }
         public string? ChildrenName { get; set; }
+        public string? EWalletMethod { get; set; }
     }
 }

@@ -235,7 +235,8 @@ namespace KidProEdu.API.Mappers
                 .ForMember(des => des.CourseCode, src => src.MapFrom(x => x.Course.CourseCode))
                 .ForMember(des => des.ChildrenName, src => src.MapFrom(x => x.ChildrenProfile.FullName))
                 .ForMember(des => des.ParentId, src => src.MapFrom(x => x.Order.UserAccount.Id))
-                .ForMember(des => des.ParentName, src => src.MapFrom(x => x.Order.UserAccount.FullName));
+                .ForMember(des => des.ParentName, src => src.MapFrom(x => x.Order.UserAccount.FullName))
+                .ForMember(des => des.EWalletMethod, src => src.MapFrom(x => x.Order.EWalletMethod));
 
             CreateMap<ChildrenAnswer, ChildrenAnswerViewModel>().ReverseMap();
             CreateMap<CreateChildrenAnswerViewModel, ChildrenAnswer>().ReverseMap();

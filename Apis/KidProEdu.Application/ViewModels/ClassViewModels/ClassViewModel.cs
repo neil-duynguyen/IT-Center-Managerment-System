@@ -21,5 +21,6 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
         public int MaxNumber { get; set; }
         public int ExpectedNumber { get; set; }
         public int ActualNumber { get; set; }
+
     }
 }

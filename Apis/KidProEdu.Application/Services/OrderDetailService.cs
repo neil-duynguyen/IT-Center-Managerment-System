@@ -35,7 +35,7 @@ namespace KidProEdu.Application.Services
             return _mapper.Map<List<OrderDetailViewModel>>(result);
         }
 
-        public async Task<ReturnPaymentInformationView> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView)
+        public async Task<bool> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView)
         {
             var EWalletMethod = string.Empty;
 
@@ -108,6 +108,7 @@ namespace KidProEdu.Application.Services
                     await _unitOfWork.SaveChangeAsync();
 
                     scope.Complete();
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -116,14 +117,10 @@ namespace KidProEdu.Application.Services
                     throw new Exception(ex.Message);
                 }
             }
-            var result = await PaymentInformation(orderId, EWalletMethod);
-            return result;
-
         }
 
-        public async Task<ReturnPaymentInformationView> PaymentInformation(Guid orderId, string EWalletMethod)
+        public async Task<ReturnPaymentInformationView> GetOrderDetailByOrderIdAfterUpdate(Guid orderId)
         {
-
             List<PaymentInformationView> paymentInformationViews = new List<PaymentInformationView>();
             //tính tổng tiền cần thanh toán
             var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
@@ -142,16 +139,17 @@ namespace KidProEdu.Application.Services
             List<ReturnOrderDetailViewModel> returnOrderDetailViews = new List<ReturnOrderDetailViewModel>();
             foreach (var item in getOrderDetail)
             {
-                returnOrderDetailViews.Add(new ReturnOrderDetailViewModel() { CourseCode = item.Course.CourseCode, Quantity = item.Quantity, UnitPrice = item.UnitPrice, InstallmentTerm = item.InstallmentTerm, PayType = item.PayType.ToString(), ChildrenName = item.ChildrenProfile.FullName});
+                returnOrderDetailViews.Add(new ReturnOrderDetailViewModel() { CourseCode = item.Course.CourseCode, Quantity = item.Quantity, UnitPrice = item.UnitPrice, InstallmentTerm = item.InstallmentTerm, PayType = item.PayType.ToString(), ChildrenName = item.ChildrenProfile.FullName });
             }
+            var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
-
-            ReturnPaymentInformationView returnPaymentInformationView = new ReturnPaymentInformationView() {
+            ReturnPaymentInformationView returnPaymentInformationView = new ReturnPaymentInformationView()
+            {
                 OrderId = orderId,
                 returnOrderDetailViews = returnOrderDetailViews,
                 paymentInformation = paymentInformationViews,
-                CreationDate = _unitOfWork.OrderRepository.GetByIdAsync(orderId).Result.CreationDate,
-                EWalletMethod = EWalletMethod,
+                CreationDate = getOrderById.CreationDate,
+                EWalletMethod = getOrderById.EWalletMethod,
                 Total = paymentInformationViews.Sum(x => x.AmountPerMonth)
             };
 
