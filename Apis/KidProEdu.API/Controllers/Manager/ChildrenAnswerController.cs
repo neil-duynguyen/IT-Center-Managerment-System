@@ -17,11 +17,12 @@ namespace KidProEdu.API.Controllers.Manager
             _childrenAnswerService = childrenAnswerService;
         }
 
-        [HttpGet]
+        [HttpGet("ChildrenAnswers/{childrenId}/{examId}")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> ChildrenAnswers()
+
+        public async Task<IActionResult> ChildrenAnswers(Guid childrenId, Guid examId)
         {
-            return Ok(await _childrenAnswerService.GetChildrenAnswers());
+            return Ok(await _childrenAnswerService.GetChildrenAnswers(childrenId, examId));
         }
 
         [HttpGet("{id}")]

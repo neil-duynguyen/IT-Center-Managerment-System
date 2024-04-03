@@ -111,9 +111,10 @@ namespace KidProEdu.Application.Services
                  .GroupBy(x => x.ExamId)
                  .Select(group => new ExamViewModelInChildren
                  {
+                     ExamId = group.FirstOrDefault().Id,
                      ExamName = group.FirstOrDefault()?.Exam.TestName,
-                     ExamDate = group.FirstOrDefault()?.Exam.CreationDate,
-                     Score = group.Sum(x => x.ScorePerQuestion)
+/*                     ExamDate = group.FirstOrDefault()?.Exam.CreationDate,
+                     Score = group.Sum(x => x.ScorePerQuestion)*/
                  })
                  .ToList();
             mapper.Exams = listExam;

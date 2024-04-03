@@ -93,11 +93,19 @@ namespace KidProEdu.Application.Services
             return mapper;
         }
 
-        public async Task<List<ChildrenAnswerViewModel>> GetChildrenAnswers()
+        public async Task<List<QuestionViewModel>> GetChildrenAnswers(Guid childrenId, Guid examId)
         {
-            var result = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
-            var mapper = _mapper.Map<List<ChildrenAnswerViewModel>>(result);
-            return mapper;
+            var result = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result.Where(x => x.ChildrenProfileId == childrenId && x.ExamId == examId).OrderByDescending(x => x.CreationDate).ToList();
+
+            List<QuestionViewModel> questionViewModel = new List<QuestionViewModel>();
+
+            foreach (var item in result)
+            {
+                var mapper = _mapper.Map<QuestionViewModel>(await _unitOfWork.QuestionRepository.GetByIdAsync(item.QuestionId));
+                mapper.Answer = item.Answer;
+                questionViewModel.Add(mapper);
+            }
+            return questionViewModel;
         }
 
         public async Task<bool> UpdateChildrenAnswer(UpdateChildrenAnswerViewModel updateChildrenAnswerView)
