@@ -137,5 +137,19 @@ namespace KidProEdu.API.Controllers.Manager
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("GetScheduleRoomAndTeachingClassHistory")]
+        public async Task<IActionResult> GetScheduleRoomAndTeachingClassHistory()
+        {
+            try
+            {
+                return Ok(await _scheduleService.GetScheduleRoomAndTeachingClassHistory());
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
