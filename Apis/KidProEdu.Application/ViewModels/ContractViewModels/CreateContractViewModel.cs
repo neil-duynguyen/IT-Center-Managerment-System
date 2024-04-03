@@ -9,7 +9,7 @@ namespace KidProEdu.Application.ViewModels.ContractViewModels
 {
     public class CreateContractViewModel
     {
-        public Guid UserId { get; set; }
+        //public Guid UserId { get; set; }
         public Guid ConfigJobTypeId { get; set; }
         public string ContractCode { get; set; }
         public DateTime StartDate { get; set; }

@@ -75,6 +75,13 @@ namespace KidProEdu.Application.Services
 
             await _unitOfWork.UserRepository.AddAsync(newUser);
 
+            if (userObject.createContractViewModel != null)
+            {
+                ContractService sv = new ContractService(_unitOfWork, _currentTime, _claimsService, _mapper);
+                await sv.CreateContract(userObject.createContractViewModel, newUser.Id);
+            }
+
+
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 

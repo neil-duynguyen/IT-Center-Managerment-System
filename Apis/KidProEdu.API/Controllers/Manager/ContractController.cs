@@ -35,11 +35,11 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PostLocation(CreateContractViewModel createContractViewModel)
+        public async Task<IActionResult> PostLocation(CreateContractViewModel createContractViewModel, Guid userId)
         {
             try
             {
-                var result = await _ContractService.CreateContract(createContractViewModel);
+                var result = await _ContractService.CreateContract(createContractViewModel, userId);
                 if (result)
                 {
                     return Ok("Hợp đồng đã được tạo thành công.");
