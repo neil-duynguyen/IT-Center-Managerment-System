@@ -207,24 +207,22 @@ namespace KidProEdu.Application.Services
                                 .Where(x => x.UserId == enrollment.UserId).ToList();
 
                             // tạo file excel chứa list children theo staff
-                            var file = await ExportExcelFileByListAsync(listChildren, "Danh sách học sinh lớp hủy");
+                            var file = await ExportExcelFileByListAsync(listChildren, "Danh_sach_hs.xlsx");
 
                             // lấy staff ra để lấy email
                             var staff = await _unitOfWork.UserRepository.GetByIdAsync(enrollment.UserId);
 
                             // gửi mail cho từng staff kèm theo file excel list hs mà staff đó add vô (phụ trách) đính kèm
-                            var builder = new BodyBuilder();
-                            builder.TextBody =
-                                "Thông báo đến thầy/cô phụ trách học sinh, \n\n" +
-                                "Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
-                                " đã bị hủy do không đủ điều kiện để mở lớp, \n" +
-                                "Thông tin chi tiết được gửi trong file đính kèm, quý thầy cô thực hiện tư vấn lại " +
-                                "với phụ huynh học sinh để tiến hành đăng kí mới nếu có nguyện vọng! \n\n" +
-                                "Trân trọng, \n" +
-                                "KidPro Education!";
 
                             await SendEmailUtil.SendEmailWithAttachment(staff.Email, "Thông báo về việc lớp học bị hủy",
-                                builder.TextBody, file);
+                                "<p>Thông báo đến thầy/cô phụ trách học sinh, </p></br>" +
+                                "<p>Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
+                                " đã bị hủy do không đủ điều kiện để mở lớp, </p></br>" +
+                                "<p>Thông tin chi tiết được gửi trong file đính kèm, quý thầy cô thực hiện tư vấn lại " +
+                                "với phụ huynh học sinh để tiến hành đăng kí mới nếu có nguyện vọng! </p></br>" +
+                                "<p>Trân trọng, </p></br>" +
+                                "<p>KidPro Education!</p>"
+                                , file);
                         }
 
                         // gửi mail cho parents 
@@ -483,18 +481,16 @@ namespace KidProEdu.Application.Services
         public async Task<bool> TestSendAttachEmail()
         {
             var list = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassId(new Guid("2e741406-fccc-4ba9-8c50-08dc53038619"));
-            var file = await ExportExcelFileByListAsync(list, "danh sach hs");
+            var file = await ExportExcelFileByListAsync(list, "danh_sach_hs.xlsx");
 
-            var builder = new BodyBuilder();
-            builder.TextBody = "Thông báo đến quý phụ huynh học sinh, \r\n\n" +
-                                //"Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
-                                " đã bị hủy do không đủ điều kiện để mở lớp, vui lòng liên hệ staff để được tư vấn" +
-                                "đăng kí lớp học mới cho học sinh trong vòng 1 tuần kể từ lúc nhận mail \n\n" +
-                                //"Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
-                                "Trân trọng, \n" +
-                                "KidPro Education!";
             await SendEmailUtil.SendEmailWithAttachment("tkchoi1312@gmail.com", "Thông báo về việc hủy bỏ lớp không đủ điều kiện bắt đầu",
-                                builder.TextBody
+                                "<p>Thông báo đến thầy/cô phụ trách học sinh, </p></br>" +
+                                //"<p>Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
+                                //" đã bị hủy do không đủ điều kiện để mở lớp, </p></br>" +
+                                "<p>Thông tin chi tiết được gửi trong file đính kèm, quý thầy cô thực hiện tư vấn lại " +
+                                "với phụ huynh học sinh để tiến hành đăng kí mới nếu có nguyện vọng! </p></br>" +
+                                "<p>Trân trọng, </p></br>" +
+                                "<p>KidPro Education!</p>"
                                 , file);
 
             return true;
