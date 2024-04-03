@@ -183,6 +183,8 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateContractViewModel, Contract>().ReverseMap();
             CreateMap<UpdateContractViewModel, Contract>().ReverseMap();
 
+            CreateMap<ConfigJobTypeViewModel, ConfigJobType>().ReverseMap()
+                .ForMember(des => des.JobType, src => src.MapFrom(x => x.JobType != null ? (string)x.JobType.ToString() : (string?)null));
             CreateMap<UpdateConfigJobTypeViewModel, ConfigJobType>().ReverseMap();
 
             CreateMap<Schedule, ScheduleViewModel>().ReverseMap();
