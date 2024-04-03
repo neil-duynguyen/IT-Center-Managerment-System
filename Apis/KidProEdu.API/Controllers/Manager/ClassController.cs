@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.ClassViewModels;
+using KidProEdu.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers.Manager
@@ -106,14 +107,7 @@ namespace KidProEdu.API.Controllers.Manager
             try
             {
                 var result = await _classService.ChangeStatusClass(changeStatusClassViewModel);
-                if (result)
-                {
-                    return Ok("Lớp đã được cập nhật trạng thái thành công.");
-                }
-                else
-                {
-                    return BadRequest("Lớp cập nhật trạng thái thất bại.");
-                }
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -127,5 +121,10 @@ namespace KidProEdu.API.Controllers.Manager
             var result = await _classService.GetChildrenByClassId(classId);
             return Ok(result);
         }
+
+        [HttpGet("ExportExcelFile/{classId}")]
+        public async Task<IActionResult> ExportExcelFile(Guid classId) => File(await _classService.ExportExcelFileAsync(classId),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Nhập điểm.xlsx");
     }
 }

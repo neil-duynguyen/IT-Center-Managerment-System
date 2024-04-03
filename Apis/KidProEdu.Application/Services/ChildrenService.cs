@@ -111,11 +111,13 @@ namespace KidProEdu.Application.Services
                  .GroupBy(x => x.ExamId)
                  .Select(group => new ExamViewModelInChildren
                  {
+                     ExamId = group.FirstOrDefault().Id,
                      ExamName = group.FirstOrDefault()?.Exam.TestName,
-                     ExamDate = group.FirstOrDefault()?.Exam.CreationDate,
-                     Score = group.Sum(x => x.ScorePerQuestion)
+/*                     ExamDate = group.FirstOrDefault()?.Exam.CreationDate,
+                     Score = group.Sum(x => x.ScorePerQuestion)*/
                  })
                  .ToList();
+            mapper.Exams = listExam;
 
             return mapper;
 
@@ -124,7 +126,8 @@ namespace KidProEdu.Application.Services
         public async Task<List<ChildrenViewModel>> GetChildrenByParentId(Guid Id)
         {
             var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.UserId == Id).ToList();
-            return _mapper.Map<List<ChildrenViewModel>>(getChildrens);
+            var mapper = _mapper.Map<List<ChildrenViewModel>>(getChildrens);
+            return mapper;
         }
 
         public async Task<bool> ChildrenReserve(ChildrenReserveViewModel childrenReserveViewModel)

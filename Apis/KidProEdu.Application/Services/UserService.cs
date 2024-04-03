@@ -75,6 +75,13 @@ namespace KidProEdu.Application.Services
 
             await _unitOfWork.UserRepository.AddAsync(newUser);
 
+            if (userObject.createContractViewModel != null)
+            {
+                ContractService sv = new ContractService(_unitOfWork, _currentTime, _claimsService, _mapper);
+                await sv.CreateContract(userObject.createContractViewModel, newUser.Id);
+            }
+
+
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
@@ -105,12 +112,17 @@ namespace KidProEdu.Application.Services
 
             if (getCurrentUserId.Equals("Admin"))
             {
-                users = listUser.Where(x => x.Role.Name.Equals("Manager") || x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).ToList();
+                users = listUser.Where(x => x.Role.Name.Equals("Manager") || x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
             }
 
             if (getCurrentUserId.Equals("Manager"))
             {
-                users = listUser.Where(x => x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).ToList();
+                users = listUser.Where(x => x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
+            }
+
+            if (getCurrentUserId.Equals("Staff"))
+            {
+                users = listUser.Where(x => x.Role.Name.Equals("Parent") && !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
             }
 
             return _mapper.Map<List<UserViewModel>>(users);

@@ -27,5 +27,13 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return scheduleRooms;
         }
+
+        public async Task<List<ScheduleRoom>> GetScheduleRoomBySchedule(Guid id)
+        {
+            var scheduleRooms = await _dbContext.ScheduleRoom.Where(x => x.Id == id
+            && x.IsDeleted == false).ToListAsync();
+
+            return scheduleRooms;
+        }
     }
 }

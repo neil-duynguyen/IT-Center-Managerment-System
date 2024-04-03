@@ -35,8 +35,10 @@ namespace KidProEdu.Application.Services
             return _mapper.Map<List<OrderDetailViewModel>>(result);
         }
 
-        public async Task<List<PaymentInformationView>> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView)
+        public async Task<ReturnPaymentInformationView> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView)
         {
+            var EWalletMethod = string.Empty;
+
             //check xem children có học trùng course ko khi chưa vào DB
             if (updateOrderDetailView.GroupBy(x => new { x.CourseId, x.ChildrenProfildId }).Any(g => g.Count() > 1)) throw new Exception("Có trẻ đăng kí khoá học trùng nhau.");
 
@@ -53,6 +55,7 @@ namespace KidProEdu.Application.Services
                 {
                     foreach (var orderDetail in updateOrderDetailView)
                     {
+                        EWalletMethod = orderDetail.EWalletMethod;
                         orderId = orderDetail.OrderId;
                         //check xem children có học trùng course ko khi trong DB đã có rồi
                         if (_unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.ChildrenProfileId == orderDetail.ChildrenProfildId && x.CourseId == orderDetail.CourseId).Count() > 0)
@@ -69,6 +72,7 @@ namespace KidProEdu.Application.Services
                                 Id = Guid.NewGuid(),
                                 OrderId = orderDetail.OrderId,
                                 CourseId = orderDetail.CourseId,
+                                Quantity = orderDetail.Quantity,
                                 UnitPrice = getPrice.Price,
                                 TotalPrice = getPrice.Price,
                                 ChildrenProfileId = orderDetail.ChildrenProfildId,
@@ -82,6 +86,7 @@ namespace KidProEdu.Application.Services
                         {
                             //update OrderDetail
                             getOrderDetail.ChildrenProfileId = orderDetail.ChildrenProfildId;
+                            getOrderDetail.Quantity = orderDetail.Quantity;
                             getOrderDetail.UnitPrice = getPrice.Price;
                             getOrderDetail.TotalPrice = getPrice.Price;
                             getOrderDetail.PayType = (Domain.Enums.PayType?)orderDetail.PayType;
@@ -94,8 +99,11 @@ namespace KidProEdu.Application.Services
                     //Update TotalAmount bên Order
                     var updateTotalOrder = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).Sum(x => x.TotalPrice);
                     var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
+
                     if (getOrderById == null) throw new Exception("Đã xảy ra lỗi không thế cập nhật đơn hàng.");
+
                     getOrderById.TotalAmount = (double)updateTotalOrder;
+                    getOrderById.EWalletMethod = EWalletMethod;
                     _unitOfWork.OrderRepository.Update(getOrderById);
                     await _unitOfWork.SaveChangeAsync();
 
@@ -108,12 +116,12 @@ namespace KidProEdu.Application.Services
                     throw new Exception(ex.Message);
                 }
             }
-            var result = await PaymentInformation(orderId);
+            var result = await PaymentInformation(orderId, EWalletMethod);
             return result;
 
         }
 
-        public async Task<List<PaymentInformationView>> PaymentInformation(Guid orderId)
+        public async Task<ReturnPaymentInformationView> PaymentInformation(Guid orderId, string EWalletMethod)
         {
 
             List<PaymentInformationView> paymentInformationViews = new List<PaymentInformationView>();
@@ -123,80 +131,31 @@ namespace KidProEdu.Application.Services
             {
                 if (item.InstallmentTerm > 0)
                 {
-                    paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, TotalAmount = Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm)), Month = "1 tháng" });
+                    paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, AmountPerMonth = Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm)), Month = "1 tháng" });
                 }
                 if (item.InstallmentTerm == 0 && item.PayType.Value == PayType.Banking)
                 {
-                    paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, TotalAmount = (decimal)item.TotalPrice, Month = "0 tháng" });
+                    paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, AmountPerMonth = (decimal)item.TotalPrice, Month = "0 tháng" });
                 }
             }
-            return paymentInformationViews;
 
-        }
-
-        public class PaymentInformationView
-        {
-            public string CourseCode { get; set; }
-            public decimal TotalAmount { get; set; }
-            public string Month { get; set; }
-        }
-
-
-        // orderId = (Guid)getOrderDetail.OrderId;
-
-        //lấy số tiền đơn hàng trc đó để cộng dồn lên
-        /*var getPriceChildOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.ParentOrderDetail == getOrderDetail.Id).Sum(x => x.UnitPrice);
-
-        totalPrice += getPriceChildOrderDetail;
-
-
-        var getPrice = await _unitOfWork.CourseRepository.GetByIdAsync((Guid)orderDetail.ParentCourseId);
-        //course spec thì vào đây
-        if (orderDetail.ListChildCourseId.Count > 0)
-        {
-            OrderDetail newParentOrderDetail = new()
+            List<ReturnOrderDetailViewModel> returnOrderDetailViews = new List<ReturnOrderDetailViewModel>();
+            foreach (var item in getOrderDetail)
             {
-                Id = Guid.NewGuid(),
-                ChildrenProfileId = orderDetail.ChildrenProfildId,
-                CourseId = orderDetail.ParentCourseId,
-                UnitPrice = getPrice.Price,
-            };
-            await _unitOfWork.OrderDetailRepository.AddAsync(newParentOrderDetail);
-
-            foreach (var item in orderDetail.ListChildCourseId)
-            {
-                var getPriceChildCourse = await _unitOfWork.CourseRepository.GetByIdAsync(item);
-                OrderDetail newChildOrderDetail = new()
-                {
-                    Id = Guid.NewGuid(),
-                    ChildrenProfileId = orderDetail.ChildrenProfildId,
-                    CourseId = item,
-                    UnitPrice = getPriceChildCourse.Price,
-                    ParentOrderDetail = newParentOrderDetail.Id
-                };
-                totalPrice += getPrice.Price;
-                await _unitOfWork.OrderDetailRepository.AddAsync(newChildOrderDetail);
+                returnOrderDetailViews.Add(new ReturnOrderDetailViewModel() { CourseCode = item.Course.CourseCode, Quantity = item.Quantity, UnitPrice = item.UnitPrice, InstallmentTerm = item.InstallmentTerm, PayType = item.PayType.ToString(), ChildrenName = item.ChildrenProfile.FullName});
             }
-        }
-        else {                  
-            OrderDetail newOrderDetail = new()
-            {
-                Id = Guid.NewGuid(),
+
+
+            ReturnPaymentInformationView returnPaymentInformationView = new ReturnPaymentInformationView() {
                 OrderId = orderId,
-                ChildrenProfileId = orderDetail.ChildrenProfildId,
-                CourseId = orderDetail.ParentCourseId,
-                UnitPrice = getPrice.Price,
+                returnOrderDetailViews = returnOrderDetailViews,
+                paymentInformation = paymentInformationViews,
+                CreationDate = _unitOfWork.OrderRepository.GetByIdAsync(orderId).Result.CreationDate,
+                EWalletMethod = EWalletMethod,
+                Total = paymentInformationViews.Sum(x => x.AmountPerMonth)
             };
-            totalPrice += getPrice.Price;
-            await _unitOfWork.OrderDetailRepository.AddAsync(newOrderDetail);
-        }*/
 
-
-
-
-
-        //update TotalPrice bên Order
-        //var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
-        //getOrder.TotalAmount = totalPrice;
+            return returnPaymentInformationView;
+        }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240331071125_InitMirgation")]
+    [Migration("20240402020916_InitMirgation")]
     partial class InitMirgation
     {
         /// <inheritdoc />
@@ -1414,6 +1414,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("EWalletMethod")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

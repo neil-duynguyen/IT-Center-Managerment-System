@@ -15,7 +15,8 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> UpdateClass(UpdateClassViewModel updateClassViewModel);
         Task<ClassViewModel> GetClassById(Guid ClassId);
         Task<bool> DeleteClass(Guid ClassId);
-        Task<bool> ChangeStatusClass(ChangeStatusClassViewModel changeStatusClassViewModel);
+        Task<List<ChildrenPassedViewModel>> ChangeStatusClass(ChangeStatusClassViewModel changeStatusClassViewModel);
         Task<List<ClassChildrenViewModel>> GetChildrenByClassId(Guid classId);
+        Task<Stream> ExportExcelFileAsync(Guid classId);
     }
 }

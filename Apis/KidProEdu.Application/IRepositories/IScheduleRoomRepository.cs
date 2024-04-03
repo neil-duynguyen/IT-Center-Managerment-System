@@ -12,5 +12,6 @@ namespace KidProEdu.Application.IRepositories
     public interface IScheduleRoomRepository : IGenericRepository<ScheduleRoom>
     {
         Task<List<ScheduleRoom>> GetScheduleRoomByStatus(ScheduleRoomStatus status);
+        Task<List<ScheduleRoom>> GetScheduleRoomBySchedule(Guid id);
     }
 }

@@ -13,7 +13,7 @@ namespace KidProEdu.Infrastructures
         public AppDbContext() { }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-
+            ChangeTracker.AutoDetectChangesEnabled = true;
         }
 
         public DbSet<Role> Role { get; set; }
