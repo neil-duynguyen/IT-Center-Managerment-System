@@ -21,8 +21,10 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public override async Task<ChildrenProfile> GetByIdAsync(Guid id)
         {
-            return await _dbContext.ChildrenProfile.Include(x => x.Enrollments).ThenInclude(x => x.Class).ThenInclude(x => x.Course).
-                Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.ChildrenProfile
+                .Include(x=>x.UserAccount)
+                .Include(x => x.Enrollments).ThenInclude(x => x.Class).ThenInclude(x => x.Course)
+                .Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == id);
         }
         public override async Task<List<ChildrenProfile>> GetAllAsync()
         {

@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
+using ClosedXML;
+using ClosedXML.Excel;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Classes;
-using KidProEdu.Application.ViewModels.AdviseRequestViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Domain.Entities;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using OfficeOpenXml;
-using System.Linq.Expressions;
 
 namespace KidProEdu.Application.Services
 {
@@ -138,7 +138,7 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật lớp thất bại");
         }
 
-        //api này dùng để làm api start/end class luôn
+        //api này dùng để làm api start/end/cancel class luôn
         public async Task<List<ChildrenPassedViewModel>> ChangeStatusClass(ChangeStatusClassViewModel changeStatusClassViewModel)
         {
             Domain.Enums.StatusOfClass status = changeStatusClassViewModel.status switch
@@ -186,7 +186,9 @@ namespace KidProEdu.Application.Services
                 case Domain.Enums.StatusOfClass.Cancel:
                     // hủy lớp học
                     // hủy thì chỉ đổi status lớp học thôi, còn lịch và phòng thì vẫn pending và có thể xếp lại
-                    // gửi thông báo đến cho staff để xử lí nghiệp vụ chuyển lớp hay gì đó
+                    // gửi thông báo đến cho staff để xử lí nghiệp vụ tư vấn lớp mới
+                    // xóa attendance của thằng children đó và xóa enrollment của nó khỏi lớp
+                    // nếu muốn học lại thực hiện đăng kí mới (staff add enrollment mới)
 
                     foreach (var classId in changeStatusClassViewModel.ids)
                     {
@@ -197,21 +199,58 @@ namespace KidProEdu.Application.Services
 
                         // lấy ra những staff mà add children đó vô lớp bằng enrollment
                         var listStaffForChildren = childrenInClass.DistinctBy(x => x.UserId);
+                        // gửi mail cho staff chịu trách nhiệm quản lý
                         foreach (var enrollment in listStaffForChildren)
                         {
+                            // lấy lại list children theo staff
+                            var listChildren = _unitOfWork.EnrollmentRepository.GetAllAsync().Result
+                                .Where(x => x.UserId == enrollment.UserId).ToList();
+
+                            // tạo file excel chứa list children theo staff
+                            var file = await ExportExcelFileByListAsync(listChildren, "Danh sách học sinh lớp hủy");
+
+                            // lấy staff ra để lấy email
                             var staff = await _unitOfWork.UserRepository.GetByIdAsync(enrollment.UserId);
-                            await SendEmailUtil.SendEmail(staff.Email, "Thông báo về việc lớp học bị hủy",
+
+                            // gửi mail cho từng staff kèm theo file excel list hs mà staff đó add vô (phụ trách) đính kèm
+                            var builder = new BodyBuilder();
+                            builder.TextBody =
                                 "Thông báo đến thầy/cô phụ trách học sinh, \n\n" +
                                 "Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
                                 " đã bị hủy do không đủ điều kiện để mở lớp, \n" +
-                                /*"Thông tin:, \n" +
-                                "         Người đăng kí: " + createAdviseRequestViewModel.FullName + "\n" +
-                                "         Email: " + createAdviseRequestViewModel.Email + "\n" +
-                                "         Sđt: " + createAdviseRequestViewModel.Phone + "\n" +
-                                "Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +*/
+                                "Thông tin chi tiết được gửi trong file đính kèm, quý thầy cô thực hiện tư vấn lại " +
+                                "với phụ huynh học sinh để tiến hành đăng kí mới nếu có nguyện vọng! \n\n" +
+                                "Trân trọng, \n" +
+                                "KidPro Education!";
+
+                            await SendEmailUtil.SendEmailWithAttachment(staff.Email, "Thông báo về việc lớp học bị hủy",
+                                builder.TextBody, file);
+                        }
+
+                        // gửi mail cho parents 
+                        foreach (var children in childrenInClass)
+                        {
+                            var childrenProfile = await _unitOfWork.ChildrenRepository.GetByIdAsync(children.ChildrenProfileId);
+
+                            await SendEmailUtil.SendEmail(childrenProfile.UserAccount.Email, "Thông báo về việc lớp học bị hủy",
+                                "Thông báo đến quý phụ huynh học sinh, \n\n" +
+                                "Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
+                                " đã bị hủy do không đủ điều kiện để mở lớp, vui lòng liên hệ nhân viên" +
+                                " để được hỗ trợ tư vấn " +
+                                "đăng kí lớp học mới cho học sinh trong vòng 1 tuần kể từ lúc nhận mail \n\n" +
+                                //"Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
                                 "Trân trọng, \n" +
                                 "KidPro Education!");
+
+                            // xóa attendance của thằng đó trước
+                            foreach (var schedule in findClass.Schedules)
+                            {
+                                var listAttendance = await _unitOfWork.AttendanceRepository.GetListAttendanceByScheduleIdAndChilId(schedule.Id, children.ChildrenProfileId);
+                                _unitOfWork.AttendanceRepository.RemoveRange(listAttendance);
+                            }
                         }
+
+                        _unitOfWork.EnrollmentRepository.RemoveRange(childrenInClass);
 
                     }
 
@@ -392,6 +431,73 @@ namespace KidProEdu.Application.Services
 
             return stream;
 
+        }
+
+        public async Task<MimePart> ExportExcelFileByListAsync(List<Enrollment> list, string attachmentFileName)
+        {
+            string[] columnNames = new string[] { "ChildrenCode", "FullName", "Class", "Parents", "Phone", "Gmail" };
+
+            var memoryStream = new MemoryStream();
+            var workbook = new XLWorkbook();
+
+            var worksheet = workbook.Worksheets.Add("Danh sách học sinh");
+
+            // Add header
+            for (int i = 0; i < columnNames.Length; i++)
+            {
+                worksheet.Cell(1, i + 1).Value = columnNames[i];
+            }
+
+            /*var getClassById = _unitOfWork.ClassRepository.GetAllAsync().Result.FirstOrDefault(x => x.Id == classId);
+            var getListChildren = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassId(getClassById.Id);*/
+
+            // Add data
+            for (int i = 0; i < list.Count; i++)
+            {
+                worksheet.Cell(i + 2, 1).Value = list[i].ChildrenProfile.ChildrenCode;
+                worksheet.Cell(i + 2, 2).Value = list[i].ChildrenProfile.FullName;
+                worksheet.Cell(i + 2, 3).Value = list[i].Class.ClassCode;
+                worksheet.Cell(i + 2, 4).Value = list[i].ChildrenProfile.UserAccount.FullName;
+                worksheet.Cell(i + 2, 5).Value = list[i].ChildrenProfile.UserAccount.Phone;
+                worksheet.Cell(i + 2, 6).Value = list[i].ChildrenProfile.UserAccount.Email;
+            }
+
+            workbook.SaveAs(memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            // Tạo attachment từ MemoryStream
+            var attachment = new MimePart("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                Content = new MimeContent(memoryStream),
+                ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                ContentTransferEncoding = ContentEncoding.Base64,
+                FileName = attachmentFileName
+            };
+
+
+            /* stream.Position = 0;*/
+
+            return attachment;
+        }
+
+        public async Task<bool> TestSendAttachEmail()
+        {
+            var list = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassId(new Guid("2e741406-fccc-4ba9-8c50-08dc53038619"));
+            var file = await ExportExcelFileByListAsync(list, "danh sach hs");
+
+            var builder = new BodyBuilder();
+            builder.TextBody = "Thông báo đến quý phụ huynh học sinh, \r\n\n" +
+                                //"Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
+                                " đã bị hủy do không đủ điều kiện để mở lớp, vui lòng liên hệ staff để được tư vấn" +
+                                "đăng kí lớp học mới cho học sinh trong vòng 1 tuần kể từ lúc nhận mail \n\n" +
+                                //"Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
+                                "Trân trọng, \n" +
+                                "KidPro Education!";
+            await SendEmailUtil.SendEmailWithAttachment("tkchoi1312@gmail.com", "Thông báo về việc hủy bỏ lớp không đủ điều kiện bắt đầu",
+                                builder.TextBody
+                                , file);
+
+            return true;
         }
     }
 }

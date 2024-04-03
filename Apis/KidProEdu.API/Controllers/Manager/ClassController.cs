@@ -126,5 +126,22 @@ namespace KidProEdu.API.Controllers.Manager
         public async Task<IActionResult> ExportExcelFile(Guid classId) => File(await _classService.ExportExcelFileAsync(classId),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "Nhập điểm.xlsx");
+
+        [HttpGet("SendAttachEmail")]
+        public async Task<IActionResult> SendAttachEmail()
+        {
+            try
+            {
+                var result = await _classService.TestSendAttachEmail();
+                return Ok(result);
+
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+
     }
 }

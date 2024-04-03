@@ -4,6 +4,10 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Application.Services;
+using System.Net.Mime;
+using MimeKit;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 
 namespace KidProEdu.Application.Utils
 {
@@ -28,7 +32,7 @@ namespace KidProEdu.Application.Utils
             mail.Body = body;
 
             // Cấu hình SmtpClient để gửi email thông qua SMTP của Gmail
-            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
+            System.Net.Mail.SmtpClient smtpClient = new System.Net.Mail.SmtpClient("smtp.gmail.com");
             smtpClient.Port = 587; // Port của SMTP Gmail
             smtpClient.Credentials = new NetworkCredential(fromEmail, password);
             smtpClient.EnableSsl = true; // Kích hoạt SSL
@@ -67,5 +71,35 @@ namespace KidProEdu.Application.Utils
             //RecurringJob.AddOrUpdate("send-email-job", () => SendEmail("tkchoi1312@gmail.com"), "0 0 * * *");
 
         }*/
+
+        public static async Task SendEmailWithAttachment(string recipient, string subject, string body, MimePart attachment)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("KidProEdu", "kidproedu6868@gmail.com"));
+            message.To.Add(new MailboxAddress("", recipient));
+            message.Subject = subject;
+
+            var builder = new BodyBuilder();
+            builder.HtmlBody = body;
+
+            /*var attachment = new MimePart("application", "octet-stream")
+            {
+                Content = new MimeContent(attachmentStream),
+                ContentDisposition = new MimeKit.ContentDisposition(MimeKit.ContentDisposition.Attachment),
+                ContentTransferEncoding = ContentEncoding.Base64,
+                FileName = attachmentFileName
+            };*/
+            builder.Attachments.Add(attachment);
+
+            message.Body = builder.ToMessageBody();
+
+            using (var client = new MailKit.Net.Smtp.SmtpClient())
+            {
+                await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync("kidproedu6868@gmail.com", "xpty whcp ubjt ogaz");
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
+            }
+        }
     }
 }
