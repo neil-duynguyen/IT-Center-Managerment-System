@@ -176,7 +176,8 @@ namespace KidProEdu.API.Mappers
                                                             .ForMember(x => x.Code, src => src.MapFrom(x => x.Class.ClassCode))
                                                             //.ForMember(x => x.chid, src => src.MapFrom(x => x.ChildrenProfileId))
                                                             .ForMember(x => x.Avatar, src => src.MapFrom(x => x.ChildrenProfile.Avatar))
-                                                            .ForMember(x => x.NameChildren, src => src.MapFrom(x => x.ChildrenProfile.FullName));
+                                                            .ForMember(x => x.FullName, src => src.MapFrom(x => x.ChildrenProfile.FullName))
+                                                            .ForMember(x => x.ChildrenCode, src => src.MapFrom(x => x.ChildrenProfile.ChildrenCode));
 
             CreateMap<Contract, ContractViewModel>().ReverseMap()
                 .ForMember(des => des.StatusOfContract, src => src.MapFrom(x => x.StatusOfContract != null ? (string)x.StatusOfContract.ToString() : (string?)null));
