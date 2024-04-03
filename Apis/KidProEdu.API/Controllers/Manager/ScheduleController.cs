@@ -22,13 +22,13 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _scheduleService.GetSchedules());
         }
 
-        [HttpGet("GetAutomaticalySchedule")]
+        [HttpGet("GetAutomaticalySchedule/{id}")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> GetAutomaticalySchedule()
+        public async Task<IActionResult> GetAutomaticalySchedule(Guid id)
         {
             try
             {
-                return Ok(await _scheduleService.GetAutomaticalySchedule());
+                return Ok(await _scheduleService.GetAutomaticalySchedule(id));
             }
             catch (Exception ex)
             {

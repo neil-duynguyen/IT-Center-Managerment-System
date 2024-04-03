@@ -26,7 +26,7 @@ namespace KidProEdu.Application.Services
             _claimsService = claimsService;
             _mapper = mapper;
         }
-        public async Task<bool> CreateContract(CreateContractViewModel createContractViewModel)
+        public async Task<bool> CreateContract(CreateContractViewModel createContractViewModel, Guid userId)
         {
             var validator = new CreateContractViewModelValidator();
             var validationResult = validator.Validate(createContractViewModel);
@@ -45,8 +45,10 @@ namespace KidProEdu.Application.Services
             }
 
             var mapper = _mapper.Map<Contract>(createContractViewModel);
+            mapper.UserId = userId;
+
             await _unitOfWork.ContractRepository.AddAsync(mapper);
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo hợp đồng thất bại");
+            return true;
         }
 
         public async Task<bool> DeleteContract(Guid ContractId)

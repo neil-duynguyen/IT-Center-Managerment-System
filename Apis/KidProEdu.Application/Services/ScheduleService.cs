@@ -434,13 +434,13 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? list : throw new Exception("Tạo lịch thất bại, hãy đảm bảo đã có lớp, lịch, phòng và giáo viên");
         }
 
-        public async Task<GetAutoScheduleViewModel> GetAutomaticalySchedule()
+        public async Task<GetAutoScheduleViewModel> GetAutomaticalySchedule(Guid id)
         {
             var getAutoSchedule = new GetAutoScheduleViewModel();
             var classesModel = new List<ClassForScheduleViewModel>();
             var schedulesModel = new List<ScheduleForAutoViewModel>();
             //var slotModel = new SlotForScheduleViewModel();
-            var histories = await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(new Guid("B01AF4AE-0D7D-4A49-940D-08DC4A7E376A"));
+            var histories = await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(id);
 
             foreach (var history in histories)
             {
@@ -471,7 +471,7 @@ namespace KidProEdu.Application.Services
             if (histories == null) { }
 
 
-            getAutoSchedule.TeacherId = new Guid("B01AF4AE-0D7D-4A49-940D-08DC4A7E376A");
+            getAutoSchedule.TeacherId = id;
             getAutoSchedule.Classes = classesModel;
 
 
