@@ -33,8 +33,7 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
 
     public class ExamViewModelInChildren
     { 
+        public Guid ExamId { get; set; }
         public string? ExamName { get; set;}
-        public DateTime? ExamDate { get; set; }
-        public double Score { get; set; }
     }
 }
