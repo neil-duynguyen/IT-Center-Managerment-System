@@ -128,6 +128,9 @@ namespace KidProEdu.API.Mappers
             CreateMap<UpdateRequestViewModel, Request>().ReverseMap();
 
             CreateMap<CreateCourseViewModel, Course>().ReverseMap();
+            CreateMap<CreateCourseParentViewModel, Course>().ReverseMap();
+            CreateMap<UpdateCourseViewModel, Course>().ReverseMap();
+            CreateMap<UpdateCourseParentViewModel, Course>().ReverseMap();
             CreateMap<CourseViewModel, Course>().ReverseMap().ForMember(des => des.CourseType, src => src.MapFrom(x => x.CourseType != null ? (string)x.CourseType.ToString() : (string?)null));
 
             CreateMap<ClassViewModel, Class>().ReverseMap()
@@ -194,7 +197,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateScheduleViewModel, Schedule>().ReverseMap();
             CreateMap<UpdateScheduleViewModel, Schedule>().ReverseMap();
             CreateMap<ScheduleForAutoViewModel, Schedule>().ReverseMap();
-                //.ForMember(des => des.SlotForSchedule, src=>src.MapFrom(x=>x.Slot));
+            //.ForMember(des => des.SlotForSchedule, src=>src.MapFrom(x=>x.Slot));
 
             CreateMap<CreateAttendanceViewModel, Attendance>().ReverseMap();
             CreateMap<UpdateAttendanceViewModel, Attendance>().ReverseMap();
