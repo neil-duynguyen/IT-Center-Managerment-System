@@ -34,7 +34,7 @@ namespace KidProEdu.Infrastructures.Repositories
         {
             return await _dbContext.Enrollment
                 .Include(x => x.Class)
-                .Include(x => x.ChildrenProfile)
+                .Include(x => x.ChildrenProfile).ThenInclude(x => x.UserAccount)
                 .Where(x => x.ClassId == Id && !x.IsDeleted).ToListAsync();
         }
 

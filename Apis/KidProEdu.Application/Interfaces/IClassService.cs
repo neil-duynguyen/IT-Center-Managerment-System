@@ -18,5 +18,6 @@ namespace KidProEdu.Application.Interfaces
         Task<List<ChildrenPassedViewModel>> ChangeStatusClass(ChangeStatusClassViewModel changeStatusClassViewModel);
         Task<List<ClassChildrenViewModel>> GetChildrenByClassId(Guid classId);
         Task<Stream> ExportExcelFileAsync(Guid classId);
+        Task<bool> TestSendAttachEmail();
     }
 }

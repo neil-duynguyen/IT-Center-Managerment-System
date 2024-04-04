@@ -24,6 +24,7 @@ namespace KidProEdu.Infrastructures.Repositories
         {
             var teachingHistorys = await _dbContext.TeachingClassHistory
                 .Include(x => x.Class).ThenInclude(x => x.Schedules).ThenInclude(x => x.Slot)
+                .Include(x => x.Class).ThenInclude(x => x.Course)
                 .Where(x => x.UserAccountId == id
                 && (x.IsDeleted == false && x.TeachingStatus.Equals(Domain.Enums.TeachingStatus.Teaching)
                 || x.TeachingStatus.Equals(Domain.Enums.TeachingStatus.Pending)))

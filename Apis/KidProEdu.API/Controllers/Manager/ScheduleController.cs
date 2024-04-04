@@ -44,7 +44,7 @@ namespace KidProEdu.API.Controllers.Manager
             try
             {
                 var model = await _scheduleService.CreateAutomaticalySchedule();
-                if (!model.IsNullOrEmpty())
+                /*if (!model.IsNullOrEmpty())
                 {
                     return Ok("Còn " + model.FirstOrDefault().CountSchedule + " lớp chưa được xếp giáo viên \n" +
                               "Còn " + model.FirstOrDefault().CountRoom + " lớp chưa được xếp phòng");
@@ -52,7 +52,8 @@ namespace KidProEdu.API.Controllers.Manager
                 else
                 {
                     return Ok("Xếp lịch thành công");
-                }
+                }*/
+                return Ok(model);
             }
             catch (Exception ex)
             {
@@ -134,6 +135,20 @@ namespace KidProEdu.API.Controllers.Manager
             }
             catch (Exception ex)
             {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetScheduleRoomAndTeachingClassHistory")]
+        public async Task<IActionResult> GetScheduleRoomAndTeachingClassHistory()
+        {
+            try
+            {
+                return Ok(await _scheduleService.GetScheduleRoomAndTeachingClassHistory());
+            }
+            catch (Exception ex)
+            {
+
                 return BadRequest(ex.Message);
             }
         }
