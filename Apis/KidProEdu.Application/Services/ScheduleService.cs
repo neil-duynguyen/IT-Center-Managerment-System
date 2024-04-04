@@ -230,8 +230,8 @@ namespace KidProEdu.Application.Services
         public async Task<List<AutoScheduleViewModel>> CreateAutomaticalySchedule()
         {
             int countSchedule = 0;
-            List<Class> listClassCount = new();
-            List<Class> listRoomCount = new();
+            List<ClassViewModel> listClassCount = new();
+            List<ClassViewModel> listRoomCount = new();
             int countRoom = 0;
 
             // bắt đầu đoạn code lấy data và check điều kiện xếp lịch
@@ -344,7 +344,7 @@ namespace KidProEdu.Application.Services
                         }
                         else
                         {
-                            listClassCount.Add(item);
+                            listClassCount.Add(_mapper.Map<ClassViewModel>(item));
                             countSchedule++;
                         }
 
@@ -370,7 +370,7 @@ namespace KidProEdu.Application.Services
                         }
                         else
                         {
-                            listRoomCount.Add(item);
+                            listRoomCount.Add(_mapper.Map<ClassViewModel>(item));
                             countRoom++;
                         }
                     }
@@ -414,7 +414,7 @@ namespace KidProEdu.Application.Services
                         }
                         else
                         {
-                            listClassCount.Add(item);
+                            listClassCount.Add(_mapper.Map<ClassViewModel>(item));
                             countSchedule++;
                         }
 
@@ -440,7 +440,7 @@ namespace KidProEdu.Application.Services
                         }
                         else
                         {
-                            listRoomCount.Add(item);
+                            listRoomCount.Add(_mapper.Map<ClassViewModel>(item));
                             countRoom++;
                         }
                     }
@@ -510,10 +510,10 @@ namespace KidProEdu.Application.Services
 
             var histories = await _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByStatus(TeachingStatus.Pending);
             var scheduleRooms = await _unitOfWork.ScheduleRoomRepository.GetScheduleRoomByStatus(ScheduleRoomStatus.Pending);
-      
+
             ScheduleRoomAndTeachingClassHistoryViewModel model = new ScheduleRoomAndTeachingClassHistoryViewModel();
-            model.TeachingClassHistories= histories;
-            model.ScheduleRooms=scheduleRooms;
+            model.TeachingClassHistories = histories;
+            model.ScheduleRooms = scheduleRooms;
             return model;
         }
     }
