@@ -1,5 +1,4 @@
-﻿using KidProEdu.Domain.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace KidProEdu.Application.ViewModels.CourseViewModels
 {
-    public class CreateCourseViewModel
+    public class UpdateCourseViewModel
     {
-        public Guid ParentCourse { get; set; }
+        public Guid Id { get; set; }
         public string CourseCode { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
