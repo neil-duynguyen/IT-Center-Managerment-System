@@ -10,7 +10,9 @@ namespace KidProEdu.Application.Interfaces
     public interface ICourseService
     {
         public Task<bool> CreateCourseAsync(CreateCourseViewModel createCourseViewModel);
-        //public Task<bool> CreateCourseParentAsync(CreateCourseParentViewModel createCourseParentViewModel);
+        public Task<bool> CreateCourseParentAsync(CreateCourseParentViewModel createCourseParentViewModel);
+        Task<bool> UpdateCourseParentAsync(UpdateCourseParentViewModel updateCourseParentViewModel);
+        Task<bool> UpdateCourseAsync(UpdateCourseViewModel updateCourseViewModel);
         public Task<List<CourseViewModel>> GetAllCourse();
         public Task<List<CourseViewModel>> GetAllCourseByChildId(Guid childId);
         public Task<CourseViewModel> GetCourseById(Guid Id);

@@ -16,12 +16,12 @@ namespace KidProEdu.API.Controllers.Admin
             _courseService = courseService;
         }
 
-        [HttpPost()]
-        public async Task<IActionResult> PostCourse(CreateCourseViewModel createCourseView) 
+        [HttpPost]
+        public async Task<IActionResult> CreateCourse(CreateCourseViewModel createCourseView) 
         {
             try
             {
-                return await _courseService.CreateCourseAsync(createCourseView) ? Ok("Course đã được tạo thành công.") : BadRequest("Course đã được tạo thất bại.");
+                return await _courseService.CreateCourseAsync(createCourseView) ? Ok("Khoá học đã được tạo thành công.") : BadRequest("Khoá học đã được tạo thất bại.");
             }
             catch (Exception ex)
             {
@@ -29,18 +29,44 @@ namespace KidProEdu.API.Controllers.Admin
             }
         }
 
-       /* [HttpPost("CourseParent")]
-        public async Task<IActionResult> PostCourseParent(CreateCourseParentViewModel createCourseParentViewModel)
+       [HttpPost("CourseParent")]
+        public async Task<IActionResult> CreateCourseParent(CreateCourseParentViewModel createCourseParentViewModel)
         {
             try
             {
-                return await _courseService.CreateCourseParentAsync(createCourseParentViewModel) ? Ok("Course đã được tạo thành công.") : BadRequest("Course đã được tạo thất bại.");
+                return await _courseService.CreateCourseParentAsync(createCourseParentViewModel) ? Ok("Khoá học đã được tạo thành công.") : BadRequest("Khoá học đã được tạo thất bại.");
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-        }*/
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateCourse(UpdateCourseViewModel updateCourseView)
+        {
+            try
+            {
+                return await _courseService.UpdateCourseAsync(updateCourseView) ? Ok("Khoá học đã được cập nhật thành công.") : BadRequest("Khoá học đã được cập nhật thất bại.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("CourseParent")]
+        public async Task<IActionResult> UpdateCourseParent(UpdateCourseParentViewModel updateCourseParentViewModel)
+        {
+            try
+            {
+                return await _courseService.UpdateCourseParentAsync(updateCourseParentViewModel) ? Ok("Khoá học đã được cập nhật thành công.") : BadRequest("Khoá học đã được cập nhật thất bại.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpGet("Courses")]
         public async Task<IActionResult> GetAllCourse()
