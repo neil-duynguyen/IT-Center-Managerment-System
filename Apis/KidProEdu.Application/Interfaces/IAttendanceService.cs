@@ -20,7 +20,7 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> UpdateAttendances(List<UpdateAttendanceViewModel> updateAttendanceViewModel);
         Task<bool> DeleteAttendance(Guid id);
         Task<List<AttendanceDetailsViewModel>> GetAttendanceDetailsByCourseIdAndChildrenId(Guid courseId, Guid childId);
-        Task<List<AttendanceWithChildrenProfileViewModel>> GetListAttendanceByClassIdAndDateAndSlotId(Guid classId, DateTime date, Guid slotId);
+        Task<List<AttendanceWithChildrenProfileViewModel>> GetListAttendanceByClassIdAndDateAndScheduleId(Guid classId, DateTime date, Guid scheduleId);
         //Task<List<AttendanceViewModel>> GetAttendanceDetailsByCourseIdAndChildrenId(Guid courseId, Guid childId);
         Task<List<AttendanceDetailsViewModel>> GetAttendancesByChildId(Guid childId, DateTime startDate, DateTime endDate);
     }
