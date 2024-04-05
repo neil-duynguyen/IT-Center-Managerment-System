@@ -20,7 +20,7 @@ namespace KidProEdu.Infrastructures.Repositories
         }
         public override async Task<List<Transaction>> GetAllAsync()
         {
-            return await _dbContext.Transaction.Include(x => x.OrderDetail).ThenInclude(x => x.Order).ToListAsync();
+            return await _dbContext.Transaction.Include(x => x.OrderDetail).ThenInclude(x => x.Order).Where(x => !x.IsDeleted).ToListAsync();
         }
     }
 }

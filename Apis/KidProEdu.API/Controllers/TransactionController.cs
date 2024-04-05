@@ -27,5 +27,13 @@ namespace KidProEdu.API.Controllers
             var result = await _transactionService.GetTransactionDetailByTransactionId(id);
             return Ok(result);
         }
+
+        [HttpGet("TransactionsSummarise")]
+        public async Task<IActionResult> GetAllTransactionsSummarise()
+        {
+            var result = await _transactionService.TransactionsSummarise();
+            return Ok(result);
+        }
+
     }
 }
