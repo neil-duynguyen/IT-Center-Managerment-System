@@ -229,11 +229,6 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<AutoScheduleViewModel>> CreateAutomaticalySchedule()
         {
-            int countSchedule = 0;
-            List<ClassViewModel> listClassCount = new();
-            List<ClassViewModel> listRoomCount = new();
-            int countRoom = 0;
-
             // bắt đầu đoạn code lấy data và check điều kiện xếp lịch
             var slots = _unitOfWork.SlotRepository.GetAllAsync().Result.Where(x => x.SlotType == SlotType.Course).ToList();
 
@@ -285,14 +280,14 @@ namespace KidProEdu.Application.Services
             }
             // kết thúc đoạn code check đã tạo lịch hay chưa
 
-
             List<AutoScheduleViewModel> list = new();
+            var tempFullTeachers = new Queue<UserAccount>();
+            var tempPartTeachers = new Queue<UserAccount>();
 
             // băt đầu xếp lịch
             for (var i = 1; i <= slots.Count; i++) // cho vòng lặp chạy theo từng slot
             {
-                var tempFullTeachers = new Queue<UserAccount>();
-                var tempPartTeachers = new Queue<UserAccount>();
+                rooms = await _unitOfWork.RoomRepository.GetRoomByStatus(StatusOfRoom.Empty); //reset list phòng trống
                 var classes = await _unitOfWork.ClassRepository.GetClassBySlot(i); //lấy list lớp học pending theo từng slot
 
                 //add lại queue chính từ queue tạm cho full/part
@@ -310,6 +305,11 @@ namespace KidProEdu.Application.Services
 
                 if (i != (slots.Count)) // nếu không phải là slot cuối
                 {
+                    int countSchedule = 0;
+                    List<ClassViewModel> listClassCount = new();
+                    List<ClassViewModel> listRoomCount = new();
+                    int countRoom = 0;
+
                     foreach (var item in classes)
                     {
                         if (fullTimeQueue.Count != 0)
@@ -374,9 +374,26 @@ namespace KidProEdu.Application.Services
                             countRoom++;
                         }
                     }
+
+                    if (countRoom != 0 || countSchedule != 0)
+                    {
+                        list.Add(new AutoScheduleViewModel()
+                        {
+                            Slot = i,
+                            CountSchedule = countSchedule,
+                            CountRoom = countRoom,
+                            ListClassCount = listClassCount,
+                            ListRoomCount = listRoomCount
+                        });
+                    }
                 }
                 else //khi là slot cuối thì chỉ xếp lịch cho gv partTime thôi
                 {
+                    int countSchedule = 0;
+                    List<ClassViewModel> listClassCount = new();
+                    List<ClassViewModel> listRoomCount = new();
+                    int countRoom = 0;
+
                     foreach (var item in classes)
                     {
                         if (partTimeQueue.Count != 0)
@@ -444,18 +461,18 @@ namespace KidProEdu.Application.Services
                             countRoom++;
                         }
                     }
-                }
 
-                if (countRoom != 0 || countSchedule != 0)
-                {
-                    list.Add(new AutoScheduleViewModel()
+                    if (countRoom != 0 || countSchedule != 0)
                     {
-                        Slot = i,
-                        CountSchedule = countSchedule,
-                        CountRoom = countRoom,
-                        ListClassCount = listClassCount,
-                        ListRoomCount = listRoomCount
-                    });
+                        list.Add(new AutoScheduleViewModel()
+                        {
+                            Slot = i,
+                            CountSchedule = countSchedule,
+                            CountRoom = countRoom,
+                            ListClassCount = listClassCount,
+                            ListRoomCount = listRoomCount
+                        });
+                    }
                 }
             }
 

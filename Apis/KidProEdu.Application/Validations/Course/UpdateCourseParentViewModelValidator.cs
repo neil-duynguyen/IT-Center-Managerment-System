@@ -17,7 +17,6 @@ namespace KidProEdu.Application.Validations.Course
             RuleFor(x => x.Name).NotEmpty().WithMessage("Tên khoá học không được để trống.");
             RuleFor(x => x.Syllabus).NotEmpty().WithMessage("Giáo trình khoá học không được để trống.");
             RuleFor(x => x.EntryPoint).NotEmpty().WithMessage("Điểm đầu vào khoá học không được để trống.");
-            RuleFor(x => x.CourseType).NotEmpty().WithMessage("Loại khoá học không được để trống.");
         }
     }
 }
