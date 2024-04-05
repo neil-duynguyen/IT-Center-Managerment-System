@@ -92,9 +92,9 @@ namespace KidProEdu.Application.Services
             return mapper;
         }
 
-        public async Task<List<AttendanceWithChildrenProfileViewModel>> GetListAttendanceByClassIdAndDate(Guid classId, DateTime date)
+        public async Task<List<AttendanceWithChildrenProfileViewModel>> GetListAttendanceByClassIdAndDateAndSlotId(Guid classId, DateTime date, Guid slotId)
         {
-            var result = await _unitOfWork.AttendanceRepository.GetListAttendanceByClassIdAndDate(classId, date);
+            var result = await _unitOfWork.AttendanceRepository.GetListAttendanceByClassIdAndDateAndSlotId(classId, date, slotId);
             var mapper = _mapper.Map<List<AttendanceWithChildrenProfileViewModel>>(result);
             return mapper;
         }

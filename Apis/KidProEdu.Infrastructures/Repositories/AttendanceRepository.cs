@@ -87,11 +87,11 @@ namespace KidProEdu.Infrastructures.Repositories
             return attendanceList;
         }
 
-        public async Task<List<Attendance>> GetListAttendanceByClassIdAndDate(Guid classId, DateTime date)
+        public async Task<List<Attendance>> GetListAttendanceByClassIdAndDateAndSlotId(Guid classId, DateTime date, Guid slotId)
         {
             var attendanceList = await _dbContext.Attendance
                 .Include(x => x.ChildrenProfile)
-                .Where(x => x.Schedule.ClassId == classId && x.Date.Date  == date.Date && !x.IsDeleted)
+                .Where(x => x.Schedule.ClassId == classId && x.Date.Date  == date.Date && x.Schedule.SlotId == slotId && !x.IsDeleted)
                 .ToListAsync();
             return attendanceList;
         }
