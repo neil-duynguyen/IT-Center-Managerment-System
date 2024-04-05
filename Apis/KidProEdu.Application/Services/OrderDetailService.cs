@@ -128,7 +128,7 @@ namespace KidProEdu.Application.Services
             {
                 if (item.InstallmentTerm > 0)
                 {
-                    paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, AmountPerMonth = Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm)), Month = "1 tháng" });
+                    paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, AmountPerMonth = Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm)), Month = item.InstallmentTerm + " tháng"});
                 }
                 if (item.InstallmentTerm == 0 && item.PayType.Value == PayType.Banking)
                 {
