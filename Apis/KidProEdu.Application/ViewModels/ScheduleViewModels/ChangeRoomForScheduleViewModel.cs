@@ -11,7 +11,9 @@ namespace KidProEdu.Application.ViewModels.ScheduleViewModels
     {
         public Guid ScheduleId { get; set; }
         public Guid RoomId { get; set; }
+        public Guid NewRoomId { get; set; }
         public DateTime StartDate { get; set; } // ngày nào bắt đầu áp dụng
+        public DateTime? EndDate { get; set; } // áp dụng tới ngày nào trong trường hợp chuyển tạm
         public ScheduleRoomStatus Status { get; set; } // trạng thái chuyển luôn hay chuyển tạm
     }
 }
