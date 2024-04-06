@@ -17,5 +17,6 @@ namespace KidProEdu.Application.Interfaces
         Task<List<AutoScheduleViewModel>> CreateAutomaticalySchedule();
         Task<GetAutoScheduleViewModel> GetAutomaticalySchedule(Guid id);
         Task<ScheduleRoomAndTeachingClassHistoryViewModel> GetScheduleRoomAndTeachingClassHistory();
+        Task<bool> ChangeRoomForSchedule(ChangeRoomForScheduleViewModel changeRoomForScheduleViewModel);
     }
 }

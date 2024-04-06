@@ -13,5 +13,6 @@ namespace KidProEdu.Application.IRepositories
     {
         Task<List<ScheduleRoom>> GetScheduleRoomByStatus(ScheduleRoomStatus status);
         Task<List<ScheduleRoom>> GetScheduleRoomBySchedule(Guid id);
+        Task<List<ScheduleRoom>> GetScheduleRoomByScheduleAndRoom(Guid scheduleId, Guid roomId);
     }
 }
