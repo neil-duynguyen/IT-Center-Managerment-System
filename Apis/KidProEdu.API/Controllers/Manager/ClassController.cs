@@ -143,5 +143,20 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
+        [HttpPut("ChangeTeacherForClass")]
+        public async Task<IActionResult> ChangeTeacherForClass(ChangeTeacherForClassViewModel changeTeacherForClassViewModel)
+        {
+            try
+            {
+                var result = await _classService.ChangeTeacherForClass(changeTeacherForClassViewModel);
+                return Ok(result);
+
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

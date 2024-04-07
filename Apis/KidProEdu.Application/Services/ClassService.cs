@@ -7,6 +7,7 @@ using KidProEdu.Application.Validations.Classes;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
+using KidProEdu.Application.ViewModels.ScheduleViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
@@ -509,6 +510,38 @@ namespace KidProEdu.Application.Services
                                 , file);
 
             return true;
+        }
+
+        public async Task<bool> ChangeTeacherForClass(ChangeTeacherForClassViewModel changeTeacherForClassViewModel)
+        {
+            var teachingHistory = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(changeTeacherForClassViewModel.ClassId)
+                .Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.TeachingStatus == Domain.Enums.TeachingStatus.Teaching
+                || x.TeachingStatus == Domain.Enums.TeachingStatus.Pending);
+
+            if (changeTeacherForClassViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("tuesday")
+                || changeTeacherForClassViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("wednesday")
+                || changeTeacherForClassViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("thursday"))
+            {
+                teachingHistory.EndDate = changeTeacherForClassViewModel.StartDate.AddDays(-4);
+            }
+            else
+            {
+                teachingHistory.EndDate = changeTeacherForClassViewModel.StartDate.AddDays(-3);
+            }
+
+            var newTeachingHistory = new TeachingClassHistory()
+            {
+                UserAccountId = changeTeacherForClassViewModel.TeacherId,
+                ClassId = changeTeacherForClassViewModel.ClassId,
+                StartDate = changeTeacherForClassViewModel.StartDate,
+                TeachingStatus = Domain.Enums.TeachingStatus.Teaching
+            };
+
+
+            _unitOfWork.TeachingClassHistoryRepository.Update(teachingHistory);
+            await _unitOfWork.TeachingClassHistoryRepository.AddAsync(newTeachingHistory);
+
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Đổi giáo viên thất bại");
         }
     }
 }

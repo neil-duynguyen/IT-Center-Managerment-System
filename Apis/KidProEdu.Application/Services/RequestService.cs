@@ -200,7 +200,7 @@ namespace KidProEdu.Application.Services
                                     {
 
                                         currentHistory.EndDate = changeStatusRequestViewModel.TeachingDate.Value.AddDays(-4);
-                                        currentHistory.TeachingStatus = Domain.Enums.TeachingStatus.Leaved;
+                                        //currentHistory.TeachingStatus = Domain.Enums.TeachingStatus.Leaved;
 
                                         var newHistory = new TeachingClassHistory
                                         {
@@ -227,7 +227,7 @@ namespace KidProEdu.Application.Services
                                     else
                                     {
                                         currentHistory.EndDate = changeStatusRequestViewModel.TeachingDate.Value.AddDays(-3);
-                                        currentHistory.TeachingStatus = Domain.Enums.TeachingStatus.Leaved;
+                                        //currentHistory.TeachingStatus = Domain.Enums.TeachingStatus.Leaved;
 
                                         var newHistory = new TeachingClassHistory
                                         {
@@ -260,6 +260,13 @@ namespace KidProEdu.Application.Services
                             case "Equipment": //khi approved quét mã cho mượn thì cập nhật lại trạng thái phía dưới
                                 break;
                             case "Leave": //approved thì nghỉ
+                                          // nghỉ này là nghỉ luôn, nên nghỉ thì disable hoặc xóa account 
+
+                                var teacherAccount = await _unitOfWork.UserRepository.GetByIdAsync((Guid)request.CreatedBy);
+                                teacherAccount.Status = Domain.Enums.StatusUser.Disable;
+
+                                _unitOfWork.UserRepository.Update(teacherAccount);
+
                                 break;
                             case "Refund": //approved thì refund 
                                 break;
@@ -305,6 +312,19 @@ namespace KidProEdu.Application.Services
             var requests = await _unitOfWork.RequestRepository.GetRequestByUser(userId);
 
             return _mapper.Map<List<RequestViewModel>>(requests);
+        }
+
+        public async Task<List<RequestViewModel>> GetRequestByReceiver(Guid userId)
+        {
+            var listRequest = new List<RequestViewModel>();
+            var requestUsers = await _unitOfWork.RequestUserAccountRepository.GetRequestUserByRecieverId(userId);
+            foreach (var item in requestUsers)
+            {
+                var request = await _unitOfWork.RequestRepository.GetByIdAsync(item.RequestId);
+                listRequest.Add(_mapper.Map<RequestViewModel>(request));
+            }
+
+            return _mapper.Map<List<RequestViewModel>>(listRequest);
         }
     }
 }
