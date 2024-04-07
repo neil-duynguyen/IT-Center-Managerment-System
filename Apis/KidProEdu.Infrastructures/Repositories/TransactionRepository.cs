@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,13 @@ namespace KidProEdu.Infrastructures.Repositories
         }
         public override async Task<List<Transaction>> GetAllAsync()
         {
-            return await _dbContext.Transaction.Include(x => x.OrderDetail).ThenInclude(x => x.Order).Where(x => !x.IsDeleted).ToListAsync();
+            return await _dbContext.Transaction.Include(x => x.OrderDetail).ThenInclude(x => x.Order).Where(x => x.StatusTransaction == StatusTransaction.Successfully && !x.IsDeleted).ToListAsync();
+        }
+
+        public async Task<List<Transaction>> GetTransactionByMonthInYear(DateTime monthInYear)
+        {
+            var transactions = await _dbContext.Transaction.Include(x => x.OrderDetail).ThenInclude(x => x.Order).Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate.Value.Month == monthInYear.Month && x.PayDate.Value.Year == monthInYear.Year && !x.IsDeleted).ToListAsync();
+            return transactions;
         }
     }
 }
