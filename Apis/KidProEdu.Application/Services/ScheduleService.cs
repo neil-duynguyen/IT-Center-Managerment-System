@@ -581,7 +581,7 @@ namespace KidProEdu.Application.Services
                             || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("wednesday")) // 4 7
                         {
                             // là những ngày đầu tiên trong tuần thì trừ cho 4 để ra ngày tuần trước
-                            endDate= changeRoomForScheduleViewModel.StartDate.AddDays(-4);
+                            endDate = changeRoomForScheduleViewModel.StartDate.AddDays(-4);
                         }
                         else
                         {
@@ -915,5 +915,37 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Chuyển phòng thất bại");
         }
 
+        public async Task<bool> GetEmptyRoomBySlot(Guid scheduleId, Guid slotId, DateTime startDate, DateTime endDate, ScheduleRoomStatus status)
+        {
+            // lấy list phòng học trống theo slot ra mà không biết có cần phải lấy theo ngày không,
+            // 1 slot có nhiều lớp học, nếu học chính thì đỡ nhưng có những lớp đổi phòng nên có khi lại vướng vào ngày hôm đó
+            // lấy theo status đi, muốn chuyển tạm thì lấy phòng kiểu tạm mà chuyển luôn thì lại khác nên lấy kiểu luôn
+
+            //--------------------------------------------
+
+            /*var schedules = await _unitOfWork.ScheduleRepository.GetListScheduleBySlot(slotId);
+
+            var listEmptyRoom = new List<Room>();
+            var listBusyRoom = new List<Room>();
+
+            foreach (var schedule in schedules)
+            {
+                // giờ theo logic lấy ra phòng khác với scheduleId thử trước đã
+                if (schedule.Id != scheduleId)
+                {
+
+                    // list này chứa những lịch phòng không hết hạn (temp, using, pending) và
+                    var listScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
+                        .Result.Where(x => x.Status != ScheduleRoomStatus.Expired).ToList();
+
+                    foreach (var item in listScheduleRoom)
+                    {
+                        if (item.Status == ScheduleRoomStatus.Temp && item.StartDate.Value.Date > startDate
+                            && item.EndDate.Value.Date <)
+                    }
+                }
+            }*/
+            return true;
+        }
     }
 }

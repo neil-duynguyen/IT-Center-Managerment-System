@@ -1,4 +1,5 @@
 ﻿using KidProEdu.Application.ViewModels.ScheduleViewModels;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,6 @@ namespace KidProEdu.Application.Interfaces
         Task<GetAutoScheduleViewModel> GetAutomaticalySchedule(Guid id);
         Task<ScheduleRoomAndTeachingClassHistoryViewModel> GetScheduleRoomAndTeachingClassHistory();
         Task<bool> ChangeRoomForSchedule(ChangeRoomForScheduleViewModel changeRoomForScheduleViewModel);
+        Task<bool> GetEmptyRoomBySlot(Guid scheduleId, Guid slotId, DateTime startDate, DateTime endDate, ScheduleRoomStatus status);
     }
 }
