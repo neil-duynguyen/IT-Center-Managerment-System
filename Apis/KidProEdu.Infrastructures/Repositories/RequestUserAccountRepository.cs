@@ -22,8 +22,15 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<RequestUserAccount>> GetRequestUserByRequestId(Guid requestId)
         {
-            var requestUser = await _dbContext.RequestUserAccount.Include(x => x.UserAccount).Include(x => x.RequestId)
+            var requestUser = await _dbContext.RequestUserAccount.Include(x => x.UserAccount).Include(x => x.Request)
                 .Where(x => x.IsDeleted == false && x.RequestId == requestId).ToListAsync();
+            return requestUser;
+        }
+
+        public async Task<List<RequestUserAccount>> GetRequestUserByRecieverId(Guid recieverId)
+        {
+            var requestUser = await _dbContext.RequestUserAccount.Include(x => x.UserAccount).Include(x => x.Request)
+                .Where(x => x.IsDeleted == false && x.RecieverId == recieverId).ToListAsync();
             return requestUser;
         }
     }

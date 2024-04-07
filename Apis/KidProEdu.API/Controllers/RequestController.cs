@@ -39,6 +39,13 @@ namespace KidProEdu.API.Controllers
         {
             return Ok(await _requestService.GetRequestByUser(id));
         }
+        
+        [HttpGet("GetRequestByReciever/{id}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> GetRequestByRecieverId(Guid id)
+        {
+            return Ok(await _requestService.GetRequestByReceiver(id));
+        }
 
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
