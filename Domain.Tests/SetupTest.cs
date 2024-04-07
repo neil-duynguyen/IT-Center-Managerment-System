@@ -3,6 +3,7 @@ using AutoMapper;
 using KidProEdu.API.Mappers;
 using KidProEdu.Application;
 using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Repositories;
 using KidProEdu.Infrastructures;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -16,6 +17,10 @@ namespace Domain.Tests
         protected readonly Mock<IUnitOfWork> _unitOfWorkMock;
         protected readonly Mock<IClaimsService> _claimsServiceMock;
         protected readonly Mock<ICurrentTime> _currentTimeMock;
+
+        protected readonly Mock<IRoleRepository> _roleRepositoryMock;
+        protected readonly Mock<IUserRepository> _userRepositoryMock;
+
         protected readonly AppDbContext _dbContext;
 
         public SetupTest()
@@ -30,13 +35,16 @@ namespace Domain.Tests
             _claimsServiceMock = new Mock<IClaimsService>();
             _currentTimeMock = new Mock<ICurrentTime>();
 
+            _roleRepositoryMock = new Mock<IRoleRepository>();
+            _userRepositoryMock = new Mock<IUserRepository>();
+
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
             _dbContext = new AppDbContext(options);
 
             _currentTimeMock.Setup(x => x.GetCurrentTime()).Returns(DateTime.UtcNow);
-            _claimsServiceMock.Setup(x => x.GetCurrentUserId).Returns(Guid.Empty);
+            _claimsServiceMock.Setup(x => x.GetCurrentUserId).Returns(new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A50"));
         }
 
         public void Dispose()

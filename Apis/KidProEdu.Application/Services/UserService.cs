@@ -24,6 +24,12 @@ namespace KidProEdu.Application.Services
         private readonly ICurrentTime _currentTime;
         private readonly IConfiguration _configuration;
         private readonly IClaimsService _claimsService;
+        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IClaimsService claimsService)
+        {
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _claimsService = claimsService;
+        }
 
         public UserService(IMapper mapper, IUnitOfWork unitOfWork, ICurrentTime currentTime, IConfiguration configuration, IClaimsService claimsService)
         {
@@ -33,6 +39,7 @@ namespace KidProEdu.Application.Services
             _configuration = configuration;
             _claimsService = claimsService;
         }
+
 
         public async Task<LoginViewModel> LoginAsync(UserLoginViewModel userObject)
         {

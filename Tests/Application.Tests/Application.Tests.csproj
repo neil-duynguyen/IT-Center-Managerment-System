@@ -22,4 +22,11 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Apis\KidProEdu.Application\KidProEdu.Application.csproj" />
+    <ProjectReference Include="..\..\Apis\KidProEdu.Domain\KidProEdu.Domain.csproj" />
+    <ProjectReference Include="..\..\Apis\KidProEdu.Infrastructures\KidProEdu.Infrastructures.csproj" />
+    <ProjectReference Include="..\..\Domain.Tests\Domain.Tests.csproj" />
+  </ItemGroup>
+
 </Project>
