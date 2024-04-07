@@ -175,7 +175,8 @@ namespace KidProEdu.API.Mappers
 
             CreateMap<EnrollmentViewModel, Enrollment>().ReverseMap().ForMember(des => des.ClassCode, src => src.MapFrom(x => x.Class.ClassCode))
                                                                     .ForMember(des => des.ChildrenName, src => src.MapFrom(x => x.ChildrenProfile.FullName));
-            CreateMap<CreateEnrollmentViewModel, Enrollment>().ReverseMap();
+            CreateMap<CreateEnrollmentViewModel, Enrollment>().ReverseMap()
+                .ForMember(dest => dest.ChildrenProfileIds, opt => opt.MapFrom(src => src.ChildrenProfileId));
             CreateMap<UpdateEnrollmentViewModel, Enrollment>().ReverseMap();
             CreateMap<ClassChildrenViewModel, Enrollment>().ReverseMap()
                                                             .ForMember(x => x.Code, src => src.MapFrom(x => x.Class.ClassCode))
