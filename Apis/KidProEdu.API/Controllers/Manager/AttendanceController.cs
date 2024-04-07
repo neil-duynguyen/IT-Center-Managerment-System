@@ -25,7 +25,7 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(await _attendanceService.GetAttendances());
         }
 
-        [HttpGet("/ListAttendanceByClassIdAndDateAndScheduleId/{classId}/{date}/{scheduleId}")]
+        [HttpGet("ListAttendanceByClassIdAndDateAndScheduleId/{classId}/{date}/{scheduleId}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> ListAttendanceByClassIdAndDateAndScheduleId(Guid classId, DateTime date, Guid scheduleId)
         {
