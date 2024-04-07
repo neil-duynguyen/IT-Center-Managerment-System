@@ -200,7 +200,8 @@ namespace KidProEdu.API.Mappers
             //.ForMember(des => des.SlotForSchedule, src=>src.MapFrom(x=>x.Slot));
 
             CreateMap<CreateAttendanceViewModel, Attendance>().ReverseMap();
-            CreateMap<UpdateAttendanceViewModel, Attendance>().ReverseMap();
+            CreateMap<UpdateAttendanceViewModel, Attendance>()
+                .ForMember(des => des.StatusAttendance, src => src.MapFrom(x => x.StatusAttendance != null ? (string)x.StatusAttendance.ToString() : (string?)null));
             CreateMap<Attendance, AttendanceViewModel>().ReverseMap()
                 .AfterMap((src, dest) =>
                 {
