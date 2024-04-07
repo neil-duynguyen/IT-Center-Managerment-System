@@ -34,5 +34,11 @@ namespace KidProEdu.Infrastructures.Repositories
             var schedule = await _dbContext.Schedule.FirstOrDefaultAsync(x => x.SlotId == slotId && x.IsDeleted == false);
             return schedule;
         }
+        
+        public async Task<List<Schedule>> GetListScheduleBySlot(Guid slotId)
+        {
+            var schedules = await _dbContext.Schedule.Where(x => x.SlotId == slotId && x.IsDeleted == false).ToListAsync();
+            return schedules;
+        }
     }
 }

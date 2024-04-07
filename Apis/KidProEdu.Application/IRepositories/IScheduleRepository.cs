@@ -12,5 +12,6 @@ namespace KidProEdu.Application.IRepositories
     {
         Task<List<Schedule>> GetScheduleByClass(Guid classId);
         Task<Schedule> GetScheduleBySlot(Guid slotId);
+        Task<List<Schedule>> GetListScheduleBySlot(Guid slotId);
     }
 }

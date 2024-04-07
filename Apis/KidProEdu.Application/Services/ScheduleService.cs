@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Schedules;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
@@ -481,6 +482,14 @@ namespace KidProEdu.Application.Services
 
         public async Task<GetAutoScheduleViewModel> GetAutomaticalySchedule(Guid id)
         {
+            // hiện tại mỗi lịch riêng biệt và có lịch sử scheduleRoom riêng, trong trường hợp có nhiều room (chuyển phòng)
+            // thì vẫn là 1 lịch có nhiều room, lúc đó hãy cứ lấy ra hết tất cả scheduleRoom theo scheduleId
+            // sẽ có cái expired thật sự, đã expired nhưng vẫn chưa tới ngày end, using hoặc temp,
+            // get cả lịch expired với endDate > now, tức chưa tới ngày end, concat với lịch using và temp là ra được 
+            // list cần để hiện thị lịch mà lớp đó đang học ( loại bỏ được lịch đã expired với endDate đã qua)
+            // trả thêm startDate và endDate trong viewModel
+            // mỗi lớp 1 course 1 ngày chỉ học 1 slot, tức nếu có người dạy thay thì lịch sẽ k hiển thị ngày hôm đó
+
             var getAutoSchedule = new GetAutoScheduleViewModel();
             var classesModel = new List<ClassForScheduleViewModel>();
             var schedulesModel = new List<ScheduleForAutoViewModel>();
@@ -532,6 +541,411 @@ namespace KidProEdu.Application.Services
             model.TeachingClassHistories = histories;
             model.ScheduleRooms = scheduleRooms;
             return model;
+        }
+
+        // dùng cho api đổi phòng cho lịch học, vừa tạm thời vừa đổi luôn
+        public async Task<bool> ChangeRoomForSchedule(ChangeRoomForScheduleViewModel changeRoomForScheduleViewModel)
+        {
+
+            // thêm api lấy ra những phòng còn trống trong cùng slot đó để hiện thị lên trên view thay vì cho chọn r xuống
+            // dưới BE bắt
+            // trạng thái của scheduleRoom: pending, using, temp, expired 
+            // chỉ cho chuyển với trạng thái pending, using, temp
+            // chuyển qua phòng trống trong cùng slot
+            // làm sao để trả ra được lịch đó học phòng đó ngày nào trong trường hợp học tạm
+            // => có startDate, startDate sẽ:
+            // đổi tạm thì s => đổi tạm có 2 phương hướng là đóng record cũ ghi 2 record mới vừa đổi tạm vừa ghi lại phòng cũ
+            //                  hoặc vẫn giữ record cũ và chỉ thêm 1 record đổi tạm mới
+            // đổi luôn thì s => đổi luôn thì update status scheduleroom cũ, update endDate, ghi thêm record scheduleroom mới
+            // với starDate và status pending
+
+            // lưu ý: cả lịch và phòng đổi là sẽ thêm record mới kể cả tạm 1 lịch
+            // -------------------------------------
+
+
+            switch (changeRoomForScheduleViewModel.Status)
+            {
+                /*case ScheduleRoomStatus.Pending:
+                    break;*/
+                case ScheduleRoomStatus.Using: // sử dụng trạng thái using để nhân biết rằng lịch đổi phòng luôn
+                    {
+                        // lấy ra list những lịch có ngày kết thúc sau startDate của lịch mới, tức đổi từ startDate mới đổi đi
+                        var listOldScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(changeRoomForScheduleViewModel.ScheduleId)
+                            .Result.Where(x => x.EndDate.Value.Date > changeRoomForScheduleViewModel.StartDate.Date
+                            && x.IsDeleted == false && x.Status != ScheduleRoomStatus.Expired).ToList();
+                        var endDate = new DateTime();
+
+                        // nếu startDate trong lịch mới là những ngày này thì endDate của lịch cũ sẽ trừ đi số ngày tương ứng
+                        if (changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("thursday") // 5 8
+                            || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("tuesday") // 3 6
+                            || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("wednesday")) // 4 7
+                        {
+                            // là những ngày đầu tiên trong tuần thì trừ cho 4 để ra ngày tuần trước
+                            endDate = changeRoomForScheduleViewModel.StartDate.AddDays(-4);
+                        }
+                        else
+                        {
+                            endDate = changeRoomForScheduleViewModel.StartDate.AddDays(-3);
+                        }
+
+                        // cập nhật endDate cho những lịch trước đó
+                        foreach (var scheduleRoom in listOldScheduleRoom)
+                        {
+                            scheduleRoom.EndDate = endDate;
+                            _unitOfWork.ScheduleRoomRepository.Update(scheduleRoom);
+                        }
+
+                        // tạo record mới cho phòng mới
+                        var newScheduleRoom = new ScheduleRoom()
+                        {
+                            ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                            RoomId = changeRoomForScheduleViewModel.NewRoomId,
+                            StartDate = _currentTime.GetCurrentTime(),
+                            Status = ScheduleRoomStatus.Using
+                        };
+
+                        await _unitOfWork.ScheduleRoomRepository.AddAsync(newScheduleRoom);
+                    }
+
+                    break;
+                case ScheduleRoomStatus.Temp: // dùng status temp để nhận biết chuyển phòng tạm thời
+                    {
+                        var listScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomByScheduleAndRoom(changeRoomForScheduleViewModel.ScheduleId, changeRoomForScheduleViewModel.RoomId)
+                            .Result.Where(x => x.Status != ScheduleRoomStatus.Expired).OrderByDescending(x => x.CreationDate);
+
+                        // nếu trùng ngày bắt đầu
+                        if (listScheduleRoom.Any(x => x.StartDate.Value.Date == changeRoomForScheduleViewModel.StartDate.Date))
+                        {
+                            var currentScheduleRoom = listScheduleRoom.FirstOrDefault(x => x.StartDate.Value.Date == changeRoomForScheduleViewModel.StartDate.Date);
+
+                            // nếu ngày kết thúc của lịch cũ trước ngày kết thúc của lịch mới thì sửa lại startDate của lịch cũ và 
+                            // thêm lịch mới
+                            if (currentScheduleRoom.EndDate.Value.Date < changeRoomForScheduleViewModel.EndDate.Value.Date)
+                            {
+                                // nếu là những ngày này thì ngày bắt đầu của lịch cũ phải là ngày kết thúc mới cộng thêm 3 else +4
+                                if (currentScheduleRoom.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("tuesday")
+                                    || currentScheduleRoom.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("wednesday")
+                                    || currentScheduleRoom.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("thursday"))
+                                {
+
+                                    currentScheduleRoom.StartDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(3);
+                                }
+                                else
+                                {
+                                    currentScheduleRoom.StartDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(4);
+
+                                }
+
+                                var scheduleRoom = new ScheduleRoom()
+                                {
+                                    ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                                    RoomId = changeRoomForScheduleViewModel.NewRoomId,
+                                    StartDate = changeRoomForScheduleViewModel.StartDate,
+                                    EndDate = changeRoomForScheduleViewModel.EndDate,
+                                    Status = ScheduleRoomStatus.Temp
+                                };
+
+                                await _unitOfWork.ScheduleRoomRepository.AddAsync(scheduleRoom);
+                                _unitOfWork.ScheduleRoomRepository.Update(currentScheduleRoom);
+                            }
+                            else // ngược lại dù trùng hay hơn ngày kết thúc thì đều update lại lịch cũ được
+                            {
+                                currentScheduleRoom.StartDate = changeRoomForScheduleViewModel.StartDate;
+                                currentScheduleRoom.EndDate = changeRoomForScheduleViewModel.EndDate;
+
+                                _unitOfWork.ScheduleRoomRepository.Update(currentScheduleRoom);
+                            }
+                        }
+                        // nếu không trùng ngày bắt đầu
+                        else
+                        {
+                            // lịch mới nằm giữa 1 lịch cũ
+                            if (listScheduleRoom.Any(x => x.StartDate.Value.Date < changeRoomForScheduleViewModel.StartDate
+                                    && x.EndDate.Value.Date > changeRoomForScheduleViewModel.EndDate.Value.Date))
+                            {
+                                var currentScheduleRoom = listScheduleRoom.FirstOrDefault(x => x.StartDate.Value.Date < changeRoomForScheduleViewModel.StartDate
+                                    && x.EndDate.Value.Date > changeRoomForScheduleViewModel.EndDate.Value.Date);
+
+                                var endDateOld = currentScheduleRoom.EndDate;
+
+                                if (changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("tuesday")
+                                        || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("wednesday")
+                                        || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("thursday"))
+                                {
+                                    currentScheduleRoom.EndDate = changeRoomForScheduleViewModel.StartDate.AddDays(-4);
+                                }
+                                else
+                                {
+                                    currentScheduleRoom.EndDate = changeRoomForScheduleViewModel.StartDate.AddDays(-3);
+                                }
+
+                                //  thêm lịch tạm mới
+                                var newTempScheduleRoom = new ScheduleRoom()
+                                {
+                                    ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                                    RoomId = changeRoomForScheduleViewModel.NewRoomId,
+                                    StartDate = changeRoomForScheduleViewModel.StartDate,
+                                    EndDate = changeRoomForScheduleViewModel.EndDate,
+                                    Status = ScheduleRoomStatus.Temp
+                                };
+
+                                // thêm lại lịch tạm cũ
+                                var newScheduleRoom = new ScheduleRoom()
+                                {
+                                    ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                                    RoomId = changeRoomForScheduleViewModel.RoomId,
+                                    EndDate = endDateOld,
+                                    Status = ScheduleRoomStatus.Temp
+                                };
+
+                                if (changeRoomForScheduleViewModel.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("tuesday")
+                                        || changeRoomForScheduleViewModel.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("wednesday")
+                                        || changeRoomForScheduleViewModel.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("thursday"))
+                                {
+
+                                    newScheduleRoom.StartDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(3);
+                                }
+                                else
+                                {
+                                    newScheduleRoom.StartDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(4);
+
+                                }
+
+                                await _unitOfWork.ScheduleRoomRepository.AddAsync(newTempScheduleRoom);
+                                await _unitOfWork.ScheduleRoomRepository.AddAsync(newScheduleRoom);
+                                _unitOfWork.ScheduleRoomRepository.Update(currentScheduleRoom);
+                            }
+                            else // kiểm tra vị trí lịch so với các lịch cũ
+                            {
+                                // không cần lấy endDate bởi vì nếu cả start và end đều trong khoảng thì dính trường hợp trên
+                                var scheduleRoomOld1 = listScheduleRoom.FirstOrDefault(x => x.StartDate.Value.Date < changeRoomForScheduleViewModel.StartDate.Date
+                                && x.EndDate.Value.Date > changeRoomForScheduleViewModel.StartDate.Date);
+
+                                var scheduleRoomOld2 = listScheduleRoom.FirstOrDefault(x => x.StartDate.Value.Date < changeRoomForScheduleViewModel.EndDate.Value.Date
+                                && x.EndDate.Value.Date > changeRoomForScheduleViewModel.EndDate.Value.Date);
+
+                                //lịch mới nằm ở giữa 2 lịch(--__--)
+                                // cập nhât lại ngày kết thúc của cũ trước, ngày bắt đầu của cũ sau, thêm lịch mới
+                                if (scheduleRoomOld1 != null && scheduleRoomOld2 != null)
+                                {
+                                    if (changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("tuesday")
+                                        || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("wednesday")
+                                        || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("thursday"))
+                                    {
+
+                                        scheduleRoomOld1.EndDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(-4);
+                                    }
+                                    else
+                                    {
+                                        scheduleRoomOld1.EndDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(-3);
+
+                                    }
+
+                                    if (changeRoomForScheduleViewModel.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("tuesday")
+                                        || changeRoomForScheduleViewModel.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("wednesday")
+                                        || changeRoomForScheduleViewModel.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("thursday"))
+                                    {
+
+                                        scheduleRoomOld2.StartDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(3);
+                                    }
+                                    else
+                                    {
+                                        scheduleRoomOld2.StartDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(4);
+
+                                    }
+
+                                    var newTempScheduleRoom = new ScheduleRoom()
+                                    {
+                                        ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                                        RoomId = changeRoomForScheduleViewModel.NewRoomId,
+                                        StartDate = changeRoomForScheduleViewModel.StartDate,
+                                        EndDate = changeRoomForScheduleViewModel.EndDate,
+                                        Status = ScheduleRoomStatus.Temp
+                                    };
+
+                                    await _unitOfWork.ScheduleRoomRepository.AddAsync(newTempScheduleRoom);
+                                    _unitOfWork.ScheduleRoomRepository.Update(scheduleRoomOld1);
+                                    _unitOfWork.ScheduleRoomRepository.Update(scheduleRoomOld2);
+
+                                }
+                                else
+                                // lịch mới nằm lệch 1 trong 2 lịch (--__)(__--)
+                                if (scheduleRoomOld1 != null && scheduleRoomOld2 == null)
+                                {
+                                    if (changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("tuesday")
+                                        || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("wednesday")
+                                        || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("thursday"))
+                                    {
+
+                                        scheduleRoomOld1.EndDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(-4);
+                                    }
+                                    else
+                                    {
+                                        scheduleRoomOld1.EndDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(-3);
+
+                                    }
+
+                                    var newTempScheduleRoom = new ScheduleRoom()
+                                    {
+                                        ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                                        RoomId = changeRoomForScheduleViewModel.NewRoomId,
+                                        StartDate = changeRoomForScheduleViewModel.StartDate,
+                                        EndDate = changeRoomForScheduleViewModel.EndDate,
+                                        Status = ScheduleRoomStatus.Temp
+                                    };
+
+                                    await _unitOfWork.ScheduleRoomRepository.AddAsync(newTempScheduleRoom);
+                                    _unitOfWork.ScheduleRoomRepository.Update(scheduleRoomOld1);
+                                }
+                                else
+                                if (scheduleRoomOld1 == null && scheduleRoomOld2 != null)
+                                {
+                                    if (changeRoomForScheduleViewModel.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("tuesday")
+                                        || changeRoomForScheduleViewModel.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("wednesday")
+                                        || changeRoomForScheduleViewModel.EndDate.Value.DayOfWeek.ToString().ToLower().Equals("thursday"))
+                                    {
+
+                                        scheduleRoomOld2.StartDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(3);
+                                    }
+                                    else
+                                    {
+                                        scheduleRoomOld2.StartDate = changeRoomForScheduleViewModel.EndDate.Value.AddDays(4);
+
+                                    }
+
+                                    var newTempScheduleRoom = new ScheduleRoom()
+                                    {
+                                        ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                                        RoomId = changeRoomForScheduleViewModel.NewRoomId,
+                                        StartDate = changeRoomForScheduleViewModel.StartDate,
+                                        EndDate = changeRoomForScheduleViewModel.EndDate,
+                                        Status = ScheduleRoomStatus.Temp
+                                    };
+
+                                    await _unitOfWork.ScheduleRoomRepository.AddAsync(newTempScheduleRoom);
+                                    _unitOfWork.ScheduleRoomRepository.Update(scheduleRoomOld2);
+                                }
+                                else
+                                // lịch mới độc lập với các lịch còn lại, add như bình thường
+                                if (scheduleRoomOld1 == null && scheduleRoomOld2 == null)
+                                {
+                                    // lịch cũ đã được sort theo ngày tạo để lấy mới nhất
+                                    var currentScheduleRoom = listScheduleRoom.FirstOrDefault();
+
+                                    // nếu startDate trong lịch mới là những ngày này thì endDate của lịch cũ sẽ trừ đi số ngày tương ứng
+                                    if (changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("thursday") // 5 8
+                                        || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("tuesday") // 3 6
+                                        || changeRoomForScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("wednesday")) // 4 7
+                                    {
+                                        // là những ngày đầu tiên trong tuần thì trừ cho 4 để ra ngày tuần trước
+                                        currentScheduleRoom.EndDate = changeRoomForScheduleViewModel.StartDate.AddDays(-4);
+
+                                        // add record mới cho phòng tạm
+                                        var tempScheduleRoom = new ScheduleRoom()
+                                        {
+                                            ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                                            RoomId = changeRoomForScheduleViewModel.NewRoomId,
+                                            StartDate = changeRoomForScheduleViewModel.StartDate,
+                                            EndDate = changeRoomForScheduleViewModel.StartDate,
+                                            Status = ScheduleRoomStatus.Temp
+                                        };
+
+                                        // add lại record phòng cho lịch cũ
+                                        var newScheduleRoomAgain = new ScheduleRoom()
+                                        {
+                                            ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                                            RoomId = currentScheduleRoom.RoomId,
+                                            StartDate = changeRoomForScheduleViewModel.StartDate.AddDays(3),
+                                            Status = ScheduleRoomStatus.Using
+                                        };
+
+                                        await _unitOfWork.ScheduleRoomRepository.AddAsync(tempScheduleRoom);
+                                        await _unitOfWork.ScheduleRoomRepository.AddAsync(newScheduleRoomAgain);
+                                        _unitOfWork.ScheduleRoomRepository.Update(currentScheduleRoom);
+
+                                    }
+                                    else
+                                    {
+                                        currentScheduleRoom.EndDate = changeRoomForScheduleViewModel.StartDate.AddDays(-3);
+
+                                        // add record mới cho phòng tạm
+                                        var tempScheduleRoom = new ScheduleRoom()
+                                        {
+                                            ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                                            RoomId = changeRoomForScheduleViewModel.NewRoomId,
+                                            StartDate = changeRoomForScheduleViewModel.StartDate,
+                                            EndDate = changeRoomForScheduleViewModel.StartDate,
+                                            Status = ScheduleRoomStatus.Temp
+                                        };
+
+                                        // add lại record phòng cho lịch cũ
+                                        var newScheduleRoomAgain = new ScheduleRoom()
+                                        {
+                                            ScheduleId = changeRoomForScheduleViewModel.ScheduleId,
+                                            RoomId = currentScheduleRoom.RoomId,
+                                            StartDate = changeRoomForScheduleViewModel.StartDate.AddDays(4),
+                                            Status = ScheduleRoomStatus.Using
+                                        };
+
+                                        await _unitOfWork.ScheduleRoomRepository.AddAsync(tempScheduleRoom);
+                                        await _unitOfWork.ScheduleRoomRepository.AddAsync(newScheduleRoomAgain);
+                                        _unitOfWork.ScheduleRoomRepository.Update(currentScheduleRoom);
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception("Trường hợp chưa hỗ trợ");
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                /*case ScheduleRoomStatus.Expired:
+                    break;*/
+                default:
+                    throw new Exception("Trạng thái không phù hợp");
+            }
+
+            // xóa list những lịch lỗi sau khi đổi nhiều lần có ngày start sau ngày end
+            var listScheduleRoomError = _unitOfWork.ScheduleRoomRepository.GetAllAsync().Result
+                .Where(x => x.StartDate.Value.Date > x.EndDate.Value.Date).ToList();
+            _unitOfWork.ScheduleRoomRepository.RemoveRange(listScheduleRoomError);
+
+            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Chuyển phòng thất bại");
+        }
+
+        public async Task<bool> GetEmptyRoomBySlot(Guid scheduleId, Guid slotId, DateTime startDate, DateTime endDate, ScheduleRoomStatus status)
+        {
+            // lấy list phòng học trống theo slot ra mà không biết có cần phải lấy theo ngày không,
+            // 1 slot có nhiều lớp học, nếu học chính thì đỡ nhưng có những lớp đổi phòng nên có khi lại vướng vào ngày hôm đó
+            // lấy theo status đi, muốn chuyển tạm thì lấy phòng kiểu tạm mà chuyển luôn thì lại khác nên lấy kiểu luôn
+
+            //--------------------------------------------
+
+            /*var schedules = await _unitOfWork.ScheduleRepository.GetListScheduleBySlot(slotId);
+
+            var listEmptyRoom = new List<Room>();
+            var listBusyRoom = new List<Room>();
+
+            foreach (var schedule in schedules)
+            {
+                // giờ theo logic lấy ra phòng khác với scheduleId thử trước đã
+                if (schedule.Id != scheduleId)
+                {
+
+                    // list này chứa những lịch phòng không hết hạn (temp, using, pending) và
+                    var listScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
+                        .Result.Where(x => x.Status != ScheduleRoomStatus.Expired).ToList();
+
+                    foreach (var item in listScheduleRoom)
+                    {
+                        if (item.Status == ScheduleRoomStatus.Temp && item.StartDate.Value.Date > startDate
+                            && item.EndDate.Value.Date <)
+                    }
+                }
+            }*/
+            return true;
         }
     }
 }

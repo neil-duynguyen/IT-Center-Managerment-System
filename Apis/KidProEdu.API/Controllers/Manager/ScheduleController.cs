@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
+using KidProEdu.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -140,6 +141,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("GetScheduleRoomAndTeachingClassHistory")]
+        /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> GetScheduleRoomAndTeachingClassHistory()
         {
             try
@@ -149,6 +151,34 @@ namespace KidProEdu.API.Controllers.Manager
             catch (Exception ex)
             {
 
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("ChangeRoomForSchedule")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> ChangeRoomForSchedule(ChangeRoomForScheduleViewModel changeRoomForScheduleViewModel)
+        {
+            try
+            {
+                return Ok(await _scheduleService.ChangeRoomForSchedule(changeRoomForScheduleViewModel));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetEmptyRoomBySlot/{id}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> GetEmptyRoomBySlot(Guid scheduleId, Guid slotId, DateTime startDate, DateTime endDate, ScheduleRoomStatus status)
+        {
+            try
+            {
+                return Ok(await _scheduleService.GetEmptyRoomBySlot(scheduleId, slotId, startDate, endDate, status));
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
