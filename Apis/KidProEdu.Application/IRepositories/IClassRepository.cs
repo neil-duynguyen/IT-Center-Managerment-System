@@ -12,5 +12,6 @@ namespace KidProEdu.Application.IRepositories
     {
         Task<List<Class>> GetClassByClassCode(string classCode);
         Task<List<Class>> GetClassBySlot(int slot);
+        Task<List<Class>> GetClassByCourseId(Guid id, DateTime year);
     }
 }

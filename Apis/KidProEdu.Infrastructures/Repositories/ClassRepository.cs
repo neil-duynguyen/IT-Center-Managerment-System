@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace KidProEdu.Infrastructures.Repositories
@@ -85,6 +86,15 @@ namespace KidProEdu.Infrastructures.Repositories
         public override async Task<List<Class>> GetAllAsync()
         {
             return await _dbSet.Include(x => x.Course).Include(x => x.Schedules).ThenInclude(x => x.Slot).Include(x => x.Enrollments).ThenInclude(x => x.ChildrenProfile).Where(x => !x.IsDeleted).ToListAsync();
+        }
+
+        public async Task<List<Class>> GetClassByCourseId(Guid id, DateTime year)
+        {
+            var classes = await _dbContext.Class
+                .Include(x => x.Course)
+                .Where(x => x.CourseId == id && x.StatusOfClass == StatusOfClass.Started && x.StartDate.Year == year.Year && !x.IsDeleted)
+                .ToListAsync();
+            return classes;
         }
     }
 }
