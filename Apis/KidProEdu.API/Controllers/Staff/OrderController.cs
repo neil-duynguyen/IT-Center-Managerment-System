@@ -80,7 +80,6 @@ namespace KidProEdu.API.Controllers.Staff
             try
             {
                 var result = await _orderService.CreatePaymentHandler(orderId);
-
                 return Ok(result);
 
             }
