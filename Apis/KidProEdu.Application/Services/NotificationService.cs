@@ -64,8 +64,8 @@ namespace KidProEdu.Application.Services
                     notificationUsers.UserId = notificationUsers.UserId;
                 }*/
 
-                    var newNotification = _mapper.Map<Notification>(createNotificationViewModel);
-                    await _unitOfWork.NotificationRepository.AddAsync(newNotification);
+                var newNotification = _mapper.Map<Notification>(createNotificationViewModel);
+                await _unitOfWork.NotificationRepository.AddAsync(newNotification);
 
                 foreach (var item in userId)
                 {
@@ -105,11 +105,15 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<NotificationWithUserViewModel>> GetNotificationsByUserId(Guid userId)
         {
-            var results = await _unitOfWork.NotificationRepository.GetNotificationsByUserId(userId);
+            var notificationUsers = await _unitOfWork.NotificationUserRepository.GetListNotificationUserByUserId(userId);
+            var listNoti = new List<NotificationWithUserViewModel>();
+            foreach (var notificationUser in notificationUsers)
+            {
+                var noti = await _unitOfWork.NotificationRepository.GetByIdAsync(notificationUser.NotificationId);
+                listNoti.Add(_mapper.Map<NotificationWithUserViewModel>(noti));
+            }
 
-            var mapper = _mapper.Map<List<NotificationWithUserViewModel>>(results);
-
-            return mapper;
+            return _mapper.Map<List<NotificationWithUserViewModel>>(listNoti);
         }
     }
 }

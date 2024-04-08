@@ -29,7 +29,7 @@ namespace KidProEdu.Application.Services
         public async Task<bool> CreateNotificationUser(CreateNotificationUserViewModel createNotificationUserViewModel)
         {
             var mapper = _mapper.Map<NotificationUser>(createNotificationUserViewModel);
-             _unitOfWork.NotificationUserRepository.AddAsync(mapper);
+            await _unitOfWork.NotificationUserRepository.AddAsync(mapper);
             return true;
         }
     }

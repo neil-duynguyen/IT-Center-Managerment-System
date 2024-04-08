@@ -11,5 +11,6 @@ namespace KidProEdu.Application.IRepositories
 
     public interface INotificationUserRepository : IGenericRepository<NotificationUser>
     {
+        Task<List<NotificationUser>> GetListNotificationUserByUserId(Guid userId);
     }
 }
