@@ -85,5 +85,37 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Failed to retrieve transaction summary. " + ex.Message);
             }
         }
+
+        public async Task<TransactionSummaryByMonthInYearViewModel> TransactionsSummariseByMonthInYear(DateTime monthInYear)
+        {
+            try
+            {
+                // Lấy danh sách các giao dịch từ Repository
+                var transactions = await _unitOfWork.TransactionRepository.GetAllAsync();
+                //var mapper = _mapper.Map<List<TransactionViewModel>>(transactions);
+
+                // Tính tổng số tiền của các giao dịch
+                double totalAmount = transactions.Sum(t => t.TotalAmount ?? 0);
+
+                var transactionsByMonthInYear = await _unitOfWork.TransactionRepository.GetTransactionByMonthInYear(monthInYear);
+                double totalAmountMonthInYear = transactionsByMonthInYear.Sum(t => t.TotalAmount ?? 0);
+                var mapper = _mapper.Map<List<TransactionViewModel>>(transactionsByMonthInYear);
+
+                // Tạo view model chứa thông tin tổng hợp
+                var transactionsSummarise = new TransactionSummaryByMonthInYearViewModel
+                {
+                    Transactions = mapper,
+                    TotalAmount = totalAmount,
+                    TotalAmountOfMonthInYear = totalAmountMonthInYear
+                };
+
+                return transactionsSummarise;
+            }
+            catch (Exception ex)
+            {
+                // Nếu có lỗi xảy ra, trả về null hoặc xử lý tùy thuộc vào yêu cầu của bạn
+                throw new Exception("Failed to retrieve transaction summary. " + ex.Message);
+            }
+        }
     }
 }

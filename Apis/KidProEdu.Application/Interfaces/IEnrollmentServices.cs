@@ -10,7 +10,7 @@ namespace KidProEdu.Application.Interfaces
 {
     public interface IEnrollmentServices
     {
-        Task<List<string>> CreateEnrollment(List<CreateEnrollmentViewModel> createEnrollmentViewModels);
+        Task<List<string>> CreateEnrollment(CreateEnrollmentViewModel createEnrollmentViewModel);
         Task<bool> UpdateEnrollment(UpdateEnrollmentViewModel updateEnrollmentViewModel);
         Task<bool> UpdateEnrollmentStudying(UpdateEnrollmentViewModel updateEnrollmentViewModel);
         Task<List<EnrollmentViewModel>> GetEnrollment();

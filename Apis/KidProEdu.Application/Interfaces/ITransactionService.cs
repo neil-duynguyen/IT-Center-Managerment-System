@@ -12,5 +12,7 @@ namespace KidProEdu.Application.Interfaces
         Task<List<TransactionViewModel>> GetAllTransaction();
         Task<List<TransactionViewModel>> GetTransactionDetailByTransactionId(Guid id);
         Task<TransactionSummaryViewModel> TransactionsSummarise();
+
+        Task<TransactionSummaryByMonthInYearViewModel> TransactionsSummariseByMonthInYear(DateTime monthInYear);
     }
 }

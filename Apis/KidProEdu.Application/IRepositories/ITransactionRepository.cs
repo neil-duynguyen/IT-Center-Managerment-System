@@ -5,5 +5,6 @@ namespace KidProEdu.Application.IRepositories
 {
     public interface ITransactionRepository : IGenericRepository<Transaction>
     {
+        Task<List<Transaction>> GetTransactionByMonthInYear(DateTime monthInYear);
     }
 }
