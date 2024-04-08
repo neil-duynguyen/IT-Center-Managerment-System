@@ -9,6 +9,7 @@ using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
 using KidProEdu.Domain.Entities;
+using MediatR;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using OfficeOpenXml;
@@ -174,6 +175,7 @@ namespace KidProEdu.Application.Services
                     break;*/
                 case Domain.Enums.StatusOfClass.Started:
                     // start class ghi nhận teachingHistory
+                    // ghi nhận trạng thái scheduleRoom
                     // ghi nhận trạng thái phòng học
 
                     foreach (var item in changeStatusClassViewModel.ids)
@@ -186,15 +188,30 @@ namespace KidProEdu.Application.Services
 
                         _unitOfWork.TeachingClassHistoryRepository.Update(teachingHistory);
 
-                        // ghi nhận phòng học
+                        // bắt đầu ghi nhận trạng thái room và scheduleRoom
                         var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(item);
                         foreach (var schedule in schedules)
                         {
+                            // ghi nhận scheduleRoom
                             var findScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
                                 .Result.FirstOrDefault(x => x.Status.Equals(Domain.Enums.ScheduleRoomStatus.Pending));
+
                             findScheduleRoom.Status = Domain.Enums.ScheduleRoomStatus.Using;
 
                             _unitOfWork.ScheduleRoomRepository.Update(findScheduleRoom);
+
+                            // ghi nhận trạng thái phòng học
+                            var listScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
+                                .Result.Where(x => x.Status == Domain.Enums.ScheduleRoomStatus.Using
+                                || x.Status == Domain.Enums.ScheduleRoomStatus.Pending)
+                                .DistinctBy(x => x.RoomId).ToList();
+                            foreach (var scheduleRoom in listScheduleRoom)
+                            {
+                                var room = await _unitOfWork.RoomRepository.GetByIdAsync((Guid)scheduleRoom.RoomId);
+                                room.Status = Domain.Enums.StatusOfRoom.Used;
+
+                                _unitOfWork.RoomRepository.Update(room);
+                            }
                         }
                     }
 
@@ -287,17 +304,30 @@ namespace KidProEdu.Application.Services
                             _unitOfWork.TeachingClassHistoryRepository.Update(teachingHistory);
                         }
 
-                        // ghi nhận phòng học
+                        // bắt đầu ghi nhận trạng thái room và scheduleRoom
                         var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(classId);
                         foreach (var schedule in schedules)
                         {
+                            // ghi nhận trạng thái schedule room
                             var scheduleRooms = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
                                 .Result.Where(x => x.Status.Equals(Domain.Enums.ScheduleRoomStatus.Using)
                                 || x.Status.Equals(Domain.Enums.ScheduleRoomStatus.Temp));
                             foreach (var scheduleRoom in scheduleRooms)
                             {
-                                scheduleRoom.Status = Domain.Enums.ScheduleRoomStatus.Using;
+                                scheduleRoom.Status = Domain.Enums.ScheduleRoomStatus.Expired;
                                 _unitOfWork.ScheduleRoomRepository.Update(scheduleRoom);
+                            }
+
+                            // ghi nhận trạng thái room
+                            var listScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
+                                .Result.Where(x => x.Status == Domain.Enums.ScheduleRoomStatus.Using).DistinctBy(x => x.RoomId);
+
+                            foreach (var scheduleRoom in listScheduleRoom)
+                            {
+                                var room = await _unitOfWork.RoomRepository.GetByIdAsync((Guid)scheduleRoom.RoomId);
+                                room.Status = Domain.Enums.StatusOfRoom.Empty;
+
+                                _unitOfWork.RoomRepository.Update(room);
                             }
                         }
 
