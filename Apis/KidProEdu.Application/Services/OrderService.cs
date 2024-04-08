@@ -10,6 +10,8 @@ using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System.Web;
+using ZXing;
 
 namespace KidProEdu.Application.Services
 {
@@ -88,7 +90,15 @@ namespace KidProEdu.Application.Services
 
             //tính tổng tiền cần thanh toán
             var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
-            foreach (var item in getOrderDetail)
+
+            //nếu đơn hàng là thanh toán bằng tiền mặt
+            if (getOrderById.EWalletMethod == string.Empty)
+            {
+               var result = await UpdateOrderWhenCash(orderId);
+               return result;
+            }
+
+            foreach (var item in getOrderDetail.ToList())
             {
                 if (item.InstallmentTerm > 0)
                 {
@@ -209,6 +219,39 @@ namespace KidProEdu.Application.Services
             throw new Exception("Không tìm thấy đơn hàng.");
         }
 
+        //feature này sẽ được call khi parent thanh toán bằng tiền mặt
+        public async Task<string> UpdateOrderWhenCash(Guid orderId)
+            {
+            var result = new BaseResult();
+            string returnUrl = _configuration["Vnpay:RedirectUrl"];
+            var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
+            getOrder.PaymentStatus = Domain.Enums.StatusPayment.Paid;
+            _unitOfWork.OrderRepository.Update(getOrder);
+            await _unitOfWork.SaveChangeAsync();
+
+            var createTransaction = await CreateTransaction(orderId);
+
+            if (createTransaction)
+            {
+                result = new BaseResult()
+                {
+                    Message = "Thanh toán thành công.",
+                    RedirectUrl = returnUrl
+                };
+            }
+            else
+            {
+                result = new BaseResult()
+                {
+                    Message = "Tạo giao dịch thất bại.",
+                    RedirectUrl = returnUrl
+                };
+            }
+
+            var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}";
+            return redirectUrlWithMessage;
+        }
+
         //xử lý giao dịch momo
         public async Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response)
         {
@@ -323,6 +366,7 @@ namespace KidProEdu.Application.Services
                     {
                         var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(Guid.Parse(response.vnp_TxnRef));
                         getOrder.PaymentStatus = Domain.Enums.StatusPayment.Cancel;
+                        getOrder.URLPayment = null;
                         _unitOfWork.OrderRepository.Update(getOrder);
                         await _unitOfWork.SaveChangeAsync();
 
@@ -357,51 +401,73 @@ namespace KidProEdu.Application.Services
 
             if (getOrder is not null && getOrder.PaymentStatus == Domain.Enums.StatusPayment.Paid)
             {
-                var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId && x.PayType == Domain.Enums.PayType.Banking).ToList();
+                var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId);
 
-                foreach (var item in getOrderDetail)
+                if (getOrderDetail.Where(x => x.PayType == Domain.Enums.PayType.Banking).ToList() != null)
                 {
-                    //trường hợp có trả góp
-                    if (item.InstallmentTerm != 0)
+                    foreach (var item in getOrderDetail)
                     {
-                        //create transaction parent
-                        Transaction transactionParent = new Transaction()
+                        //trường hợp có trả góp
+                        if (item.InstallmentTerm != 0)
                         {
-                            Id = Guid.NewGuid(),
-                            OrderDetailId = item.Id,
-                            BankingAccountNumber = "",
-                            BankingNumber = "",
-                            BankName = "",
-                            CourseName = item.Course.Name,
-                            PayDate = _currentTime.GetCurrentTime(), //lấy thời gian thanh toán thành công
-                            InstallmentTerm = item.InstallmentTerm,
-                            InstallmentPeriod = _currentTime.GetCurrentTime(), //alow null
-                            StatusTransaction = Domain.Enums.StatusTransaction.Installment,
-
-                        };
-                        await _unitOfWork.TransactionRepository.AddAsync(transactionParent);
-
-                        //tính số tiên trả góp hàng tháng
-                        var installmentPayments = Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
-                        //tạo con
-                        for (int i = 0; i < transactionParent.InstallmentTerm; i++)
-                        {
-                            Transaction transactionChild = new Transaction()
+                            //create transaction parent
+                            Transaction transactionParent = new Transaction()
                             {
                                 Id = Guid.NewGuid(),
+                                OrderDetailId = item.Id,
+                                BankingAccountNumber = "",
+                                BankingNumber = "",
+                                BankName = "",
                                 CourseName = item.Course.Name,
-                                TotalAmount = (double?)installmentPayments,
-                                InstallmentPeriod = i == 0 ? _currentTime.GetCurrentTime() : _currentTime.GetCurrentTime().AddMonths(i),
-                                StatusTransaction = i == 0 ? Domain.Enums.StatusTransaction.Successfully : Domain.Enums.StatusTransaction.Pending,
-                                ParentsTransaction = transactionParent.Id
-                            };
-                            await _unitOfWork.TransactionRepository.AddAsync(transactionChild);
-                        }
+                                PayDate = _currentTime.GetCurrentTime(), //lấy thời gian thanh toán thành công
+                                InstallmentTerm = item.InstallmentTerm,
+                                InstallmentPeriod = _currentTime.GetCurrentTime(), //alow null
+                                StatusTransaction = Domain.Enums.StatusTransaction.Installment,
 
+                            };
+                            await _unitOfWork.TransactionRepository.AddAsync(transactionParent);
+
+                            //tính số tiên trả góp hàng tháng
+                            var installmentPayments = Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
+                            //tạo con
+                            for (int i = 0; i < transactionParent.InstallmentTerm; i++)
+                            {
+                                Transaction transactionChild = new Transaction()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    CourseName = item.Course.Name,
+                                    TotalAmount = (double?)installmentPayments,
+                                    InstallmentPeriod = i == 0 ? _currentTime.GetCurrentTime() : _currentTime.GetCurrentTime().AddMonths(i),
+                                    StatusTransaction = i == 0 ? Domain.Enums.StatusTransaction.Successfully : Domain.Enums.StatusTransaction.Pending,
+                                    ParentsTransaction = transactionParent.Id
+                                };
+                                await _unitOfWork.TransactionRepository.AddAsync(transactionChild);
+                            }
+
+                        }
+                        else
+                        {
+                            //ko trả góp
+                            Transaction transactionparent = new Transaction()
+                            {
+                                BankingAccountNumber = "",
+                                BankingNumber = "",
+                                BankName = "",
+                                CourseName = item.Course.Name,
+                                PayDate = _currentTime.GetCurrentTime(),
+                                InstallmentTerm = 0,
+                                InstallmentPeriod = _currentTime.GetCurrentTime(),
+                                StatusTransaction = Domain.Enums.StatusTransaction.Successfully,
+                                OrderDetailId = item.Id
+                            };
+                            await _unitOfWork.TransactionRepository.AddAsync(transactionparent);
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    foreach (var item in getOrderDetail)
                     {
-                        //ko trả góp
                         Transaction transactionparent = new Transaction()
                         {
                             BankingAccountNumber = "",
@@ -422,7 +488,6 @@ namespace KidProEdu.Application.Services
             return false;
         }
     }
-
 
     public class CreatePayment
     {

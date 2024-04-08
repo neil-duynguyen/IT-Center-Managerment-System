@@ -1,4 +1,5 @@
-﻿using KidProEdu.Application.Interfaces;
+﻿using DocumentFormat.OpenXml.EMMA;
+using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.PaymentService.Dtos;
 using KidProEdu.Application.PaymentService.Momo.Request;
 using KidProEdu.Application.PaymentService.Payment.Commands;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Web;
 
 namespace KidProEdu.API.Controllers.Staff
@@ -43,7 +45,7 @@ namespace KidProEdu.API.Controllers.Staff
                 return Ok(result);
             }
             catch (DbUpdateException ex)
-            { 
+            {
                 return BadRequest("Lỗi tạo đơn hàng");
             }
 
@@ -78,7 +80,9 @@ namespace KidProEdu.API.Controllers.Staff
             try
             {
                 var result = await _orderService.CreatePaymentHandler(orderId);
+
                 return Ok(result);
+
             }
             catch (Exception ex)
             {
@@ -93,14 +97,9 @@ namespace KidProEdu.API.Controllers.Staff
         {
             var result = await _orderService.ProcessMomoPaymentReturnHandler(response);
 
-            var paymentResult = new
-            {
-                message = result.Message, // Thông báo giao dịch
-                redirectUrl = result.RedirectUrl // URL chuyển hướng
-            };
-
+            var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}";
             // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
-            return RedirectToAction("ShowPaymentResult", paymentResult);
+            return Redirect(redirectUrlWithMessage);
         }
 
         [HttpGet]
@@ -109,30 +108,10 @@ namespace KidProEdu.API.Controllers.Staff
         {
             var result = await _orderService.ProcessVnPaymentReturnHandler(response);
 
-           /* var paymentResult = new
-            {
-                message = result.Message, // Thông báo giao dịch
-                redirectUrl = result.RedirectUrl // URL chuyển hướng
-            };*/
-
             var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}";
 
             // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
             return Redirect(redirectUrlWithMessage);
-        }
-
-        [HttpGet]
-        public IActionResult ShowPaymentResult(string message, string redirectUrl)
-        {
-            // Đảm bảo rằng thông báo giao dịch và URL chuyển hướng được truyền vào
-            if (string.IsNullOrEmpty(message) || string.IsNullOrEmpty(redirectUrl))
-            {
-                // Nếu thiếu thông tin, bạn có thể chuyển hướng người dùng đến trang lỗi hoặc trang khác
-                return RedirectToAction("Error");
-            }
-
-            // Chuyển hướng đến trang web thứ ba
-            return Redirect(redirectUrl);
         }
 
     }
