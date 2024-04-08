@@ -10,6 +10,6 @@ namespace KidProEdu.Application.ViewModels.EnrollmentViewModels
     public class CreateEnrollmentViewModel
     {
         public Guid ClassId { get; set; }
-        public Guid ChildrenProfileId { get; set; }
+        public List<Guid> ChildrenProfileIds { get; set; }
     }
 }
