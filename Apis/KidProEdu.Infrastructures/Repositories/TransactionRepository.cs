@@ -29,5 +29,14 @@ namespace KidProEdu.Infrastructures.Repositories
             var transactions = await _dbContext.Transaction.Include(x => x.OrderDetail).ThenInclude(x => x.Order).Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate.Value.Month == monthInYear.Month && x.PayDate.Value.Year == monthInYear.Year && !x.IsDeleted).ToListAsync();
             return transactions;
         }
+
+        public async Task<List<Transaction>> GetTransactionByYear(DateTime year)
+        {
+            var transactions = await _dbContext.Transaction
+                .Include(x => x.OrderDetail)
+                .ThenInclude(x => x.Order)
+                .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate.Value.Year == year.Year && !x.IsDeleted).ToListAsync();
+            return transactions;
+        }
     }
 }
