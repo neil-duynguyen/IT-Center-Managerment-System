@@ -72,6 +72,10 @@ namespace KidProEdu.Application.Services
 
             if (result == null)
                 throw new Exception("Không tìm thấy lớp này");
+            else if (result.StatusOfClass == Domain.Enums.StatusOfClass.Started)
+            {
+                throw new Exception("Không thể xóa khi lớp đang học");
+            }
             else
             {
                 _unitOfWork.ClassRepository.SoftRemove(result);
