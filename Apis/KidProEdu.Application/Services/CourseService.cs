@@ -145,7 +145,7 @@ namespace KidProEdu.Application.Services
 
             if (getCourse == null)
             {
-                throw new Exception("Không tìm thấy Course");
+                throw new Exception("Không tìm thấy khoá học");
             }
             else if (getCourse.CourseType == CourseType.Single)
             {
@@ -199,11 +199,25 @@ namespace KidProEdu.Application.Services
                 }
             }
 
+            var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(updateCourseViewModel.Id);
+
+            if (getCourse == null)
+            {
+                throw new Exception("Không tìm thấy khoá học");
+            }
+
+            var anyClassStart = _unitOfWork.ClassRepository.GetAllAsync().Result.Any(x => x.CourseId == getCourse.Id
+                                                                    && x.StatusOfClass == StatusOfClass.Started && x.IsDeleted == false);
+            if (anyClassStart)
+            {
+                throw new Exception("Cập nhật khóa học thất bại, khóa học này đang có lớp đang hoạt động");
+            }
+
             //check duplicate course name
             var checkName = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.Id != updateCourseViewModel.Id && x.Name == updateCourseViewModel.Name) ? throw new Exception("Tên khoá học đã tồn tại.") : true;
             var checkCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.Id != updateCourseViewModel.Id && x.CourseCode == updateCourseViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
 
-            var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(updateCourseViewModel.Id);
+            //var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(updateCourseViewModel.Id);
             var mapper = _mapper.Map(updateCourseViewModel, getCourse);
             _unitOfWork.CourseRepository.Update(mapper);
             await _unitOfWork.SaveChangeAsync();
@@ -230,13 +244,50 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            //check duplicate course name
-            var checkName = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.Id != updateCourseParentViewModel.Id && x.Name == updateCourseParentViewModel.Name) ? throw new Exception("Tên khoá học đã tồn tại.") : true;
-            var checkCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.Id != updateCourseParentViewModel.Id && x.CourseCode == updateCourseParentViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
-
             var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(updateCourseParentViewModel.Id);
-            var mapper = _mapper.Map(updateCourseParentViewModel, getCourse);
-            _unitOfWork.CourseRepository.Update(mapper);
+
+            if (getCourse == null)
+            {
+                throw new Exception("Không tìm thấy khoá học");
+            }
+            else if (getCourse.CourseType == CourseType.Single)
+            {
+                var anyClassStart = _unitOfWork.ClassRepository.GetAllAsync().Result.Any(x => x.CourseId == getCourse.Id
+                && x.StatusOfClass == StatusOfClass.Started && x.IsDeleted == false);
+                if (anyClassStart)
+                {
+                    throw new Exception("Cập nhật khóa học thất bại, khóa học này đang có lớp đang hoạt động");
+                }
+                else
+                {
+                    var checkName = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.Id != updateCourseParentViewModel.Id && x.Name == updateCourseParentViewModel.Name) ? throw new Exception("Tên khoá học đã tồn tại.") : true;
+                    var checkCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.Id != updateCourseParentViewModel.Id && x.CourseCode == updateCourseParentViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
+
+                    var mapper = _mapper.Map(updateCourseParentViewModel, getCourse);
+                    _unitOfWork.CourseRepository.Update(mapper);
+                }
+            }
+            else if (getCourse.CourseType == CourseType.Spect)
+            {
+                var listChildCourse = _unitOfWork.CourseRepository.GetAllAsync().Result
+                    .Where(x => x.ParentCourse == getCourse.Id && x.IsDeleted == false).ToList();
+                foreach (var childCourse in listChildCourse)
+                {
+                    var anyClassStart = _unitOfWork.ClassRepository.GetAllAsync().Result.Any(x => x.IsDeleted == false
+                    && x.CourseId == childCourse.Id && x.StatusOfClass == StatusOfClass.Started);
+                    if (anyClassStart)
+                    {
+                        throw new Exception("Cập nhật khóa học thất bại, khóa học đang có lớp đã bắt đầu trong các khóa học con");
+                    }
+
+                }
+                var checkName = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.Id != updateCourseParentViewModel.Id && x.Name == updateCourseParentViewModel.Name) ? throw new Exception("Tên khoá học đã tồn tại.") : true;
+                var checkCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.Id != updateCourseParentViewModel.Id && x.CourseCode == updateCourseParentViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
+
+                var mapper = _mapper.Map(updateCourseParentViewModel, getCourse);
+                _unitOfWork.CourseRepository.Update(mapper);
+            }
+            
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật khoá học thất bại");
         }
     }
