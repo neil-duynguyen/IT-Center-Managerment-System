@@ -139,6 +139,15 @@ namespace KidProEdu.Application.Services
             return listCourseViewModel;
         }
 
+        public async Task<List<CourseViewModel>> GetAllCourseSingle()
+        {
+            var result = _unitOfWork.CourseRepository.GetAllAsync().Result
+                                .Where(x => x.IsDeleted == false && x.CourseType == Domain.Enums.CourseType.Single)
+                                .OrderByDescending(x => x.CreationDate).ToList();
+
+            return _mapper.Map<List<CourseViewModel>>(result);
+        }
+
         public async Task<bool> DeleteCourseAsync(Guid courseId)
         {
             var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(courseId);

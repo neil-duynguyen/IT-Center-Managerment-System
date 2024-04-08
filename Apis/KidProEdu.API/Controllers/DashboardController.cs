@@ -30,5 +30,12 @@ namespace KidProEdu.API.Controllers
             var result = await _transactionService.TransactionsSummariseByMonthInYear(monthInYear);
             return Ok(result);
         }
+
+        [HttpGet("TransactionsSummariseByCourses")]
+        public async Task<IActionResult> TransactionsSummariseByCourses(DateTime monthInYear)
+        {
+            var result = await _transactionService.TransactionByCoursesInYear(monthInYear);
+            return Ok(result);
+        }
     }
 }

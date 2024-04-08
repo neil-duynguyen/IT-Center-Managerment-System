@@ -59,6 +59,47 @@ namespace KidProEdu.Application.Services
             return _mapper.Map<List<TransactionViewModel>>(listTransaction);
         }
 
+        public async Task<List<TransactionByCoursesViewModel>> TransactionByCoursesInYear(DateTime monthInYear)
+        {
+            try
+            {
+                var transactionByCourses = new List<TransactionByCoursesViewModel>();
+
+                // Lấy danh sách các giao dịch trong năm
+                var transactionsInYear = await _unitOfWork.TransactionRepository.GetTransactionByYear(monthInYear);
+                double totalAmountForYear = transactionsInYear.Sum(t => t.TotalAmount ?? 0);
+                // Lấy danh sách các khóa học
+                var courses = await _unitOfWork.CourseRepository.GetAllAsync();
+
+                // Lặp qua từng khóa học
+                foreach (var course in courses)
+                {
+                    // Lọc các giao dịch của khóa học trong năm
+                    var transactionsForCourse = transactionsInYear.Where(t => t.OrderDetail.CourseId == course.Id).ToList();
+
+                    // Tính tổng số tiền của các giao dịch của khóa học trong năm
+                    double totalAmountForCourse = transactionsForCourse.Sum(t => t.TotalAmount ?? 0);
+                    double percent = totalAmountForCourse == 0 ? 0 : Math.Round(totalAmountForCourse / totalAmountForYear * 100, 2);
+                    // Tạo view model chứa thông tin giao dịch cho khóa học
+                    var transactionByCourse = new TransactionByCoursesViewModel
+                    {
+                        CourseName = course.Name,
+                        TotalAmountByCourse = totalAmountForCourse,
+                        TotalAmountByYear = totalAmountForYear,
+                        Transactions = _mapper.Map<List<TransactionViewModel>>(transactionsForCourse),
+                        Percent = percent
+                    };
+
+                    transactionByCourses.Add(transactionByCourse);
+                }
+                return transactionByCourses;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy thông tin thống kê: " + ex.Message);
+            }
+        }
+
         public async Task<TransactionSummaryViewModel> TransactionsSummarise()
         {
             try
