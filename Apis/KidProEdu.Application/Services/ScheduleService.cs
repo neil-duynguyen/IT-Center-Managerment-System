@@ -501,6 +501,9 @@ namespace KidProEdu.Application.Services
             foreach (var history in histories)
             {
                 var mapper = _mapper.Map<ClassForScheduleViewModel>(history.Class);
+                mapper.TeachingStartDate = history.StartDate;
+                mapper.TeachingEndDate = history.EndDate;
+
                 var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(history.ClassId);
                 foreach (var schedule in schedules)
                 {
