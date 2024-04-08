@@ -10,6 +10,7 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
     {
         public string CourseName { get; set; }
         public int TotalClass { get; set; }
+        public double Percent {  get; set; }
         public List<ClassViewModel> ClassList { get; set; }
     }
 }

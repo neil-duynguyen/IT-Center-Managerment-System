@@ -308,15 +308,18 @@ namespace KidProEdu.Application.Services
             {
                 var courses = await _unitOfWork.CourseRepository.GetAllAsync();
                 var classByCourseSummarise = new List<ClassSummariseByCourseViewModel>();
-
+                var totalClass = _unitOfWork.ClassRepository.GetAllAsync().Result.Count();
                 foreach (var course in courses)
                 {
                     var classes = await _unitOfWork.ClassRepository.GetClassByCourseId(course.Id, year);
+                    double percent = Math.Round((double)classes.Count / totalClass * 100, 2);
                     var classByCourse = new ClassSummariseByCourseViewModel
                     {
                         CourseName = course.Name,
                         TotalClass = classes.Count(),
+                        Percent = percent,
                         ClassList = _mapper.Map<List<ClassViewModel>>(classes)
+                        
                     };
 
                     classByCourseSummarise.Add(classByCourse);

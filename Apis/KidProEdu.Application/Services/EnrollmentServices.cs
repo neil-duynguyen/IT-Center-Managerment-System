@@ -387,6 +387,8 @@ namespace KidProEdu.Application.Services
                 _unitOfWork.AttendanceRepository.RemoveRange(attendances);
             }
 
+            
+
             //update ActualNumber in new class
             var updateActualNumberNewClass = await _unitOfWork.ClassRepository.GetByIdAsync(updateEnrollmentViewModel.ClassId);
             updateActualNumberNewClass.ActualNumber = updateActualNumberNewClass.ActualNumber + 1;
@@ -397,9 +399,19 @@ namespace KidProEdu.Application.Services
             updateActualNumberOldClass.ActualNumber = updateActualNumberOldClass.ActualNumber - 1;
             _unitOfWork.ClassRepository.Update(updateActualNumberOldClass);
 
-            var attendanceCheckTime = await _unitOfWork.AttendanceRepository.GetListAttendanceByClassIdAndChilIdAndOutOfStatusFuture(result.ClassId, result.ChildrenProfileId);
+            //updateScheduleAtten
+            var schedulesUpdate = await _unitOfWork.ScheduleRepository.GetScheduleByClass(updateEnrollmentViewModel.ClassId);
+            //updateAttendanceClass
+            var listAttendances = await _unitOfWork.AttendanceRepository.GetListAttendanceByClassIdAndChilIdOutOfStatusFuture(result.ClassId, result.ChildrenProfileId);
+            foreach (var attendance in listAttendances)
+            {
+                attendance.ScheduleId = schedulesUpdate.FirstOrDefault().Id;
+                _unitOfWork.AttendanceRepository.Update(attendance);
+            }
+
+            var attendanceCheckTime = await _unitOfWork.AttendanceRepository.GetListAttendanceByClassIdAndChilIdAndOutOfStatusFuture(result.ClassId, result.ChildrenProfileId);           
             result.ClassId = updateEnrollmentViewModel.ClassId;
-            var schedules1 = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);
+            var schedules1 = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);           
             var classed = await _unitOfWork.ClassRepository.GetByIdAsync(result.ClassId);
             var course = await _unitOfWork.CourseRepository.GetByIdAsync(classed.CourseId);
             DateTime startDate = attendanceCheckTime.Date;
