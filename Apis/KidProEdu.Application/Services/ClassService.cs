@@ -78,6 +78,9 @@ namespace KidProEdu.Application.Services
             }
             else
             {
+                var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.Id);
+
+                _unitOfWork.ScheduleRepository.SoftRemoveRange(schedules);
                 _unitOfWork.ClassRepository.SoftRemove(result);
                 return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa lớp thất bại");
             }
@@ -221,6 +224,13 @@ namespace KidProEdu.Application.Services
                                     _unitOfWork.RoomRepository.Update(room);
                                 }
                             }
+                        }
+                        else
+                        {
+                            listChildrenPassed.Add(new ChildrenPassedViewModel()
+                            {
+                                Class = _mapper.Map<ClassViewModel>(findClass)
+                            });
                         }
 
                     }
@@ -426,6 +436,13 @@ namespace KidProEdu.Application.Services
 
                                 }
                             }
+                        }
+                        else
+                        {
+                            listChildrenPassed.Add(new ChildrenPassedViewModel()
+                            {
+                                Class = _mapper.Map<ClassViewModel>(findClass)
+                            });
                         }
                     }
 

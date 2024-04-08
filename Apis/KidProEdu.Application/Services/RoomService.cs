@@ -58,6 +58,10 @@ namespace KidProEdu.Application.Services
 
             if (result == null)
                 throw new Exception("Không tìm thấy phòng này");
+            else if (result.Status == Domain.Enums.StatusOfRoom.Used)
+            {
+                throw new Exception("Không thể xóa phòng, phòng hiện đang được sử dụng");
+            }
             else
             {
                 _unitOfWork.RoomRepository.SoftRemove(result);
