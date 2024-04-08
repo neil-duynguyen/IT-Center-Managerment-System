@@ -531,7 +531,7 @@ namespace KidProEdu.Application.Services
                     {
                         if (item.EndDate.Date.ToString("yyyy-dd-MM") != "0001-01-01")
                         {
-                            int daysDifference = (int)(history.EndDate - history.StartDate).TotalDays; // Số ngày giữa hai ngày
+                            int daysDifference = (int)(item.EndDate - item.StartDate).TotalDays; // Số ngày giữa hai ngày
                             int totalWeeks;
 
                             if (daysDifference % 7 == 0) // Nếu chia hết cho 7
