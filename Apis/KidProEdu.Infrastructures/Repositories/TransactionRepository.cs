@@ -24,18 +24,31 @@ namespace KidProEdu.Infrastructures.Repositories
             return await _dbContext.Transaction.Include(x => x.OrderDetail).ThenInclude(x => x.Order).Where(x => x.StatusTransaction == StatusTransaction.Successfully && !x.IsDeleted).ToListAsync();
         }
 
-        public async Task<List<Transaction>> GetTransactionByMonthInYear(DateTime monthInYear)
+        public async Task<List<Transaction>> GetTransactionByCourse(DateTime monthInYear)
         {
-            var transactions = await _dbContext.Transaction.Include(x => x.OrderDetail).ThenInclude(x => x.Order).Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate.Value.Month == monthInYear.Month && x.PayDate.Value.Year == monthInYear.Year && !x.IsDeleted).ToListAsync();
+            var transactions = await _dbContext.Transaction
+                .Include(x => x.OrderDetail)
+                .ThenInclude(x => x.Course)
+                .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate.Value.Year == monthInYear.Year && !x.IsDeleted).ToListAsync();
             return transactions;
         }
 
-        public async Task<List<Transaction>> GetTransactionByYear(DateTime year)
+        public async Task<List<Transaction>> GetTransactionByMonthInYear(DateTime monthInYear)
+        {
+            var transactions = await _dbContext.Transaction
+                .Include(x => x.OrderDetail)
+                    .ThenInclude(x => x.Order)
+                .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate.Value.Month == monthInYear.Month && x.PayDate.Value.Year == monthInYear.Year && !x.IsDeleted)
+                .ToListAsync();
+            return transactions;
+        }
+
+        public async Task<List<Transaction>> GetTransactionByYear(DateTime monthInYear)
         {
             var transactions = await _dbContext.Transaction
                 .Include(x => x.OrderDetail)
                 .ThenInclude(x => x.Order)
-                .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate.Value.Year == year.Year && !x.IsDeleted).ToListAsync();
+                .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate.Value.Year == monthInYear.Year && !x.IsDeleted).ToListAsync();
             return transactions;
         }
     }
