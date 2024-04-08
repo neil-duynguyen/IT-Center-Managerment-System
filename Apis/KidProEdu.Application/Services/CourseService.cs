@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,7 +53,7 @@ namespace KidProEdu.Application.Services
 
             // check name exited
             var isExitedName = await _unitOfWork.CourseRepository.CheckNameExited(createCourseViewModel.Name) ? throw new Exception("Tên khoá học đã tồn tại.") : true;
-            var isExitedCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.CourseCode == createCourseViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại.") : true;     
+            var isExitedCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.CourseCode == createCourseViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
 
             var getCourse = await _unitOfWork.CourseRepository.GetAllAsync();
             var mapper = _mapper.Map<Course>(createCourseViewModel);
@@ -84,7 +85,7 @@ namespace KidProEdu.Application.Services
 
             // check name exited
             var isExitedName = await _unitOfWork.CourseRepository.CheckNameExited(createCourseParentViewModel.Name) ? throw new Exception("Tên khoá học đã tồn tại.") : true;
-            var isExitedCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.CourseCode == createCourseParentViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại."): true;
+            var isExitedCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.CourseCode == createCourseParentViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
 
             var mapper = _mapper.Map<Course>(createCourseParentViewModel);
 
@@ -142,9 +143,40 @@ namespace KidProEdu.Application.Services
         {
             var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(courseId);
 
-            if (getCourse == null) throw new Exception("Không tìm thấy Course");
+            if (getCourse == null)
+            {
+                throw new Exception("Không tìm thấy Course");
+            }
+            else if (getCourse.CourseType == CourseType.Single)
+            {
+                var anyClassStart = _unitOfWork.ClassRepository.GetAllAsync().Result.Any(x => x.CourseId == getCourse.Id
+                && x.StatusOfClass == StatusOfClass.Started && x.IsDeleted == false);
+                if (anyClassStart)
+                {
+                    throw new Exception("Xóa khóa học thất bại, khóa học này đang có lớp đang hoạt động");
+                }
+                else
+                {
+                    _unitOfWork.CourseRepository.SoftRemove(getCourse);
+                }
+            }
+            else if (getCourse.CourseType == CourseType.Spect)
+            {
+                var listChildCourse = _unitOfWork.CourseRepository.GetAllAsync().Result
+                    .Where(x => x.ParentCourse == getCourse.Id && x.IsDeleted == false).ToList();
+                foreach (var childCourse in listChildCourse)
+                {
+                    var anyClassStart = _unitOfWork.ClassRepository.GetAllAsync().Result.Any(x => x.IsDeleted == false
+                    && x.CourseId == childCourse.Id && x.StatusOfClass == StatusOfClass.Started);
+                    if (anyClassStart)
+                    {
+                        throw new Exception("Không thể xóa, khóa học đang có lớp đã bắt đầu trong các khóa học con");
+                    }
 
-            _unitOfWork.CourseRepository.SoftRemove(getCourse);
+                }
+                _unitOfWork.CourseRepository.SoftRemove(getCourse);
+            }
+
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
@@ -201,7 +233,7 @@ namespace KidProEdu.Application.Services
             //check duplicate course name
             var checkName = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.Id != updateCourseParentViewModel.Id && x.Name == updateCourseParentViewModel.Name) ? throw new Exception("Tên khoá học đã tồn tại.") : true;
             var checkCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.Id != updateCourseParentViewModel.Id && x.CourseCode == updateCourseParentViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
-            
+
             var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(updateCourseParentViewModel.Id);
             var mapper = _mapper.Map(updateCourseParentViewModel, getCourse);
             _unitOfWork.CourseRepository.Update(mapper);
