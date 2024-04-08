@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.VariantTypes;
 using Hangfire.Logging;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Children;
@@ -10,6 +12,8 @@ using KidProEdu.Application.ViewModels.EnrollmentViewModels;
 using KidProEdu.Application.ViewModels.SkillCertificateViewModels;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
+using Microsoft.AspNetCore.Http;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +54,7 @@ namespace KidProEdu.Application.Services
             }
 
             //check class start
-            if(getNumberChildren.StatusOfClass == StatusOfClass.Started)
+            if (getNumberChildren.StatusOfClass == StatusOfClass.Started)
             {
                 throw new Exception($"Lớp {getNumberChildren.ClassCode} đã bắt đầu.");
             }
@@ -77,7 +81,7 @@ namespace KidProEdu.Application.Services
                         var child = await _unitOfWork.ChildrenRepository.GetByIdAsync(enrolled.ChildrenProfileId);
                         failedEnrollments.Add($"{child.FullName} đã tham gia lớp này rồi!");
                     }
-                   
+
                     var getPriceClass = _unitOfWork.ClassRepository.GetByIdAsync(createEnrollmentViewModel.ClassId).Result.Course.Price;
 
                     //update ActualNumber in class
@@ -124,7 +128,7 @@ namespace KidProEdu.Application.Services
 
                             var attendances = await _unitOfWork.AttendanceRepository.GetListAttendancesByChildId(childId);
                             foreach (var atten in attendances)
-                            {                                 
+                            {
                                 if (atten.Date.Date == startDate.Date)
                                 {
                                     if (schedules.Any(x => x.SlotId.ToString().Contains(atten.Schedule.SlotId.ToString())))
@@ -147,8 +151,8 @@ namespace KidProEdu.Application.Services
                             var attendanceEntity = _mapper.Map<Attendance>(attendance);
                             await _unitOfWork.AttendanceRepository.AddAsync(attendanceEntity);
                             slot++;
-                            }
-                        
+                        }
+
                         // Tăng ngày startdate lên 1 để chuyển sang ngày tiếp theo
                         startDate = startDate.AddDays(1);
 
@@ -174,7 +178,7 @@ namespace KidProEdu.Application.Services
                 await _unitOfWork.SaveChangeAsync();
                 return new List<string>();
             }
-            
+
         }
 
         public async Task<bool> DeleteEnrollment(Guid classId, Guid childId)
@@ -449,6 +453,61 @@ namespace KidProEdu.Application.Services
 
             _unitOfWork.EnrollmentRepository.Update(result);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật tham gia này thất bại");
+        }
+
+        public async Task<bool> ImportExcelFile(IFormFile formFile)
+        {
+            //Create a List of Enrollment that Read from Excel File.
+            var enrollmetListFromFile = new CreateEnrollmentViewModel();
+            var classId = Guid.Empty;
+
+            //ReadExcelFile
+            using (var stream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(stream);
+
+                using (var excelPackage = new ExcelPackage(stream))
+                {
+                    ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
+                    var rowCount = worksheet.Dimension.Rows;
+
+                    List<Guid> listChildrenGuid = new List<Guid>();
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        var col = 1;
+                        try
+                        {
+                            var mssv = worksheet.Cells[row, col].Value.ToString()!.Trim();
+                            var findChildren = _unitOfWork.ChildrenRepository.GetAllAsync().Result.FirstOrDefault(x => x.ChildrenCode.Equals(mssv));
+                            listChildrenGuid.Add(findChildren.Id);
+                        }
+                        catch (Exception)
+                        {
+                            await stream.DisposeAsync();
+                            throw new InvalidDataException($"Lỗi tại dòng {row}, Tên cột: {worksheet.Cells[1, col - 1].Value}, Lỗi: Ô này có giá trị trống hoặc giá trị không hợp lệ.");
+                        }
+                    }
+                    try
+                    {
+                        var classCode = worksheet.Cells[2, 3].Value.ToString().Trim();
+                        classId = _unitOfWork.ClassRepository.GetAllAsync().Result.FirstOrDefault(x => x.ClassCode.Equals(classCode)).Id;
+                    }
+                    catch (Exception)
+                    {
+                        throw new InvalidDataException($"Tên cột: Mã lớp, Lỗi: Ô này có giá trị trống hoặc giá trị không hợp lệ.");
+                    }                 
+                    enrollmetListFromFile = new CreateEnrollmentViewModel()
+                    {
+                        ClassId = classId,
+                        ChildrenProfileIds = listChildrenGuid
+                    };
+
+                }
+            }
+            if (enrollmetListFromFile is null) throw new Exception("Thêm trẻ bằng file excel thất bại.");
+            await CreateEnrollment(enrollmetListFromFile);
+            return true;
         }
     }
 }
