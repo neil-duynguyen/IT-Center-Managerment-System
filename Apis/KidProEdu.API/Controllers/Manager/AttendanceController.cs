@@ -93,11 +93,11 @@ namespace KidProEdu.API.Controllers.Manager
                 var result = await _attendanceService.UpdateAttendances(updateAttendanceViewModels);
                 if (result)
                 {
-                    return Ok("Kĩ năng đã được cập nhật thành công.");
+                    return Ok("Điểm danh đã được cập nhật thành công.");
                 }
                 else
                 {
-                    return BadRequest("Kĩ năng đã được cập nhật thất bại.");
+                    return BadRequest("Điểm danh đã được cập nhật thất bại.");
                 }
             }
             catch (Exception ex)
@@ -115,11 +115,11 @@ namespace KidProEdu.API.Controllers.Manager
                 var result = await _attendanceService.DeleteAttendance(id);
                 if (result)
                 {
-                    return Ok("Kĩ năng đã được xóa thành công.");
+                    return Ok("Điểm danh đã được xóa thành công.");
                 }
                 else
                 {
-                    return BadRequest("Kĩ năng đã được xóa thất bại.");
+                    return BadRequest("Điểm danh đã được xóa thất bại.");
                 }
             }
             catch (Exception ex)

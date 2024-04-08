@@ -82,40 +82,56 @@ namespace KidProEdu.Application.Services
             catch (Exception ex)
             {
                 // Nếu có lỗi xảy ra, trả về null hoặc xử lý tùy thuộc vào yêu cầu của bạn
-                throw new Exception("Failed to retrieve transaction summary. " + ex.Message);
+                throw new Exception("Lỗi lấy danh sách thống kê" + ex.Message);
             }
         }
 
-        public async Task<TransactionSummaryByMonthInYearViewModel> TransactionsSummariseByMonthInYear(DateTime monthInYear)
+        public async Task<List<TransactionSummaryByMonthInYearViewModel>> TransactionsSummariseByMonthInYear(DateTime monthInYear)
         {
             try
             {
-                // Lấy danh sách các giao dịch từ Repository
-                var transactions = await _unitOfWork.TransactionRepository.GetAllAsync();
-                //var mapper = _mapper.Map<List<TransactionViewModel>>(transactions);
+                var transactionSummaries = new List<TransactionSummaryByMonthInYearViewModel>();
 
-                // Tính tổng số tiền của các giao dịch
-                double totalAmount = transactions.Sum(t => t.TotalAmount ?? 0);
-
-                var transactionsByMonthInYear = await _unitOfWork.TransactionRepository.GetTransactionByMonthInYear(monthInYear);
-                double totalAmountMonthInYear = transactionsByMonthInYear.Sum(t => t.TotalAmount ?? 0);
-                var mapper = _mapper.Map<List<TransactionViewModel>>(transactionsByMonthInYear);
-
-                // Tạo view model chứa thông tin tổng hợp
-                var transactionsSummarise = new TransactionSummaryByMonthInYearViewModel
+                // Lặp qua từ tháng 1 đến tháng trước tháng hiện tại
+                for (int month = 1; month <= monthInYear.Month; month++)
                 {
-                    Transactions = mapper,
-                    TotalAmount = totalAmount,
-                    TotalAmountOfMonthInYear = totalAmountMonthInYear
-                };
+                    var monthStart = new DateTime(monthInYear.Year, month, 1);
 
-                return transactionsSummarise;
+                    // Lấy danh sách các giao dịch trong tháng
+                    var transactionsInMonth = await _unitOfWork.TransactionRepository.GetTransactionByMonthInYear(monthStart);
+
+                    // Tính tổng số tiền của các giao dịch trong tháng
+                    double totalAmountMonth = transactionsInMonth.Sum(t => t.TotalAmount ?? 0);
+
+                    // Tính tổng số tiền của tất cả các giao dịch từ đầu năm đến thời điểm hiện tại
+                    var transactionsInYear = await _unitOfWork.TransactionRepository.GetTransactionByYear(monthStart);
+
+                    double totalAmountYear = transactionsInYear.Sum(t => t.TotalAmount ?? 0);
+
+                    // Tính phần trăm số tiền trong tháng so với tổng số tiền của tất cả các giao dịch
+                    double percent = totalAmountYear == 0 ? 0 : Math.Round(totalAmountMonth / totalAmountYear * 100, 2);
+
+                    // Tạo view model chứa thông tin thống kê của tháng
+                    var transactionSummary = new TransactionSummaryByMonthInYearViewModel
+                    {
+                        Month = monthStart.ToString("MMMM yyyy"),
+                        Transactions = _mapper.Map<List<TransactionViewModel>>(transactionsInMonth),
+                        TotalAmountByYear = totalAmountYear,
+                        TotalAmountOfMonthInYear = totalAmountMonth,
+                        Percent = percent
+                    };
+
+                    transactionSummaries.Add(transactionSummary);
+                }
+
+                return transactionSummaries;
             }
             catch (Exception ex)
             {
-                // Nếu có lỗi xảy ra, trả về null hoặc xử lý tùy thuộc vào yêu cầu của bạn
-                throw new Exception("Failed to retrieve transaction summary. " + ex.Message);
+                throw new Exception("Lỗi khi lấy thông tin thống kê: " + ex.Message);
             }
         }
+
+
     }
 }

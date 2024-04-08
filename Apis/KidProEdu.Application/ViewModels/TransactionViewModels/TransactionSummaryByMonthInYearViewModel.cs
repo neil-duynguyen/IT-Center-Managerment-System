@@ -8,9 +8,11 @@ namespace KidProEdu.Application.ViewModels.TransactionViewModels
 {
     public class TransactionSummaryByMonthInYearViewModel
     {
+        public string Month { get; set; }
         public List<TransactionViewModel> Transactions { get; set; }
-        public double TotalAmount { get; set; }
+        public double TotalAmountByYear { get; set; }
         public double TotalAmountOfMonthInYear { get; set; }
+        public double Percent {  get; set; }
 
     }
 }
