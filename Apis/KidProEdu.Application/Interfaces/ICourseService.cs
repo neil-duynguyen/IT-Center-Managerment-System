@@ -18,5 +18,6 @@ namespace KidProEdu.Application.Interfaces
         public Task<List<CourseViewModel>> GetAllCourseByChildId(Guid childId);
         public Task<CourseViewModel> GetCourseById(Guid Id);
         Task<bool> DeleteCourseAsync(Guid courseId);
+        public Task<CourseSummariseDetailViewModel> CourseSummariseDetail(DateTime year);
     }
 }

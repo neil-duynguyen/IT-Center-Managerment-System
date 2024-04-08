@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using FluentValidation;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Blogs;
@@ -7,6 +8,7 @@ using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
+using KidProEdu.Application.ViewModels.TransactionViewModels;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
 using Microsoft.AspNetCore.Components.Forms;
@@ -298,6 +300,42 @@ namespace KidProEdu.Application.Services
             }
             
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật khoá học thất bại");
+        }
+
+        public async Task<CourseSummariseDetailViewModel> CourseSummariseDetail(DateTime year)
+        {
+            try
+            {
+                var courses = await _unitOfWork.CourseRepository.GetAllAsync();
+                var classByCourseSummarise = new List<ClassSummariseByCourseViewModel>();
+
+                foreach (var course in courses)
+                {
+                    var classes = await _unitOfWork.ClassRepository.GetClassByCourseId(course.Id, year);
+                    var classByCourse = new ClassSummariseByCourseViewModel
+                    {
+                        CourseName = course.Name,
+                        TotalClass = classes.Count(),
+                        ClassList = _mapper.Map<List<ClassViewModel>>(classes)
+                    };
+
+                    classByCourseSummarise.Add(classByCourse);
+                }
+
+                var totalCourses = courses.Count();
+
+                var courseSummariseDetail = new CourseSummariseDetailViewModel
+                {
+                    TotalCourse = totalCourses,
+                    ClassSummariseByCourse = classByCourseSummarise
+                };
+
+                return courseSummariseDetail;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy thông tin tóm tắt về khóa học: " + ex.Message);
+            }
         }
     }
 }
