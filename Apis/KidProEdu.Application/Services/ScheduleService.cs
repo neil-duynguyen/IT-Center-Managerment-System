@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Wordprocessing;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Schedules;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
@@ -10,6 +11,7 @@ using KidProEdu.Application.ViewModels.SlotViewModels;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -503,6 +505,50 @@ namespace KidProEdu.Application.Services
                 var mapper = _mapper.Map<ClassForScheduleViewModel>(history.Class);
                 mapper.TeachingStartDate = history.StartDate;
                 mapper.TeachingEndDate = history.EndDate;
+
+                if (history.EndDate.Date.ToString("yyyy-dd-MM") != "0001-01-01")
+                {
+                    int daysDifference = (int)(history.EndDate - history.StartDate).TotalDays; // Số ngày giữa hai ngày
+                    int totalWeeks;
+
+                    if (daysDifference % 7 == 0) // Nếu chia hết cho 7
+                    {
+                        totalWeeks = (daysDifference / 7) * 2 + 1;
+                    }
+                    else
+                    {
+                        totalWeeks = (int)Math.Ceiling((double)daysDifference / 7) * 2;
+                    }
+
+                    mapper.TotalDuration = totalWeeks;
+                }
+                else
+                {
+                    // lấy list những teachingHistory của lớp đó ra để đếm totalDuration
+                    var beforeHistories = await _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(history.ClassId);
+                    int duration = 0;
+                    foreach (var item in beforeHistories)
+                    {
+                        if (item.EndDate.Date.ToString("yyyy-dd-MM") != "0001-01-01")
+                        {
+                            int daysDifference = (int)(history.EndDate - history.StartDate).TotalDays; // Số ngày giữa hai ngày
+                            int totalWeeks;
+
+                            if (daysDifference % 7 == 0) // Nếu chia hết cho 7
+                            {
+                                totalWeeks = (daysDifference / 7) * 2 + 1;
+                                duration += totalWeeks;
+                            }
+                            else
+                            {
+                                totalWeeks = (int)Math.Ceiling((double)daysDifference / 7) * 2;
+                                duration += totalWeeks;
+                            }
+                        }
+                    }
+
+                    mapper.TotalDuration = history.Class.Course.DurationTotal - duration;
+                }
 
                 var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(history.ClassId);
                 foreach (var schedule in schedules)
