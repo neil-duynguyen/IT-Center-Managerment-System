@@ -20,7 +20,7 @@ namespace Application.Tests.Services
             ;
             _customFixture = new Fixture();
             _customFixture.Customizations.Add(new TypePropertyOmitter(
-                
+                "Role",
                     "AdviseRequests", "Feedbacks", "TeachingClassHistories", "Location", "ChildrenProfile",
                     "Enrollments", "NotificationUsers", "Blogs", "Contracts", "RequestUserAccounts", "LogEquipments",
                     "SkillCertificate", "DivisionUserAccounts"

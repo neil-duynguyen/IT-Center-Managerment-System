@@ -10,6 +10,8 @@ namespace KidProEdu.Application.ViewModels.CourseViewModels
     {
         public Guid Id { get; set; }
         public string CourseCode { get; set; }
+        public double Price { get; set; }
+        public int DurationTotal { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string? Syllabus { get; set; }
@@ -17,3 +19,5 @@ namespace KidProEdu.Application.ViewModels.CourseViewModels
         public string? Image { get; set; }
     }
 }
+
+
