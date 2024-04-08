@@ -100,6 +100,32 @@ namespace KidProEdu.Application.Services
             {
                 throw new Exception("Không tìm thấy phòng");
             }
+            else if (room.Status != updateRoomViewModel.Status)
+            {
+                switch (updateRoomViewModel.Status)
+                {
+                    case Domain.Enums.StatusOfRoom.Empty:
+                        if (room.Status != Domain.Enums.StatusOfRoom.NotAllow)
+                        {
+                            throw new Exception("Chỉ có thể chuyển trạng thái từ NotAllow thành Empty");
+                        }
+                        break;
+                    case Domain.Enums.StatusOfRoom.Used:
+                        if (room.Status != Domain.Enums.StatusOfRoom.Empty)
+                        {
+                            throw new Exception("Chỉ có thể chuyển trạng thái từ Empty thành Used");
+                        }
+                        break;
+                    case Domain.Enums.StatusOfRoom.NotAllow:
+                        if (room.Status != Domain.Enums.StatusOfRoom.Empty)
+                        {
+                            throw new Exception("Chỉ có thể chuyển trạng thái từ Empty sang NotAllow");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             var existingRoom = await _unitOfWork.RoomRepository.GetRoomByName(updateRoomViewModel.Name);
             if (!existingRoom.IsNullOrEmpty())
