@@ -126,5 +126,19 @@ namespace KidProEdu.API.Controllers.Staff
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("ImportExcelFile")]
+        public async Task<IActionResult> ImportExcelFile(IFormFile formFile)
+        {
+            try
+            {
+                var result = await _enrollmentServices.ImportExcelFile(formFile);
+                return Ok("Thêm danh sách học sinh vào lớp thành công");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
