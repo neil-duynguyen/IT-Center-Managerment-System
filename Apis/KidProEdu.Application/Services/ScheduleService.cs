@@ -246,7 +246,7 @@ namespace KidProEdu.Application.Services
             }
             else if (checkClasses.IsNullOrEmpty())
             {
-                throw new Exception("Không có lớp chờ để xếp lịch");
+                throw new Exception("Danh sách lớp pending cần xếp lịch đã hết");
             }
             else if (fullTeachers.IsNullOrEmpty() && partTeachers.IsNullOrEmpty())
             {
