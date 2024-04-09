@@ -9,6 +9,6 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
     public class ChildrenSummariseByMonthViewModel
     {
         public int totalByMonth { get; set; }
-        public List<ChildrenViewModel> childrens { get; set; }
+        public List<ChildrenProfileViewModel> childrens { get; set; }
     }
 }
