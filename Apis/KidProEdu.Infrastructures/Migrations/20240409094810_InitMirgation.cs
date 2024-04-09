@@ -153,7 +153,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     Syllabus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Level = table.Column<int>(type: "int", nullable: true),
                     EntryPoint = table.Column<int>(type: "int", nullable: true),
-                    Prerequisite = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CourseType = table.Column<int>(type: "int", nullable: false),
                     ParentCourse = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
