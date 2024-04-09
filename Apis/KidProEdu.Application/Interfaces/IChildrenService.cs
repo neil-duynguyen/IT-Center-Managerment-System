@@ -18,5 +18,6 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> DeleteChildren(Guid childrenId);
         Task<ChildrenViewModel> GetChildrenById(Guid childrenId);
         Task<List<ChildrenViewModel>> GetChildrenByParentId(Guid Id);
+        Task<ChildrenSummariseViewModel> GetChildrenSummariseViewModel(DateTime MonthAndYear);
     }
 }

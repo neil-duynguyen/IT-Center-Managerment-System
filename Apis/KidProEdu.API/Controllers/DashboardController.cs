@@ -11,11 +11,14 @@ namespace KidProEdu.API.Controllers
 
         private readonly ITransactionService _transactionService;
         private readonly ICourseService _courseService;
+        private readonly IChildrenService _childrenService;
 
-        public DashboardController(ITransactionService transactionService, ICourseService courseService)
+        public DashboardController(ITransactionService transactionService,
+            ICourseService courseService, IChildrenService childrenService)
         {
             _transactionService = transactionService;
             _courseService = courseService;
+            _childrenService = childrenService;
         }
 
 
@@ -44,6 +47,13 @@ namespace KidProEdu.API.Controllers
         public async Task<IActionResult> CourseSummariseDetails(DateTime dateTime)
         {
             var result = await _courseService.CourseSummariseDetail(dateTime);
+            return Ok(result);
+        }
+
+        [HttpGet("ChildrenSummariseByYear")]
+        public async Task<IActionResult> ChildrenSummariseByYear(DateTime dateTime)
+        {
+            var result = await _childrenService.GetChildrenSummariseViewModel(dateTime);
             return Ok(result);
         }
     }
