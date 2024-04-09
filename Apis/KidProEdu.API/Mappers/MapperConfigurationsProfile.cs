@@ -128,6 +128,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<UpdateRequestViewModel, Request>().ReverseMap();
 
             CreateMap<CreateCourseViewModel, Course>().ReverseMap();
+            CreateMap<CourseViewModelById, Course>().ReverseMap();
             CreateMap<CreateCourseParentViewModel, Course>().ReverseMap();
             CreateMap<UpdateCourseViewModel, Course>().ReverseMap();
             CreateMap<UpdateCourseParentViewModel, Course>().ReverseMap();

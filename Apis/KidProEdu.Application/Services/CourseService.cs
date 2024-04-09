@@ -96,10 +96,10 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
 
-        public async Task<CourseViewModel> GetCourseById(Guid Id)
+        public async Task<CourseViewModelById> GetCourseById(Guid Id)
         {
             var courseParent = await _unitOfWork.CourseRepository.GetByIdAsync(Id);
-            var mapper = _mapper.Map<CourseViewModel>(courseParent);
+            var mapper = _mapper.Map<CourseViewModelById>(courseParent);
 
             var getList = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == courseParent.Id && x.IsDeleted == false).ToList();
             var classes = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.CourseId == Id && x.IsDeleted == false).ToList();
@@ -125,15 +125,11 @@ namespace KidProEdu.Application.Services
                 if (item.CourseType == Domain.Enums.CourseType.Spect)
                 {
                     var mapperParentCourse = _mapper.Map<CourseViewModel>(item);
-
-                    var result = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == item.Id && x.IsDeleted == false).ToList();
-                    mapperParentCourse.Courses = _mapper.Map<List<CourseViewModel>>(result);
                     listCourseViewModel.Add(mapperParentCourse);
                 }
                 if (item.ParentCourse is null && item.CourseType == Domain.Enums.CourseType.Single && item.IsDeleted == false)
                 {
                     var course = _mapper.Map<CourseViewModel>(item);
-                    course.Courses = listCourse.Count != 0 ? listCourse : null;
                     listCourseViewModel.Add(course);
                 }
             }
