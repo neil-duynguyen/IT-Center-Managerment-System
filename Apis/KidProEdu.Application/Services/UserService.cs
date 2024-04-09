@@ -88,6 +88,11 @@ namespace KidProEdu.Application.Services
                 await sv.CreateContract(userObject.createContractViewModel, newUser.Id);
             }
 
+            SendEmailUtil.SendEmail(newUser.Email, "Thông báo đăng kí tài khoản KidProEdu", 
+                "Thông tin tài khoản \n " +
+                "UserName: " + newUser.UserName+ 
+                "\nPassword: " + newUser.PasswordHash);
+
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;
         }
