@@ -19,7 +19,6 @@ namespace KidProEdu.Domain.Entities
         public string? Syllabus { get; set; }
         public int? Level { get; set; }
         public int? EntryPoint { get; set; } //điểm đầu vào thang điểm 10
-        public string? Prerequisite { get; set; }
         public string? Image { get; set; }
         public CourseType CourseType { get; set; }
         public Guid? ParentCourse { get; set; }
