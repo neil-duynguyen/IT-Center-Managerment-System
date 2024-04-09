@@ -31,5 +31,12 @@ namespace KidProEdu.Infrastructures.Repositories
             return await _dbSet.Include(x => x.ChildrenAnswers).Include(x => x.Enrollments).ThenInclude(x => x.Class).ThenInclude(x => x.Course).
                 Where(x => !x.IsDeleted).ToListAsync();
         }
+
+        public async Task<List<ChildrenProfile>> GetChildrenProfiles(DateTime year)
+        {
+            var childrenProfiles = await _dbContext.ChildrenProfile
+                .Where(x => x.CreationDate.Month == year.Month && x.CreationDate.Year == year.Year && !x.IsDeleted).ToListAsync();
+            return childrenProfiles;
+        }
     }
 }

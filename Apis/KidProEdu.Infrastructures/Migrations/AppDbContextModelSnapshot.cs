@@ -834,9 +834,6 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<Guid?>("ParentCourse")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Prerequisite")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Price")
                         .HasColumnType("float");
 

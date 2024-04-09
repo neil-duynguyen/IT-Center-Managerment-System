@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Bibliography;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Children;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
+using KidProEdu.Application.ViewModels.ClassViewModels;
+using KidProEdu.Application.ViewModels.CourseViewModels;
+using KidProEdu.Application.ViewModels.TransactionViewModels;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
 using System;
@@ -113,8 +117,8 @@ namespace KidProEdu.Application.Services
                  {
                      ExamId = group.FirstOrDefault().ExamId,
                      ExamName = group.FirstOrDefault()?.Exam.TestName,
-/*                     ExamDate = group.FirstOrDefault()?.Exam.CreationDate,
-                     Score = group.Sum(x => x.ScorePerQuestion)*/
+                     /*                     ExamDate = group.FirstOrDefault()?.Exam.CreationDate,
+                                          Score = group.Sum(x => x.ScorePerQuestion)*/
                  })
                  .ToList();
             mapper.Exams = listExam;
@@ -143,8 +147,8 @@ namespace KidProEdu.Application.Services
             }
 
             var children = await _unitOfWork.ChildrenRepository.GetByIdAsync(childrenReserveViewModel.ChildrenProfileId);
-     
-            if(children == null)
+
+            if (children == null)
             {
                 throw new Exception("Không tìm thấy học sinh này");
             }
@@ -162,7 +166,7 @@ namespace KidProEdu.Application.Services
 
             //delete enrolled
             var enrolled = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByChildId(childrenReserveViewModel.ChildrenProfileId);
-            foreach(var enrollment in enrolled)
+            foreach (var enrollment in enrolled)
             {
                 //update actualnumber
                 var classed = await _unitOfWork.ClassRepository.GetByIdAsync(enrollment.ClassId);
@@ -177,6 +181,40 @@ namespace KidProEdu.Application.Services
             _unitOfWork.ChildrenRepository.Update(children);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật bảo lưu thất bại");
 
+        }
+
+        public async Task<ChildrenSummariseViewModel> GetChildrenSummariseViewModel(DateTime MonthAndYear)
+        {
+            try
+            {
+                var childrenSummarise = new ChildrenSummariseViewModel();
+                var childs = await _unitOfWork.ChildrenRepository.GetAllAsync();
+                childrenSummarise.TotalChildren = childs.Count;
+
+                // Loop through from January to the month before the current month
+                for (int month = 1; month <= MonthAndYear.Month; month++)
+                {
+                    var monthStart = new DateTime(MonthAndYear.Year, month, 1);
+
+                    var childInMonth = await _unitOfWork.ChildrenRepository.GetChildrenProfiles(monthStart);
+
+                    // Tạo view model chứa thông tin thống kê của tháng
+                    var childsByMonth = new ChildrenSummariseByMonthViewModel
+                    {
+                        totalByMonth = childInMonth.Count,
+                        childrens = _mapper.Map<List<ChildrenProfileViewModel>>(childInMonth),
+                    };
+
+                    // Add the child summary to the overall summary (if your data structure allows)
+                    // childrenSummarise.Add(childsByMonth); // This line might need adjustment based on your data structure
+                }
+
+                return childrenSummarise;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error retrieving children summary information: " + ex.Message);
+            }
         }
     }
 }

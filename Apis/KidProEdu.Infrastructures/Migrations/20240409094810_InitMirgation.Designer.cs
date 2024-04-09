@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240402020916_InitMirgation")]
+    [Migration("20240409094810_InitMirgation")]
     partial class InitMirgation
     {
         /// <inheritdoc />
@@ -836,9 +836,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<Guid?>("ParentCourse")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Prerequisite")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");

@@ -76,7 +76,7 @@ namespace KidProEdu.Application.Services
              };*/
 
             var newUser = _mapper.Map<UserAccount>(userObject);
-            newUser.PasswordHash = newUser.PasswordHash.Hash();
+            //newUser.PasswordHash = newUser.PasswordHash.Hash();
             newUser.Status = Domain.Enums.StatusUser.Enable;
             newUser.LocationId = _unitOfWork.UserRepository.GetByIdAsync(_claimsService.GetCurrentUserId).Result.LocationId;
 
@@ -87,6 +87,11 @@ namespace KidProEdu.Application.Services
                 ContractService sv = new ContractService(_unitOfWork, _currentTime, _claimsService, _mapper);
                 await sv.CreateContract(userObject.createContractViewModel, newUser.Id);
             }
+
+            SendEmailUtil.SendEmail(newUser.Email, "Thông báo đăng kí tài khoản KidProEdu", 
+                "Thông tin tài khoản \n " +
+                "UserName: " + newUser.UserName+ 
+                "\nPassword: User@123");
 
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : false;

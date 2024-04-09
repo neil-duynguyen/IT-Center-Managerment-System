@@ -103,6 +103,7 @@ namespace KidProEdu.Application.Services
             {
                 var mapper = _mapper.Map<QuestionViewModel>(await _unitOfWork.QuestionRepository.GetByIdAsync(item.QuestionId));
                 mapper.Answer = item.Answer;
+                mapper.ScorePerQuestion = item.ScorePerQuestion;
                 questionViewModel.Add(mapper);
             }
             return questionViewModel;
