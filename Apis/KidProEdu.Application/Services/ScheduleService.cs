@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Schedules;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
+using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.RoomViewModels;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
@@ -238,7 +239,8 @@ namespace KidProEdu.Application.Services
             var rooms = await _unitOfWork.RoomRepository.GetRoomByStatus(StatusOfRoom.Empty); //lấy list phòng trống
             var fullTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.FullTime); //lấy list giáo viên fulltime
             var partTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.PartTime); //lấy list giáo viên parttime
-            var checkClasses = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.StatusOfClass == StatusOfClass.Pending);
+            var checkClasses = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.StatusOfClass == StatusOfClass.Pending
+            && x.TeachingClassHistories.Count == 0 && x.Schedules.Count != 0).ToList();
 
             if (rooms.IsNullOrEmpty())
             {
@@ -246,7 +248,7 @@ namespace KidProEdu.Application.Services
             }
             else if (checkClasses.IsNullOrEmpty())
             {
-                throw new Exception("Danh sách lớp pending cần xếp lịch đã hết");
+                throw new Exception("Danh sách lớp cần xếp lịch đã hết");
             }
             else if (fullTeachers.IsNullOrEmpty() && partTeachers.IsNullOrEmpty())
             {
@@ -259,13 +261,22 @@ namespace KidProEdu.Application.Services
             Queue<UserAccount> partTimeQueue = new();
             foreach (var fullTeacher in fullTeachers)
             {
-                fullTimeQueue.Enqueue(fullTeacher);
+                var listFilterFull = await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(fullTeacher.Id);
+                if (listFilterFull.Count == 0) // chỉ lấy list những gv rảnh, tức nếu pending/teaching thì k add vô queue
+                {
+                    fullTimeQueue.Enqueue(fullTeacher);
+                }
             }
             foreach (var partTeacher in partTeachers)
             {
-                partTimeQueue.Enqueue(partTeacher);
+                var listFilterPart = await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(partTeacher.Id);
+                if (listFilterPart.Count == 0) // chỉ lấy list những gv rảnh, tức nếu pending/teaching thì k add vô queue
+                {
+                    partTimeQueue.Enqueue(partTeacher);
+                }
             }
 
+            /*
             // bắt đầu đoạn code check đã tạo lịch hay chưa để tiếp tục xếp lịch hay văng lỗi
             var pendingHistory = await _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByStatus(TeachingStatus.Pending);
             var anotherStatusHistory = _unitOfWork.TeachingClassHistoryRepository.GetAllAsync().Result.Any(x => x.TeachingStatus == TeachingStatus.Teaching || x.TeachingStatus == TeachingStatus.Substitute);
@@ -282,6 +293,7 @@ namespace KidProEdu.Application.Services
                 _unitOfWork.ScheduleRoomRepository.RemoveRange(pendingScheduleRoom);
             }
             // kết thúc đoạn code check đã tạo lịch hay chưa
+            */
 
             List<AutoScheduleViewModel> list = new();
             var tempFullTeachers = new Queue<UserAccount>();
@@ -583,12 +595,16 @@ namespace KidProEdu.Application.Services
         public async Task<ScheduleRoomAndTeachingClassHistoryViewModel> GetScheduleRoomAndTeachingClassHistory()
         {
 
-            var histories = await _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByStatus(TeachingStatus.Pending);
-            var scheduleRooms = await _unitOfWork.ScheduleRoomRepository.GetScheduleRoomByStatus(ScheduleRoomStatus.Pending);
+            var histories1 = await _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByStatus(TeachingStatus.Pending);
+            var histories2 = await _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByStatus(TeachingStatus.Substitute);
+            var histories3 = await _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByStatus(TeachingStatus.Teaching);
+            var scheduleRooms1 = await _unitOfWork.ScheduleRoomRepository.GetScheduleRoomByStatus(ScheduleRoomStatus.Pending);
+            var scheduleRooms2 = await _unitOfWork.ScheduleRoomRepository.GetScheduleRoomByStatus(ScheduleRoomStatus.Using);
+            var scheduleRooms3 = await _unitOfWork.ScheduleRoomRepository.GetScheduleRoomByStatus(ScheduleRoomStatus.Temp);
 
             ScheduleRoomAndTeachingClassHistoryViewModel model = new ScheduleRoomAndTeachingClassHistoryViewModel();
-            model.TeachingClassHistories = histories;
-            model.ScheduleRooms = scheduleRooms;
+            model.TeachingClassHistories = histories1.Concat(histories2).Concat(histories3).ToList();
+            model.ScheduleRooms = scheduleRooms1.Concat(scheduleRooms2).Concat(scheduleRooms3).ToList();
             return model;
         }
 
