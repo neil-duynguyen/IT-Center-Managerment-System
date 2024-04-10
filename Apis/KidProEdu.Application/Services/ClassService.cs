@@ -91,17 +91,19 @@ namespace KidProEdu.Application.Services
         {
             var getClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
 
-            List<ScheduleClassViewModel> scheduleClassView = new List<ScheduleClassViewModel>();
-
-            foreach (var item in getClass.Schedules)
-            {
-                var getRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(item.Id).Result.FirstOrDefault(x => x.Status == ScheduleRoomStatus.Using);
-                var getTeacher = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(classId).Result.FirstOrDefault(x => x.TeachingStatus == TeachingStatus.Teaching);
-                scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom.Room.Name, TeacherName = getTeacher.UserAccount.FullName });
-            }
-
             var mapper = _mapper.Map<ClassViewModel>(getClass);
-            mapper.scheduleClassViews = scheduleClassView;
+
+            if (getClass.StatusOfClass == StatusOfClass.Started || getClass.StatusOfClass == StatusOfClass.Expired)
+            {
+                List<ScheduleClassViewModel> scheduleClassView = new List<ScheduleClassViewModel>();
+                foreach (var item in getClass.Schedules)
+                {
+                    var getRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(item.Id).Result.FirstOrDefault(x => x.Status == ScheduleRoomStatus.Using);
+                    var getTeacher = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(classId).Result.FirstOrDefault(x => x.TeachingStatus == TeachingStatus.Teaching);
+                    scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom.Room.Name, TeacherName = getTeacher.UserAccount.FullName });
+                }
+                mapper.scheduleClassViews = scheduleClassView;
+            }
 
             return mapper;
         }
