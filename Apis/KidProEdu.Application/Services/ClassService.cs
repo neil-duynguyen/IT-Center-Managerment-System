@@ -427,7 +427,9 @@ namespace KidProEdu.Application.Services
                                 }
 
                                 // 2 bài pt mỗi bài 15%, 1 bài midterm 30%, 1 bài final 40%
-                                var totalScore = ptPoint * 0.15 + midTermPoint * 0.3 + finalPoint * 0.4;
+                                var totalScore = ptPoint * (await _unitOfWork.configPointMultiplierRepository.GetConfigPointByTestType(TestType.Progress)).Multiplier
+                                    + midTermPoint * (await _unitOfWork.configPointMultiplierRepository.GetConfigPointByTestType(TestType.MidTerm)).Multiplier
+                                    + finalPoint * (await _unitOfWork.configPointMultiplierRepository.GetConfigPointByTestType(TestType.Final)).Multiplier;
 
                                 /*// lấy tình trạng điểm danh của children trong course đó
                                 var listAttendances = new List<Attendance>();

@@ -159,6 +159,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IExamRepository, ExamRepository>();
             builder.Services.AddScoped<IChildrenAnswerRepository, ChildrenAnswerRepository>();
             builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            builder.Services.AddScoped<IConfigPointMultiplierRepository, ConfigPointMultiplierRepository>();
             #endregion
 
             #region DIService

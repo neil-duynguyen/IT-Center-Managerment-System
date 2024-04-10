@@ -48,6 +48,7 @@ namespace Infrastructures
         private readonly IExamRepository _examRepository;
         private readonly IChildrenAnswerRepository _childrenAnswerRepository;
         private readonly IFeedbackRepository _feedbackRepository;
+        private readonly IConfigPointMultiplierRepository _configPointMultiplierRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
