@@ -60,6 +60,7 @@ namespace KidProEdu.Infrastructures
         public DbSet<Slot> Slot { get; set; }
         public DbSet<OrderDetail> OrderDetail { get; set; }
         public DbSet<Order> Order { get; set; }
+        public DbSet<ConfigPointMultiplier> ConfigPointMultipliers { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -333,6 +334,30 @@ namespace KidProEdu.Infrastructures
             builder.Entity<Tag>()
                 .HasMany(p => p.Blogs)
                 .WithMany(x => x.Tags);
+
+            builder.Entity<ConfigPointMultiplier>().HasData(
+                new ConfigPointMultiplier
+                {
+                    Id = new Guid("c7fd8087-90af-4d1d-bbcb-76825055ba7e"),
+                    UserId = new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca82"),
+                    TestType = Domain.Enums.TestType.Progress,
+                    Multiplier = 0.15
+                },
+                new ConfigPointMultiplier
+                {
+                    Id = new Guid("7f312ad3-9ee2-4fbb-94cc-3a9c114aed25"),
+                    UserId = new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca82"),
+                    TestType = Domain.Enums.TestType.MidTerm ,
+                    Multiplier = 0.3
+                },
+                new ConfigPointMultiplier
+                {
+                    Id = new Guid("5f40573d-f937-4aad-bfff-ae56d9f9057f"),
+                    UserId = new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca82"),
+                    TestType = Domain.Enums.TestType.Final,
+                    Multiplier = 0.4
+                }
+                );
 
             /*builder.Entity<UserAccount>()
                 .HasMany(p => p.Divisions)

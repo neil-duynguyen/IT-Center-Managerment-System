@@ -43,5 +43,6 @@ namespace KidProEdu.Domain.Entities
         public IList<LogEquipment> LogEquipments { get; set; }
         public IList<SkillCertificate> SkillCertificate { get; set; }
         public IList<DivisionUserAccount> DivisionUserAccounts { get; set; }
+        public IList<ConfigPointMultiplier> ConfigPointMultipliers { get; set; }
     }
 }
