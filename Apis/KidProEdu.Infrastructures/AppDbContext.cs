@@ -57,6 +57,9 @@ namespace KidProEdu.Infrastructures
         public DbSet<DivisionUserAccount> DivisionUserAccount { get; set; }
         public DbSet<Exam> Exam { get; set; }
         public DbSet<ChildrenAnswer> ChildrenAnswer { get; set; }
+        public DbSet<Slot> Slot { get; set; }
+        public DbSet<OrderDetail> OrderDetail { get; set; }
+        public DbSet<Order> Order { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
