@@ -34,31 +34,31 @@ namespace KidProEdu.Infrastructures.Repositories
                 case 1:
                     classes = await _dbContext.Class.Include(x => x.Schedules).ThenInclude(x => x.Slot)
                     .Where(x => x.Schedules.FirstOrDefault().Slot.Name.ToLower() == "Slot1".ToLower() && x.IsDeleted == false
-                    && x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending))
+                    && x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending) && x.TeachingClassHistories.Count == 0)
                     .ToListAsync();
                     break;
                 case 2:
                     classes = await _dbContext.Class.Include(x => x.Schedules).ThenInclude(x => x.Slot)
                     .Where(x => x.Schedules.FirstOrDefault().Slot.Name.ToLower() == "Slot2".ToLower() && x.IsDeleted == false
-                    && x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending))
+                    && x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending) && x.TeachingClassHistories.Count == 0)
                     .ToListAsync();
                     break;
                 case 3:
                     classes = await _dbContext.Class.Include(x => x.Schedules).ThenInclude(x => x.Slot)
                     .Where(x => x.Schedules.FirstOrDefault().Slot.Name.ToLower() == "Slot3".ToLower() && x.IsDeleted == false
-                    && x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending))
+                    && x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending) && x.TeachingClassHistories.Count == 0)
                     .ToListAsync();
                     break;
                 case 4:
                     classes = await _dbContext.Class.Include(x => x.Schedules).ThenInclude(x => x.Slot)
                     .Where(x => x.Schedules.FirstOrDefault().Slot.Name.ToLower() == "Slot4".ToLower() && x.IsDeleted == false
-                    && x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending))
+                    && x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending) && x.TeachingClassHistories.Count == 0)
                     .ToListAsync();
                     break;
                 case 5:
                     classes = await _dbContext.Class.Include(x => x.Schedules).ThenInclude(x => x.Slot)
                     .Where(x => x.Schedules.FirstOrDefault().Slot.Name.ToLower() == "Slot5".ToLower() && x.IsDeleted == false
-                    && x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending))
+                    && x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending) && x.TeachingClassHistories.Count == 0)
                     .ToListAsync();
                     break;
                 /*case 6:
@@ -85,7 +85,10 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public override async Task<List<Class>> GetAllAsync()
         {
-            return await _dbSet.Include(x => x.Course).Include(x => x.Schedules).ThenInclude(x => x.Slot).Include(x => x.Enrollments).ThenInclude(x => x.ChildrenProfile).Where(x => !x.IsDeleted).ToListAsync();
+            return await _dbSet.Include(x => x.Course).Include(x => x.TeachingClassHistories)
+                .Include(x => x.Schedules).ThenInclude(x => x.Slot)
+                .Include(x => x.Enrollments).ThenInclude(x => x.ChildrenProfile)
+                .Where(x => !x.IsDeleted).ToListAsync();
         }
 
         public async Task<List<Class>> GetClassByCourseId(Guid id, DateTime year)

@@ -239,7 +239,8 @@ namespace KidProEdu.Application.Services
             var rooms = await _unitOfWork.RoomRepository.GetRoomByStatus(StatusOfRoom.Empty); //lấy list phòng trống
             var fullTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.FullTime); //lấy list giáo viên fulltime
             var partTeachers = await _unitOfWork.UserRepository.GetTeacherByJobType(JobType.PartTime); //lấy list giáo viên parttime
-            var checkClasses = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.StatusOfClass == StatusOfClass.Pending);
+            var checkClasses = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.StatusOfClass == StatusOfClass.Pending
+            && x.TeachingClassHistories.Count == 0 && x.Schedules.Count != 0).ToList();
 
             if (rooms.IsNullOrEmpty())
             {
@@ -247,7 +248,7 @@ namespace KidProEdu.Application.Services
             }
             else if (checkClasses.IsNullOrEmpty())
             {
-                throw new Exception("Danh sách lớp pending cần xếp lịch đã hết");
+                throw new Exception("Danh sách lớp cần xếp lịch đã hết");
             }
             else if (fullTeachers.IsNullOrEmpty() && partTeachers.IsNullOrEmpty())
             {
