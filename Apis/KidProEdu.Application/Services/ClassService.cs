@@ -612,13 +612,43 @@ namespace KidProEdu.Application.Services
 
             var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(changeTeacherForClassViewModel.ClassId);
 
-            /*for(var i = 0; i < 7; i++)
+            for (var i = 0; i < 7; i++)
             {
-                var getDateBefore = changeTeacherForClassViewModel.StartDate.AddDays(-i);
-                if(getDateBefore.Date==)
-            }*/
+                var getDate = changeTeacherForClassViewModel.StartDate.AddDays(i);
+                var schedule = findClass.Schedules.FirstOrDefault(x => x.DayInWeek == getDate.DayOfWeek.ToString());
 
-            if (changeTeacherForClassViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("tuesday")
+                if (schedule != null)
+                {
+                    var otherSchedule = findClass.Schedules.FirstOrDefault(x => x.Id != schedule.Id);
+
+                    var newTeachingHistory = new TeachingClassHistory()
+                    {
+                        UserAccountId = changeTeacherForClassViewModel.TeacherId,
+                        ClassId = changeTeacherForClassViewModel.ClassId,
+                        StartDate = getDate,
+                        TeachingStatus = Domain.Enums.TeachingStatus.Teaching
+                    };
+
+                    await _unitOfWork.TeachingClassHistoryRepository.AddAsync(newTeachingHistory);
+
+                    for (var j = 1; i < 6 - i; j++)
+                    {
+                        var getOtherDate = getDate.AddDays(j);
+                        if (getOtherDate.DayOfWeek.ToString() == otherSchedule.DayInWeek)
+                        {
+                            teachingHistory.EndDate = getOtherDate.AddDays(-7);
+
+                            _unitOfWork.TeachingClassHistoryRepository.Update(teachingHistory);
+
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+            /*if (changeTeacherForClassViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("tuesday")
                 || changeTeacherForClassViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("wednesday")
                 || changeTeacherForClassViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("thursday"))
             {
@@ -639,7 +669,7 @@ namespace KidProEdu.Application.Services
 
 
             _unitOfWork.TeachingClassHistoryRepository.Update(teachingHistory);
-            await _unitOfWork.TeachingClassHistoryRepository.AddAsync(newTeachingHistory);
+            await _unitOfWork.TeachingClassHistoryRepository.AddAsync(newTeachingHistory);*/
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Đổi giáo viên thất bại");
         }
