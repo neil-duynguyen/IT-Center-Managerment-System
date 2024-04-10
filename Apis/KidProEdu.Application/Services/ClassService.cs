@@ -429,7 +429,7 @@ namespace KidProEdu.Application.Services
                                 // 2 bài pt mỗi bài 15%, 1 bài midterm 30%, 1 bài final 40%
                                 var totalScore = ptPoint * 0.15 + midTermPoint * 0.3 + finalPoint * 0.4;
 
-                                // lấy tình trạng điểm danh của children trong course đó
+                                /*// lấy tình trạng điểm danh của children trong course đó
                                 var listAttendances = new List<Attendance>();
                                 foreach (var schedule in findClass.Schedules)
                                 {
@@ -441,10 +441,10 @@ namespace KidProEdu.Application.Services
                                 if (listAttendances.Count > 0)
                                 {
                                     listAbsent = listAttendances.Where(x => x.StatusAttendance == Domain.Enums.StatusAttendance.Absent).ToList();
-                                }
+                                }*/
 
                                 // trả ra list children để cấp certificate nếu đủ điều kiện pass (trung bình >=5, k nghỉ quá 20%)
-                                if (totalScore >= 5 && (listAbsent.Count <= (listAttendances.Count * 0.2)))
+                                if (totalScore >= 5)
                                 {
                                     listChildrenPassed.Add(new ChildrenPassedViewModel()
                                     {
@@ -453,6 +453,15 @@ namespace KidProEdu.Application.Services
                                     });
 
                                 }
+                                /*if (totalScore >= 5 && (listAbsent.Count <= (listAttendances.Count * 0.2)))
+                                {
+                                    listChildrenPassed.Add(new ChildrenPassedViewModel()
+                                    {
+                                        ChildrenProfile = _mapper.Map<ChildrenProfileViewModel>(children),
+                                        Course = _mapper.Map<CourseViewModel>(await _unitOfWork.CourseRepository.GetByIdAsync(findClass.CourseId))
+                                    });
+
+                                }*/
                             }
                         }
                         else
@@ -600,6 +609,14 @@ namespace KidProEdu.Application.Services
             var teachingHistory = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(changeTeacherForClassViewModel.ClassId)
                 .Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.TeachingStatus == Domain.Enums.TeachingStatus.Teaching
                 || x.TeachingStatus == Domain.Enums.TeachingStatus.Pending);
+
+            var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(changeTeacherForClassViewModel.ClassId);
+
+            /*for(var i = 0; i < 7; i++)
+            {
+                var getDateBefore = changeTeacherForClassViewModel.StartDate.AddDays(-i);
+                if(getDateBefore.Date==)
+            }*/
 
             if (changeTeacherForClassViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("tuesday")
                 || changeTeacherForClassViewModel.StartDate.DayOfWeek.ToString().ToLower().Equals("wednesday")

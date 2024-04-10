@@ -188,13 +188,58 @@ namespace KidProEdu.Application.Services
                                 // add 1 record mới cho gv mới sau khi add xong mới thêm 1 record lại cho gv cũ với
                                 // trạng thái teaching
                                 var schedule = await _unitOfWork.ScheduleRepository.GetByIdAsync((Guid)request.ScheduleId);
-                                var tc = request.CreatedBy;
+
+                                // lấy lịch còn lại của lớp đó
+                                var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(schedule.Id);
+                                var otherSchedule = findClass.Schedules.FirstOrDefault(x => x.Id != schedule.Id);
+
+
+                                var tc = request.CreatedBy; // lấy gv, là người gửi request
                                 var currentHistory = _unitOfWork.TeachingClassHistoryRepository
                                     .GetTeachingHistoryByStatus(Domain.Enums.TeachingStatus.Teaching).Result
                                     .FirstOrDefault(x => x.ClassId == schedule.ClassId);
                                 if (currentHistory != null)
                                 {
-                                    if (schedule.DayInWeek.ToLower().Equals("thursday") // 5 8
+                                    for (var i = 0; i < 7; i++)
+                                    {
+                                        // ngày tương ứng lịch còn lại trong quá khứ và tương lai
+                                        var getDateBefore = changeStatusRequestViewModel.TeachingDate.Value.AddDays(-i);
+                                        var getDateAfter = changeStatusRequestViewModel.TeachingDate.Value.AddDays(7 - i);
+
+                                        if (getDateBefore.DayOfWeek.ToString() == otherSchedule.DayInWeek)
+                                        {
+                                            currentHistory.EndDate = getDateBefore;
+                                            //currentHistory.TeachingStatus = Domain.Enums.TeachingStatus.Leaved
+
+                                            var continueHistory = new TeachingClassHistory
+                                            {
+                                                ClassId = currentHistory.ClassId,
+                                                UserAccountId = currentHistory.UserAccountId,
+                                                StartDate = getDateAfter,
+                                                TeachingStatus = Domain.Enums.TeachingStatus.Teaching
+                                            };
+
+                                            _unitOfWork.TeachingClassHistoryRepository.Update(currentHistory);
+                                            await _unitOfWork.TeachingClassHistoryRepository.AddAsync(continueHistory);
+                                        }
+
+                                        var getDate = changeStatusRequestViewModel.TeachingDate.Value.AddDays(i);
+                                        if (getDate.DayOfWeek.ToString() == schedule.DayInWeek)
+                                        {
+
+                                            var newHistory = new TeachingClassHistory
+                                            {
+                                                ClassId = currentHistory.ClassId,
+                                                UserAccountId = requestUsers.FirstOrDefault(x => x.Status == Domain.Enums.StatusOfRequest.Pending).RecieverId,
+                                                StartDate = (DateTime)changeStatusRequestViewModel.TeachingDate,
+                                                EndDate = (DateTime)changeStatusRequestViewModel.TeachingDate,
+                                                TeachingStatus = Domain.Enums.TeachingStatus.Substitute
+                                            };
+
+                                            await _unitOfWork.TeachingClassHistoryRepository.AddAsync(newHistory);
+                                        }
+                                    }
+                                    /*if (schedule.DayInWeek.ToLower().Equals("thursday") // 5 8
                                         || schedule.DayInWeek.ToLower().Equals("tuesday") // 3 6
                                         || schedule.DayInWeek.ToLower().Equals("wednesday")) // 4 7
                                     {
@@ -250,11 +295,11 @@ namespace KidProEdu.Application.Services
                                         await _unitOfWork.TeachingClassHistoryRepository.AddAsync(newHistory);
                                         await _unitOfWork.TeachingClassHistoryRepository.AddAsync(continueHistory);
 
-                                    }
+                                    }*/
                                 }
                                 else
                                 {
-                                    throw new Exception("không tìm thấy hay gì đó");
+                                    throw new Exception("Không tìm thấy lịch này");
                                 }
                                 break;
                             case "Equipment": //khi approved quét mã cho mượn thì cập nhật lại trạng thái phía dưới
