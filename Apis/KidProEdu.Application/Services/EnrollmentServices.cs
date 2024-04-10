@@ -14,6 +14,7 @@ using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -277,6 +278,13 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Bạn đang học lớp này");
             }
 
+            var checkCourse = await _unitOfWork.ClassRepository.GetByIdAsync(updateEnrollmentViewModel.ClassId);
+            //getListCoursebyChildrenId to compare with this class
+            var oldCourse = await _unitOfWork.ClassRepository.GetByIdAsync(result.ClassId);
+            if (checkCourse.CourseId != oldCourse.CourseId)
+            {
+                throw new Exception("Lớp học mới có khóa học khác với lớp hiện tại");
+            }
 
             //delete attendance old schedule
             var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);
@@ -387,7 +395,13 @@ namespace KidProEdu.Application.Services
                 _unitOfWork.AttendanceRepository.RemoveRange(attendances);
             }
 
-            
+            var checkCourse = await _unitOfWork.ClassRepository.GetByIdAsync(updateEnrollmentViewModel.ClassId);
+            //getListCoursebyChildrenId to compare with this class
+            var oldCourse = await _unitOfWork.ClassRepository.GetByIdAsync(result.ClassId);
+            if (checkCourse.CourseId != oldCourse.CourseId)
+            {
+                throw new Exception("Lớp học mới có khóa học khác với lớp hiện tại");
+            }
 
             //update ActualNumber in new class
             var updateActualNumberNewClass = await _unitOfWork.ClassRepository.GetByIdAsync(updateEnrollmentViewModel.ClassId);
