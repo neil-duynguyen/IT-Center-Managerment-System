@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Bibliography;
 using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.ViewModels.DashBoardViewModel;
 using KidProEdu.Application.ViewModels.TransactionViewModels;
 using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
@@ -51,6 +52,38 @@ namespace KidProEdu.Application.Services
             }
 
             return _mapper.Map<List<TransactionViewModel>>(transaction);
+        }
+
+        public async Task<DashBoardViewModel> GetDashBoards(DateTime startDate, DateTime endDate)
+        {
+            //get InCome
+            var getTransactionsTotalAmount = await _unitOfWork.TransactionRepository.GetTransactionsTotalAmount(startDate, endDate);
+            //getCommission
+            var getCommissionsTotalAmount = await _unitOfWork.EnrollmentRepository.GetCommissionEnrollmentsTotalAmount(startDate, endDate);
+            //get total chidren
+            var getTotalChildrens = await _unitOfWork.ChildrenRepository.GetTotalChildrens(startDate, endDate);
+            //totalParent
+            var getTotalParents = await _unitOfWork.UserRepository.GetTotalParents(startDate, endDate);
+            //totalManager
+            var getTotalManagers = await _unitOfWork.UserRepository.GetTotalManagers(startDate, endDate);
+            //totalParent
+            var getTotalStaffs = await _unitOfWork.UserRepository.GetTotalStaffs(startDate, endDate);
+            //totalParent
+            var getTotalTeachers = await _unitOfWork.UserRepository.GetTotalTeachers(startDate, endDate);
+            //totalCourse
+            var getTotalCourses = await _unitOfWork.CourseRepository.GetTotalCourses(startDate, endDate);
+            var dashboard = new DashBoardViewModel
+            {
+                TotalAmountTransaction = getTransactionsTotalAmount,
+                TotalCommission = getCommissionsTotalAmount,
+                TotalChildren = getTotalChildrens,
+                TotalCourse = getTotalCourses,
+                TotalManager = getTotalManagers,
+                TotalParent = getTotalParents,
+                TotalStaff = getTotalStaffs,
+                TotalTeacher = getTotalTeachers
+            };
+            return dashboard;
         }
 
         public async Task<List<TransactionViewModel>> GetTransactionDetailByTransactionId(Guid id)

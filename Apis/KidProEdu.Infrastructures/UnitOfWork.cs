@@ -187,6 +187,8 @@ namespace Infrastructures
 
         public IFeedbackRepository FeedbackRepository => _feedbackRepository;
 
+        public IConfigPointMultiplierRepository configPointMultiplierRepository => throw new NotImplementedException();
+
         public async Task<int> SaveChangeAsync()
         {
             return await _dbContext.SaveChangesAsync();

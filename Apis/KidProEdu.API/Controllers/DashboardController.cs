@@ -56,5 +56,12 @@ namespace KidProEdu.API.Controllers
             var result = await _childrenService.GetChildrenSummariseViewModel(dateTime);
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDashBoardSummarise(DateTime startTime, DateTime endTime)
+        {
+            var result = await _transactionService.GetDashBoards(startTime, endTime);
+            return Ok(result);
+        }
     }
 }

@@ -15,5 +15,10 @@ namespace KidProEdu.Application.Repositories
 
         Task<List<UserAccount>> GetTeacherByJobType(JobType jobType);
 
+        Task<int> GetTotalParents(DateTime startDate, DateTime endDate);
+        Task<int> GetTotalStaffs(DateTime startDate, DateTime endDate);
+        Task<int> GetTotalManagers(DateTime startDate, DateTime endDate);
+        Task<int> GetTotalTeachers(DateTime startDate, DateTime endDate);
+
     }
 }

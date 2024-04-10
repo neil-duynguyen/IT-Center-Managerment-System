@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -31,5 +32,15 @@ namespace KidProEdu.Infrastructures.Repositories
             .ToListAsync();
             return courses;
         }
+
+        public async Task<int> GetTotalCourses(DateTime startDate, DateTime endDate)
+        {
+            var totalCourses = await _dbContext.Course
+                .Where(x => x.CreationDate >= startDate && x.CreationDate <= endDate && !x.IsDeleted)
+                .AsNoTracking()
+                .CountAsync();
+            return totalCourses == 0 ? 0 : totalCourses;
+        }
+
     }
 }

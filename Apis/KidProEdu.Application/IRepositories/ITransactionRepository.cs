@@ -8,5 +8,6 @@ namespace KidProEdu.Application.IRepositories
         Task<List<Transaction>> GetTransactionByMonthInYear(DateTime monthInYear);
         Task<List<Transaction>> GetTransactionByYear(DateTime monthInYear);
         Task<List<Transaction>> GetTransactionByCourse(DateTime monthInYear);
+        Task<double> GetTransactionsTotalAmount (DateTime startDate, DateTime endDate);
     }
 }

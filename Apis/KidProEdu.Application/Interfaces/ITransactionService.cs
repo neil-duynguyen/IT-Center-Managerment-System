@@ -1,4 +1,5 @@
-﻿using KidProEdu.Application.ViewModels.TransactionViewModels;
+﻿using KidProEdu.Application.ViewModels.DashBoardViewModel;
+using KidProEdu.Application.ViewModels.TransactionViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,6 @@ namespace KidProEdu.Application.Interfaces
         Task<TransactionSummaryViewModel> TransactionsSummarise();
         Task<List<TransactionSummaryByMonthInYearViewModel>> TransactionsSummariseByMonthInYear(DateTime monthInYear);
         Task<List<TransactionByCoursesViewModel>> TransactionByCoursesInYear(DateTime monthInYear);
-
+        Task<DashBoardViewModel> GetDashBoards(DateTime startDate, DateTime endDate);
     }
 }

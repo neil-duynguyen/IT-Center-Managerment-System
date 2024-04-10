@@ -16,5 +16,6 @@ namespace KidProEdu.Application.IRepositories
         Task<Enrollment> GetEnrollmentsByClassIdAndChildrenProfileId(Guid classId, Guid childId);
 
         Task<List<Enrollment>> GetEnrollmentsByChildId(Guid Id);
+        Task<double> GetCommissionEnrollmentsTotalAmount(DateTime startDate, DateTime endDate);
     }
 }
