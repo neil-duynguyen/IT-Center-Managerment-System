@@ -400,14 +400,14 @@ namespace KidProEdu.Application.Services
             _unitOfWork.ClassRepository.Update(updateActualNumberOldClass);
 
             //updateScheduleAtten
-            var schedulesUpdate = await _unitOfWork.ScheduleRepository.GetScheduleByClass(updateEnrollmentViewModel.ClassId);
+            //var schedulesUpdate = await _unitOfWork.ScheduleRepository.GetScheduleByClass(updateEnrollmentViewModel.ClassId);
             //updateAttendanceClass
-            var listAttendances = await _unitOfWork.AttendanceRepository.GetListAttendanceByClassIdAndChilIdOutOfStatusFuture(result.ClassId, result.ChildrenProfileId);
-            foreach (var attendance in listAttendances)
-            {
-                attendance.ScheduleId = schedulesUpdate.FirstOrDefault().Id;
-                _unitOfWork.AttendanceRepository.Update(attendance);
-            }
+            //var listAttendances = await _unitOfWork.AttendanceRepository.GetListAttendanceByClassIdAndChilIdOutOfStatusFuture(result.ClassId, result.ChildrenProfileId);
+            //foreach (var attendance in listAttendances)
+            //{
+            //    attendance.ScheduleId = schedulesUpdate.FirstOrDefault().Id;
+            //    _unitOfWork.AttendanceRepository.Update(attendance);
+            //}
 
             var attendanceCheckTime = await _unitOfWork.AttendanceRepository.GetListAttendanceByClassIdAndChilIdAndOutOfStatusFuture(result.ClassId, result.ChildrenProfileId);           
             result.ClassId = updateEnrollmentViewModel.ClassId;
