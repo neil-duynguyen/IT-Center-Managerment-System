@@ -35,7 +35,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<TeachingClassHistory>> GetTeachingHistoryByClassId(Guid id)
         {
-            var teachingHistorys = await _dbContext.TeachingClassHistory.Where(x => x.ClassId == id
+            var teachingHistorys = await _dbContext.TeachingClassHistory.Include(x => x.UserAccount).Where(x => x.ClassId == id
             && x.IsDeleted == false).ToListAsync();
 
             return teachingHistorys;

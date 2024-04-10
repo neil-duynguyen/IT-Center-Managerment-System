@@ -9,6 +9,7 @@ using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Application.ViewModels.ScheduleViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using MediatR;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
@@ -86,17 +87,30 @@ namespace KidProEdu.Application.Services
             }
         }
 
-        public async Task<ClassViewModel> GetClassById(Guid ClassId)
+        public async Task<ClassViewModel> GetClassById(Guid classId)
         {
-            var getClass = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
-            return _mapper.Map<ClassViewModel>(getClass); ;
+            var getClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
+
+            List<ScheduleClassViewModel> scheduleClassView = new List<ScheduleClassViewModel>();
+
+            foreach (var item in getClass.Schedules)
+            {
+                var getRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(item.Id).Result.FirstOrDefault(x => x.Status == ScheduleRoomStatus.Using);
+                var getTeacher = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(classId).Result.FirstOrDefault(x => x.TeachingStatus == TeachingStatus.Teaching);
+                scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom.Room.Name, TeacherName = getTeacher.UserAccount.FullName });
+            }
+
+            var mapper = _mapper.Map<ClassViewModel>(getClass);
+            mapper.scheduleClassViews = scheduleClassView;
+
+            return mapper;
         }
 
         public async Task<List<ClassViewModel>> GetClasses()
         {
             var listClass = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
 
-            List<ClassViewModel> classViewModels = new List<ClassViewModel>();
+            /*List<ClassViewModel> classViewModels = new List<ClassViewModel>();
 
             foreach (var classDetail in listClass)
             {
@@ -109,8 +123,10 @@ namespace KidProEdu.Application.Services
                 mapper.scheduleClassViews = scheduleClassView;
 
                 classViewModels.Add(mapper);
-            }
-            return classViewModels;
+            }*/
+            var mapper = _mapper.Map<List<ClassViewModel>>(listClass);
+
+            return mapper;
         }
 
         public async Task<bool> UpdateClass(UpdateClassViewModel updateClassViewModel)

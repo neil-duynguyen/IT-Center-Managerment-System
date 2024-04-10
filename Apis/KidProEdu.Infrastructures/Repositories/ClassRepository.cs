@@ -79,7 +79,7 @@ namespace KidProEdu.Infrastructures.Repositories
             return await _dbContext.Class
                 .Include(x => x.Course)
                 .Include(x => x.Enrollments)
-                .Include(x => x.Schedules)
+                .Include(x => x.Schedules).ThenInclude(x => x.Slot)
                 .Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == id);
         }
 
