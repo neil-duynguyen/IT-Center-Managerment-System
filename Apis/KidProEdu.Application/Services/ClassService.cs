@@ -374,6 +374,13 @@ namespace KidProEdu.Application.Services
 
                                 _unitOfWork.ClassRepository.Update(findClass);
                             }
+                            else
+                            {
+                                listChildrenPassed.Add(new ChildrenPassedViewModel()
+                                {
+                                    Class = _mapper.Map<ClassViewModel>(findClass)
+                                });
+                            }
                         }
                     }
 
@@ -516,17 +523,17 @@ namespace KidProEdu.Application.Services
 
                                     }*/
 
-                                    // ghi nhận trạng thái lớp học
-                                    /*// change status bỏ qua những class đã cancel hoặc expired
-                                    if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
-                                        || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
-                                        continue;*/
-
-                                    findClass.StatusOfClass = status;
-
-                                    _unitOfWork.ClassRepository.Update(findClass);
-
                                 }
+
+                                // ghi nhận trạng thái lớp học
+                                /*// change status bỏ qua những class đã cancel hoặc expired
+                                if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
+                                    || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
+                                    continue;*/
+
+                                findClass.StatusOfClass = status;
+
+                                _unitOfWork.ClassRepository.Update(findClass);
                             }
                             else
                             {
