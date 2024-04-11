@@ -258,19 +258,15 @@ namespace KidProEdu.Application.Services
                                 }
 
                                 // ghi nhận trạng thái lớp học
-                                foreach (var item in changeStatusClassViewModel.ids)
-                                {
-                                    var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(item);
+                                /*// change status bỏ qua những class đã cancel hoặc expired
+                                if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
+                                    || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
+                                    continue;*/
 
-                                    // change status bỏ qua những class đã cancel hoặc expired
-                                    if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
-                                        || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
-                                        continue;
+                                findClass.StatusOfClass = status;
 
-                                    findClass.StatusOfClass = status;
+                                _unitOfWork.ClassRepository.Update(findClass);
 
-                                    _unitOfWork.ClassRepository.Update(findClass);
-                                }
                             }
                             else
                             {
@@ -356,19 +352,15 @@ namespace KidProEdu.Application.Services
                                 _unitOfWork.EnrollmentRepository.RemoveRange(childrenInClass);
 
                                 // ghi nhận trạng thái lớp học
-                                foreach (var item in changeStatusClassViewModel.ids)
-                                {
-                                    var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(item);
 
-                                    // change status bỏ qua những class đã cancel hoặc expired
-                                    if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
-                                        || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
-                                        continue;
+                                /*// change status bỏ qua những class đã cancel hoặc expired
+                                if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
+                                    || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
+                                    continue;*/
 
-                                    findClass.StatusOfClass = status;
+                                findClass.StatusOfClass = status;
 
-                                    _unitOfWork.ClassRepository.Update(findClass);
-                                }
+                                _unitOfWork.ClassRepository.Update(findClass);
                             }
                         }
                     }
@@ -513,19 +505,15 @@ namespace KidProEdu.Application.Services
                                     }*/
 
                                     // ghi nhận trạng thái lớp học
-                                    foreach (var item in changeStatusClassViewModel.ids)
-                                    {
-                                        var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(item);
+                                    /*// change status bỏ qua những class đã cancel hoặc expired
+                                    if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
+                                        || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
+                                        continue;*/
 
-                                        // change status bỏ qua những class đã cancel hoặc expired
-                                        if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
-                                            || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
-                                            continue;
+                                    findClass.StatusOfClass = status;
 
-                                        findClass.StatusOfClass = status;
+                                    _unitOfWork.ClassRepository.Update(findClass);
 
-                                        _unitOfWork.ClassRepository.Update(findClass);
-                                    }
                                 }
                             }
                             else
