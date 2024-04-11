@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,15 @@ namespace KidProEdu.Infrastructures.Repositories
         public override async Task<List<Enrollment>> GetAllAsync()
         {
             return await _dbSet.Include(x => x.Class).Include(x => x.ChildrenProfile).Where(x => !x.IsDeleted).ToListAsync();
+        }
+
+        public async Task<double> GetCommissionEnrollmentsTotalAmount(DateTime startDate, DateTime endDate)
+        {
+            var totalAmount = await _dbContext.Enrollment
+                .Where(x => x.CreationDate >= startDate && x.CreationDate <= endDate && !x.IsDeleted)
+                .AsNoTracking()
+                .SumAsync(t => t.Commission ?? 0);
+            return totalAmount;
         }
 
         public async Task<List<Enrollment>> GetEnrollmentsByChildId(Guid Id)

@@ -22,7 +22,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public override async Task<ChildrenProfile> GetByIdAsync(Guid id)
         {
             return await _dbContext.ChildrenProfile
-                .Include(x=>x.UserAccount)
+                .Include(x => x.UserAccount)
                 .Include(x => x.Enrollments).ThenInclude(x => x.Class).ThenInclude(x => x.Course)
                 .Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -38,5 +38,18 @@ namespace KidProEdu.Infrastructures.Repositories
                 .Where(x => x.CreationDate.Month == year.Month && x.CreationDate.Year == year.Year && !x.IsDeleted).ToListAsync();
             return childrenProfiles;
         }
+
+        public async Task<int> GetTotalChildrens(DateTime startDate, DateTime endDate)
+        {
+            var totalChildrens = await _dbContext.ChildrenProfile
+                    .Where(x => x.CreationDate >= startDate && x.CreationDate <= endDate && !x.IsDeleted)
+                    .AsNoTracking()
+                    .CountAsync();
+
+            // Trả về 0 nếu không có trẻ em nào thỏa mãn điều kiện
+            return totalChildrens == 0 ? 0 : totalChildrens;
+        }
+
     }
+
 }

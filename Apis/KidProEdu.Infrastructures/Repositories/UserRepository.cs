@@ -114,5 +114,45 @@ namespace Infrastructures.Repositories
 
             return teachers;
         }
+
+        public async Task<int> GetTotalParents(DateTime startDate, DateTime endDate)
+        {
+            var totalParents = await _dbContext.UserAccount
+                .Include(x => x.Role)
+                .Where(x => x.Role.Name == "Parent" && x.Status == StatusUser.Enable && x.CreationDate >= startDate && x.CreationDate <= endDate && !x.IsDeleted)
+                .AsNoTracking()
+                .CountAsync();
+            return totalParents == 0 ? 0 : totalParents;
+        }
+
+        public async Task<int> GetTotalStaffs(DateTime startDate, DateTime endDate)
+        {
+            var totalStaffs = await _dbContext.UserAccount
+                .Include(x => x.Role)
+                .Where(x => x.Role.Name == "Staff" && x.Status == StatusUser.Enable && x.CreationDate >= startDate && x.CreationDate <= endDate && !x.IsDeleted)
+                .AsNoTracking()
+                .CountAsync();
+            return totalStaffs == 0 ? 0 : totalStaffs;
+        }
+
+        public async Task<int> GetTotalManagers(DateTime startDate, DateTime endDate)
+        {
+            var totalManagers = await _dbContext.UserAccount
+                .Include(x => x.Role)
+                .Where(x => x.Role.Name == "Manager" && x.Status == StatusUser.Enable && x.CreationDate >= startDate && x.CreationDate <= endDate && !x.IsDeleted)
+                .AsNoTracking()
+                .CountAsync();
+            return totalManagers == 0 ? 0 : totalManagers;
+        }
+
+        public async Task<int> GetTotalTeachers(DateTime startDate, DateTime endDate)
+        {
+            var totalTeachers = await _dbContext.UserAccount
+                .Include(x => x.Role)
+                .Where(x => x.Role.Name == "Teacher" && x.Status == StatusUser.Enable && x.CreationDate >= startDate && x.CreationDate <= endDate && !x.IsDeleted)
+                .AsNoTracking()
+                .CountAsync();
+            return totalTeachers == 0 ? 0 : totalTeachers;
+        }
     }
 }

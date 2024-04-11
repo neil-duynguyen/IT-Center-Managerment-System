@@ -51,5 +51,14 @@ namespace KidProEdu.Infrastructures.Repositories
                 .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate.Value.Year == monthInYear.Year && !x.IsDeleted).ToListAsync();
             return transactions;
         }
+
+        public async Task<double> GetTransactionsTotalAmount(DateTime startDate, DateTime endDate)
+        {
+            var totalAmount = await _dbContext.Transaction
+                .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate >= startDate && x.PayDate <= endDate && !x.IsDeleted)
+                .AsNoTracking()
+                .SumAsync(t => t.TotalAmount ?? 0);
+            return totalAmount;
+        }
     }
 }
