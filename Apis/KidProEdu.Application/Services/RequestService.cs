@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Requests;
 using KidProEdu.Application.ViewModels.RequestUserAccountViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
@@ -44,7 +45,7 @@ namespace KidProEdu.Application.Services
                 && !createRequestViewModel.RequestType.Equals("Leave")
                 )
                 throw new Exception("Loại yêu cầu không có trong hệ thống");
-
+            var randomCode = "R" + ((await _unitOfWork.RequestRepository.GetAllAsync()).Count + 1);
             Request request = new()
             {
                 RequestDescription = createRequestViewModel.RequestDescription,
@@ -57,6 +58,7 @@ namespace KidProEdu.Application.Services
                 ToClassId = createRequestViewModel.ToClassId,
                 ScheduleId = createRequestViewModel.ScheduleId,
                 ReceiverRefundId = createRequestViewModel.ReceiverRefundId,
+                RequestCode = randomCode
             };
 
             await _unitOfWork.RequestRepository.AddAsync(request);
@@ -157,8 +159,15 @@ namespace KidProEdu.Application.Services
                         {
                             case "Location":
                                 var user = await _unitOfWork.UserRepository.GetByIdAsync((Guid)request.CreatedBy);
-                                user.LocationId = changeStatusRequestViewModel.LocationId;
-                                _unitOfWork.UserRepository.Update(user);
+                                if (user != null)
+                                {
+                                    user.LocationId = changeStatusRequestViewModel.LocationId;
+                                    _unitOfWork.UserRepository.Update(user);
+                                }
+                                else
+                                {
+                                    throw new Exception("Yêu cầu: " + request.RequestCode + " không tìm thấy người dùng");
+                                }
                                 break;
                             case "Class":
                                 var teacher = request.CreatedBy;
@@ -177,7 +186,8 @@ namespace KidProEdu.Application.Services
                                 }
                                 else
                                 {
-                                    throw new Exception("Request: "+""+" Không thể thực hiện đổi khi đã có lớp không còn ở trạng thái chờ");
+                                    throw new Exception("Yêu cầu: " + request.RequestCode + " không thể thực hiện đổi khi đã có lớp không còn ở trạng thái chờ");
+                                    throw new Exception("Yêu cầu: " + request.RequestCode + " không thể thực hiện đổi khi đã có lớp không còn ở trạng thái chờ");
                                 }
 
                                 _unitOfWork.TeachingClassHistoryRepository.Update(currentTeaching);
@@ -299,7 +309,7 @@ namespace KidProEdu.Application.Services
                                 }
                                 else
                                 {
-                                    throw new Exception("Không tìm thấy lịch này");
+                                    throw new Exception("Yêu cầu: " + request.RequestCode + " không tìm thấy lịch này");
                                 }
                                 break;
                             case "Equipment": //khi approved quét mã cho mượn thì cập nhật lại trạng thái phía dưới
