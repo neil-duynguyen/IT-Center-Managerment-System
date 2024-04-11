@@ -11,6 +11,7 @@ namespace KidProEdu.Domain.Entities
     {
         public Guid? CourseId { get; set; }
         public string TestName { get; set; }
+        public string? TestCode { get; set; }
         public DateTime TestDate { get; set; }
         public int TestDuration { get; set; }
         public int? TotalQuestion { get; set; }
