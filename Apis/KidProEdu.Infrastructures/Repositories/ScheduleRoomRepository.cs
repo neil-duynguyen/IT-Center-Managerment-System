@@ -43,5 +43,10 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return scheduleRooms;
         }
+
+        public override async Task<List<ScheduleRoom>> GetAllAsync()
+        {
+            return await _dbContext.ScheduleRoom.Include(x => x.Room).Include(x => x.Schedule).Where(x => !x.IsDeleted).ToListAsync();
+        }
     }
 }
