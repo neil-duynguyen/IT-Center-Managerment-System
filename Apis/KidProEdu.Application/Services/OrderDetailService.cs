@@ -134,6 +134,10 @@ namespace KidProEdu.Application.Services
                 {
                     paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, AmountPerMonth = (decimal)item.TotalPrice, Month = "0 tháng" });
                 }
+                if (item.PayType.Value == PayType.Cash)
+                {
+                    paymentInformationViews.Add(new PaymentInformationView() { CourseCode = item.Course.CourseCode, AmountPerMonth = (decimal)item.TotalPrice, Month = "0 tháng" });
+                }
             }
 
             List<ReturnOrderDetailViewModel> returnOrderDetailViews = new List<ReturnOrderDetailViewModel>();

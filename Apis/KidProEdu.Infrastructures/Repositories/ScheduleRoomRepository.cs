@@ -30,7 +30,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<ScheduleRoom>> GetScheduleRoomBySchedule(Guid id)
         {
-            var scheduleRooms = await _dbContext.ScheduleRoom.Include(x => x.Room).Where(x => x.ScheduleId == id
+            var scheduleRooms = await _dbContext.ScheduleRoom.Include(x => x.Room).Include(x => x.Schedule).Where(x => x.ScheduleId == id
             && x.IsDeleted == false).ToListAsync();
 
             return scheduleRooms;
@@ -42,6 +42,11 @@ namespace KidProEdu.Infrastructures.Repositories
             && x.IsDeleted == false).ToListAsync();
 
             return scheduleRooms;
+        }
+
+        public override async Task<List<ScheduleRoom>> GetAllAsync()
+        {
+            return await _dbContext.ScheduleRoom.Include(x => x.Room).Include(x => x.Schedule).Where(x => !x.IsDeleted).ToListAsync();
         }
     }
 }

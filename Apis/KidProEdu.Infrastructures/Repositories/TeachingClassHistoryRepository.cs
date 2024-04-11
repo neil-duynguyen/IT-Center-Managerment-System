@@ -48,5 +48,10 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return teachingHistorys;
         }
+        public override async Task<List<TeachingClassHistory>> GetAllAsync()
+        {
+            return await _dbContext.TeachingClassHistory.Include(x => x.Class).Include(x => x.UserAccount).Where(x => !x.IsDeleted).ToListAsync();
+        }
+
     }
 }
