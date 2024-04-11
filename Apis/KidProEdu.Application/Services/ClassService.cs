@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ClosedXML;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.VariantTypes;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Classes;
@@ -101,6 +102,18 @@ namespace KidProEdu.Application.Services
                     var getRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(item.Id).Result.FirstOrDefault(x => x.Status == ScheduleRoomStatus.Using);
                     var getTeacher = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(classId).Result.FirstOrDefault(x => x.TeachingStatus == TeachingStatus.Teaching);
                     scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom.Room.Name, TeacherName = getTeacher.UserAccount.FullName });
+                }
+                mapper.scheduleClassViews = scheduleClassView;
+            }
+
+            if (getClass.StatusOfClass == StatusOfClass.Pending)
+            {
+                List<ScheduleClassViewModel> scheduleClassView = new List<ScheduleClassViewModel>();
+                foreach (var item in getClass.Schedules)
+                {
+                    var getRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(item.Id).Result.FirstOrDefault(x => x.Status == ScheduleRoomStatus.Pending);
+                    var getTeacher = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(classId).Result.FirstOrDefault(x => x.TeachingStatus == TeachingStatus.Pending);
+                    scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom != null ? getRoom.Room.Name : null, TeacherName = getTeacher != null ? getTeacher.UserAccount.FullName : null});
                 }
                 mapper.scheduleClassViews = scheduleClassView;
             }
@@ -674,6 +687,40 @@ namespace KidProEdu.Application.Services
             await _unitOfWork.TeachingClassHistoryRepository.AddAsync(newTeachingHistory);*/
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Đổi giáo viên thất bại");
+        }
+
+        //api get list class teacher is teaching
+        public async Task<List<ClassViewModel>> GetListClassTeachingByTeacher(Guid teacherId)
+        {
+            var listTeachingClassHistory = _unitOfWork.TeachingClassHistoryRepository.GetAllAsync().Result.Where(x => x.UserAccountId == teacherId && x.TeachingStatus == TeachingStatus.Pending).ToList();
+
+            List<ClassViewModel> listClassViewModels = new List<ClassViewModel>();
+
+            foreach (var item in listTeachingClassHistory)
+            {
+                var classView = await GetClassById(item.ClassId);
+                listClassViewModels.Add(classView);
+            }
+
+            return listClassViewModels;
+        }
+
+        //api này lấy ra lớp có status pending nhưng đã xếp gv và room rồi
+        public async Task<List<ClassViewModel>> GetListClassStatusPending()
+        {
+            var getClassPending = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.StatusOfClass == StatusOfClass.Pending).ToList();
+
+            List<ClassViewModel> listClassViewModels = new List<ClassViewModel>();
+
+            foreach (var item in getClassPending)
+            {
+                var classView = await GetClassById(item.Id);
+                listClassViewModels.Add(classView);
+            }
+
+            listClassViewModels.RemoveAll(item => item.scheduleClassViews.Any(x => x.RoomName == null && x.TeacherName == null));
+
+            return listClassViewModels;
         }
     }
 }

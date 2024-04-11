@@ -20,5 +20,7 @@ namespace KidProEdu.Application.Interfaces
         Task<Stream> ExportExcelFileAsync(Guid classId);
         Task<bool> TestSendAttachEmail();
         Task<bool> ChangeTeacherForClass(ChangeTeacherForClassViewModel changeTeacherForClassViewModel);
+        Task<List<ClassViewModel>> GetListClassTeachingByTeacher(Guid teacherId);
+        Task<List<ClassViewModel>> GetListClassStatusPending();
     }
 }

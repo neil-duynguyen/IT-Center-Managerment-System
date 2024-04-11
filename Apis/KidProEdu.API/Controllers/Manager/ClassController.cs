@@ -158,5 +158,33 @@ namespace KidProEdu.API.Controllers.Manager
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet("GetListClassTeachingByTeacher/{teacherId}")]
+        public async Task<IActionResult> GetListClassTeachingByTeacher(Guid teacherId)
+        {
+            try
+            {
+                return Ok(await _classService.GetListClassTeachingByTeacher(teacherId));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetListClassStatusPending")]
+        public async Task<IActionResult> GetListClassStatusPending()
+        {
+            try
+            {
+                return Ok(await _classService.GetListClassStatusPending());
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
