@@ -10,6 +10,7 @@ namespace KidProEdu.Domain.Entities
 {
     public class Request : BaseEntity
     {
+        public string? RequestCode { get; set; }
         public string? RequestDescription { get; set; }
         public string? RequestType { get; set; }
         public DateTime? LeaveDate { get; set; }

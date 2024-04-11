@@ -67,7 +67,7 @@ namespace Infrastructures
             ITeachingClassHistoryRepository teachingClassHistoryRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
             ITransactionRepository transactionRepository, IScheduleRoomRepository scheduleRoomRepository,
             IExamRepository examRepository, IFeedbackRepository feedbackRepository,
-            IChildrenAnswerRepository childrenAnswerRepository
+            IChildrenAnswerRepository childrenAnswerRepository, IConfigPointMultiplierRepository configPointMultiplierRepository
             )
         {
             _dbContext = dbContext;
@@ -110,6 +110,7 @@ namespace Infrastructures
             _examRepository = examRepository;
             _childrenAnswerRepository = childrenAnswerRepository;
             _feedbackRepository = feedbackRepository;
+            _configPointMultiplierRepository = configPointMultiplierRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -187,7 +188,7 @@ namespace Infrastructures
 
         public IFeedbackRepository FeedbackRepository => _feedbackRepository;
 
-        public IConfigPointMultiplierRepository configPointMultiplierRepository => throw new NotImplementedException();
+        public IConfigPointMultiplierRepository ConfigPointMultiplierRepository => _configPointMultiplierRepository;
 
         public async Task<int> SaveChangeAsync()
         {
