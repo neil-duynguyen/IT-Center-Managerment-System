@@ -177,7 +177,7 @@ namespace KidProEdu.Application.Services
                                 }
                                 else
                                 {
-                                    throw new Exception("Không thể thực hiện đổi khi đã có lớp không còn ở trạng thái chờ");
+                                    throw new Exception("Request: "+""+" Không thể thực hiện đổi khi đã có lớp không còn ở trạng thái chờ");
                                 }
 
                                 _unitOfWork.TeachingClassHistoryRepository.Update(currentTeaching);
