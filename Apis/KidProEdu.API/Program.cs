@@ -204,6 +204,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IExamService, ExamService>();
             builder.Services.AddScoped<IChildrenAnswerService, ChildrenAnswerService>();
             builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+            builder.Services.AddScoped<IConfigPointMultiplierService, ConfigPointMultiplierService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));
