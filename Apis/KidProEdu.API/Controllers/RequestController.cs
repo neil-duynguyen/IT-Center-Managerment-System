@@ -18,33 +18,62 @@ namespace KidProEdu.API.Controllers
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> Requests()
         {
-            return Ok(await _requestService.GetRequests());
+            try
+            {
+                return Ok(await _requestService.GetRequests());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> Request(Guid id)
         {
-            var Request = await _requestService.GetRequestById(id);
-            if (Request == null)
+            try
             {
-                return NotFound();
+                var Request = await _requestService.GetRequestById(id);
+                if (Request == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(Request);
             }
-            return Ok(Request);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetRequestByUser/{id}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> GetRequestByUserId(Guid id)
         {
-            return Ok(await _requestService.GetRequestByUser(id));
+            try
+            {
+                return Ok(await _requestService.GetRequestByUser(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-        
+
         [HttpGet("GetRequestByReciever/{id}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> GetRequestByRecieverId(Guid id)
         {
-            return Ok(await _requestService.GetRequestByReceiver(id));
+            try
+            {
+                return Ok(await _requestService.GetRequestByReceiver(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
