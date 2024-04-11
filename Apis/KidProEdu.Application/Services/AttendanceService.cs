@@ -117,6 +117,10 @@ namespace KidProEdu.Application.Services
                 var mapper = _mapper.Map<Attendance>(attendanceUpdate);
                 mapper.StatusAttendance = updateAttendance.StatusAttendance;
                 mapper.Note = updateAttendance.Note;
+                if(mapper.Date.Date > _currentTime.GetCurrentTime().Date)
+                {
+                    throw new Exception("Chưa tới ngày học để điểm danh.");
+                }
                 _unitOfWork.AttendanceRepository.Update(attendanceUpdate);
             }
 

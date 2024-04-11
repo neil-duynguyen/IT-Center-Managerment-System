@@ -108,7 +108,7 @@ namespace KidProEdu.Application.Services
                 /*var transactionsByMonths = await _unitOfWork.TransactionRepository.GetTransactionsByMonth(startDate, endDate);
                 double totalAmountForMonths = transactionsByMonths.Sum(t => t.TotalAmount ?? 0);*/
 
-                var currentMonth = new DateTime(startDate.Year, startDate.Month, 1);
+                var currentMonth = new DateTime(startDate.Year, startDate.Month, startDate.Day);
                 var endMonth = new DateTime(endDate.Year, endDate.Month, 1);
                 while (currentMonth <= endMonth)
                 {
