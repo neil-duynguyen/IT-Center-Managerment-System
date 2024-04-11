@@ -52,6 +52,26 @@ namespace KidProEdu.Infrastructures.Repositories
             return transactions;
         }
 
+        public async Task<List<Transaction>> GetTransactionsByCourse(DateTime startDate, DateTime endDate)
+        {
+            var transactions = await _dbContext.Transaction
+                .Include(x => x.OrderDetail)
+                .ThenInclude(x => x.Course)
+                .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate >= startDate && x.PayDate <= endDate && !x.IsDeleted)
+                .AsNoTracking()
+                .ToListAsync();
+            return transactions;
+        }
+
+        public async Task<List<Transaction>> GetTransactionsByMonth(DateTime startDate, DateTime endDate)
+        {
+            var transactions = await _dbContext.Transaction
+               .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate >= startDate && x.PayDate <= endDate && !x.IsDeleted)
+               .AsNoTracking()
+               .ToListAsync();
+            return transactions;
+        }
+
         public async Task<double> GetTransactionsTotalAmount(DateTime startDate, DateTime endDate)
         {
             var totalAmount = await _dbContext.Transaction

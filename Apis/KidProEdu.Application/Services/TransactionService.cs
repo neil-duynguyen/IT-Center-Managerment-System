@@ -56,34 +56,98 @@ namespace KidProEdu.Application.Services
 
         public async Task<DashBoardViewModel> GetDashBoards(DateTime startDate, DateTime endDate)
         {
-            //get InCome
-            var getTransactionsTotalAmount = await _unitOfWork.TransactionRepository.GetTransactionsTotalAmount(startDate, endDate);
-            //getCommission
-            var getCommissionsTotalAmount = await _unitOfWork.EnrollmentRepository.GetCommissionEnrollmentsTotalAmount(startDate, endDate);
-            //get total chidren
-            var getTotalChildrens = await _unitOfWork.ChildrenRepository.GetTotalChildrens(startDate, endDate);
-            //totalParent
-            var getTotalParents = await _unitOfWork.UserRepository.GetTotalParents(startDate, endDate);
-            //totalManager
-            var getTotalManagers = await _unitOfWork.UserRepository.GetTotalManagers(startDate, endDate);
-            //totalParent
-            var getTotalStaffs = await _unitOfWork.UserRepository.GetTotalStaffs(startDate, endDate);
-            //totalParent
-            var getTotalTeachers = await _unitOfWork.UserRepository.GetTotalTeachers(startDate, endDate);
-            //totalCourse
-            var getTotalCourses = await _unitOfWork.CourseRepository.GetTotalCourses(startDate, endDate);
-            var dashboard = new DashBoardViewModel
+            try
             {
-                TotalAmountTransaction = getTransactionsTotalAmount,
-                TotalCommission = getCommissionsTotalAmount,
-                TotalChildren = getTotalChildrens,
-                TotalCourse = getTotalCourses,
-                TotalManager = getTotalManagers,
-                TotalParent = getTotalParents,
-                TotalStaff = getTotalStaffs,
-                TotalTeacher = getTotalTeachers
-            };
-            return dashboard;
+                //get InCome
+                var getTransactionsTotalAmount = await _unitOfWork.TransactionRepository.GetTransactionsTotalAmount(startDate, endDate);
+                //getCommission
+                var getCommissionsTotalAmount = await _unitOfWork.EnrollmentRepository.GetCommissionEnrollmentsTotalAmount(startDate, endDate);
+                //get total chidren
+                var getTotalChildrens = await _unitOfWork.ChildrenRepository.GetTotalChildrens(startDate, endDate);
+                //totalParent
+                var getTotalParents = await _unitOfWork.UserRepository.GetTotalParents(startDate, endDate);
+                //totalManager
+                var getTotalManagers = await _unitOfWork.UserRepository.GetTotalManagers(startDate, endDate);
+                //totalParent
+                var getTotalStaffs = await _unitOfWork.UserRepository.GetTotalStaffs(startDate, endDate);
+                //totalParent
+                var getTotalTeachers = await _unitOfWork.UserRepository.GetTotalTeachers(startDate, endDate);
+                //totalCourse
+                var getTotalCourses = await _unitOfWork.CourseRepository.GetTotalCourses(startDate, endDate);
+
+
+
+                //dashboard course 
+                var transactionByCourses = new List<DashBoardTransactionSummariseByCourseViewModel>();
+                var transactionsByCourses = await _unitOfWork.TransactionRepository.GetTransactionsByCourse(startDate, endDate);
+                double totalAmountForCourses = transactionsByCourses.Sum(t => t.TotalAmount ?? 0);
+                // Lấy danh sách các khóa học
+                var courses = await _unitOfWork.CourseRepository.GetAllAsync();
+                // Lặp qua từng khóa học
+                foreach (var course in courses)
+                {
+                    // Lọc các giao dịch của khóa học trong năm
+                    var transactionsForCourse = transactionsByCourses.Where(t => t.OrderDetail.CourseId == course.Id).ToList();
+
+                    // Tính tổng số tiền của các giao dịch của khóa học trong năm
+                    double totalAmountForCourse = transactionsForCourse.Sum(t => t.TotalAmount ?? 0);
+                    double percent = totalAmountForCourse == 0 ? 0 : Math.Round(totalAmountForCourse / totalAmountForCourses * 100, 2);
+                    // Tạo view model chứa thông tin giao dịch cho khóa học
+                    var transactionByCourse = new DashBoardTransactionSummariseByCourseViewModel
+                    {
+                        CourseName = course.Name,
+                        TotalAmountCourse = totalAmountForCourse,
+                        Percent = percent
+                    };
+
+                    transactionByCourses.Add(transactionByCourse);
+                }
+
+                //transactionByMonths
+                var transactionByMonths = new List<DashBoardTransactionSummariseByMonthViewModel>();
+                /*var transactionsByMonths = await _unitOfWork.TransactionRepository.GetTransactionsByMonth(startDate, endDate);
+                double totalAmountForMonths = transactionsByMonths.Sum(t => t.TotalAmount ?? 0);*/
+
+                var currentMonth = new DateTime(startDate.Year, startDate.Month, 1);
+                var endMonth = new DateTime(endDate.Year, endDate.Month, 1);
+                while (currentMonth <= endMonth)
+                {
+                    // Tạo một thời điểm cuối tháng
+                    var endOfMonth = currentMonth.AddMonths(1).AddDays(-1);
+                    // Lấy thông tin giao dịch cho tháng hiện tại
+                    var transactionsForMonth = await _unitOfWork.TransactionRepository.GetTransactionsByMonth(currentMonth, endOfMonth);
+                    // Tính tổng số tiền giao dịch cho tháng này
+                    var totalAmountForMonth = transactionsForMonth.Sum(t => t.TotalAmount ?? 0);
+                    // Thêm thông tin vào danh sách transactionByMonths
+                    transactionByMonths.Add(new DashBoardTransactionSummariseByMonthViewModel
+                    {
+                        MonthAndYear = $"{currentMonth.Month}/{currentMonth.Year}",
+                        TotalAmountOfMonthInYear = totalAmountForMonth
+                    });
+                    // Chuyển sang tháng tiếp theo
+                    currentMonth = currentMonth.AddMonths(1);
+                }
+
+
+                var dashboard = new DashBoardViewModel
+                {
+                    TotalAmountTransaction = getTransactionsTotalAmount,
+                    TotalCommission = getCommissionsTotalAmount,
+                    TotalChildren = getTotalChildrens,
+                    TotalCourse = getTotalCourses,
+                    TotalManager = getTotalManagers,
+                    TotalParent = getTotalParents,
+                    TotalStaff = getTotalStaffs,
+                    TotalTeacher = getTotalTeachers,
+                    dashBoardTransactionSummariseByCourseViewModels = transactionByCourses,
+                    dashBoardTransactionSummariseByMonthViewModels = transactionByMonths,
+                };
+                return dashboard;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy thông tin thống kê: " + ex.Message);
+            }
         }
 
         public async Task<List<TransactionViewModel>> GetTransactionDetailByTransactionId(Guid id)
