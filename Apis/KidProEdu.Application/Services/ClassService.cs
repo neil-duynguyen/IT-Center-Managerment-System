@@ -113,7 +113,7 @@ namespace KidProEdu.Application.Services
                 {
                     var getRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(item.Id).Result.FirstOrDefault(x => x.Status == ScheduleRoomStatus.Pending);
                     var getTeacher = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(classId).Result.FirstOrDefault(x => x.TeachingStatus == TeachingStatus.Pending);
-                    scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom != null ? getRoom.Room.Name : null, TeacherName = getTeacher != null ? getTeacher.UserAccount.FullName : null});
+                    scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom != null ? getRoom.Room.Name : null, TeacherName = getTeacher != null ? getTeacher.UserAccount.FullName : null });
                 }
                 mapper.scheduleClassViews = scheduleClassView;
             }
@@ -216,54 +216,71 @@ namespace KidProEdu.Application.Services
                     // start class ghi nhận teachingHistory
                     // ghi nhận trạng thái scheduleRoom
                     // ghi nhận trạng thái phòng học
-
-                    foreach (var item in changeStatusClassViewModel.ids)
                     {
-                        var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(item);
 
-                        if (findClass.StatusOfClass == Domain.Enums.StatusOfClass.Pending)
+                        foreach (var item in changeStatusClassViewModel.ids)
                         {
-                            // ghi nhận teachingHistory
-                            var teachingHistory = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(item)
-                                .Result.FirstOrDefault(x => x.TeachingStatus == Domain.Enums.TeachingStatus.Pending);
-                            teachingHistory.TeachingStatus = Domain.Enums.TeachingStatus.Teaching;
+                            var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(item);
 
-                            _unitOfWork.TeachingClassHistoryRepository.Update(teachingHistory);
-
-                            // bắt đầu ghi nhận trạng thái room và scheduleRoom
-                            var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(item);
-                            foreach (var schedule in schedules)
+                            if (findClass.StatusOfClass == Domain.Enums.StatusOfClass.Pending)
                             {
-                                // ghi nhận scheduleRoom
-                                var findScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
-                                    .Result.FirstOrDefault(x => x.Status.Equals(Domain.Enums.ScheduleRoomStatus.Pending));
+                                // ghi nhận teachingHistory
+                                var teachingHistory = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(item)
+                                    .Result.FirstOrDefault(x => x.TeachingStatus == Domain.Enums.TeachingStatus.Pending);
+                                teachingHistory.TeachingStatus = Domain.Enums.TeachingStatus.Teaching;
 
-                                findScheduleRoom.Status = Domain.Enums.ScheduleRoomStatus.Using;
+                                _unitOfWork.TeachingClassHistoryRepository.Update(teachingHistory);
 
-                                _unitOfWork.ScheduleRoomRepository.Update(findScheduleRoom);
-
-                                // ghi nhận trạng thái phòng học
-                                var listScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
-                                    .Result.Where(x => x.Status == Domain.Enums.ScheduleRoomStatus.Using
-                                    || x.Status == Domain.Enums.ScheduleRoomStatus.Pending)
-                                    .DistinctBy(x => x.RoomId).ToList();
-                                foreach (var scheduleRoom in listScheduleRoom)
+                                // bắt đầu ghi nhận trạng thái room và scheduleRoom
+                                var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(item);
+                                foreach (var schedule in schedules)
                                 {
-                                    var room = await _unitOfWork.RoomRepository.GetByIdAsync((Guid)scheduleRoom.RoomId);
-                                    room.Status = Domain.Enums.StatusOfRoom.Used;
+                                    // ghi nhận scheduleRoom
+                                    var findScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
+                                        .Result.FirstOrDefault(x => x.Status.Equals(Domain.Enums.ScheduleRoomStatus.Pending));
 
-                                    _unitOfWork.RoomRepository.Update(room);
+                                    findScheduleRoom.Status = Domain.Enums.ScheduleRoomStatus.Using;
+
+                                    _unitOfWork.ScheduleRoomRepository.Update(findScheduleRoom);
+
+                                    // ghi nhận trạng thái phòng học
+                                    var listScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
+                                        .Result.Where(x => x.Status == Domain.Enums.ScheduleRoomStatus.Using
+                                        || x.Status == Domain.Enums.ScheduleRoomStatus.Pending)
+                                        .DistinctBy(x => x.RoomId).ToList();
+                                    foreach (var scheduleRoom in listScheduleRoom)
+                                    {
+                                        var room = await _unitOfWork.RoomRepository.GetByIdAsync((Guid)scheduleRoom.RoomId);
+                                        room.Status = Domain.Enums.StatusOfRoom.Used;
+
+                                        _unitOfWork.RoomRepository.Update(room);
+                                    }
+                                }
+
+                                // ghi nhận trạng thái lớp học
+                                foreach (var item in changeStatusClassViewModel.ids)
+                                {
+                                    var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(item);
+
+                                    // change status bỏ qua những class đã cancel hoặc expired
+                                    if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
+                                        || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
+                                        continue;
+
+                                    findClass.StatusOfClass = status;
+
+                                    _unitOfWork.ClassRepository.Update(findClass);
                                 }
                             }
-                        }
-                        else
-                        {
-                            listChildrenPassed.Add(new ChildrenPassedViewModel()
+                            else
                             {
-                                Class = _mapper.Map<ClassViewModel>(findClass)
-                            });
-                        }
+                                listChildrenPassed.Add(new ChildrenPassedViewModel()
+                                {
+                                    Class = _mapper.Map<ClassViewModel>(findClass)
+                                });
+                            }
 
+                        }
                     }
 
                     break;
@@ -274,69 +291,85 @@ namespace KidProEdu.Application.Services
                     // gửi thông báo đến cho staff để xử lí nghiệp vụ tư vấn lớp mới
                     // xóa attendance của thằng children đó và xóa enrollment của nó khỏi lớp
                     // nếu muốn học lại thực hiện đăng kí mới (staff add enrollment mới)
-
-                    foreach (var classId in changeStatusClassViewModel.ids)
                     {
-                        var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
 
-                        if (findClass.StatusOfClass == Domain.Enums.StatusOfClass.Pending)
+                        foreach (var classId in changeStatusClassViewModel.ids)
                         {
-                            // lấy list học sinh theo lớp
-                            var childrenInClass = _unitOfWork.EnrollmentRepository.GetAllAsync().Result.Where(x => x.ClassId == classId).ToList();
+                            var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
 
-                            // lấy ra những staff mà add children đó vô lớp bằng enrollment
-                            var listStaffForChildren = childrenInClass.DistinctBy(x => x.UserId);
-                            // gửi mail cho staff chịu trách nhiệm quản lý
-                            foreach (var enrollment in listStaffForChildren)
+                            if (findClass.StatusOfClass == Domain.Enums.StatusOfClass.Pending)
                             {
-                                // lấy lại list children theo staff
-                                var listChildren = _unitOfWork.EnrollmentRepository.GetAllAsync().Result
-                                    .Where(x => x.UserId == enrollment.UserId).ToList();
+                                // lấy list học sinh theo lớp
+                                var childrenInClass = _unitOfWork.EnrollmentRepository.GetAllAsync().Result.Where(x => x.ClassId == classId).ToList();
 
-                                // tạo file excel chứa list children theo staff
-                                var file = await ExportExcelFileByListAsync(listChildren, "Danh_sach_hs.xlsx");
-
-                                // lấy staff ra để lấy email
-                                var staff = await _unitOfWork.UserRepository.GetByIdAsync(enrollment.UserId);
-
-                                // gửi mail cho từng staff kèm theo file excel list hs mà staff đó add vô (phụ trách) đính kèm
-
-                                await SendEmailUtil.SendEmailWithAttachment(staff.Email, "Thông báo về việc lớp học bị hủy",
-                                    "<p>Thông báo đến thầy/cô phụ trách học sinh, </p></br>" +
-                                    "<p>Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
-                                    " đã bị hủy do không đủ điều kiện để mở lớp, </p></br>" +
-                                    "<p>Thông tin chi tiết được gửi trong file đính kèm, quý thầy cô thực hiện tư vấn lại " +
-                                    "với phụ huynh học sinh để tiến hành đăng kí mới nếu có nguyện vọng! </p></br>" +
-                                    "<p>Trân trọng, </p></br>" +
-                                    "<p>KidPro Education!</p>"
-                                    , file);
-                            }
-
-                            // gửi mail cho parents 
-                            foreach (var children in childrenInClass)
-                            {
-                                var childrenProfile = await _unitOfWork.ChildrenRepository.GetByIdAsync(children.ChildrenProfileId);
-
-                                await SendEmailUtil.SendEmail(childrenProfile.UserAccount.Email, "Thông báo về việc lớp học bị hủy",
-                                    "Thông báo đến quý phụ huynh học sinh, \n\n" +
-                                    "Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
-                                    " đã bị hủy do không đủ điều kiện để mở lớp, vui lòng liên hệ nhân viên" +
-                                    " để được hỗ trợ tư vấn " +
-                                    "đăng kí lớp học mới cho học sinh trong vòng 1 tuần kể từ lúc nhận mail \n\n" +
-                                    //"Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
-                                    "Trân trọng, \n" +
-                                    "KidPro Education!");
-
-                                // xóa attendance của thằng đó trước
-                                foreach (var schedule in findClass.Schedules)
+                                // lấy ra những staff mà add children đó vô lớp bằng enrollment
+                                var listStaffForChildren = childrenInClass.DistinctBy(x => x.UserId);
+                                // gửi mail cho staff chịu trách nhiệm quản lý
+                                foreach (var enrollment in listStaffForChildren)
                                 {
-                                    var listAttendance = await _unitOfWork.AttendanceRepository.GetListAttendanceByScheduleIdAndChilId(schedule.Id, children.ChildrenProfileId);
-                                    _unitOfWork.AttendanceRepository.RemoveRange(listAttendance);
+                                    // lấy lại list children theo staff
+                                    var listChildren = _unitOfWork.EnrollmentRepository.GetAllAsync().Result
+                                        .Where(x => x.UserId == enrollment.UserId).ToList();
+
+                                    // tạo file excel chứa list children theo staff
+                                    var file = await ExportExcelFileByListAsync(listChildren, "Danh_sach_hs.xlsx");
+
+                                    // lấy staff ra để lấy email
+                                    var staff = await _unitOfWork.UserRepository.GetByIdAsync(enrollment.UserId);
+
+                                    // gửi mail cho từng staff kèm theo file excel list hs mà staff đó add vô (phụ trách) đính kèm
+
+                                    await SendEmailUtil.SendEmailWithAttachment(staff.Email, "Thông báo về việc lớp học bị hủy",
+                                        "<p>Thông báo đến thầy/cô phụ trách học sinh, </p></br>" +
+                                        "<p>Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
+                                        " đã bị hủy do không đủ điều kiện để mở lớp, </p></br>" +
+                                        "<p>Thông tin chi tiết được gửi trong file đính kèm, quý thầy cô thực hiện tư vấn lại " +
+                                        "với phụ huynh học sinh để tiến hành đăng kí mới nếu có nguyện vọng! </p></br>" +
+                                        "<p>Trân trọng, </p></br>" +
+                                        "<p>KidPro Education!</p>"
+                                        , file);
+                                }
+
+                                // gửi mail cho parents 
+                                foreach (var children in childrenInClass)
+                                {
+                                    var childrenProfile = await _unitOfWork.ChildrenRepository.GetByIdAsync(children.ChildrenProfileId);
+
+                                    await SendEmailUtil.SendEmail(childrenProfile.UserAccount.Email, "Thông báo về việc lớp học bị hủy",
+                                        "Thông báo đến quý phụ huynh học sinh, \n\n" +
+                                        "Hiện lớp " + findClass.ClassCode + " thuộc môn " + findClass.Course.Name +
+                                        " đã bị hủy do không đủ điều kiện để mở lớp, vui lòng liên hệ nhân viên" +
+                                        " để được hỗ trợ tư vấn " +
+                                        "đăng kí lớp học mới cho học sinh trong vòng 1 tuần kể từ lúc nhận mail \n\n" +
+                                        //"Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
+                                        "Trân trọng, \n" +
+                                        "KidPro Education!");
+
+                                    // xóa attendance của thằng đó trước
+                                    foreach (var schedule in findClass.Schedules)
+                                    {
+                                        var listAttendance = await _unitOfWork.AttendanceRepository.GetListAttendanceByScheduleIdAndChilId(schedule.Id, children.ChildrenProfileId);
+                                        _unitOfWork.AttendanceRepository.RemoveRange(listAttendance);
+                                    }
+                                }
+
+                                _unitOfWork.EnrollmentRepository.RemoveRange(childrenInClass);
+
+                                // ghi nhận trạng thái lớp học
+                                foreach (var item in changeStatusClassViewModel.ids)
+                                {
+                                    var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(item);
+
+                                    // change status bỏ qua những class đã cancel hoặc expired
+                                    if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
+                                        || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
+                                        continue;
+
+                                    findClass.StatusOfClass = status;
+
+                                    _unitOfWork.ClassRepository.Update(findClass);
                                 }
                             }
-
-                            _unitOfWork.EnrollmentRepository.RemoveRange(childrenInClass);
-
                         }
                     }
 
@@ -347,144 +380,161 @@ namespace KidProEdu.Application.Services
                     // ghi nhận trạng thái teachingHistory
                     // ghi nhận trạng thái scheduleRoom
                     // check điểm bài kiểm tra và cấp chứng chỉ
-
-                    foreach (var classId in changeStatusClassViewModel.ids) // lấy từng id trong list class Id
                     {
-                        var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
 
-                        if (findClass.StatusOfClass == Domain.Enums.StatusOfClass.Started)
+                        foreach (var classId in changeStatusClassViewModel.ids) // lấy từng id trong list class Id
                         {
-                            // ghi nhận teachingHistory
-                            var teachingHistories = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(classId)
-                                .Result.Where(x => x.TeachingStatus == Domain.Enums.TeachingStatus.Teaching
-                                 || x.TeachingStatus == Domain.Enums.TeachingStatus.Substitute).ToList();
-                            foreach (var teachingHistory in teachingHistories)
-                            {
-                                teachingHistory.TeachingStatus = Domain.Enums.TeachingStatus.Leaved;
-                                _unitOfWork.TeachingClassHistoryRepository.Update(teachingHistory);
-                            }
+                            var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
 
-                            // bắt đầu ghi nhận trạng thái room và scheduleRoom
-                            var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(classId);
-                            foreach (var schedule in schedules)
+                            if (findClass.StatusOfClass == Domain.Enums.StatusOfClass.Started)
                             {
-                                // ghi nhận trạng thái schedule room
-                                var scheduleRooms = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
-                                    .Result.Where(x => x.Status.Equals(Domain.Enums.ScheduleRoomStatus.Using)
-                                    || x.Status.Equals(Domain.Enums.ScheduleRoomStatus.Temp));
-                                foreach (var scheduleRoom in scheduleRooms)
+                                // ghi nhận teachingHistory
+                                var teachingHistories = _unitOfWork.TeachingClassHistoryRepository.GetTeachingHistoryByClassId(classId)
+                                    .Result.Where(x => x.TeachingStatus == Domain.Enums.TeachingStatus.Teaching
+                                     || x.TeachingStatus == Domain.Enums.TeachingStatus.Substitute).ToList();
+                                foreach (var teachingHistory in teachingHistories)
                                 {
-                                    scheduleRoom.Status = Domain.Enums.ScheduleRoomStatus.Expired;
-                                    _unitOfWork.ScheduleRoomRepository.Update(scheduleRoom);
+                                    teachingHistory.TeachingStatus = Domain.Enums.TeachingStatus.Leaved;
+                                    _unitOfWork.TeachingClassHistoryRepository.Update(teachingHistory);
                                 }
 
-                                // ghi nhận trạng thái room
-                                var listScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
-                                    .Result.Where(x => x.Status == Domain.Enums.ScheduleRoomStatus.Using).DistinctBy(x => x.RoomId);
-
-                                foreach (var scheduleRoom in listScheduleRoom)
+                                // bắt đầu ghi nhận trạng thái room và scheduleRoom
+                                var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(classId);
+                                foreach (var schedule in schedules)
                                 {
-                                    var room = await _unitOfWork.RoomRepository.GetByIdAsync((Guid)scheduleRoom.RoomId);
-                                    room.Status = Domain.Enums.StatusOfRoom.Empty;
-
-                                    _unitOfWork.RoomRepository.Update(room);
-                                }
-                            }
-
-                            // check điểm bài ktra và cấp chứng chỉ
-                            var childrensInClass = await GetChildrenByClassId(classId);
-                            findClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
-                            var exams = await _unitOfWork.ExamRepository.GetExamByCourseId(findClass.CourseId);
-
-                            foreach (var children in childrensInClass) // duyệt từng children trong class để check pass/not pass => cấp chứng chỉ
-                            {
-                                // lấy tổng trung bình điểm của children trong course đó
-                                double ptPoint = 0;
-                                //double pt2Point = 0;
-                                double midTermPoint = 0;
-                                double finalPoint = 0;
-                                foreach (var exam in exams) // duyệt từng bài test theo course mà children đó học
-                                {
-                                    switch (exam.TestType)
+                                    // ghi nhận trạng thái schedule room
+                                    var scheduleRooms = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
+                                        .Result.Where(x => x.Status.Equals(Domain.Enums.ScheduleRoomStatus.Using)
+                                        || x.Status.Equals(Domain.Enums.ScheduleRoomStatus.Temp));
+                                    foreach (var scheduleRoom in scheduleRooms)
                                     {
-                                        case Domain.Enums.TestType.Progress:
-                                            var pt = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result
-                                                .Where(x => x.ChildrenProfileId == children.Children.Id
-                                                && x.ExamId == exam.Id).ToList();
-                                            foreach (var question in pt)
-                                            {
-                                                ptPoint += question.ScorePerQuestion;
-                                            }
-                                            break;
-                                        case Domain.Enums.TestType.MidTerm:
-                                            var midterm = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result
-                                                .Where(x => x.ChildrenProfileId == children.Children.Id
-                                                && x.ExamId == exam.Id).ToList();
-                                            foreach (var question in midterm)
-                                            {
-                                                midTermPoint += question.ScorePerQuestion;
-                                            }
-                                            break;
-                                        case Domain.Enums.TestType.Final:
-                                            var final = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result
-                                                .Where(x => x.ChildrenProfileId == children.Children.Id
-                                                && x.ExamId == exam.Id).ToList();
-                                            foreach (var question in final)
-                                            {
-                                                finalPoint += question.ScorePerQuestion;
-                                            }
-                                            break;
-                                        default:
-                                            break;
+                                        scheduleRoom.Status = Domain.Enums.ScheduleRoomStatus.Expired;
+                                        _unitOfWork.ScheduleRoomRepository.Update(scheduleRoom);
+                                    }
+
+                                    // ghi nhận trạng thái room
+                                    var listScheduleRoom = _unitOfWork.ScheduleRoomRepository.GetScheduleRoomBySchedule(schedule.Id)
+                                        .Result.Where(x => x.Status == Domain.Enums.ScheduleRoomStatus.Using).DistinctBy(x => x.RoomId);
+
+                                    foreach (var scheduleRoom in listScheduleRoom)
+                                    {
+                                        var room = await _unitOfWork.RoomRepository.GetByIdAsync((Guid)scheduleRoom.RoomId);
+                                        room.Status = Domain.Enums.StatusOfRoom.Empty;
+
+                                        _unitOfWork.RoomRepository.Update(room);
                                     }
                                 }
 
-                                // 2 bài pt mỗi bài 15%, 1 bài midterm 30%, 1 bài final 40%
-                                var totalScore = ptPoint * (await _unitOfWork.ConfigPointMultiplierRepository.GetConfigPointByTestType(TestType.Progress)).Multiplier
-                                    + midTermPoint * (await _unitOfWork.ConfigPointMultiplierRepository.GetConfigPointByTestType(TestType.MidTerm)).Multiplier
-                                    + finalPoint * (await _unitOfWork.ConfigPointMultiplierRepository.GetConfigPointByTestType(TestType.Final)).Multiplier;
+                                // check điểm bài ktra và cấp chứng chỉ
+                                var childrensInClass = await GetChildrenByClassId(classId);
+                                findClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
+                                var exams = await _unitOfWork.ExamRepository.GetExamByCourseId(findClass.CourseId);
 
-                                /*// lấy tình trạng điểm danh của children trong course đó
-                                var listAttendances = new List<Attendance>();
-                                foreach (var schedule in findClass.Schedules)
+                                foreach (var children in childrensInClass) // duyệt từng children trong class để check pass/not pass => cấp chứng chỉ
                                 {
-                                    listAttendances.AddRange(await _unitOfWork.AttendanceRepository
-                                        .GetListAttendanceByScheduleIdAndChilId(schedule.Id, children.Id));
-                                }
-
-                                var listAbsent = new List<Attendance>();
-                                if (listAttendances.Count > 0)
-                                {
-                                    listAbsent = listAttendances.Where(x => x.StatusAttendance == Domain.Enums.StatusAttendance.Absent).ToList();
-                                }*/
-
-                                // trả ra list children để cấp certificate nếu đủ điều kiện pass (trung bình >=5, k nghỉ quá 20%)
-                                if (totalScore >= 5)
-                                {
-                                    listChildrenPassed.Add(new ChildrenPassedViewModel()
+                                    // lấy tổng trung bình điểm của children trong course đó
+                                    double ptPoint = 0;
+                                    //double pt2Point = 0;
+                                    double midTermPoint = 0;
+                                    double finalPoint = 0;
+                                    foreach (var exam in exams) // duyệt từng bài test theo course mà children đó học
                                     {
-                                        ChildrenProfile = _mapper.Map<ChildrenProfileViewModel>(children),
-                                        Course = _mapper.Map<CourseViewModel>(await _unitOfWork.CourseRepository.GetByIdAsync(findClass.CourseId))
-                                    });
+                                        switch (exam.TestType)
+                                        {
+                                            case Domain.Enums.TestType.Progress:
+                                                var pt = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result
+                                                    .Where(x => x.ChildrenProfileId == children.Children.Id
+                                                    && x.ExamId == exam.Id).ToList();
+                                                foreach (var question in pt)
+                                                {
+                                                    ptPoint += question.ScorePerQuestion;
+                                                }
+                                                break;
+                                            case Domain.Enums.TestType.MidTerm:
+                                                var midterm = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result
+                                                    .Where(x => x.ChildrenProfileId == children.Children.Id
+                                                    && x.ExamId == exam.Id).ToList();
+                                                foreach (var question in midterm)
+                                                {
+                                                    midTermPoint += question.ScorePerQuestion;
+                                                }
+                                                break;
+                                            case Domain.Enums.TestType.Final:
+                                                var final = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result
+                                                    .Where(x => x.ChildrenProfileId == children.Children.Id
+                                                    && x.ExamId == exam.Id).ToList();
+                                                foreach (var question in final)
+                                                {
+                                                    finalPoint += question.ScorePerQuestion;
+                                                }
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }
 
-                                }
-                                /*if (totalScore >= 5 && (listAbsent.Count <= (listAttendances.Count * 0.2)))
-                                {
-                                    listChildrenPassed.Add(new ChildrenPassedViewModel()
+                                    // 2 bài pt mỗi bài 15%, 1 bài midterm 30%, 1 bài final 40%
+                                    var totalScore = ptPoint * (await _unitOfWork.ConfigPointMultiplierRepository.GetConfigPointByTestType(TestType.Progress)).Multiplier
+                                        + midTermPoint * (await _unitOfWork.ConfigPointMultiplierRepository.GetConfigPointByTestType(TestType.MidTerm)).Multiplier
+                                        + finalPoint * (await _unitOfWork.ConfigPointMultiplierRepository.GetConfigPointByTestType(TestType.Final)).Multiplier;
+
+                                    /*// lấy tình trạng điểm danh của children trong course đó
+                                    var listAttendances = new List<Attendance>();
+                                    foreach (var schedule in findClass.Schedules)
                                     {
-                                        ChildrenProfile = _mapper.Map<ChildrenProfileViewModel>(children),
-                                        Course = _mapper.Map<CourseViewModel>(await _unitOfWork.CourseRepository.GetByIdAsync(findClass.CourseId))
-                                    });
+                                        listAttendances.AddRange(await _unitOfWork.AttendanceRepository
+                                            .GetListAttendanceByScheduleIdAndChilId(schedule.Id, children.Id));
+                                    }
 
-                                }*/
+                                    var listAbsent = new List<Attendance>();
+                                    if (listAttendances.Count > 0)
+                                    {
+                                        listAbsent = listAttendances.Where(x => x.StatusAttendance == Domain.Enums.StatusAttendance.Absent).ToList();
+                                    }*/
+
+                                    // trả ra list children để cấp certificate nếu đủ điều kiện pass (trung bình >=5, k nghỉ quá 20%)
+                                    if (totalScore >= 5)
+                                    {
+                                        listChildrenPassed.Add(new ChildrenPassedViewModel()
+                                        {
+                                            ChildrenProfile = _mapper.Map<ChildrenProfileViewModel>(children),
+                                            Course = _mapper.Map<CourseViewModel>(await _unitOfWork.CourseRepository.GetByIdAsync(findClass.CourseId))
+                                        });
+
+                                    }
+                                    /*if (totalScore >= 5 && (listAbsent.Count <= (listAttendances.Count * 0.2)))
+                                    {
+                                        listChildrenPassed.Add(new ChildrenPassedViewModel()
+                                        {
+                                            ChildrenProfile = _mapper.Map<ChildrenProfileViewModel>(children),
+                                            Course = _mapper.Map<CourseViewModel>(await _unitOfWork.CourseRepository.GetByIdAsync(findClass.CourseId))
+                                        });
+
+                                    }*/
+
+                                    // ghi nhận trạng thái lớp học
+                                    foreach (var item in changeStatusClassViewModel.ids)
+                                    {
+                                        var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(item);
+
+                                        // change status bỏ qua những class đã cancel hoặc expired
+                                        if (findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Cancel)
+                                            || findClass.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Expired))
+                                            continue;
+
+                                        findClass.StatusOfClass = status;
+
+                                        _unitOfWork.ClassRepository.Update(findClass);
+                                    }
+                                }
                             }
-                        }
-                        else
-                        {
-                            listChildrenPassed.Add(new ChildrenPassedViewModel()
+                            else
                             {
-                                Class = _mapper.Map<ClassViewModel>(findClass)
-                            });
+                                listChildrenPassed.Add(new ChildrenPassedViewModel()
+                                {
+                                    Class = _mapper.Map<ClassViewModel>(findClass)
+                                });
+                            }
                         }
                     }
 
@@ -493,7 +543,7 @@ namespace KidProEdu.Application.Services
                     break;
             }
 
-            // ghi nhận trạng thái lớp học
+            /*// ghi nhận trạng thái lớp học
             foreach (var item in changeStatusClassViewModel.ids)
             {
                 var findClass = await _unitOfWork.ClassRepository.GetByIdAsync(item);
@@ -506,7 +556,7 @@ namespace KidProEdu.Application.Services
                 findClass.StatusOfClass = status;
 
                 _unitOfWork.ClassRepository.Update(findClass);
-            }
+            }*/
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? listChildrenPassed : throw new Exception("Cập nhật trạng thái lớp thất bại");
         }
