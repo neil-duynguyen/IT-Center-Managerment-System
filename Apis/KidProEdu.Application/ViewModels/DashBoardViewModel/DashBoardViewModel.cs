@@ -16,7 +16,7 @@ namespace KidProEdu.Application.ViewModels.DashBoardViewModel
         public int TotalChildren { get; set; }
         public int TotalCourse {  get; set; }
         public int TotalTeacher { get; set; }
-        //public List<DashBoardTransactionSummariseByMonthViewModel> dashBoardTransactionSummariseByMonthViewModels { get; set; }
-        //public List<DashBoardTransactionSummariseByCourseViewModel> dashBoardTransactionSummariseByCourseViewModels { get; set; }
+        public List<DashBoardTransactionSummariseByMonthViewModel> dashBoardTransactionSummariseByMonthViewModels { get; set; }
+        public List<DashBoardTransactionSummariseByCourseViewModel> dashBoardTransactionSummariseByCourseViewModels { get; set; }
     }
 }
