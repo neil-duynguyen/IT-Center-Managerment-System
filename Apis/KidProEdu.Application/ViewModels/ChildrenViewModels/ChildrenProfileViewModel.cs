@@ -9,7 +9,7 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
     public class ChildrenProfileViewModel
     {
         public Guid Id { get; set; } // này là id nó childrenId
-        //public Guid UserId { get; set; } // này là id thằng cha nó
+        public Guid UserId { get; set; } // này là id thằng cha nó
         public string FullName { get; set; }
         public string? GenderType { get; set; }
         public DateTime BirthDay { get; set; }
