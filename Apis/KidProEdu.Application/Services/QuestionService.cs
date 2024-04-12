@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Questions;
 using KidProEdu.Application.ViewModels.QuestionViewModels;
@@ -148,6 +149,41 @@ namespace KidProEdu.Application.Services
                     };
                     listModel.Add(vm);
                 }
+                else if (createExamViewModels.FirstOrDefault().Type.Equals(Domain.Enums.QuestionType.Course)
+                    && createExamViewModels.FirstOrDefault().TotalQuestion != null)
+                {
+                    Random random = new Random();
+
+                    var questions = _unitOfWork.QuestionRepository.GetQuestionByType(Domain.Enums.QuestionType.Course)
+                        .Result.Where(x => x.LessionId == createExamViewModels.FirstOrDefault().LessonId);
+
+                    // phân chia danh sách câu hỏi thành các danh sách con theo cấp độ
+                    var level1Questions = questions.Where(q => q.Level == 1).ToList();
+                    var level2Questions = questions.Where(q => q.Level == 2).ToList();
+                    var level3Questions = questions.Where(q => q.Level == 3).ToList();
+
+                    // tính số lượng câu hỏi mong muốn cho mỗi cấp độ dựa trên tỉ lệ
+                    int totalQuestions = (int)createExamViewModels[0].TotalQuestion;
+                    int level1Count = (int)(totalQuestions * 0.4);
+                    int level2Count = (int)(totalQuestions * 0.4);
+                    int level3Count = totalQuestions - level1Count - level2Count; // còn lại cho cấp độ 3
+
+                    // lấy ngẫu nhiên các câu hỏi từ mỗi danh sách con
+                    var randomLevel1Questions = level1Questions.OrderBy(x => random.Next()).Take(level1Count);
+                    var randomLevel2Questions = level2Questions.OrderBy(x => random.Next()).Take(level2Count);
+                    var randomLevel3Questions = level3Questions.OrderBy(x => random.Next()).Take(level3Count);
+
+                    // kết hợp danh sách câu hỏi từ mỗi cấp độ vào danh sách câu hỏi cuối cùng
+                    var randomList = randomLevel1Questions.Concat(randomLevel2Questions).Concat(randomLevel3Questions).ToList();
+
+                    var vm = new QuestionByLessonViewModel
+                    {
+                        LessonId = createExamViewModels.FirstOrDefault().LessonId,
+                        Questions = randomList,
+                        Type = "Entry"
+                    };
+                    listModel.Add(vm);
+                }
             }
             else
             {
@@ -155,7 +191,8 @@ namespace KidProEdu.Application.Services
 
                 foreach (var item in createExamViewModels)
                 {
-                    var questions = await _unitOfWork.QuestionRepository.GetQuestionByLesson((Guid)item.LessonId);
+                    var questions = _unitOfWork.QuestionRepository.GetQuestionByLesson((Guid)item.LessonId)
+                        .Result.Where(x => x.LessionId == item.LessonId);
 
                     // phân chia danh sách câu hỏi thành các danh sách con theo cấp độ
                     var level1Questions = questions.Where(q => q.Level == 1).ToList();
