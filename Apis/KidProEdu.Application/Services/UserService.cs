@@ -76,7 +76,7 @@ namespace KidProEdu.Application.Services
              };*/
 
             var newUser = _mapper.Map<UserAccount>(userObject);
-            //newUser.PasswordHash = newUser.PasswordHash.Hash();
+            newUser.PasswordHash = new String("User@123").Hash();
             newUser.Status = Domain.Enums.StatusUser.Enable;
             newUser.LocationId = _unitOfWork.UserRepository.GetByIdAsync(_claimsService.GetCurrentUserId).Result.LocationId;
 
@@ -89,7 +89,7 @@ namespace KidProEdu.Application.Services
             }
 
             SendEmailUtil.SendEmail(newUser.Email, "Thông báo đăng kí tài khoản KidProEdu", 
-                "Thông tin tài khoản \n " +
+                "Thông tin tài khoản\n " +
                 "UserName: " + newUser.UserName+ 
                 "\nPassword: User@123");
 
