@@ -508,7 +508,7 @@ namespace KidProEdu.Application.Services
                                     {
                                         listChildrenPassed.Add(new ChildrenPassedViewModel()
                                         {
-                                            ChildrenProfile = _mapper.Map<ChildrenProfileViewModel>(children.Children),
+                                            ChildrenProfile = _mapper.Map<ChildrenProfileViewModel>(await _unitOfWork.ChildrenRepository.GetByIdAsync(children.Id)),
                                             Course = _mapper.Map<CourseViewModel>(await _unitOfWork.CourseRepository.GetByIdAsync(findClass.CourseId))
                                         });
 
