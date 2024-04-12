@@ -18,9 +18,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<Class>> GetClassByClassCode(string classCode)
         {
             var requests = await _dbContext.Class
-                .Where(x => x.ClassCode.ToLower() == classCode.ToLower() && x.IsDeleted == false
-                && (x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Pending)
-                || x.StatusOfClass.Equals(Domain.Enums.StatusOfClass.Started)))
+                .Where(x => x.ClassCode.ToLower() == classCode.ToLower() && x.IsDeleted == false)
                 .ToListAsync();
 
             return requests;

@@ -92,7 +92,7 @@ namespace KidProEdu.Application.Services
             var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
 
             //nếu đơn hàng là thanh toán bằng tiền mặt
-            if (getOrderById.EWalletMethod == string.Empty)
+            if (getOrderById.EWalletMethod is null)
             {
                var result = await UpdateOrderWhenCash(orderId);
                return result;
