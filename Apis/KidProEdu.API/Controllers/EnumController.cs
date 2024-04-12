@@ -99,5 +99,12 @@ namespace KidProEdu.API.Controllers
             List<EnumViewModel> enums = ((StatusAttendance[])Enum.GetValues(typeof(StatusAttendance))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
             return Ok(enums);
         }
+
+        [HttpGet("StatusOfRequest")]
+        public async Task<IActionResult> StatusOfRequest()
+        {
+            List<EnumViewModel> enums = ((StatusOfRequest[])Enum.GetValues(typeof(StatusOfRequest))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            return Ok(enums);
+        }
     }
 }

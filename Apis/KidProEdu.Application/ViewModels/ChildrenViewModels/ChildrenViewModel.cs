@@ -9,10 +9,10 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
     public class ChildrenViewModel
     {
         public Guid Id { get; set; }
+        public string ChildrenCode { get; set; }
         public string FullName { get; set; }
         public string? GenderType { get; set; }
         public string BirthDay { get; set; }
-        public string? Avatar { get; set; }
         public string? SpecialSkill { get; set; }
         public IList<ClassViewModelInChildren> Classes { get; set; }
         public IList<CourseViewModelInChildren> Courses { get; set; }
