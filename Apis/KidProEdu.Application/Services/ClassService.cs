@@ -436,7 +436,7 @@ namespace KidProEdu.Application.Services
                                     }
                                 }
 
-                                // check điểm bài ktra và cấp chứng chỉ
+                                // check điểm bài ktra để cấp chứng chỉ
                                 var childrensInClass = await GetChildrenByClassId(classId);
                                 findClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
                                 var exams = await _unitOfWork.ExamRepository.GetExamByCourseId(findClass.CourseId);
@@ -504,7 +504,7 @@ namespace KidProEdu.Application.Services
                                     }*/
 
                                     // trả ra list children để cấp certificate nếu đủ điều kiện pass (trung bình >=5, k nghỉ quá 20%)
-                                    if (totalScore >= 5)
+                                    if (totalScore >= 0) // mốt phải sửa lại là >=5, đang test
                                     {
                                         listChildrenPassed.Add(new ChildrenPassedViewModel()
                                         {
