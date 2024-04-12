@@ -58,41 +58,37 @@ namespace KidProEdu.Application.Services
         {
             try
             {
-                //get InCome
+              
                 var getTransactionsTotalAmount = await _unitOfWork.TransactionRepository.GetTransactionsTotalAmount(startDate, endDate);
-                //getCommission
+
                 var getCommissionsTotalAmount = await _unitOfWork.EnrollmentRepository.GetCommissionEnrollmentsTotalAmount(startDate, endDate);
-                //get total chidren
+               
                 var getTotalChildrens = await _unitOfWork.ChildrenRepository.GetTotalChildrens(startDate, endDate);
-                //totalParent
+              
                 var getTotalParents = await _unitOfWork.UserRepository.GetTotalParents(startDate, endDate);
-                //totalManager
+              
                 var getTotalManagers = await _unitOfWork.UserRepository.GetTotalManagers(startDate, endDate);
-                //totalParent
+               
                 var getTotalStaffs = await _unitOfWork.UserRepository.GetTotalStaffs(startDate, endDate);
-                //totalParent
+                
                 var getTotalTeachers = await _unitOfWork.UserRepository.GetTotalTeachers(startDate, endDate);
-                //totalCourse
-                var getTotalCourses = await _unitOfWork.CourseRepository.GetTotalCourses(startDate, endDate);
-
-
-
-                //dashboard course 
+              
+                var getTotalCourses = await _unitOfWork.CourseRepository.GetTotalCourses(startDate, endDate);      
                 var transactionByCourses = new List<DashBoardTransactionSummariseByCourseViewModel>();
                 var transactionsByCourses = await _unitOfWork.TransactionRepository.GetTransactionsByCourse(startDate, endDate);
                 double totalAmountForCourses = transactionsByCourses.Sum(t => t.TotalAmount ?? 0);
-                // Lấy danh sách các khóa học
+             
                 var courses = await _unitOfWork.CourseRepository.GetAllAsync();
-                // Lặp qua từng khóa học
+               
                 foreach (var course in courses)
                 {
-                    // Lọc các giao dịch của khóa học trong năm
+               
                     var transactionsForCourse = transactionsByCourses.Where(t => t.OrderDetail.CourseId == course.Id).ToList();
 
-                    // Tính tổng số tiền của các giao dịch của khóa học trong năm
+             
                     double totalAmountForCourse = transactionsForCourse.Sum(t => t.TotalAmount ?? 0);
                     double percent = totalAmountForCourse == 0 ? 0 : Math.Round(totalAmountForCourse / totalAmountForCourses * 100, 2);
-                    // Tạo view model chứa thông tin giao dịch cho khóa học
+               
                     var transactionByCourse = new DashBoardTransactionSummariseByCourseViewModel
                     {
                         CourseName = course.Name,
@@ -103,29 +99,33 @@ namespace KidProEdu.Application.Services
                     transactionByCourses.Add(transactionByCourse);
                 }
 
-                //transactionByMonths
+          
                 var transactionByMonths = new List<DashBoardTransactionSummariseByMonthViewModel>();
-                /*var transactionsByMonths = await _unitOfWork.TransactionRepository.GetTransactionsByMonth(startDate, endDate);
-                double totalAmountForMonths = transactionsByMonths.Sum(t => t.TotalAmount ?? 0);*/
+              
 
-                var currentMonth = new DateTime(startDate.Year, startDate.Month, startDate.Day);
-                var endMonth = new DateTime(endDate.Year, endDate.Month, 1);
-                while (currentMonth <= endMonth)
+                var dateStart = new DateTime(startDate.Year, startDate.Month, startDate.Day);
+                var dateEnd = new DateTime(endDate.Year, endDate.Month, endDate.Day);
+                while (dateStart <= dateEnd)
                 {
-                    // Tạo một thời điểm cuối tháng
-                    var endOfMonth = currentMonth.AddMonths(1).AddDays(-1);
-                    // Lấy thông tin giao dịch cho tháng hiện tại
-                    var transactionsForMonth = await _unitOfWork.TransactionRepository.GetTransactionsByMonth(currentMonth, endOfMonth);
-                    // Tính tổng số tiền giao dịch cho tháng này
+
+                    var endOfMonth = new DateTime(dateStart.Year, dateStart.Month, DateTime.DaysInMonth(dateStart.Year, dateStart.Month));
+
+                    if (dateStart.Year == endDate.Year && dateStart.Month == endDate.Month)
+                    {
+                        endOfMonth = endDate; 
+                    }
+
+                    var transactionsForMonth = await _unitOfWork.TransactionRepository.GetTransactionsByMonth(dateStart, endOfMonth);
+                   
                     var totalAmountForMonth = transactionsForMonth.Sum(t => t.TotalAmount ?? 0);
-                    // Thêm thông tin vào danh sách transactionByMonths
+                   
                     transactionByMonths.Add(new DashBoardTransactionSummariseByMonthViewModel
                     {
-                        MonthAndYear = $"{currentMonth.Month}/{currentMonth.Year}",
+                        MonthAndYear = $"{dateStart.Month}/{dateStart.Year}",
                         TotalAmountOfMonthInYear = totalAmountForMonth
                     });
-                    // Chuyển sang tháng tiếp theo
-                    currentMonth = currentMonth.AddMonths(1);
+
+                    dateStart = endOfMonth.AddDays(1);
                 }
 
 
@@ -162,22 +162,22 @@ namespace KidProEdu.Application.Services
             {
                 var transactionByCourses = new List<TransactionByCoursesViewModel>();
 
-                // Lấy danh sách các giao dịch trong năm
+            
                 var transactionsInYear = await _unitOfWork.TransactionRepository.GetTransactionByYear(monthInYear);
                 double totalAmountForYear = transactionsInYear.Sum(t => t.TotalAmount ?? 0);
-                // Lấy danh sách các khóa học
+           
                 var courses = await _unitOfWork.CourseRepository.GetAllAsync();
 
-                // Lặp qua từng khóa học
+          
                 foreach (var course in courses)
                 {
-                    // Lọc các giao dịch của khóa học trong năm
+                 
                     var transactionsForCourse = transactionsInYear.Where(t => t.OrderDetail.CourseId == course.Id).ToList();
 
-                    // Tính tổng số tiền của các giao dịch của khóa học trong năm
+                   
                     double totalAmountForCourse = transactionsForCourse.Sum(t => t.TotalAmount ?? 0);
                     double percent = totalAmountForCourse == 0 ? 0 : Math.Round(totalAmountForCourse / totalAmountForYear * 100, 2);
-                    // Tạo view model chứa thông tin giao dịch cho khóa học
+            
                     var transactionByCourse = new TransactionByCoursesViewModel
                     {
                         CourseName = course.Name,
@@ -201,14 +201,10 @@ namespace KidProEdu.Application.Services
         {
             try
             {
-                // Lấy danh sách các giao dịch từ Repository
+                
                 var transactions = await _unitOfWork.TransactionRepository.GetAllAsync();
                 var mapper = _mapper.Map<List<TransactionViewModel>>(transactions);
-
-                // Tính tổng số tiền của các giao dịch
                 double totalAmount = transactions.Sum(t => t.TotalAmount ?? 0);
-
-                // Tạo view model chứa thông tin tổng hợp
                 var transactionsSummarise = new TransactionSummaryViewModel
                 {
                     Transactions = mapper,
@@ -219,7 +215,7 @@ namespace KidProEdu.Application.Services
             }
             catch (Exception ex)
             {
-                // Nếu có lỗi xảy ra, trả về null hoặc xử lý tùy thuộc vào yêu cầu của bạn
+               
                 throw new Exception("Lỗi lấy danh sách thống kê" + ex.Message);
             }
         }
@@ -230,26 +226,18 @@ namespace KidProEdu.Application.Services
             {
                 var transactionSummaries = new List<TransactionSummaryByMonthInYearViewModel>();
 
-                // Lặp qua từ tháng 1 đến tháng trước tháng hiện tại
+               
                 for (int month = 1; month <= monthInYear.Month; month++)
                 {
-                    var monthStart = new DateTime(monthInYear.Year, month, 1);
-
-                    // Lấy danh sách các giao dịch trong tháng
-                    var transactionsInMonth = await _unitOfWork.TransactionRepository.GetTransactionByMonthInYear(monthStart);
-
-                    // Tính tổng số tiền của các giao dịch trong tháng
+                    var monthStart = new DateTime(monthInYear.Year, month, 1);                 
+                    var transactionsInMonth = await _unitOfWork.TransactionRepository.GetTransactionByMonthInYear(monthStart);                   
                     double totalAmountMonth = transactionsInMonth.Sum(t => t.TotalAmount ?? 0);
-
-                    // Tính tổng số tiền của tất cả các giao dịch từ đầu năm đến thời điểm hiện tại
                     var transactionsInYear = await _unitOfWork.TransactionRepository.GetTransactionByYear(monthStart);
 
                     double totalAmountYear = transactionsInYear.Sum(t => t.TotalAmount ?? 0);
-
-                    // Tính phần trăm số tiền trong tháng so với tổng số tiền của tất cả các giao dịch
+                 
                     double percent = totalAmountYear == 0 ? 0 : Math.Round(totalAmountMonth / totalAmountYear * 100, 2);
-
-                    // Tạo view model chứa thông tin thống kê của tháng
+                  
                     var transactionSummary = new TransactionSummaryByMonthInYearViewModel
                     {
                         Month = monthStart.ToString("MMMM yyyy"),
