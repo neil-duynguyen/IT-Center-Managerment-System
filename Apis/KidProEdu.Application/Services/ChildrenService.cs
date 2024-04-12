@@ -191,22 +191,20 @@ namespace KidProEdu.Application.Services
                 var childs = await _unitOfWork.ChildrenRepository.GetAllAsync();
                 childrenSummarise.TotalChildren = childs.Count;
 
-                // Loop through from January to the month before the current month
                 for (int month = 1; month <= MonthAndYear.Month; month++)
                 {
                     var monthStart = new DateTime(MonthAndYear.Year, month, 1);
 
                     var childInMonth = await _unitOfWork.ChildrenRepository.GetChildrenProfiles(monthStart);
 
-                    // Tạo view model chứa thông tin thống kê của tháng
+       
                     var childsByMonth = new ChildrenSummariseByMonthViewModel
                     {
                         totalByMonth = childInMonth.Count,
                         childrens = _mapper.Map<List<ChildrenProfileViewModel>>(childInMonth),
                     };
 
-                    // Add the child summary to the overall summary (if your data structure allows)
-                    // childrenSummarise.Add(childsByMonth); // This line might need adjustment based on your data structure
+                    
                 }
 
                 return childrenSummarise;
