@@ -101,7 +101,7 @@ namespace KidProEdu.Application.Services
                 {
                     var getRoom = _unitOfWork.ScheduleRoomRepository.GetAllAsync().Result.Where(x => x.Schedule.Id == item.Id).FirstOrDefault(x => x.Status == ScheduleRoomStatus.Using);
                     var getTeacher = _unitOfWork.TeachingClassHistoryRepository.GetAllAsync().Result.Where(x => x.ClassId == classId).FirstOrDefault(x => x.TeachingStatus == TeachingStatus.Teaching);
-                    scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom != null ? getRoom.Room.Name : null, TeacherName = getTeacher != null ? getTeacher.UserAccount.FullName : null });
+                    scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom != null ? getRoom.Room.Name : null, TeacherId = getTeacher != null ? getTeacher.UserAccount.Id : null, TeacherName = getTeacher != null ? getTeacher.UserAccount.FullName : null });
                 }
                 mapper.scheduleClassViews = scheduleClassView;
             }
@@ -113,7 +113,7 @@ namespace KidProEdu.Application.Services
                 {
                     var getRoom = _unitOfWork.ScheduleRoomRepository.GetAllAsync().Result.Where(x => x.Schedule.Id == item.Id).FirstOrDefault(x => x.Status == ScheduleRoomStatus.Expired);
                     var getTeacher = _unitOfWork.TeachingClassHistoryRepository.GetAllAsync().Result.Where(x => x.ClassId == classId).FirstOrDefault(x => x.TeachingStatus == TeachingStatus.Leaved);
-                    scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom != null ? getRoom.Room.Name : null, TeacherName = getTeacher != null ? getTeacher.UserAccount.FullName : null });
+                    scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom != null ? getRoom.Room.Name : null, TeacherId = getTeacher != null ? getTeacher.UserAccount.Id : null, TeacherName = getTeacher != null ? getTeacher.UserAccount.FullName : null });
                 }
                 mapper.scheduleClassViews = scheduleClassView;
             }
@@ -125,7 +125,7 @@ namespace KidProEdu.Application.Services
                 {
                     var getRoom = _unitOfWork.ScheduleRoomRepository.GetAllAsync().Result.Where(x => x.Schedule.Id == item.Id).FirstOrDefault(x => x.Status == ScheduleRoomStatus.Pending);
                     var getTeacher = _unitOfWork.TeachingClassHistoryRepository.GetAllAsync().Result.Where(x => x.ClassId == classId).FirstOrDefault(x => x.TeachingStatus == TeachingStatus.Pending);
-                    scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom != null ? getRoom.Room.Name : null, TeacherName = getTeacher != null ? getTeacher.UserAccount.FullName : null });
+                    scheduleClassView.Add(new ScheduleClassViewModel() { Slot = item.Slot.Name, StartTime = item.StartTime, EndTime = item.EndTime, DayInWeek = item.DayInWeek, RoomName = getRoom != null ? getRoom.Room.Name : null, TeacherId = getTeacher != null ? getTeacher.UserAccount.Id : null, TeacherName = getTeacher != null ? getTeacher.UserAccount.FullName : null });
                 }
                 mapper.scheduleClassViews = scheduleClassView;
             }

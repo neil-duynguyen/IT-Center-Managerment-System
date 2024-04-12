@@ -31,6 +31,7 @@ namespace KidProEdu.Application.ViewModels.ClassViewModels
         public DateTime? EndTime { get; set; }
         public string? DayInWeek { get; set; }
         public string? RoomName { get; set; }
+        public Guid? TeacherId { get; set; }
         public string? TeacherName { get; set; }
     }
 }
