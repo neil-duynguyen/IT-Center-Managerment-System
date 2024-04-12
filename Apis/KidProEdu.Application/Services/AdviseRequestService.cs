@@ -27,7 +27,7 @@ namespace KidProEdu.Application.Services
         }
         public async Task<bool> CreateAdviseRequest(CreateAdviseRequestViewModel createAdviseRequestViewModel)
         {
-            var validator = new CreateAdviseRequestViewModelValidator();
+            var validator = new CreateAdviseRequestViewModelValidator(_currentTime);
             var validationResult = validator.Validate(createAdviseRequestViewModel);
             if (!validationResult.IsValid)
             {
