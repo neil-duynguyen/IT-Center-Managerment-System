@@ -1,4 +1,5 @@
-﻿using KidProEdu.Application.Interfaces;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.ExamViewModels;
 using KidProEdu.Application.ViewModels.SkillCertificateViewModels;
 using Microsoft.AspNetCore.Http;
@@ -63,8 +64,16 @@ namespace KidProEdu.API.Controllers.Manager
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> PostExam(CreateExamViewModel2 createExamViewModel)
         {
-            var result = await _examService.CreateExam(createExamViewModel);
-            return Ok(result);
+            
+            try
+            {
+                var result = await _examService.CreateExam(createExamViewModel);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]

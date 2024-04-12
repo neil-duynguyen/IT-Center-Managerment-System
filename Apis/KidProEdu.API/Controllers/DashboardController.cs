@@ -25,43 +25,88 @@ namespace KidProEdu.API.Controllers
         [HttpGet("TransactionsSummarise")]
         public async Task<IActionResult> GetAllTransactionsSummarise()
         {
-            var result = await _transactionService.TransactionsSummarise();
-            return Ok(result);
+            try
+            {
+                var result = await _transactionService.TransactionsSummarise();
+                return Ok(result);
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("TransactionsSummariseByMonthInYear")]
         public async Task<IActionResult> TransactionsSummariseByMonthInYear(DateTime monthInYear)
         {
-            var result = await _transactionService.TransactionsSummariseByMonthInYear(monthInYear);
-            return Ok(result);
+            try
+            {
+                var result = await _transactionService.TransactionsSummariseByMonthInYear(monthInYear);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("TransactionsSummariseByCourses")]
         public async Task<IActionResult> TransactionsSummariseByCourses(DateTime monthInYear)
         {
-            var result = await _transactionService.TransactionByCoursesInYear(monthInYear);
-            return Ok(result);
+
+            try
+            {
+                var result = await _transactionService.TransactionByCoursesInYear(monthInYear);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("CourseSummariseDetails")]
         public async Task<IActionResult> CourseSummariseDetails(DateTime dateTime)
         {
-            var result = await _courseService.CourseSummariseDetail(dateTime);
-            return Ok(result);
+
+            try
+            {
+                var result = await _courseService.CourseSummariseDetail(dateTime);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("ChildrenSummariseByYear")]
         public async Task<IActionResult> ChildrenSummariseByYear(DateTime dateTime)
         {
-            var result = await _childrenService.GetChildrenSummariseViewModel(dateTime);
-            return Ok(result);
+            
+            try
+            {
+                var result = await _childrenService.GetChildrenSummariseViewModel(dateTime);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetDashBoardSummarise(DateTime startTime, DateTime endTime)
         {
-            var result = await _transactionService.GetDashBoards(startTime, endTime);
-            return Ok(result);
+           
+            try
+            {
+                var result = await _transactionService.GetDashBoards(startTime, endTime);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
