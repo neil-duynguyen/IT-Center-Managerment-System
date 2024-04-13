@@ -134,7 +134,7 @@ namespace KidProEdu.Application.Services
 
             if (getCurrentUserId.Equals("Staff"))
             {
-                users = listUser.Where(x => x.Role.Name.Equals("Parent") && !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
+                users = listUser.Where(x => x.Role.Name.Equals("Parent") && !x.IsDeleted && x.CreatedBy == _claimsService.GetCurrentUserId).OrderByDescending(x => x.CreationDate).ToList();
             }
 
             return _mapper.Map<List<UserViewModel>>(users);
