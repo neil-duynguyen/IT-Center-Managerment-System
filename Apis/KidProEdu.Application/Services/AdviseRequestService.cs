@@ -37,6 +37,12 @@ namespace KidProEdu.Application.Services
                 }
             }
 
+            if (createAdviseRequestViewModel.TestDate.Value.Date <= _currentTime.GetCurrentTime().Date &&
+                createAdviseRequestViewModel.EndTime < _currentTime.GetCurrentTime())
+            {
+                throw new Exception("Ngày đăng kí tư vấn đã qua");
+            }
+
             var adviseRequest = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByEmail(createAdviseRequestViewModel.Email);
             if (adviseRequest != null)
             {

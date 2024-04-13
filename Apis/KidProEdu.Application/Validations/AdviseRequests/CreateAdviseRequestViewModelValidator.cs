@@ -16,7 +16,7 @@ namespace KidProEdu.Application.Validations.AdviseRequests
             RuleFor(x => x.FullName).NotEmpty().WithMessage("FullName không thể bỏ trống");
             RuleFor(x => x.Address).NotEmpty().WithMessage("Address không thể bỏ trống");
             RuleFor(x => x.LocationId).NotEmpty().WithMessage("Location không thể bỏ trống");
-            RuleFor(x => x.TestDate.Value.Date).GreaterThanOrEqualTo(_currentTime.GetCurrentTime().Date).WithMessage("Ngày đăng ký làm bài đánh giá đã qua");
+            //RuleFor(x => x.TestDate.Value.Date).GreaterThanOrEqualTo(_currentTime.GetCurrentTime().Date).WithMessage("Ngày đăng ký làm bài đánh giá đã qua");
         }
     }
 }
