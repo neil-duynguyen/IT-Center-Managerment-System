@@ -4,6 +4,7 @@ using KidProEdu.Application.PaymentService.Momo.Request;
 using KidProEdu.Application.PaymentService.VnPay.Request;
 using KidProEdu.Application.PaymentService.VnPay.Response;
 using KidProEdu.Application.Utils;
+using KidProEdu.Application.ViewModels.AdviseRequestViewModels;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using KidProEdu.Application.ViewModels.OrderViewModelsV2;
 using KidProEdu.Domain.Entities;
@@ -81,12 +82,13 @@ namespace KidProEdu.Application.Services
         }
 
 
-        public async Task<string> CreatePaymentHandler(Guid orderId)
+        public async Task<bool> CreatePaymentHandler(Guid orderId)
         {
 
             string paymentUrl = string.Empty;
             decimal totalPrice = 0;
             var getOrderById = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
+            string nameCourse = string.Empty;
 
             //tính tổng tiền cần thanh toán
             var getOrderDetail = _unitOfWork.OrderDetailRepository.GetAllAsync().Result.Where(x => x.OrderId == orderId).ToList();
@@ -94,8 +96,8 @@ namespace KidProEdu.Application.Services
             //nếu đơn hàng là thanh toán bằng tiền mặt
             if (getOrderById.EWalletMethod is null)
             {
-               var result = await UpdateOrderWhenCash(orderId);
-               return result;
+                var result = await UpdateOrderWhenCash(orderId);
+                return true;
             }
 
             foreach (var item in getOrderDetail.ToList())
@@ -103,10 +105,12 @@ namespace KidProEdu.Application.Services
                 if (item.InstallmentTerm > 0)
                 {
                     totalPrice += Math.Ceiling((decimal)(item.TotalPrice / item.InstallmentTerm));
+                    nameCourse += item.Course.Name + " ";
                 }
                 if (item.InstallmentTerm == 0 && item.PayType.Value == PayType.Banking)
                 {
                     totalPrice += (decimal)item.TotalPrice;
+                    nameCourse += item.Course.Name + " ";
                 }
             }
 
@@ -137,6 +141,30 @@ namespace KidProEdu.Application.Services
                                 getOrderById.URLPayment = paymentUrl;
                                 _unitOfWork.OrderRepository.Update(getOrderById);
                                 await _unitOfWork.SaveChangeAsync();
+
+                                //Gửi thông tin thanh toán cho parent
+                                await SendEmailUtil.SendEmail(getOrderById.UserAccount.Email, "Xác nhận thanh toán đơn hàng",
+                                        "<html><body>" +
+                                        "<p>Kính gửi quý phụ huynh,</p>" +
+                                        "<p>Yêu cầu xác nhận thanh toán đơn hàng,</p>" +
+                                        "<p>Thông tin:</p>" +
+                                        "<ul>" +
+                                            "<li>Người mua: " + getOrderById.UserAccount.FullName + "</li>" +
+                                            "<li>Email: " + getOrderById.UserAccount.Email + "</li>" +
+                                            "<li>Số điện thoại: " + getOrderById.UserAccount.Phone + "</li>" +
+                                            "<li>Mã đơn hàng: " + getOrderById.OrderNumber + "</li>" +
+                                            "<li>Khoá học: " + nameCourse + "</li>" +
+                                            "<li>Ngày mua: " + getOrderById.CreationDate + "</li>" +
+                                            "<li>Giá tiền: " + createPayment.RequiredAmount ?? 0 + "</li>" +
+                                            "<li>Kì hạn: " + getOrderDetail.Select(x => x.InstallmentTerm) + "</li>" +
+                                            "<li>Nhân viên tư vấn: " + _claimsService.GetCurrentUserId + "</li>" +
+                                            "<li>Link thanh toán: " + paymentUrl + "</li>" +
+                                        "</ul>" +
+                                        "<p>Trân trọng,</p>" +
+                                        "<p>KidPro Education!</p>" +
+                                        "</body></html>"
+                                        );
+
                             }
                             else
                             {
@@ -160,7 +188,28 @@ namespace KidProEdu.Application.Services
                                 }
                                 else
                                 {
-                                    return paymentUrl = getOrderById.URLPayment;
+                                    await SendEmailUtil.SendEmail(getOrderById.UserAccount.Email, "Xác nhận thanh toán đơn hàng",
+                                        "<html><body>" +
+                                        "<p>Kính gửi quý phụ huynh,</p>" +
+                                        "<p>Yêu cầu xác nhận thanh toán đơn hàng,</p>" +
+                                        "<p>Thông tin:</p>" +
+                                        "<ul>" +
+                                            "<li>Người mua: " + getOrderById.UserAccount.FullName + "</li>" +
+                                            "<li>Email: " + getOrderById.UserAccount.Email + "</li>" +
+                                            "<li>Số điện thoại: " + getOrderById.UserAccount.Phone + "</li>" +
+                                            "<li>Mã đơn hàng: " + getOrderById.OrderNumber + "</li>" +
+                                            "<li>Khoá học: " + nameCourse + "</li>" +
+                                            "<li>Ngày mua: " + getOrderById.CreationDate + "</li>" +
+                                            "<li>Giá tiền: " + createPayment.RequiredAmount ?? 0 + "</li>" +
+                                            "<li>Kì hạn: " + getOrderDetail.Select(x => x.InstallmentTerm) + "</li>" +
+                                            "<li>Nhân viên tư vấn: " + _claimsService.GetCurrentUserId + "</li>" +
+                                            "<li>Link thanh toán: " + getOrderById.URLPayment + "</li>" +
+                                        "</ul>" +
+                                        "<p>Trân trọng,</p>" +
+                                        "<p>KidPro Education!</p>" +
+                                        "</body></html>"
+                                        );
+                                    return true;
                                 }
                             }
 
@@ -212,7 +261,7 @@ namespace KidProEdu.Application.Services
                             break;
                     }
 
-                    return paymentUrl;
+                    return true;
                 }
                 throw new Exception("Đơn hàng đã được thanh toán.");
             }
@@ -220,8 +269,8 @@ namespace KidProEdu.Application.Services
         }
 
         //feature này sẽ được call khi parent thanh toán bằng tiền mặt
-        public async Task<string> UpdateOrderWhenCash(Guid orderId)
-            {
+        public async Task<bool> UpdateOrderWhenCash(Guid orderId)
+        {
             var result = new BaseResult();
             string returnUrl = _configuration["Vnpay:RedirectUrl"];
             var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
@@ -231,7 +280,7 @@ namespace KidProEdu.Application.Services
 
             var createTransaction = await CreateTransaction(orderId);
 
-            if (createTransaction)
+            /*if (createTransaction)
             {
                 result = new BaseResult()
                 {
@@ -248,8 +297,11 @@ namespace KidProEdu.Application.Services
                 };
             }
 
-            var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}";
-            return redirectUrlWithMessage;
+            var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}";*/
+
+            if (!createTransaction) throw new Exception("Tạo giao dịch thất bại.");
+
+            return true;
         }
 
         //xử lý giao dịch momo

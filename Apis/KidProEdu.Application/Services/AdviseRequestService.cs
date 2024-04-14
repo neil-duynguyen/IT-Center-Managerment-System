@@ -79,31 +79,38 @@ namespace KidProEdu.Application.Services
                     && createAdviseRequestViewModel.SlotId == null && createAdviseRequestViewModel.EndTime == null)
                 {
                     await SendEmailUtil.SendEmail(mapper.Email, "Xác nhận yêu cầu tư vấn",
-                        "Kính gửi quý phụ huynh, \n\n" +
-                        "Yêu cầu tư vấn của bạn đã được xác nhận, \n" +
-                        "Thông tin:, \n" +
-                        "         Người đăng kí: " + createAdviseRequestViewModel.FullName + "\n" +
-                        "         Email: " + createAdviseRequestViewModel.Email + "\n" +
-                        "         Sđt: " + createAdviseRequestViewModel.Phone + "\n" +
-                        "Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
-                        "Trân trọng, \n" +
-                        "KidPro Education!");
+                            "<html><body>" +
+                            "<p>Kính gửi quý phụ huynh,</p>" +
+                            "<p>Yêu cầu tư vấn của bạn đã được xác nhận,</p>" +
+                            "<p>Thông tin:</p>" +
+                            "<ul>" +
+                                "<li>Người đăng kí: " + createAdviseRequestViewModel.FullName + "</li>" +
+                                "<li>Email: " + createAdviseRequestViewModel.Email + "</li>" +
+                                "<li>Số điện thoại: " + createAdviseRequestViewModel.Phone + "</li>" +
+                            "</ul>" +
+                            "<p>Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.</p>" +
+                            "<p>Trân trọng,</p>" +
+                            "<p>KidPro Education!</p>" +
+                            "</body></html>");
                 }
                 else
-                {
+                {    
                     await SendEmailUtil.SendEmail(mapper.Email, "Xác nhận yêu cầu tư vấn",
-                        "Kính gửi quý phụ huynh, \n\n" +
-                        "Yêu cầu tư vấn của bạn đã được xác nhận, \n" +
-                        "Thông tin:, \n" +
-                        "         Người đăng kí: " + createAdviseRequestViewModel.FullName + "\n" +
-                        "         Email: " + createAdviseRequestViewModel.Email + "\n" +
-                        "         Sđt: " + createAdviseRequestViewModel.Phone + "\n" +
-                        "         Vào ngày: " + createAdviseRequestViewModel.TestDate + "\n" +
-                        "         Từ " + createAdviseRequestViewModel.StartTime.Value.ToShortTimeString() + "" +
-                        " đến " + createAdviseRequestViewModel.EndTime.Value.ToShortTimeString() + "\n" +
-                        "Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất. \n\n" +
-                        "Trân trọng, \n" +
-                        "KidPro Education!");
+                            "<html><body>" +
+                            "<p>Kính gửi quý phụ huynh,</p>" +
+                            "<p>Yêu cầu tư vấn của bạn đã được xác nhận,</p>" +
+                            "<p>Thông tin:</p>" +
+                            "<ul>" +
+                                "<li>Người đăng kí: " + createAdviseRequestViewModel.FullName + "</li>" +
+                                "<li>Email: " + createAdviseRequestViewModel.Email + "</li>" +
+                                "<li>Số điện thoại: " + createAdviseRequestViewModel.Phone + "</li>" +
+                                "<li>Vào ngày: " + createAdviseRequestViewModel.TestDate + "</li>" +
+                                "<li>Từ " + createAdviseRequestViewModel.StartTime.Value.ToShortTimeString() + " đến " + createAdviseRequestViewModel.EndTime.Value.ToShortTimeString() + "</li>" +
+                            "</ul>" +
+                            "<p>Nhân viên của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.</p>" +
+                            "<p>Trân trọng,</p>" +
+                            "<p>KidPro Education!</p>" +
+                            "</body></html>");
                 }
                 return true;
             }
@@ -227,11 +234,14 @@ namespace KidProEdu.Application.Services
                 if (count > 0)
                 {
                     await SendEmailUtil.SendEmail(mapper.Email, "Xác nhận thay đổi lịch đăng kí tham gia đánh giá đầu vào",
-                    "Kính gửi quý phụ huynh, \n\n" +
-                    "Xác nhận lịch đăng kí tham gia đánh giá đầu vào của trẻ đã thay đổi sang: " + mapper.StartTime + " - "
-                    + mapper.EndTime + " ngày " + mapper.TestDate + ".\n\n" +
-                    "Trân trọng, \n" +
-                    "KidPro Education!");
+                            "<html><body>" +
+                            "<p>Kính gửi quý phụ huynh,</p>" +
+                            "<p>Xác nhận lịch đăng kí tham gia đánh giá đầu vào của trẻ đã thay đổi sang:</p>" +
+                            "<p>Thời gian: " + mapper.StartTime + " - " + mapper.EndTime + "</p>" +
+                            "<p>Ngày: " + mapper.TestDate + "</p>" +
+                            "<p>Trân trọng,</p>" +
+                            "<p>KidPro Education!</p>" +
+                            "</body></html>");
                 }
                 return true;
             }
@@ -247,11 +257,14 @@ namespace KidProEdu.Application.Services
             foreach (var item in advises)
             {
                 await SendEmailUtil.SendEmail(item.Email, "Nhắc nhở ngày tham gia làm bài kiểm tra đầu vào của KidPro",
-                    "Kính gửi quý phụ huynh, \n\n" +
-                    "KidPro xin gửi thông báo đến quý phụ huynh có trẻ đã đăng kí lịch làm bài kiểm tra đầu vào của KidPro" +
-                    " lúc: " + item.StartTime + " - " + item.EndTime + " ngày " + item.TestDate.Date + ". \n\n" +
-                    "Xin cảm ơn, \n" +
-                    "KidPro Education!");
+                         "<html><body>" +
+                         "<p>Kính gửi quý phụ huynh,</p>" +
+                         "<p>KidPro xin gửi thông báo đến quý phụ huynh có trẻ đã đăng kí lịch làm bài kiểm tra đầu vào của KidPro:</p>" +
+                         "<p>Thời gian: " + item.StartTime + " - " + item.EndTime + "</p>" +
+                         "<p>Ngày: " + item.TestDate.ToString("dd/MM/yyyy") + "</p>" +
+                         "<p>Xin cảm ơn,</p>" +
+                         "<p>KidPro Education!</p>" +
+                         "</body></html>");
             }
         }
     }

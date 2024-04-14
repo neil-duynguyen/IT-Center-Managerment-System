@@ -17,7 +17,7 @@ namespace KidProEdu.Application.Interfaces
         Task<List<OrderViewModel>> GetOrderByStaffId();
         Task<OrderViewModel> CreateOrder(CreateOrderDetailViewModel orderDetailViewModel);
         //Task<bool> CreateTransaction(Guid orderId);
-        Task<string> CreatePaymentHandler(Guid orderId);
+        Task<bool> CreatePaymentHandler(Guid orderId);
         Task<BaseResult> ProcessMomoPaymentReturnHandler(MomoOneTimePaymentResultRequest response);
         Task<BaseResult> ProcessVnPaymentReturnHandler(VnpayPayResponse response);
     }

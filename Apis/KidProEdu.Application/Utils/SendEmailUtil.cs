@@ -31,6 +31,9 @@ namespace KidProEdu.Application.Utils
             // Nội dung email
             mail.Body = body;
 
+            // Gọi hàm SignatureEmail để thêm chữ ký
+            await SignatureEmail(mail);
+
             // Cấu hình SmtpClient để gửi email thông qua SMTP của Gmail
             System.Net.Mail.SmtpClient smtpClient = new System.Net.Mail.SmtpClient("smtp.gmail.com");
             smtpClient.Port = 587; // Port của SMTP Gmail
@@ -40,7 +43,7 @@ namespace KidProEdu.Application.Utils
             try
             {
                 // Gửi email
-                 await smtpClient.SendMailAsync(mail);
+                await smtpClient.SendMailAsync(mail);
             }
             catch (Exception ex)
             {
@@ -101,5 +104,28 @@ namespace KidProEdu.Application.Utils
                 await client.DisconnectAsync(true);
             }
         }
+
+        public static async Task SignatureEmail(MailMessage mail)
+        {
+            string signature = @"
+                <p>Trân trọng cảm ơn,</p>
+                <p>***********************************************</p>
+                <p>NGUYEN VAN DUY (Mr.)</p>
+                <p>Mobile: 0978433853</p>
+                <p><img src='https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/logo%2Flogo.png?alt=media&token=bc680430-71b0-4ad7-89fd-ae4fa9fd8c58' alt='Logo' width='250' height='250'/></p>
+                <p>***********************************************</p>
+                <p>THÔNG BÁO QUAN TRỌNG</p>
+                <p>Email này có thể chứa thông tin bí mật và/hoặc đặc quyền. Nếu bạn không phải là người nhận mong muốn hoặc nhận được e-mail này do nhầm lẫn, vui lòng thông báo ngay cho người gửi và hủy e-mail này. Mọi hành vi sao chép, chỉnh sửa, tiết lộ hoặc phân phối trái phép tài liệu trong e-mail này đều bị nghiêm cấm và có thể là trái pháp luật.</p>
+                ";
+
+            // Thêm chữ ký vào cuối phần nội dung HTML của email
+            mail.Body += signature;
+
+            // Tạo và thêm AlternateView cho phần HTML
+            AlternateView htmlView = AlternateView.CreateAlternateViewFromString(mail.Body, new System.Net.Mime.ContentType("text/html"));
+            mail.AlternateViews.Add(htmlView);
+        }
+
+
     }
 }
