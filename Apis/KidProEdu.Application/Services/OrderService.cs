@@ -124,6 +124,8 @@ namespace KidProEdu.Application.Services
                     createPayment.PaymentContent = "Thanh toán đơn hàng.";
                     createPayment.RequiredAmount = totalPrice;
 
+                    var getInstallmentTerm = getOrderDetail.Select(x => x.InstallmentTerm).First();
+
                     switch (getOrderById.EWalletMethod)
                     {
                         case "VNPAY":
@@ -151,14 +153,13 @@ namespace KidProEdu.Application.Services
                                         "<ul>" +
                                             "<li>Người mua: " + getOrderById.UserAccount.FullName + "</li>" +
                                             "<li>Email: " + getOrderById.UserAccount.Email + "</li>" +
-                                            "<li>Số điện thoại: " + getOrderById.UserAccount.Phone + "</li>" +
                                             "<li>Mã đơn hàng: " + getOrderById.OrderNumber + "</li>" +
                                             "<li>Khoá học: " + nameCourse + "</li>" +
                                             "<li>Ngày mua: " + getOrderById.CreationDate + "</li>" +
-                                            "<li>Giá tiền: " + createPayment.RequiredAmount ?? 0 + "</li>" +
-                                            "<li>Kì hạn: " + getOrderDetail.Select(x => x.InstallmentTerm) + "</li>" +
-                                            "<li>Nhân viên tư vấn: " + _claimsService.GetCurrentUserId + "</li>" +
-                                            "<li>Link thanh toán: " + paymentUrl + "</li>" +
+                                            "<li>Giá tiền: " + createPayment.RequiredAmount + "</li>" +
+                                            "<li>Kì hạn: " + getInstallmentTerm + "</li>" +
+                                            "<li>Link thanh toán: <a href='" + paymentUrl + "'>" + paymentUrl + "</a></li>" +
+                                            "<li>Nhân viên tư vấn: " + getOrderById.CreatedBy.ToString() + "</li>" +
                                         "</ul>" +
                                         "<p>Trân trọng,</p>" +
                                         "<p>KidPro Education!</p>" +
