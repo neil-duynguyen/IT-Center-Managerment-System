@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.VariantTypes;
 using Hangfire.Logging;
@@ -280,6 +281,11 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Lớp học mới có khóa học khác với lớp hiện tại");
             }
 
+            if (checkCourse.ActualNumber >= checkCourse.MaxNumber)
+            {
+                throw new Exception("Lớp học mới đã có sĩ số tối đa");
+            }
+
             var schedules = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);
             foreach (var schedule in schedules)
             {
@@ -383,9 +389,15 @@ namespace KidProEdu.Application.Services
 
             var checkCourse = await _unitOfWork.ClassRepository.GetByIdAsync(updateEnrollmentViewModel.ClassId);
             var oldCourse = await _unitOfWork.ClassRepository.GetByIdAsync(result.ClassId);
+           
             if (checkCourse.CourseId != oldCourse.CourseId)
             {
                 throw new Exception("Lớp học mới có khóa học khác với lớp hiện tại");
+            }
+
+            if(checkCourse.ActualNumber >= checkCourse.MaxNumber)
+            {
+                throw new Exception("Lớp học mới đã có sĩ số tối đa");
             }
 
             var updateActualNumberNewClass = await _unitOfWork.ClassRepository.GetByIdAsync(updateEnrollmentViewModel.ClassId);
