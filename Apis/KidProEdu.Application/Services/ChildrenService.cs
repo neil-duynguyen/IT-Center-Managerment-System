@@ -100,7 +100,7 @@ namespace KidProEdu.Application.Services
 
             foreach (var enrollment in result.Enrollments)
             {
-                listClass.Add(new ClassViewModelInChildren() { ClassId = enrollment.Class.Id, ClassCode = enrollment.Class.ClassCode });
+                listClass.Add(new ClassViewModelInChildren() { ClassId = enrollment.Class.Id, ClassCode = enrollment.Class.ClassCode, StatusOfClass = enrollment.Class.StatusOfClass.ToString() });
                 mapper.Classes = listClass;
             }
 
