@@ -43,6 +43,8 @@ namespace KidProEdu.Application.Services
                 && !createRequestViewModel.RequestType.Equals("Schedule")
                 && !createRequestViewModel.RequestType.Equals("Refund")
                 && !createRequestViewModel.RequestType.Equals("Leave")
+                && !createRequestViewModel.RequestType.Equals("ChildrenClass")
+                && !createRequestViewModel.RequestType.Equals("ChildrenReserve")
                 )
                 throw new Exception("Loại yêu cầu không có trong hệ thống");
             var randomCode = "R" + ((await _unitOfWork.RequestRepository.GetAllAsync()).Count + 1);
@@ -324,6 +326,10 @@ namespace KidProEdu.Application.Services
 
                                 break;
                             case "Refund": //approved thì refund 
+                                break;
+                            case "ChildrenClass": //tách làm 2, chuyển lớp cho nó trước nếu được mới qua approved  
+                                break;
+                            case "ChildrenReserve": //tách làm 2, bảo lưu cho nó trước được mới qua approved
                                 break;
                             default:
                                 //throw new Exception("Loại request không được hỗ trợ");
