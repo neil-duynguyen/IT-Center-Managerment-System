@@ -94,7 +94,7 @@ namespace KidProEdu.Application.Services
             Domain.Enums.QuestionType typeQuestion;
             if(oldOfChildren < 8)
             {
-                throw new Exception($"Học sinh {children.FullName} chưa đủ tuổi để học ");
+                throw new Exception("Học sinh chưa đủ tuổi để học ");
             }
             else if(oldOfChildren == 8 || oldOfChildren == 9) {
                 typeQuestion = Domain.Enums.QuestionType.Entry8And9;

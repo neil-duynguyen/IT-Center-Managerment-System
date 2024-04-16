@@ -49,12 +49,17 @@ namespace KidProEdu.API.Controllers
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> CreateTestEntry(CreateExamEntryViewModel createExamEntryViewModel)
         {
-            var question = await _questionService.CreateTestEntry(createExamEntryViewModel);
-            if (question == null)
+            try
             {
-                return NotFound();
+                var question = await _questionService.CreateTestEntry(createExamEntryViewModel);
+                if (question == null)
+                {
+                    return NotFound();
+                }
+                return Ok(question);
+            }catch(Exception ex) { 
+                return BadRequest(ex);
             }
-            return Ok(question);
         }
 
         [HttpPost]
