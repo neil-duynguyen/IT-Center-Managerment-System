@@ -6,6 +6,7 @@ using KidProEdu.Application.ViewModels.RequestUserAccountViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Org.BouncyCastle.Asn1.Cmp;
 using System.Diagnostics;
 
 namespace KidProEdu.Application.Services
@@ -60,7 +61,9 @@ namespace KidProEdu.Application.Services
                 ToClassId = createRequestViewModel.ToClassId,
                 ScheduleId = createRequestViewModel.ScheduleId,
                 ReceiverRefundId = createRequestViewModel.ReceiverRefundId,
-                RequestCode = randomCode
+                RequestCode = randomCode,
+                ChildrenCode = createRequestViewModel.ChildrenCode,
+                CourseCode = createRequestViewModel.CourseCode
             };
 
             await _unitOfWork.RequestRepository.AddAsync(request);
@@ -188,7 +191,6 @@ namespace KidProEdu.Application.Services
                                 }
                                 else
                                 {
-                                    throw new Exception("Yêu cầu: " + request.RequestCode + " không thể thực hiện đổi khi đã có lớp không còn ở trạng thái chờ");
                                     throw new Exception("Yêu cầu: " + request.RequestCode + " không thể thực hiện đổi khi đã có lớp không còn ở trạng thái chờ");
                                 }
 

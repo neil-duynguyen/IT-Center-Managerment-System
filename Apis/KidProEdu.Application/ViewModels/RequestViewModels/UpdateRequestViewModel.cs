@@ -22,5 +22,7 @@ namespace KidProEdu.Application.ViewModels.RequestViewModels
         public Guid? ToClassId { get; set; }
         public Guid? ScheduleId { get; set; }
         public Guid? ReceiverRefundId { get; set; }
+        public string? CourseCode { get; set; }
+        public string? ChildrenCode { get; set; }
     }
 }
