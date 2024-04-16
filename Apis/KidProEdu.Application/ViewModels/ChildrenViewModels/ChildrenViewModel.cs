@@ -24,6 +24,7 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
     {
         public Guid? ClassId { get; set; }
         public string ClassCode { get; set; }
+        public string StatusOfClass { get; set; }
     }
 
     public class CourseViewModelInChildren
