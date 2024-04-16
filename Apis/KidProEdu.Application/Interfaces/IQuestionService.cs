@@ -16,5 +16,6 @@ namespace KidProEdu.Application.Interfaces
         Task<Question> GetQuestionById(Guid questionId);
         Task<List<QuestionByLessonViewModel>> CreateTest(List<CreateExamViewModel> createExamViewModels);
         Task<bool> DeleteQuestion(Guid questionId);
+        Task<List<QuestionEntryViewModel>> CreateTestEntry(CreateExamEntryViewModel createExamEntryViewModel);
     }
 }

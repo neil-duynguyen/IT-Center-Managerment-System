@@ -45,6 +45,18 @@ namespace KidProEdu.API.Controllers
             return Ok(question);
         }
 
+        [HttpPost("CreateTestEntry")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> CreateTestEntry(CreateExamEntryViewModel createExamEntryViewModel)
+        {
+            var question = await _questionService.CreateTestEntry(createExamEntryViewModel);
+            if (question == null)
+            {
+                return NotFound();
+            }
+            return Ok(question);
+        }
+
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> PostQuestion(CreateQuestionViewModel[] createQuestionViewModel)

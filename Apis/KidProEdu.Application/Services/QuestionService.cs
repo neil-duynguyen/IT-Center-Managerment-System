@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Office.CustomUI;
+using DocumentFormat.OpenXml.Office2013.Excel;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Questions;
+using KidProEdu.Application.ViewModels.ExamViewModels;
 using KidProEdu.Application.ViewModels.QuestionViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
@@ -63,6 +65,90 @@ namespace KidProEdu.Application.Services
                 _unitOfWork.QuestionRepository.SoftRemove(result);
                 return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Xóa câu hỏi thất bại");
             }
+        }
+
+        //createTestEntry
+        public async Task<List<QuestionEntryViewModel>> CreateTestEntry(CreateExamEntryViewModel createExamEntryViewModel)
+        {
+            var listQuestion = new List<QuestionEntryViewModel>();
+            if (createExamEntryViewModel == null)
+            {
+                throw new Exception("Dữ liệu không hợp lệ");
+            }
+
+            var children = await _unitOfWork.ChildrenRepository.GetByIdAsync(createExamEntryViewModel.ChildrenId);
+
+            if (children == null)
+            {
+                throw new Exception("Không tìm thấy thông tin trẻ em");
+            }
+
+            var oldOfChildren = _currentTime.GetCurrentTime().Year - children.BirthDay.Year;
+
+            var totalQuestion = createExamEntryViewModel.TotalQuestion;
+            if(totalQuestion == null || totalQuestion <= 0)
+            {
+                throw new Exception("Tổng số câu hỏi không được để trống và bằng 0");
+            }
+
+            Domain.Enums.QuestionType typeQuestion;
+            if(oldOfChildren < 8)
+            {
+                throw new Exception($"Học sinh {children.FullName} chưa đủ tuổi để học ");
+            }
+            else if(oldOfChildren == 8 || oldOfChildren == 9) {
+                typeQuestion = Domain.Enums.QuestionType.Entry8And9;
+            }
+            else if (oldOfChildren == 10 || oldOfChildren == 11)
+            {
+                typeQuestion = Domain.Enums.QuestionType.Entry10And11;
+            }
+            else if (oldOfChildren == 12 || oldOfChildren == 13)
+            {
+                typeQuestion = Domain.Enums.QuestionType.Entry12And13;
+            }
+            else if (oldOfChildren == 14 || oldOfChildren == 15)
+            {
+                typeQuestion = Domain.Enums.QuestionType.Entry14And15;
+            }
+            else
+            {
+                typeQuestion = Domain.Enums.QuestionType.Entry14And15;
+            }
+
+            Random random = new Random();
+
+            if(typeQuestion != null)
+            {
+                var questions = await _unitOfWork.QuestionRepository.GetQuestionByType(typeQuestion);
+
+                // phân chia danh sách câu hỏi thành các danh sách con theo cấp độ
+                var level1Questions = questions.Where(q => q.Level == 1).ToList();
+                var level2Questions = questions.Where(q => q.Level == 2).ToList();
+                var level3Questions = questions.Where(q => q.Level == 3).ToList();
+
+                // tính số lượng câu hỏi mong muốn cho mỗi cấp độ dựa trên tỉ lệ
+                int totalQuestions = (int)createExamEntryViewModel.TotalQuestion;
+                int level1Count = (int)(totalQuestions * 0.4);
+                int level2Count = (int)(totalQuestions * 0.3);
+                int level3Count = totalQuestions - level1Count - level2Count; // còn lại cho cấp độ 3
+
+                // lấy ngẫu nhiên các câu hỏi từ mỗi danh sách con
+                var randomLevel1Questions = level1Questions.OrderBy(x => random.Next()).Take(level1Count);
+                var randomLevel2Questions = level2Questions.OrderBy(x => random.Next()).Take(level2Count);
+                var randomLevel3Questions = level3Questions.OrderBy(x => random.Next()).Take(level3Count);
+
+                // kết hợp danh sách câu hỏi từ mỗi cấp độ vào danh sách câu hỏi cuối cùng
+                var randomList = randomLevel1Questions.Concat(randomLevel2Questions).Concat(randomLevel3Questions).ToList();
+
+                var vm = new QuestionEntryViewModel
+                {
+                    Questions = randomList,
+                    Type = typeQuestion.ToString()
+                };
+                listQuestion.Add(vm);
+            }
+            return listQuestion;
         }
 
         public async Task<Question> GetQuestionById(Guid questionId)
@@ -265,5 +351,7 @@ namespace KidProEdu.Application.Services
 
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật câu hỏi thất bại");
         }
+
+        
     }
 }
