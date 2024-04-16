@@ -21,6 +21,8 @@ namespace KidProEdu.Domain.Entities
         public Guid? ScheduleId { get; set; }
         public DateTime? TeachingDay { get; set; }
         public Guid? ReceiverRefundId { get; set; }
+        public string? CourseCode { get; set; }
+        public string? ChildrenCode { get; set; }
         public IList<RequestUserAccount> RequestUserAccounts { get; set; }
     }
 }
