@@ -114,10 +114,9 @@ namespace KidProEdu.Application.Services
                 }  
 
                 var attendanceUpdate = await _unitOfWork.AttendanceRepository.GetByIdAsync(updateAttendance.Id);
-                var mapper = _mapper.Map<Attendance>(attendanceUpdate);
-                mapper.StatusAttendance = updateAttendance.StatusAttendance;
-                mapper.Note = updateAttendance.Note;
-                if(mapper.Date.Date > _currentTime.GetCurrentTime().Date)
+                attendanceUpdate.StatusAttendance = updateAttendance.StatusAttendance;
+                attendanceUpdate.Note = updateAttendance.Note;
+                if(attendanceUpdate.Date.Date > _currentTime.GetCurrentTime().Date)
                 {
                     throw new Exception("Chưa tới ngày học để điểm danh.");
                 }

@@ -116,10 +116,10 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var mapper = _mapper.Map<Skill>(skill);
-            mapper.Name = updateSkillViewModel.Name;
-            mapper.Description = updateSkillViewModel.Description;
-            _unitOfWork.SkillRepository.Update(mapper);
+
+            skill.Name = updateSkillViewModel.Name;
+            skill.Description = updateSkillViewModel.Description;
+            _unitOfWork.SkillRepository.Update(skill);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật kĩ năng thất bại");
         }
     }

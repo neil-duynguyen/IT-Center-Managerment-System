@@ -118,10 +118,10 @@ namespace KidProEdu.Application.Services
                     throw new Exception("Người dùng đã tồn tại");
                 }
             }
-            var mapper = _mapper.Map<DivisionUserAccount>(divisionUserAccount);
-            mapper.UserAccountId = updateDivisionUserAccountViewModel.UserAccountId;
-            mapper.DivisionId = updateDivisionUserAccountViewModel.DivisionId;
-            _unitOfWork.DivisionUserAccountRepository.Update(mapper);
+
+            divisionUserAccount.UserAccountId = updateDivisionUserAccountViewModel.UserAccountId;
+            divisionUserAccount.DivisionId = updateDivisionUserAccountViewModel.DivisionId;
+            _unitOfWork.DivisionUserAccountRepository.Update(divisionUserAccount);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật phòng ban cho người dùng thất bại");
         }
     }

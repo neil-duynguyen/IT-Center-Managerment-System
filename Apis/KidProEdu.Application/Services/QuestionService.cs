@@ -94,7 +94,7 @@ namespace KidProEdu.Application.Services
 
             if (createExamViewModels.Count == 1)
             {
-                if (createExamViewModels.FirstOrDefault().Type.Equals(Domain.Enums.QuestionType.Entry)
+                if (createExamViewModels.FirstOrDefault().Type.Equals(Domain.Enums.QuestionType.Entry10And11)
                     && createExamViewModels.FirstOrDefault().TotalQuestion == null)
                 {
                     var vm = new QuestionByLessonViewModel
@@ -104,12 +104,12 @@ namespace KidProEdu.Application.Services
                     };
                     listModel.Add(vm);
                 }
-                else if (createExamViewModels.FirstOrDefault().Type.Equals(Domain.Enums.QuestionType.Entry)
+                else if (createExamViewModels.FirstOrDefault().Type.Equals(Domain.Enums.QuestionType.Entry10And11)
                     && createExamViewModels.FirstOrDefault().TotalQuestion != null)
                 {
                     Random random = new Random();
 
-                    var questions = await _unitOfWork.QuestionRepository.GetQuestionByType(Domain.Enums.QuestionType.Entry);
+                    var questions = await _unitOfWork.QuestionRepository.GetQuestionByType(Domain.Enums.QuestionType.Entry10And11);
 
                     // phân chia danh sách câu hỏi thành các danh sách con theo cấp độ
                     var level1Questions = questions.Where(q => q.Level == 1).ToList();

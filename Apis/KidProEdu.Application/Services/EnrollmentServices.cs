@@ -301,11 +301,10 @@ namespace KidProEdu.Application.Services
             updateActualNumberOldClass.ActualNumber = updateActualNumberOldClass.ActualNumber - 1;
             _unitOfWork.ClassRepository.Update(updateActualNumberOldClass);
 
-            var mapper = _mapper.Map<Enrollment>(result);
-            mapper.ClassId = updateEnrollmentViewModel.ClassId;
-            mapper.ChildrenProfileId = result.ChildrenProfileId;
-            var schedules1 = await _unitOfWork.ScheduleRepository.GetScheduleByClass(mapper.ClassId);
-            var classed = await _unitOfWork.ClassRepository.GetByIdAsync(mapper.ClassId);
+            result.ClassId = updateEnrollmentViewModel.ClassId;
+            result.ChildrenProfileId = result.ChildrenProfileId;
+            var schedules1 = await _unitOfWork.ScheduleRepository.GetScheduleByClass(result.ClassId);
+            var classed = await _unitOfWork.ClassRepository.GetByIdAsync(result.ClassId);
             var course = await _unitOfWork.CourseRepository.GetByIdAsync(classed.CourseId);
             DateTime startDate = (DateTime)schedules1.FirstOrDefault().StartDate;
 
@@ -317,7 +316,7 @@ namespace KidProEdu.Application.Services
                     var attendance = new CreateAttendanceViewModel
                     {
                         ScheduleId = schedules1.FirstOrDefault(x => x.DayInWeek.Contains(startDate.DayOfWeek.ToString())).Id,
-                        ChildrenProfileId = mapper.ChildrenProfileId,
+                        ChildrenProfileId = result.ChildrenProfileId,
                         Date = startDate,
                         StatusAttendance = StatusAttendance.Future,
                         Note = ""
@@ -350,7 +349,7 @@ namespace KidProEdu.Application.Services
             }
 
 
-            _unitOfWork.EnrollmentRepository.Update(mapper);
+            _unitOfWork.EnrollmentRepository.Update(result);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật tham gia này thất bại");
         }
 

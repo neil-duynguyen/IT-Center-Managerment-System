@@ -121,13 +121,13 @@ namespace KidProEdu.Application.Services
                     throw new Exception("Tên đã tồn tại");
                 }
             }*/
-            var mapper = _mapper.Map<Exam>(result);
-            mapper.TestDuration = updateExamViewModel.TestDuration;
-            mapper.TestDate = updateExamViewModel.TestDate;
-            mapper.TestType = updateExamViewModel.TestType;
-            mapper.CourseId = updateExamViewModel.CourseId;
-            mapper.TestName = updateExamViewModel.TestName;
-            _unitOfWork.ExamRepository.Update(mapper);
+
+            result.TestDuration = updateExamViewModel.TestDuration;
+            result.TestDate = updateExamViewModel.TestDate;
+            result.TestType = updateExamViewModel.TestType;
+            result.CourseId = updateExamViewModel.CourseId;
+            result.TestName = updateExamViewModel.TestName;
+            _unitOfWork.ExamRepository.Update(result);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật bài kiểm tra thất bại");
         }
     }

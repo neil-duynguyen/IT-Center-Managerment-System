@@ -135,13 +135,13 @@ namespace KidProEdu.Application.Services
                     throw new Exception("Câu trả lời đã tồn tại");
                 }
             }
-            var mapper = _mapper.Map<ChildrenAnswer>(result);
-            mapper.ChildrenProfileId = updateChildrenAnswerView.ChildrenProfileId;
-            mapper.ExamId = updateChildrenAnswerView.ExamId;
-            mapper.QuestionId = updateChildrenAnswerView.QuestionId;
-            mapper.Answer = updateChildrenAnswerView.Answer;
-            mapper.ScorePerQuestion = updateChildrenAnswerView.ScorePerQuestion;
-            _unitOfWork.ChildrenAnswerRepository.Update(mapper);
+
+            result.ChildrenProfileId = updateChildrenAnswerView.ChildrenProfileId;
+            result.ExamId = updateChildrenAnswerView.ExamId;
+            result.QuestionId = updateChildrenAnswerView.QuestionId;
+            result.Answer = updateChildrenAnswerView.Answer;
+            result.ScorePerQuestion = updateChildrenAnswerView.ScorePerQuestion;
+            _unitOfWork.ChildrenAnswerRepository.Update(result);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật câu trả lời thất bại");
         }
     }

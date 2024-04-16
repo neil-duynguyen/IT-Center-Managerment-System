@@ -111,9 +111,8 @@ namespace KidProEdu.Application.Services
                 }
             }
             division.Name = updateDivisionViewModel.Name;
-            division.Description = updateDivisionViewModel.Description;
-            var mapper = _mapper.Map<Division>(division);      
-            _unitOfWork.DivisionRepository.Update(mapper);
+            division.Description = updateDivisionViewModel.Description;   
+            _unitOfWork.DivisionRepository.Update(division);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật phòng ban thất bại");
         }
     }

@@ -107,11 +107,11 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Không tìm thấy đánh giá");
             }
 
-            var mapper = _mapper.Map<Rating>(rating);
-            mapper.Date = DateTime.Now;
-            mapper.Comment = updateRatingViewModel.Comment;
-            mapper.StarNumber = updateRatingViewModel.StarNumber;
-            _unitOfWork.RatingRepository.Update(mapper);
+
+            rating.Date = DateTime.Now;
+            rating.Comment = updateRatingViewModel.Comment;
+            rating.StarNumber = updateRatingViewModel.StarNumber;
+            _unitOfWork.RatingRepository.Update(rating);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật đánh giá thất bại");
         }
     }

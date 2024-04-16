@@ -103,13 +103,13 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Không tìm thấy đánh giá");
             }
 
-            var mapper = _mapper.Map<Feedback>(result);
-            mapper.UserId = updateFeedBackViewModel.UserId;
-            mapper.ClassId = updateFeedBackViewModel.ClassId;
-            mapper.RecipientId = updateFeedBackViewModel.RecipientId;
-            mapper.Stars = updateFeedBackViewModel.Stars;
-            mapper.Messages = updateFeedBackViewModel.Messages;
-            _unitOfWork.FeedbackRepository.Update(mapper);
+
+            result.UserId = updateFeedBackViewModel.UserId;
+            result.ClassId = updateFeedBackViewModel.ClassId;
+            result.RecipientId = updateFeedBackViewModel.RecipientId;
+            result.Stars = updateFeedBackViewModel.Stars;
+            result.Messages = updateFeedBackViewModel.Messages;
+            _unitOfWork.FeedbackRepository.Update(result);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật đánh giá thất bại");
         }
     }

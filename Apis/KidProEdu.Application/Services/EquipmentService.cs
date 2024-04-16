@@ -99,10 +99,10 @@ namespace KidProEdu.Application.Services
                 }
             }
             // Cập nhật trạng thái thiết bị
-            var mapper = _mapper.Map<Equipment>(equipment);
-            mapper.Status = StatusOfEquipment.Borrowed;
-            mapper.RoomId = equipmentWithLogEquipmentBorrowedViewModel.Equipment.RoomId;
-            _unitOfWork.EquipmentRepository.Update(mapper);
+
+            equipment.Status = StatusOfEquipment.Borrowed;
+            equipment.RoomId = equipmentWithLogEquipmentBorrowedViewModel.Equipment.RoomId;
+            _unitOfWork.EquipmentRepository.Update(equipment);
 
             var mapper2 = _mapper.Map<LogEquipment>(equipmentWithLogEquipmentBorrowedViewModel.Log);
             mapper2.EquipmentId = equipment.Id;
@@ -175,9 +175,8 @@ namespace KidProEdu.Application.Services
                 }
             }
             // Cập nhật trạng thái thiết bị
-            var mapper = _mapper.Map<Equipment>(equipment);
-            mapper.Status = StatusOfEquipment.Repair;
-            mapper.RoomId = equipmentWithLogEquipmentRepairViewModel.Equipment.RoomId;
+            equipment.Status = StatusOfEquipment.Repair;
+            equipment.RoomId = equipmentWithLogEquipmentRepairViewModel.Equipment.RoomId;
             _unitOfWork.EquipmentRepository.Update(equipment);
 
             var mapper2 = _mapper.Map<LogEquipment>(equipmentWithLogEquipmentRepairViewModel.Log);
@@ -232,10 +231,9 @@ namespace KidProEdu.Application.Services
                 }
             }
             // Cập nhật trạng thái thiết bị
-            var mapper = _mapper.Map<Equipment>(equipment);
-            mapper.Status = StatusOfEquipment.Returned;
-            mapper.RoomId = equipmentWithLogEquipmentReturnedViewModel.Equipment.RoomId;
-            _unitOfWork.EquipmentRepository.Update(mapper);
+            equipment.Status = StatusOfEquipment.Returned;
+            equipment.RoomId = equipmentWithLogEquipmentReturnedViewModel.Equipment.RoomId;
+            _unitOfWork.EquipmentRepository.Update(equipment);
 
             var log = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result
                 .Where(x => x.Status == StatusOfEquipment.Borrowed).OrderByDescending(x => x.CreationDate).FirstOrDefault();
@@ -384,15 +382,14 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Không tìm thấy thiết bị");
             }
 
-            var mapper = _mapper.Map<Equipment>(equipment);
-            mapper.CategoryEquipmentId = updateEquipmentViewModel.CategoryEquipmentId;
-            mapper.RoomId = updateEquipmentViewModel.RoomId;
-            mapper.Name = updateEquipmentViewModel.Name;
-            mapper.Price = updateEquipmentViewModel.Price;
-            mapper.Status = updateEquipmentViewModel.Status;
-            mapper.WarrantyPeriod = updateEquipmentViewModel.WarrantyPeriod;
-            mapper.PurchaseDate = updateEquipmentViewModel.PurchaseDate;
-            _unitOfWork.EquipmentRepository.Update(mapper);
+            equipment.CategoryEquipmentId = updateEquipmentViewModel.CategoryEquipmentId;
+            equipment.RoomId = updateEquipmentViewModel.RoomId;
+            equipment.Name = updateEquipmentViewModel.Name;
+            equipment.Price = updateEquipmentViewModel.Price;
+            equipment.Status = updateEquipmentViewModel.Status;
+            equipment.WarrantyPeriod = updateEquipmentViewModel.WarrantyPeriod;
+            equipment.PurchaseDate = updateEquipmentViewModel.PurchaseDate;
+            _unitOfWork.EquipmentRepository.Update(equipment);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật thiết bị thất bại");
         }
 
