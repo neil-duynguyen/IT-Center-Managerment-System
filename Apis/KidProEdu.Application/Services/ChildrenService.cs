@@ -130,8 +130,14 @@ namespace KidProEdu.Application.Services
         public async Task<List<ChildrenViewModel>> GetChildrenByParentId(Guid Id)
         {
             var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.UserId == Id).ToList();
-            var mapper = _mapper.Map<List<ChildrenViewModel>>(getChildrens);
-            return mapper;
+
+            List <ChildrenViewModel> childrenViewModels = new List<ChildrenViewModel> ();
+
+            foreach (var item in getChildrens)
+            {
+                childrenViewModels.Add(await GetChildrenById(item.Id));
+            }
+             return childrenViewModels;
         }
 
         public async Task<bool> ChildrenReserve(ChildrenReserveViewModel childrenReserveViewModel)

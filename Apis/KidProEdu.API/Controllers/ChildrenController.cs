@@ -18,7 +18,7 @@ namespace KidProEdu.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = ("Staff"))]
-        public async Task<IActionResult> CreateChildren(CreateChildrenViewModel createChildrenViewModel) 
+        public async Task<IActionResult> CreateChildren(CreateChildrenViewModel createChildrenViewModel)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace KidProEdu.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-                
+
             }
         }
 
@@ -95,7 +95,15 @@ namespace KidProEdu.API.Controllers
         [HttpGet("GetChildrenById/{id}")]
         public async Task<IActionResult> GetChildrenById(Guid id)
         {
-            return Ok(await _childrenService.GetChildrenById(id));
+            try
+            {
+                return Ok(await _childrenService.GetChildrenById(id));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
