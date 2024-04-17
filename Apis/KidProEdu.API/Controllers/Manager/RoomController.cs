@@ -18,14 +18,14 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpGet("Rooms")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> Locations()
+        public async Task<IActionResult> Rooms()
         {
             return Ok(await _roomService.GetRooms());
         }
 
         [HttpGet("{id}")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> Location(Guid id)
+        public async Task<IActionResult> Room(Guid id)
         {
             var result = await _roomService.GetRoomById(id);
             if (result == null)
@@ -37,7 +37,7 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpPost]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PostLocation(CreateRoomViewModel createRoomViewModel)
+        public async Task<IActionResult> PostRoom(CreateRoomViewModel createRoomViewModel)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpPut]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> PutLocation(UpdateRoomViewModel updateRoomViewModel)
+        public async Task<IActionResult> PutRoom(UpdateRoomViewModel updateRoomViewModel)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpDelete]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> DeleteLocation(Guid id)
+        public async Task<IActionResult> DeleteRoom(Guid id)
         {
             try
             {

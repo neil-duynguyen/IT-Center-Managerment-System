@@ -17,7 +17,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCourse(CreateCourseViewModel createCourseView) 
+        public async Task<IActionResult> CreateCourse(CreateCourseViewModel createCourseView)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace KidProEdu.API.Controllers.Admin
             }
         }
 
-       [HttpPost("CourseParent")]
+        [HttpPost("CourseParent")]
         public async Task<IActionResult> CreateCourseParent(CreateCourseParentViewModel createCourseParentViewModel)
         {
             try
@@ -87,9 +87,16 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpGet("GetCourseById/{Id}")]
-        public async Task<IActionResult> GetCOurseById(Guid Id)
+        public async Task<IActionResult> GetCourseById(Guid Id)
         {
-            return Ok(await _courseService.GetCourseById(Id));
+            try
+            {
+                return Ok(await _courseService.GetCourseById(Id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
