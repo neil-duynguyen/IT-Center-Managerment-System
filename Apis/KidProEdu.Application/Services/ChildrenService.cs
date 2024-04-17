@@ -168,7 +168,7 @@ namespace KidProEdu.Application.Services
             //delete attendance
             var attendances = await _unitOfWork.AttendanceRepository.GetListAttendanceByChilIdAndStatusFuture(childrenReserveViewModel.ChildrenProfileId);
             _unitOfWork.AttendanceRepository.RemoveRange(attendances);
-            await _unitOfWork.SaveChangeAsync();
+            //await _unitOfWork.SaveChangeAsync();
 
             //delete enrolled
             var enrolled = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByChildId(childrenReserveViewModel.ChildrenProfileId);
@@ -178,10 +178,10 @@ namespace KidProEdu.Application.Services
                 var classed = await _unitOfWork.ClassRepository.GetByIdAsync(enrollment.ClassId);
                 classed.ActualNumber = classed.ActualNumber - 1;
                 _unitOfWork.ClassRepository.Update(classed);
-                await _unitOfWork.SaveChangeAsync();
+                //await _unitOfWork.SaveChangeAsync();
             }
-            _unitOfWork.EnrollmentRepository.SoftRemoveRange(enrolled);
-            await _unitOfWork.SaveChangeAsync();
+           //_unitOfWork.EnrollmentRepository.SoftRemoveRange(enrolled);
+           //await _unitOfWork.SaveChangeAsync();
 
             children.Status = StatusChildrenProfile.Reserve;
             _unitOfWork.ChildrenRepository.Update(children);
