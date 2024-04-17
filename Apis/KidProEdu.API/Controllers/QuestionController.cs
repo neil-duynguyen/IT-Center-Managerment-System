@@ -54,7 +54,7 @@ namespace KidProEdu.API.Controllers
                 var question = await _questionService.CreateTestEntry(createExamEntryViewModel);
                 if (question == null)
                 {
-                    return NotFound();
+                    return BadRequest("Không tìm thấy danh sách câu hỏi");
                 }
                 return Ok(question);
             }catch(Exception ex) { 
