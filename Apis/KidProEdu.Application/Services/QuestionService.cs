@@ -6,6 +6,7 @@ using KidProEdu.Application.Validations.Questions;
 using KidProEdu.Application.ViewModels.ExamViewModels;
 using KidProEdu.Application.ViewModels.QuestionViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.IdentityModel.Tokens;
 using System;
 
@@ -300,11 +301,12 @@ namespace KidProEdu.Application.Services
             return listModel;
         }
 
-        public async Task<List<Question>> GetQuestions()
+        public async Task<List<Question2ViewModel>> GetQuestions()
         {
             var questions = _unitOfWork.QuestionRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false)
                 .OrderByDescending(x => x.CreationDate).ToList();
-            return questions;
+            var mapper = _mapper.Map<List<Question2ViewModel>>(questions);
+            return mapper;
         }
 
         public async Task<bool> UpdateQuestion(UpdateQuestionViewModel updateQuestionViewModel)
@@ -341,6 +343,12 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật câu hỏi thất bại");
         }
 
-        
+        public async Task<List<Question2ViewModel>> GetQuestionsByType(Domain.Enums.QuestionType type)
+        {
+            var questions = _unitOfWork.QuestionRepository.GetQuestionByType(type).Result.Where(x => x.IsDeleted == false)
+                .OrderByDescending(x => x.CreationDate).ToList();
+            var mapper = _mapper.Map<List<Question2ViewModel>>(questions);
+            return mapper;
+        }
     }
 }

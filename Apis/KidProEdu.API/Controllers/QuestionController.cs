@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.QuestionViewModels;
+using KidProEdu.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers
@@ -19,6 +20,13 @@ namespace KidProEdu.API.Controllers
         public async Task<IActionResult> Questions()
         {
             return Ok(await _questionService.GetQuestions());
+        }
+
+        [HttpGet("QuestionsByType")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> QuestionsByType(QuestionType type)
+        {
+            return Ok(await _questionService.GetQuestionsByType(type));
         }
 
         [HttpGet("{id}")]
