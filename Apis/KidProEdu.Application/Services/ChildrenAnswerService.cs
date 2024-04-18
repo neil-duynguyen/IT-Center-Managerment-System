@@ -101,7 +101,7 @@ namespace KidProEdu.Application.Services
 
             foreach (var item in result)
             {
-                var mapper = _mapper.Map<QuestionViewModel>(await _unitOfWork.QuestionRepository.GetByIdAsync(item.QuestionId));
+                var mapper = _mapper.Map<QuestionViewModel>(await _unitOfWork.QuestionRepository.GetByIdAsync((Guid)item.QuestionId));
                 mapper.Answer = item.Answer;
                 mapper.ScorePerQuestion = item.ScorePerQuestion;
                 questionViewModel.Add(mapper);

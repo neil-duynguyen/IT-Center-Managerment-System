@@ -23,6 +23,7 @@ namespace KidProEdu.Domain.Entities
         public Guid? ReceiverRefundId { get; set; }
         public string? CourseCode { get; set; }
         public string? ChildrenCode { get; set; }
+        public StatusOfRequest? Status { get; set; }
         public IList<RequestUserAccount> RequestUserAccounts { get; set; }
     }
 }
