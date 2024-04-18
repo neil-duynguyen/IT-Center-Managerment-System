@@ -49,6 +49,7 @@ namespace Infrastructures
         private readonly IChildrenAnswerRepository _childrenAnswerRepository;
         private readonly IFeedbackRepository _feedbackRepository;
         private readonly IConfigPointMultiplierRepository _configPointMultiplierRepository;
+        private readonly ICertificateRepository _certificateRepository;
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ITagRepository tagRepository,
             ILocationRepository locationRepository, ICategoryEquipmentRepository categoryEquipmentRepository
@@ -67,7 +68,7 @@ namespace Infrastructures
             ITeachingClassHistoryRepository teachingClassHistoryRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,
             ITransactionRepository transactionRepository, IScheduleRoomRepository scheduleRoomRepository,
             IExamRepository examRepository, IFeedbackRepository feedbackRepository,
-            IChildrenAnswerRepository childrenAnswerRepository, IConfigPointMultiplierRepository configPointMultiplierRepository
+            IChildrenAnswerRepository childrenAnswerRepository, IConfigPointMultiplierRepository configPointMultiplierRepository, ICertificateRepository certificateRepository
             )
         {
             _dbContext = dbContext;
@@ -111,6 +112,7 @@ namespace Infrastructures
             _childrenAnswerRepository = childrenAnswerRepository;
             _feedbackRepository = feedbackRepository;
             _configPointMultiplierRepository = configPointMultiplierRepository;
+            _certificateRepository = certificateRepository;
         }
 
         public IRoleRepository RoleRepository => _roleRepository;
@@ -189,6 +191,7 @@ namespace Infrastructures
         public IFeedbackRepository FeedbackRepository => _feedbackRepository;
 
         public IConfigPointMultiplierRepository ConfigPointMultiplierRepository => _configPointMultiplierRepository;
+        public ICertificateRepository CertificateRepository => _certificateRepository;
 
         public async Task<int> SaveChangeAsync()
         {

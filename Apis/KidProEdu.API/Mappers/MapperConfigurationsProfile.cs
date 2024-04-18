@@ -3,6 +3,7 @@ using KidProEdu.Application.ViewModels.AdviseRequestViewModels;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
 using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
+using KidProEdu.Application.ViewModels.CertificateViewModel;
 using KidProEdu.Application.ViewModels.ChildrenAnswerViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
@@ -256,7 +257,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<Feedback, FeedBackViewModel>().ReverseMap();
             CreateMap<CreateFeedBackViewModel, Feedback>().ReverseMap();
             CreateMap<UpdateFeedBackViewModel, Feedback>().ReverseMap();
-
+           
             CreateMap<TransactionViewModel, Transaction>().ReverseMap()
                                                 .ForMember(des => des.StatusTransaction, src => src.MapFrom(x => x.StatusTransaction != null ? (string)x.StatusTransaction.ToString() : (string?)null));
 
@@ -264,6 +265,9 @@ namespace KidProEdu.API.Mappers
                 .ForMember(des => des.SlotType, src => src.MapFrom(x => x.SlotType != null ? (string)x.SlotType.ToString() : (string?)null))
                 .ReverseMap();
 
+
+            CreateMap<CreateCertificateViewModel, Certificate>().ReverseMap();
+            CreateMap<CertificateViewModel, Certificate>().ReverseMap();
         }
     }
 }

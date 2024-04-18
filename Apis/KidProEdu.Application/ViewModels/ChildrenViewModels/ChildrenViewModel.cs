@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KidProEdu.Application.ViewModels.CertificateViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
         public IList<ClassViewModelInChildren> Classes { get; set; }
         public IList<CourseViewModelInChildren> Courses { get; set; }
         public IList<ExamViewModelInChildren> Exams { get; set; }
+        public IList<CreateCertificateViewModel> Certificates { get; set; }
     }
 
     public class ClassViewModelInChildren

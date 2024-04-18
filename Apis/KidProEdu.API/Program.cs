@@ -160,6 +160,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IChildrenAnswerRepository, ChildrenAnswerRepository>();
             builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             builder.Services.AddScoped<IConfigPointMultiplierRepository, ConfigPointMultiplierRepository>();
+            builder.Services.AddScoped<ICertificateRepository, CertificateRepository>();
             #endregion
 
             #region DIService
@@ -205,6 +206,7 @@ namespace KidProEdu.API
             builder.Services.AddScoped<IChildrenAnswerService, ChildrenAnswerService>();
             builder.Services.AddScoped<IFeedbackService, FeedbackService>();
             builder.Services.AddScoped<IConfigPointMultiplierService, ConfigPointMultiplierService>();
+            builder.Services.AddScoped<ICertificateService, CertificateService>();
             #endregion
 
             builder.Services.AddAutoMapper(typeof(Program));

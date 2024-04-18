@@ -45,6 +45,7 @@ namespace KidProEdu.Application
         public IChildrenAnswerRepository ChildrenAnswerRepository { get; }
         public IFeedbackRepository FeedbackRepository { get; }
         public IConfigPointMultiplierRepository ConfigPointMultiplierRepository { get; }
+        public ICertificateRepository CertificateRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
