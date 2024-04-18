@@ -628,7 +628,9 @@ namespace KidProEdu.Application.Services
         {
             //Create a List of ChildrenAnswer that Read from Excel File.
             var childrenAnswerListFromFile = new List<CreateChildrenAnswerViewModel>();
-
+            Question question = new Question() { Id = Guid.NewGuid(), Title = "Bài thi thực hành", Type = QuestionType.Course};
+            await _unitOfWork.QuestionRepository.AddAsync(question);
+            
             //ReadExcelFile
             using (var stream = new MemoryStream())
             {
@@ -648,22 +650,29 @@ namespace KidProEdu.Application.Services
                             var mssv = worksheet.Cells[row, col++].Value.ToString()!.Trim();
                             var examCode = worksheet.Cells[row, ++col].Value.ToString()!.Trim();
                             var scorePerQuestion = worksheet.Cells[row, ++col].Value;
+                            var foundExam = findExam.FirstOrDefault(x => x.TestCode.Equals(examCode)) ?? throw new Exception($"Không tìm thấy bài kiểm tra với mã {examCode}.");
 
                             childrenAnswerListFromFile.Add(new CreateChildrenAnswerViewModel() {ChildrenProfileId = findChildren.FirstOrDefault(x => x.ChildrenCode.Equals(mssv)).Id, 
-                                                                                                ExamId = findExam.FirstOrDefault(x => x.TestCode.Equals(examCode)).Id, 
+                                                                                                QuestionId = question.Id,
+                                                                                                ExamId = foundExam.Id,
                                                                                                 ScorePerQuestion = (double)scorePerQuestion });
                         }
-                        catch (Exception)
+                        catch (InvalidDataException)
                         {
                             await stream.DisposeAsync();
                             throw new InvalidDataException($"Lỗi tại dòng {row}, Tên cột: {worksheet.Cells[1, col].Value}, Lỗi: Ô này có giá trị trống hoặc giá trị không hợp lệ.");
+                        }
+                        catch (Exception ex)
+                        {
+                            await stream.DisposeAsync();
+                            throw new Exception(ex.Message);
                         }
                     }
                 }
             }
 
+            await _unitOfWork.SaveChangeAsync();
             if (childrenAnswerListFromFile.Count == 0) throw new Exception("Nhập điểm bằng file excel thất bại.");
-
             return await _childrenAnswerService.CreateChildrenAnswers(childrenAnswerListFromFile);
         }
 
