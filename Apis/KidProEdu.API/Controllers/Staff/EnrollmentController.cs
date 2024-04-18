@@ -135,6 +135,10 @@ namespace KidProEdu.API.Controllers.Staff
                 var result = await _enrollmentServices.ImportExcelFile(formFile);
                 return Ok("Thêm danh sách học sinh vào lớp thành công");
             }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);

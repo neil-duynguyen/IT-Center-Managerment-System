@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Bibliography;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Children;
+using KidProEdu.Application.ViewModels.CertificateViewModel;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
@@ -97,6 +98,7 @@ namespace KidProEdu.Application.Services
             List<ClassViewModelInChildren> listClass = new List<ClassViewModelInChildren>();
             List<CourseViewModelInChildren> listCourse = new List<CourseViewModelInChildren>();
             List<ExamViewModelInChildren> listExam = new List<ExamViewModelInChildren>();
+            List<CertificateViewModel> listCertificate = new List<CertificateViewModel>();
 
             foreach (var enrollment in result.Enrollments)
             {
@@ -122,6 +124,8 @@ namespace KidProEdu.Application.Services
                  })
                  .ToList();
             mapper.Exams = listExam;
+            
+            listCertificate = _mapper.Map<List<CertificateViewModel>>(_unitOfWork.CertificateRepository.GetAllAsync().Result.Where(x => x.ChildrenProfileId == childrenId).ToList());
 
             return mapper;
 

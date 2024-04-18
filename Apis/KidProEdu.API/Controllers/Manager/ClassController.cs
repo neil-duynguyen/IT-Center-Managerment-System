@@ -1,4 +1,5 @@
 ﻿using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -126,6 +127,24 @@ namespace KidProEdu.API.Controllers.Manager
         public async Task<IActionResult> ExportExcelFile(Guid classId) => File(await _classService.ExportExcelFileAsync(classId),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "Nhập điểm.xlsx");
+
+        [HttpPost("ImportScoreExcelFile")]
+        public async Task<IActionResult> ImportScoreExcelFile(IFormFile formFile)
+        {
+            try
+            {
+                var result = await _classService.ImportScoreExcelFileAsync(formFile);
+                return Ok("Nhập điểm thành công");
+            }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet("SendAttachEmail")]
         public async Task<IActionResult> SendAttachEmail()
