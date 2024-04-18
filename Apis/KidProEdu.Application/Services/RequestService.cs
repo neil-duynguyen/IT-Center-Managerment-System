@@ -173,6 +173,12 @@ namespace KidProEdu.Application.Services
                     foreach (var idRequest in changeStatusRequestViewModel.RequestIds)
                     {
                         var request = await _unitOfWork.RequestRepository.GetByIdAsync(idRequest);
+
+                        if (request.Status != Domain.Enums.StatusOfRequest.Pending)
+                        {
+                            throw new Exception("Yêu cầu: " + request.RequestCode + " đã được xử lí");
+                        }
+
                         var requestUsers = await _unitOfWork.RequestUserAccountRepository.GetRequestUserByRequestId(idRequest);
                         switch (request.RequestType)
                         {
@@ -258,7 +264,8 @@ namespace KidProEdu.Application.Services
                                             var newHistory = new TeachingClassHistory
                                             {
                                                 ClassId = currentHistory.ClassId,
-                                                // eawef UserAccountId = requestUsers.FirstOrDefault(x => x.Status == Domain.Enums.StatusOfRequest.Pending).RecieverId,
+                                                //UserAccountId = requestUsers.FirstOrDefault(x => x.Status == Domain.Enums.StatusOfRequest.Pending).RecieverId,
+                                                UserAccountId = changeStatusRequestViewModel.UserId,
                                                 StartDate = (DateTime)changeStatusRequestViewModel.TeachingDate,
                                                 EndDate = (DateTime)changeStatusRequestViewModel.TeachingDate,
                                                 TeachingStatus = Domain.Enums.TeachingStatus.Substitute
@@ -352,11 +359,14 @@ namespace KidProEdu.Application.Services
                                 break;
                         }
 
-                        foreach (var item in requestUsers)
+                        /*foreach (var item in requestUsers)
                         {
-                            // awfe item.Status = status;
+                            item.Status = status;
                             _unitOfWork.RequestUserAccountRepository.Update(item);
-                        }
+                        }*/
+
+                        request.Status = status;
+                        _unitOfWork.RequestRepository.Update(request);
 
                     }
 
@@ -368,12 +378,22 @@ namespace KidProEdu.Application.Services
                     status = Domain.Enums.StatusOfRequest.Cancel;
                     foreach (var idRequest in changeStatusRequestViewModel.RequestIds)
                     {
-                        var requestUsers = await _unitOfWork.RequestUserAccountRepository.GetRequestUserByRequestId(idRequest);
+                        /*var requestUsers = await _unitOfWork.RequestUserAccountRepository.GetRequestUserByRequestId(idRequest);
                         foreach (var item in requestUsers)
                         {
-                            // awef item.Status = status;
+                            item.Status = status;
                             _unitOfWork.RequestUserAccountRepository.Update(item);
+                        }*/
+
+                        var request = await _unitOfWork.RequestRepository.GetByIdAsync(idRequest);
+
+                        if (request.Status != Domain.Enums.StatusOfRequest.Pending)
+                        {
+                            throw new Exception("Yêu cầu: " + request.RequestCode + " đã được xử lí");
                         }
+
+                        request.Status = status;
+                        _unitOfWork.RequestRepository.Update(request);
                     }
 
                     break;
