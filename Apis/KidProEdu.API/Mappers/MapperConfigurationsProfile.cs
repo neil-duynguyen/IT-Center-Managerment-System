@@ -126,6 +126,7 @@ namespace KidProEdu.API.Mappers
                 .ForMember(des => des.Type, src => src.MapFrom(x => x.Type != null ? (string)x.Type.ToString() : (string?)null));
 
             CreateMap<RequestViewModel, Request>().ReverseMap();
+                //.ForMember(des=>des.Status,src => src.MapFrom(x=>x.RequestUserAccounts.);
             //CreateMap<CreateRequestViewModel, Request>().ReverseMap();
             CreateMap<UpdateRequestViewModel, Request>().ReverseMap();
 

@@ -48,6 +48,20 @@ namespace KidProEdu.Application.Services
                 && !createRequestViewModel.RequestType.Equals("ChildrenReserve")
                 )
                 throw new Exception("Loại yêu cầu không có trong hệ thống");
+
+            // nếu là request chuyển lịch thì khi ngày và lịch trùng nhau thì chỉ được tạo 1 request
+            if (createRequestViewModel.RequestType == "Schedule")
+            {
+                var requestSchedule = _unitOfWork.RequestRepository.GetAllAsync().Result
+                    .Where(x => x.TeachingDay == createRequestViewModel.TeachingDate
+                    && x.ScheduleId == createRequestViewModel.ScheduleId && x.IsDeleted == false).ToList();
+
+                if (requestSchedule.Count > 0) 
+                {
+                    throw new Exception("Bạn đã tạo yêu cầu đổi lịch với ngày và lịch này rồi");
+                }
+            }
+
             var randomCode = "R" + ((await _unitOfWork.RequestRepository.GetAllAsync()).Count + 1);
             Request request = new()
             {
@@ -121,9 +135,9 @@ namespace KidProEdu.Application.Services
 
             var request = await _unitOfWork.RequestRepository.GetByIdAsync(updateRequestViewModel.Id)
                 ?? throw new Exception("Không tìm thấy yêu cầu");
-            var requestUser = _unitOfWork.RequestUserAccountRepository.GetAllAsync().Result
+            /*var requestUser = _unitOfWork.RequestUserAccountRepository.GetAllAsync().Result
                 .FirstOrDefault(x => x.RequestId == request.Id && x.IsDeleted == false
-                && x.Status != Domain.Enums.StatusOfRequest.Pending);
+                && x.Status != Domain.Enums.StatusOfRequest.Pending);*/
 
             /*var existingRequest = await _unitOfWork.RequestRepository.GetRequestByRequestType(updateRequestViewModel.RequestType);
             if (!existingRequest.IsNullOrEmpty())
@@ -134,7 +148,7 @@ namespace KidProEdu.Application.Services
                 }
             }*/
 
-            if (requestUser.Status != null)
+            if (request.Status != Domain.Enums.StatusOfRequest.Pending)
                 throw new Exception("Cập nhật yêu cầu thất bại, yêu cầu này đã được xử lý");
 
             /*Request.RequestName = updateRequestViewModel.RequestName;
@@ -244,7 +258,7 @@ namespace KidProEdu.Application.Services
                                             var newHistory = new TeachingClassHistory
                                             {
                                                 ClassId = currentHistory.ClassId,
-                                                UserAccountId = requestUsers.FirstOrDefault(x => x.Status == Domain.Enums.StatusOfRequest.Pending).RecieverId,
+                                                // eawef UserAccountId = requestUsers.FirstOrDefault(x => x.Status == Domain.Enums.StatusOfRequest.Pending).RecieverId,
                                                 StartDate = (DateTime)changeStatusRequestViewModel.TeachingDate,
                                                 EndDate = (DateTime)changeStatusRequestViewModel.TeachingDate,
                                                 TeachingStatus = Domain.Enums.TeachingStatus.Substitute
@@ -340,7 +354,7 @@ namespace KidProEdu.Application.Services
 
                         foreach (var item in requestUsers)
                         {
-                            item.Status = status;
+                            // awfe item.Status = status;
                             _unitOfWork.RequestUserAccountRepository.Update(item);
                         }
 
@@ -357,7 +371,7 @@ namespace KidProEdu.Application.Services
                         var requestUsers = await _unitOfWork.RequestUserAccountRepository.GetRequestUserByRequestId(idRequest);
                         foreach (var item in requestUsers)
                         {
-                            item.Status = status;
+                            // awef item.Status = status;
                             _unitOfWork.RequestUserAccountRepository.Update(item);
                         }
                     }

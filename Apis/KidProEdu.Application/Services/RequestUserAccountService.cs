@@ -43,7 +43,7 @@ namespace KidProEdu.Application.Services
                         {
                             RecieverId = item,
                             RequestId = createRequestUserAccountViewModel.RequestId,
-                            Status = Domain.Enums.StatusOfRequest.Pending
+                            //Status = Domain.Enums.StatusOfRequest.Pending
                         };
 
                         await _unitOfWork.RequestUserAccountRepository.AddAsync(re);
