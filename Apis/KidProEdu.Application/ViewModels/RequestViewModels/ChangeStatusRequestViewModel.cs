@@ -19,6 +19,6 @@ namespace KidProEdu.Application.ViewModels.RequestViewModels
         public Guid? ToClassId { get; set; }
         public Guid? ScheduleId { get; set; }
         public Guid? ReceiverRefundId { get; set; }
-        
+        public Guid UserId { get; set; } //là id người xử lí approve request
     }
 }
