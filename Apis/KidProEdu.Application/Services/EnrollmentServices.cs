@@ -486,19 +486,20 @@ namespace KidProEdu.Application.Services
 
                     List<Guid> listChildrenGuid = new List<Guid>();
 
+                    var findChildren = await _unitOfWork.ChildrenRepository.GetAllAsync();
+
                     for (int row = 2; row <= rowCount; row++)
                     {
                         var col = 1;
                         try
                         {
                             var mssv = worksheet.Cells[row, col].Value.ToString()!.Trim();
-                            var findChildren = _unitOfWork.ChildrenRepository.GetAllAsync().Result.FirstOrDefault(x => x.ChildrenCode.Equals(mssv));
-                            listChildrenGuid.Add(findChildren.Id);
+                            listChildrenGuid.Add(findChildren.FirstOrDefault(x => x.ChildrenCode.Equals(mssv)).Id);
                         }
                         catch (Exception)
                         {
                             await stream.DisposeAsync();
-                            throw new InvalidDataException($"Lỗi tại dòng {row}, Tên cột: {worksheet.Cells[1, col - 1].Value}, Lỗi: Ô này có giá trị trống hoặc giá trị không hợp lệ.");
+                            throw new InvalidDataException($"Lỗi tại dòng {row}, Tên cột: {worksheet.Cells[1, col].Value}, Lỗi: Ô này có giá trị trống hoặc giá trị không hợp lệ.");
                         }
                     }
                     try
@@ -508,6 +509,7 @@ namespace KidProEdu.Application.Services
                     }
                     catch (Exception)
                     {
+                        await stream.DisposeAsync();
                         throw new InvalidDataException($"Tên cột: Mã lớp, Lỗi: Ô này có giá trị trống hoặc giá trị không hợp lệ.");
                     }                 
                     enrollmetListFromFile = new CreateEnrollmentViewModel()

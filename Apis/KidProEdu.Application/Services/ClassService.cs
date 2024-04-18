@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.VariantTypes;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.Classes;
+using KidProEdu.Application.ViewModels.ChildrenAnswerViewModels;
 using KidProEdu.Application.ViewModels.ChildrenViewModels;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.CourseViewModels;
@@ -12,9 +13,11 @@ using KidProEdu.Application.ViewModels.ScheduleViewModels;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using OfficeOpenXml;
+using ZXing;
 
 namespace KidProEdu.Application.Services
 {
@@ -24,13 +27,15 @@ namespace KidProEdu.Application.Services
         private readonly ICurrentTime _currentTime;
         private readonly IClaimsService _claimsService;
         private readonly IMapper _mapper;
+        private readonly IChildrenAnswerService _childrenAnswerService;
 
-        public ClassService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper)
+        public ClassService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, IChildrenAnswerService childrenAnswerService)
         {
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
             _claimsService = claimsService;
             _mapper = mapper;
+            _childrenAnswerService = childrenAnswerService;
         }
 
         public async Task<bool> CreateClass(CreateClassViewModel createClassViewModel)
@@ -585,7 +590,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<Stream> ExportExcelFileAsync(Guid classId)
         {
-            string[] columnNames = new string[] { "ChildrenCode", "FullName", "ScorePerQuestion" };
+            string[] columnNames = new string[] { "ChildrenCode", "FullName","ExamCode", "ScorePerQuestion" };
 
             var stream = new MemoryStream();
 
@@ -616,6 +621,50 @@ namespace KidProEdu.Application.Services
 
             return stream;
 
+        }
+
+        //function này dùng để nhâp điểm bằng file excel
+        public async Task<bool> ImportScoreExcelFileAsync(IFormFile formFile)
+        {
+            //Create a List of ChildrenAnswer that Read from Excel File.
+            var childrenAnswerListFromFile = new List<CreateChildrenAnswerViewModel>();
+
+            //ReadExcelFile
+            using (var stream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(stream);
+
+                using (var excelPackage = new ExcelPackage(stream))
+                {
+                    ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
+                    var rowCount = worksheet.Dimension.Rows;
+                    var findChildren = await _unitOfWork.ChildrenRepository.GetAllAsync();
+                    var findExam = await _unitOfWork.ExamRepository.GetAllAsync();
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        var col = 1;
+                        try
+                        {
+                            var mssv = worksheet.Cells[row, col++].Value.ToString()!.Trim();
+                            var examCode = worksheet.Cells[row, ++col].Value.ToString()!.Trim();
+                            var scorePerQuestion = worksheet.Cells[row, ++col].Value;
+
+                            childrenAnswerListFromFile.Add(new CreateChildrenAnswerViewModel() {ChildrenProfileId = findChildren.FirstOrDefault(x => x.ChildrenCode.Equals(mssv)).Id, 
+                                                                                                ExamId = findExam.FirstOrDefault(x => x.TestCode.Equals(examCode)).Id, 
+                                                                                                ScorePerQuestion = (double)scorePerQuestion });
+                        }
+                        catch (Exception)
+                        {
+                            await stream.DisposeAsync();
+                            throw new InvalidDataException($"Lỗi tại dòng {row}, Tên cột: {worksheet.Cells[1, col].Value}, Lỗi: Ô này có giá trị trống hoặc giá trị không hợp lệ.");
+                        }
+                    }
+                }
+            }
+
+            if (childrenAnswerListFromFile.Count == 0) throw new Exception("Nhập điểm bằng file excel thất bại.");
+
+            return await _childrenAnswerService.CreateChildrenAnswers(childrenAnswerListFromFile);
         }
 
         public async Task<MimePart> ExportExcelFileByListAsync(List<Enrollment> list, string attachmentFileName)

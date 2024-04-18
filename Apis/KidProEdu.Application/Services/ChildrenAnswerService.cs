@@ -45,8 +45,16 @@ namespace KidProEdu.Application.Services
                     }
                 }
             }
-            var mapper = _mapper.Map<List<ChildrenAnswer>>(createChildrenAnswerViewModel);
-            await _unitOfWork.ChildrenAnswerRepository.AddRangeAsync(mapper);
+
+            foreach (var item in createChildrenAnswerViewModel)
+            {
+                if (!_unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result.Any(x => x.ChildrenProfileId == item.ChildrenProfileId && x.ExamId == item.ExamId))
+                {
+                    var mapper = _mapper.Map<ChildrenAnswer>(item);
+                    await _unitOfWork.ChildrenAnswerRepository.AddAsync(mapper);
+                }
+            }
+
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo câu trả lời thất bại");
         }
 
@@ -101,7 +109,7 @@ namespace KidProEdu.Application.Services
 
             foreach (var item in result)
             {
-                var mapper = _mapper.Map<QuestionViewModel>(await _unitOfWork.QuestionRepository.GetByIdAsync(item.QuestionId));
+                var mapper = _mapper.Map<QuestionViewModel>(await _unitOfWork.QuestionRepository.GetByIdAsync((Guid)item.QuestionId));
                 mapper.Answer = item.Answer;
                 mapper.ScorePerQuestion = item.ScorePerQuestion;
                 questionViewModel.Add(mapper);
