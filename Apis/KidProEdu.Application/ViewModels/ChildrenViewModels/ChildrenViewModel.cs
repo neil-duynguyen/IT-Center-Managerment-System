@@ -45,10 +45,10 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
     {
         public Guid ChildrenProfileId { get; set; }
         public Guid CourseId { get; set; }
-
         public string FullName { get; set; }
         public string CourseName { get; set; }
         public string Code { get; set; }
         public string Url { get; set; }
+        public DateTime CreateDay { get; set; }
     }
 }

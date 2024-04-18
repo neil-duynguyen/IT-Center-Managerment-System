@@ -114,7 +114,7 @@ namespace KidProEdu.Application.Services
 
             foreach (var item in result.Certificates)
             {
-                listCertificate.Add(new CertificateViewModel() { ChildrenProfileId = item.ChildrenProfileId, CourseId = item.CourseId, FullName = result.FullName, CourseName = _unitOfWork.CourseRepository.GetByIdAsync(item.CourseId).Result.Name, Code = item.Code, Url = item.Url });
+                listCertificate.Add(new CertificateViewModel() { ChildrenProfileId = item.ChildrenProfileId, CourseId = item.CourseId, FullName = result.FullName, CourseName = _unitOfWork.CourseRepository.GetByIdAsync(item.CourseId).Result.Name, Code = item.Code, Url = item.Url,  CreateDay = item.CreationDate });
                 mapper.Certificates = listCertificate;
             }
 
