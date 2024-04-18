@@ -45,7 +45,7 @@ namespace Infrastructures.Repositories
                                         && record.PasswordHash == passwordHash);
             if (user is null)
             {
-                throw new Exception("UserName & password is not correct");
+                throw new Exception("Tên đăng nhập hoặc mật khẩu không chính xác.");
             }
             return user;
         }

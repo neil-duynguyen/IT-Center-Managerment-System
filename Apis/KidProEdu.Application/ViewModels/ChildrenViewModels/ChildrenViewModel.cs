@@ -19,7 +19,7 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
         public IList<ClassViewModelInChildren> Classes { get; set; }
         public IList<CourseViewModelInChildren> Courses { get; set; }
         public IList<ExamViewModelInChildren> Exams { get; set; }
-        public IList<CreateCertificateViewModel> Certificates { get; set; }
+        public IList<CertificateViewModel> Certificates { get; set; }
     }
 
     public class ClassViewModelInChildren
@@ -39,5 +39,16 @@ namespace KidProEdu.Application.ViewModels.ChildrenViewModels
     { 
         public Guid ExamId { get; set; }
         public string? ExamName { get; set;}
+    }
+
+    public class CertificateViewModel
+    {
+        public Guid ChildrenProfileId { get; set; }
+        public Guid CourseId { get; set; }
+
+        public string FullName { get; set; }
+        public string CourseName { get; set; }
+        public string Code { get; set; }
+        public string Url { get; set; }
     }
 }

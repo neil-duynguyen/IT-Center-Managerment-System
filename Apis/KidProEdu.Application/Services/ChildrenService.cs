@@ -112,6 +112,12 @@ namespace KidProEdu.Application.Services
                 mapper.Courses = listCourse;
             }
 
+            foreach (var item in result.Certificates)
+            {
+                listCertificate.Add(new CertificateViewModel() { ChildrenProfileId = item.ChildrenProfileId, CourseId = item.CourseId, FullName = result.FullName, CourseName = _unitOfWork.CourseRepository.GetByIdAsync(item.CourseId).Result.Name, Code = item.Code, Url = item.Url });
+                mapper.Certificates = listCertificate;
+            }
+
             listExam = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result
                  .Where(x => x.ChildrenProfileId == childrenId)
                  .GroupBy(x => x.ExamId)
@@ -125,8 +131,6 @@ namespace KidProEdu.Application.Services
                  .ToList();
             mapper.Exams = listExam;
             
-            listCertificate = _mapper.Map<List<CertificateViewModel>>(_unitOfWork.CertificateRepository.GetAllAsync().Result.Where(x => x.ChildrenProfileId == childrenId).ToList());
-
             return mapper;
 
         }

@@ -43,11 +43,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<LoginViewModel> LoginAsync(UserLoginViewModel userObject)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByUserNameAndPasswordHash(userObject.UserName, userObject.Password.Hash());
-            if (user == null)
-            {
-                throw new Exception("Tên đăng nhập hoặc mật khẩu không chính xác.");
-            }
+            var user = await _unitOfWork.UserRepository.GetUserByUserNameAndPasswordHash(userObject.UserName, userObject.Password.Hash());         
 
             var token = user.GenerateJsonWebToken(_configuration["AppSettings:SecretKey"]);
 
