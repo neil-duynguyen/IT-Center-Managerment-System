@@ -21,10 +21,12 @@ namespace KidProEdu.API.Controllers.Staff
     public class OrderController : ControllerBase
     {
         private IOrderService _orderService;
+        private readonly IConfiguration _configuration;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService, IConfiguration configuration)
         {
             _orderService = orderService;
+            _configuration = configuration;
         }
 
         [HttpGet("Orders")]
@@ -80,7 +82,7 @@ namespace KidProEdu.API.Controllers.Staff
             try
             {
                 var result = await _orderService.CreatePaymentHandler(orderId);
-                return Ok(result);
+                return Redirect(_configuration["Vnpay:RedirectUrl"]);
 
             }
             catch (Exception ex)

@@ -41,8 +41,17 @@ namespace KidProEdu.API.Controllers.Staff
         [HttpGet("GetOrderDetailByOrderIdAfterUpdate/{id}")]
         public async Task<IActionResult> GetOrderDetailByOrderIdAfterUpdate(Guid id)
         {
-            var result = await _orderDetailService.GetOrderDetailByOrderIdAfterUpdate(id);
-            return Ok(result);
+            try
+            {
+                var result = await _orderDetailService.GetOrderDetailByOrderIdAfterUpdate(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }
