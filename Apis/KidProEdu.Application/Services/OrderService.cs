@@ -143,7 +143,7 @@ namespace KidProEdu.Application.Services
                                 getOrderById.URLPayment = paymentUrl;
                                 _unitOfWork.OrderRepository.Update(getOrderById);
                                 await _unitOfWork.SaveChangeAsync();
-
+                                var getInfoStaff = await _unitOfWork.UserRepository.GetByIdAsync((Guid)getOrderById.CreatedBy);
                                 //Gửi thông tin thanh toán cho parent
                                 await SendEmailUtil.SendEmail(getOrderById.UserAccount.Email, "Xác nhận thanh toán đơn hàng",
                                         "<html><body>" +
@@ -157,9 +157,9 @@ namespace KidProEdu.Application.Services
                                             "<li>Khoá học: " + nameCourse + "</li>" +
                                             "<li>Ngày mua: " + getOrderById.CreationDate + "</li>" +
                                             "<li>Giá tiền: " + createPayment.RequiredAmount + "</li>" +
-                                            "<li>Kì hạn: " + getInstallmentTerm + "</li>" +
+                                            "<li>Kì hạn: " + getInstallmentTerm + "tháng" + "</li>" +
                                             "<li>Link thanh toán: <a href='" + paymentUrl + "'>" + paymentUrl + "</a></li>" +
-                                            "<li>Nhân viên tư vấn: " + getOrderById.CreatedBy.ToString() + "</li>" +
+                                            "<li>Nhân viên tư vấn: " + getInfoStaff.FullName + "</li>" +
                                         "</ul>" +
                                         "<p>Trân trọng,</p>" +
                                         "<p>KidPro Education!</p>" +
