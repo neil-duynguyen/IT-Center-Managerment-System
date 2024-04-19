@@ -506,7 +506,6 @@ namespace KidProEdu.Application.Services
 
             var getAutoSchedule = new GetAutoScheduleViewModel();
             var classesModel = new List<ClassForScheduleViewModel>();
-            var schedulesModel = new List<ScheduleForAutoViewModel>();
             //var slotModel = new SlotForScheduleViewModel();
 
             // lấy lịch sử những lớp gv đang dạy hoặc được xếp lịch (pending, teaching)
@@ -514,6 +513,7 @@ namespace KidProEdu.Application.Services
 
             foreach (var history in histories)
             {
+                var schedulesModel = new List<ScheduleForAutoViewModel>();
                 var mapper = _mapper.Map<ClassForScheduleViewModel>(history.Class);
                 mapper.TeachingStartDate = history.StartDate;
                 mapper.TeachingEndDate = history.EndDate;
