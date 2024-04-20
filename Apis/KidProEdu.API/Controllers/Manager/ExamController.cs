@@ -48,6 +48,18 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(result);
         }
 
+        [HttpGet("ExamByClass/{id}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> ExamByClass(Guid id)
+        {
+            var result = await _examService.GetExamsByClassId(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
         [HttpGet("ExamByTestName/{testName}")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> ExamByTestName(string testName)
@@ -68,6 +80,22 @@ namespace KidProEdu.API.Controllers.Manager
             try
             {
                 var result = await _examService.CreateExam(createExamViewModel);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("PostExamFinalPractice")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> PostExamFinalPractice(CreateExamFinalPracticeViewModel createExamViewModel)
+        {
+
+            try
+            {
+                var result = await _examService.CreateExamFinalPractice(createExamViewModel);
                 return Ok(result);
             }
             catch (Exception ex)
