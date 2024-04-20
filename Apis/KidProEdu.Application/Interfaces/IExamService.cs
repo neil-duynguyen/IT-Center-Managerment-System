@@ -18,5 +18,7 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> DeleteExam(Guid id);
         Task<ExamViewModel> GetExamByTestName(string name);
         Task<List<ExamViewModel>> GetExamsByCourseId(Guid id);
+        Task<List<ExamViewModel>> GetExamsByClassId(Guid id);
+        Task<Exam> CreateExamFinalPractice(CreateExamFinalPracticeViewModel createExamViewModel);
     }
 }

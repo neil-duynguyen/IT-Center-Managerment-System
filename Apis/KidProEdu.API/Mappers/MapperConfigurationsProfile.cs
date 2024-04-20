@@ -155,6 +155,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<Exam, ExamViewModel>().ReverseMap();
             CreateMap<CreateExamViewModel2, Exam>().ReverseMap();
             CreateMap<UpdateExamViewModel, Exam>().ReverseMap();
+            CreateMap<CreateExamFinalPracticeViewModel, Exam>().ReverseMap();
 
             CreateMap<LogEquipment, LogEquipmentViewModel>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null));
             CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();
