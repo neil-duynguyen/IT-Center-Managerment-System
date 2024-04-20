@@ -77,7 +77,8 @@ namespace KidProEdu.Application.Services
                 ReceiverRefundId = createRequestViewModel.ReceiverRefundId,
                 RequestCode = randomCode,
                 ChildrenCode = createRequestViewModel.ChildrenCode,
-                CourseCode = createRequestViewModel.CourseCode
+                CourseCode = createRequestViewModel.CourseCode,
+                Status = Domain.Enums.StatusOfRequest.Pending
             };
 
             await _unitOfWork.RequestRepository.AddAsync(request);
