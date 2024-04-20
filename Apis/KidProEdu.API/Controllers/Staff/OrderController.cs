@@ -8,6 +8,7 @@ using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -81,8 +82,8 @@ namespace KidProEdu.API.Controllers.Staff
         {
             try
             {
-                var result = await _orderService.CreatePaymentHandler(orderId);
-                return Redirect(_configuration["Vnpay:RedirectUrl"]);
+                var result = await _orderService.CreatePaymentHandler(orderId);          
+                return Ok(result);
 
             }
             catch (Exception ex)
