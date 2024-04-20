@@ -5,20 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KidProEdu.Domain.Entities
+namespace KidProEdu.Application.ViewModels.ExamViewModels
 {
-    public class Exam : BaseEntity
+    public class CreateExamFinalPracticeViewModel
     {
-        public Guid? CourseId { get; set; }
         public Guid? ClassId { get; set; }
         public string TestName { get; set; }
-        public string? TestCode { get; set; }
+        public string TestCode { get; set; }
         public DateTime TestDate { get; set; }
         public int TestDuration { get; set; }
-        public int? TotalQuestion { get; set; }
         public TestType TestType { get; set; }
-        public virtual Course? Course { get; set; }
-        public virtual Class? Class { get; set; }
-        public IList<ChildrenAnswer> ChildrenAnswer { get; set; }
     }
 }

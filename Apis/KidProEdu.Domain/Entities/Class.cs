@@ -24,5 +24,6 @@ namespace KidProEdu.Domain.Entities
         public IList<Feedback> Feedbacks { get; set; }
         public IList<Schedule> Schedules { get; set; }
         public IList<TeachingClassHistory> TeachingClassHistories { get; set; }
+        public IList<Exam> Exams { get; set; }
     }
 }

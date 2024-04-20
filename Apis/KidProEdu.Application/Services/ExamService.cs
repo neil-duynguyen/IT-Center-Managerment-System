@@ -54,6 +54,29 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? mapper : throw new Exception("Tạo bài kiểm tra thất bại");
         }
 
+        public async Task<Exam> CreateExamFinalPractice(CreateExamFinalPracticeViewModel createExamViewModel)
+        {
+            /*var validator = new CreateExamViewModelValidator();
+            var validationResult = validator.Validate(createExamViewModel);
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    throw new Exception(error.ErrorMessage);
+                }
+            }*/
+
+            /*var exitResult = await _unitOfWork.ExamRepository.GetExamByTestName(createExamViewModel.TestName);
+            if (exitResult != null)
+            {
+                throw new Exception("Bài kiểm tra này đã tồn tại");
+            }*/
+
+            var mapper = _mapper.Map<Exam>(createExamViewModel);
+            await _unitOfWork.ExamRepository.AddAsync(mapper);
+            return await _unitOfWork.SaveChangeAsync() > 0 ? mapper : throw new Exception("Tạo bài kiểm tra thất bại");
+        }
+
         public async Task<bool> DeleteExam(Guid id)
         {
             var result = await _unitOfWork.ExamRepository.GetByIdAsync(id);
@@ -92,6 +115,13 @@ namespace KidProEdu.Application.Services
         {
             var result = await _unitOfWork.ExamRepository.GetExamByCourseId(id);
             var mapper = _mapper.Map<List<ExamViewModel>>(result);
+            return mapper;
+        }
+
+        public async Task<List<ExamViewModel>> GetExamsByClassId(Guid id)
+        {
+            var result = await _unitOfWork.ExamRepository.GetAllAsync();
+            var mapper = _mapper.Map<List<ExamViewModel>>(result.Where(x => x.ClassId == id));
             return mapper;
         }
 
