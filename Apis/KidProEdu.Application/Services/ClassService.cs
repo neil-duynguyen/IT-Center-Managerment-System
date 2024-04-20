@@ -40,7 +40,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<bool> CreateClass(CreateClassViewModel createClassViewModel)
         {
-            var validator = new CreateClassViewModelValidator();
+            var validator = new CreateClassViewModelValidator(_currentTime);
             var validationResult = validator.Validate(createClassViewModel);
             if (!validationResult.IsValid)
             {
