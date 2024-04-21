@@ -44,5 +44,8 @@ namespace KidProEdu.Domain.Entities
         public IList<SkillCertificate> SkillCertificate { get; set; }
         public IList<DivisionUserAccount> DivisionUserAccounts { get; set; }
         public IList<ConfigPointMultiplier> ConfigPointMultipliers { get; set; }
+        public IList<ConfigJobType> ConfigJobTypes { get; set; }
+        public IList<ConfigSystem> ConfigSystems { get; set; }
+        public IList<ConfigTheme> ConfigThemes { get; set; }
     }
 }

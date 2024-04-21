@@ -22,12 +22,10 @@ namespace KidProEdu.API.Controllers.Staff
     public class OrderController : ControllerBase
     {
         private IOrderService _orderService;
-        private readonly IConfiguration _configuration;
 
-        public OrderController(IOrderService orderService, IConfiguration configuration)
+        public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
-            _configuration = configuration;
         }
 
         [HttpGet("Orders")]
