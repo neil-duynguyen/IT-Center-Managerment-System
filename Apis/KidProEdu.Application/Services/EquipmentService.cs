@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using FluentValidation;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
@@ -413,6 +414,13 @@ namespace KidProEdu.Application.Services
                     "Xin cảm ơn, \n" +
                     "KidPro Education!");
             }
+        }
+
+        public async Task<List<EquipmentViewModel>> GetEquipmentByStatus(StatusOfEquipment status)
+        {
+            var results = await _unitOfWork.EquipmentRepository.GetListEquipmentByStatus(status);
+            var mapper = _mapper.Map<List<EquipmentViewModel>>(results);
+            return mapper;
         }
     }
 }

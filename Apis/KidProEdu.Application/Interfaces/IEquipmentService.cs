@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace KidProEdu.Application.Interfaces
     public interface IEquipmentService
     {
         Task<List<EquipmentViewModel>> GetEquipments();
+        Task<List<EquipmentViewModel>> GetEquipmentByStatus(StatusOfEquipment status);
         Task<List<EquipmentViewModel>> GetListEquipmentByName(string name);
         Task<bool> CreateEquipment(CreateEquipmentViewModel createEquipmentViewModel);
         Task<bool> UpdateEquipment(UpdateEquipmentViewModel updateEquipmentViewModel);

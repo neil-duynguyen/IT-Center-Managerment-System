@@ -1,6 +1,7 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
+using KidProEdu.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,6 +46,24 @@ namespace KidProEdu.API.Controllers.Manager
                 return NotFound();
             }
             return Ok(equipments);
+        }
+
+        [HttpGet("EquipmentsByStatus/{status}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> EquipmentsByStatus(StatusOfEquipment status)
+        {
+            try
+            {
+                var equipments = await _equipmentService.GetEquipmentByStatus(status);
+                if (equipments == null)
+                {
+                    return NotFound();
+                }
+                return Ok(equipments);
+            }
+            catch(Exception ex) {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]

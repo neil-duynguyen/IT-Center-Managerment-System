@@ -1,7 +1,9 @@
-﻿using Infrastructures.Repositories;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Infrastructures.Repositories;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -32,6 +34,16 @@ namespace KidProEdu.Infrastructures.Repositories
         public override async Task<Equipment> GetByIdAsync(Guid id)
         {
             return await _dbContext.Equipment.Include(x => x.LogEquipments.OrderByDescending(x => x.CreationDate)).ThenInclude(x => x.UserAccount).OrderByDescending(x => x.CreationDate).FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        }
+
+        public async Task<List<Equipment>> GetListEquipmentByStatus(StatusOfEquipment status)
+        {
+            var equipments = await _dbContext.Equipment
+                 .Where(x => x.Status == status && x.IsDeleted == false)
+                 .OrderByDescending(x => x.CreationDate)
+                 .ToListAsync();
+
+            return equipments;
         }
     }
 }
