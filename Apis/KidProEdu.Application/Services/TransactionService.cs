@@ -91,7 +91,7 @@ namespace KidProEdu.Application.Services
                
                     var transactionByCourse = new DashBoardTransactionSummariseByCourseViewModel
                     {
-                        CourseName = course.Name,
+                        CourseCode = course.CourseCode,
                         TotalAmountCourse = totalAmountForCourse,
                         Percent = percent
                     };
