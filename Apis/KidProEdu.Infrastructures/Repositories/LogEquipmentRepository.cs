@@ -23,6 +23,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<LogEquipment>> GetLogEquipmentByCode(string code)
         {
             var logEquipments = await _dbContext.LogEquipment
+               .Include(x => x.UserAccount)
                .Where(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == false)
                .ToListAsync();
 
@@ -32,6 +33,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<LogEquipment>> GetLogEquipmentByEquipmentId(Guid equipmentId)
         {
             var logEquipments = await _dbContext.LogEquipment
+                .Include(x => x.UserAccount)
                 .Where(x => x.EquipmentId == equipmentId && x.IsDeleted == false)
                 .ToListAsync();
 
@@ -41,6 +43,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<LogEquipment>> GetLogEquipmentByName(string name)
         {
             var logEquipments = await _dbContext.LogEquipment
+                .Include(x => x.UserAccount)
                 .Where(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == false)
                 .ToListAsync();
 
@@ -50,6 +53,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<LogEquipment>> GetLogEquipmentByRoomId(Guid roomId)
         {
             var logEquipments = await _dbContext.LogEquipment
+                .Include(x => x.UserAccount)
                 .Where(x => x.RoomId == roomId && x.IsDeleted == false)
                 .ToListAsync();
 
@@ -59,6 +63,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<LogEquipment>> GetLogEquipmentByStatus(StatusOfEquipment statusOfEquipment)
         {
             var logEquipments = await _dbContext.LogEquipment
+                .Include(x => x.UserAccount)
                 .Where(x => x.Status == statusOfEquipment && x.IsDeleted == false)
                 .ToListAsync();
             return logEquipments;
@@ -67,6 +72,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<LogEquipment>> GetLogEquipmentByUserId(Guid userId)
         {
             var logEquipments = await _dbContext.LogEquipment
+                .Include(x => x.UserAccount)
                 .Where(x => x.UserAccountId == userId && x.IsDeleted == false)
                 .ToListAsync();
 
@@ -76,6 +82,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<LogEquipment>> GetLogEquipmentByReturnDeadline(DateTime returnDeadline)
         {
             var logEquipments = await _dbContext.LogEquipment
+                .Include(x => x.UserAccount)
                 .Where(x => x.ReturnedDealine.Value.Date == returnDeadline.Date
                 && x.Status == StatusOfEquipment.Borrowed && x.IsDeleted == false)
                 .ToListAsync();

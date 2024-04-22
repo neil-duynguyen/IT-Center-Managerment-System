@@ -12,6 +12,7 @@ namespace KidProEdu.Application.ViewModels.LogEquipmentViewModels
     {
         public Guid EquipmentId { get; set; }
         public Guid? UserAccountId { get; set; }
+        public string? FullName { get; set; }
         public string? Name { get; set; }
         public string? Code { get; set; }
         public double? Price { get; set; }
