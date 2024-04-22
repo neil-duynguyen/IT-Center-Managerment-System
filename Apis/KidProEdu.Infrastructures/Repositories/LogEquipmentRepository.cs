@@ -90,6 +90,11 @@ namespace KidProEdu.Infrastructures.Repositories
             return logEquipments;
         }
 
+        public override async Task<List<LogEquipment>> GetAllAsync()
+        {
+            return await _dbContext.LogEquipment.Include(x => x.UserAccount).Where(x => !x.IsDeleted).ToListAsync();
+        }
+
 
     }
 }
