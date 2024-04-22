@@ -21,7 +21,7 @@ namespace KidProEdu.Infrastructures.Repositories
         }
         public override async Task<List<Transaction>> GetAllAsync()
         {
-            return await _dbContext.Transaction.Include(x => x.OrderDetail).ThenInclude(x => x.Order).Where(x => x.StatusTransaction == StatusTransaction.Successfully && !x.IsDeleted).ToListAsync();
+            return await _dbContext.Transaction.Include(x => x.OrderDetail).ThenInclude(x => x.Order).Where(x => !x.IsDeleted).ToListAsync();
         }
 
         public async Task<List<Transaction>> GetTransactionByCourse(DateTime monthInYear)

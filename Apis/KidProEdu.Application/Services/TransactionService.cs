@@ -152,7 +152,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<TransactionViewModel>> GetTransactionDetailByTransactionId(Guid id)
         {
-            var listTransaction = _unitOfWork.TransactionRepository.GetAllAsync().Result.Where(x => x.ParentsTransaction == id);
+            var listTransaction = _unitOfWork.TransactionRepository.GetAllAsync().Result.Where(x => x.ParentsTransaction == id).OrderBy(x => x.InstallmentPeriod); ;
             return _mapper.Map<List<TransactionViewModel>>(listTransaction);
         }
 
