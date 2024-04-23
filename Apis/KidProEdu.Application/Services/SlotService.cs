@@ -28,7 +28,7 @@ namespace KidProEdu.Application.Services
         public async Task<List<Slot>> GetSlots()
         {
             var results = _unitOfWork.SlotRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false)
-                .OrderByDescending(x => x.CreationDate).ToList();
+                .OrderBy(x => x.SlotType).ThenBy(x => x.StartTime).ToList();
             return results;
         }
     }
