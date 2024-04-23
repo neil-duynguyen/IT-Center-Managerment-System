@@ -2,6 +2,7 @@
 using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers.Manager
@@ -17,14 +18,14 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("Classes")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[Authorize(Roles = "Manager")]*/
         public async Task<IActionResult> Classes()
         {
             return Ok(await _classService.GetClasses());
         }
 
         [HttpGet("{id}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[Authorize(Roles = "Manager")]*/
         public async Task<IActionResult> Class(Guid id)
         {
             var Class = await _classService.GetClassById(id);
@@ -36,7 +37,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[Authorize(Roles = "Manager")]*/
         public async Task<IActionResult> PostClass(CreateClassViewModel createClassViewModel)
         {
             try
@@ -58,7 +59,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[Authorize(Roles = "Manager")]*/
         public async Task<IActionResult> PutClass(UpdateClassViewModel updateClassViewModel)
         {
             try
@@ -80,7 +81,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> DeleteClass(Guid ClassId)
         {
             try
@@ -102,7 +103,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPut("ChangeStatusClass")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[Authorize(Roles = "Manager")]*/
         public async Task<IActionResult> ChangeStatusClass(ChangeStatusClassViewModel changeStatusClassViewModel)
         {
             try
