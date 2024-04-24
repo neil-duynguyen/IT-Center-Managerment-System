@@ -51,7 +51,7 @@ namespace KidProEdu.API.Controllers.Admin
                 await _dbContext.Skill.ExecuteDeleteAsync();
                 _dbContext.UserAccount.RemoveRange(_dbContext.UserAccount.Where(x => !x.UserName.Equals("Admin") && !x.UserName.Equals("Manager") && !x.UserName.Equals("Staff")).ToList());
                 await _dbContext.SaveChangesAsync();
-                await _dbContext.Location.ExecuteDeleteAsync();
+                //await _dbContext.Location.ExecuteDeleteAsync();
                 return Ok();
             }
             catch (Exception ex)

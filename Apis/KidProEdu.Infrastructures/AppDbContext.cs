@@ -76,6 +76,8 @@ namespace KidProEdu.Infrastructures
             var userAdmin = "Admin";
             var userManager = "Manager";
             var userStaff = "Staff";
+            var userTeacher = "Teacher";
+            var userParent = "Parent";
 
             var hashPasswordAdmin = "Admin@123";
             var hashPasswordManager = "Manager@123";
@@ -123,6 +125,36 @@ namespace KidProEdu.Infrastructures
                     FullName = "LinhChi",
                     Email = "linhchi@gmail.com",
                     Phone = "0356724796",
+                    DateOfBirth = new DateTime(2001 - 11 - 11),
+                    Status = Domain.Enums.StatusUser.Enable,
+                    CreationDate = new DateTime(2024 - 01 - 15),
+                });
+
+            builder.Entity<UserAccount>().HasData(
+                new UserAccount
+                {
+                    Id = new Guid("434d275c-ff7d-35fa-84e3-bed5ecadca84"),
+                    RoleId = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A53"),
+                    UserName = userTeacher,
+                    PasswordHash = hashPasswordTeacher.Hash(),
+                    FullName = "Nguyen Minh Ngoc",
+                    Email = "teacher@gmail.com",
+                    Phone = "0356534796",
+                    DateOfBirth = new DateTime(2001 - 11 - 11),
+                    Status = Domain.Enums.StatusUser.Enable,
+                    CreationDate = new DateTime(2024 - 01 - 15),
+                });
+
+            builder.Entity<UserAccount>().HasData(
+                new UserAccount
+                {
+                    Id = new Guid("434d275c-ff7d-72fa-84e3-bed5ecadca84"),
+                    RoleId = new Guid("D5FA55C7-315D-4634-9C73-08DBBC3F3A54"),
+                    UserName = userParent,
+                    PasswordHash = hashPasswordParent.Hash(),
+                    FullName = "Pham Minh Tuan",
+                    Email = "minhtuan234@gmail.com",
+                    Phone = "0398324796",
                     DateOfBirth = new DateTime(2001 - 11 - 11),
                     Status = Domain.Enums.StatusUser.Enable,
                     CreationDate = new DateTime(2024 - 01 - 15),

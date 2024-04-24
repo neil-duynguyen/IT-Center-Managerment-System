@@ -71,8 +71,12 @@ namespace KidProEdu.Application.Services
             {
                 throw new Exception("Bài kiểm tra này đã tồn tại");
             }*/
+           // var getClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)createExamViewModel.ClassId);
+
+            var getNumberExamByClassId = _unitOfWork.ExamRepository.GetAllAsync().Result.Where(x => x.ClassId == createExamViewModel.ClassId).ToList();
 
             var mapper = _mapper.Map<Exam>(createExamViewModel);
+            mapper.TestCode = "EFP" + getNumberExamByClassId.Count + 1;
             await _unitOfWork.ExamRepository.AddAsync(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? mapper : throw new Exception("Tạo bài kiểm tra thất bại");
         }
