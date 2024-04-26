@@ -21,6 +21,7 @@ namespace KidProEdu.Application.ViewModels.UserViewModels
         public DateTime? DateOfBirth { get; set; }
         public string? Avatar { get; set; }
         public Guid RoleId { get; set; }
+        public Guid LocationId { get; set; }
 
         public CreateContractViewModel? createContractViewModel { get; set; }
     }

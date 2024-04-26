@@ -1,6 +1,7 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.ViewModels.AdviseRequestViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers
@@ -73,7 +74,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
+        /*[Authorize(Roles = ("Admin, Manager, Staff"))]*/
         public async Task<IActionResult> PostAdviseRequest(CreateAdviseRequestViewModel createAdviseRequestViewModel)
         {
             try
@@ -95,7 +96,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin, Manager, Staff, Parent"))]
         public async Task<IActionResult> PutAdviseRequest(UpdateAdviseRequestViewModel updateAdviseRequestViewModel)
         {
             try
@@ -117,7 +118,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin, Manager, Staff, Parent"))]
         public async Task<IActionResult> DeleteAdviseRequest(Guid id)
         {
             try

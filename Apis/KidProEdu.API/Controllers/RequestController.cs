@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.RequestViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers
@@ -49,7 +50,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpGet("GetRequestByUser/{id}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin, Manager, Staff, Parent, Teacher"))]
         public async Task<IActionResult> GetRequestByUserId(Guid id)
         {
             try
@@ -63,7 +64,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpGet("GetRequestByReciever/{id}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin, Manager, Staff, Teacher"))]
         public async Task<IActionResult> GetRequestByRecieverId(Guid id)
         {
             try
@@ -77,7 +78,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin, Manager, Staff, Teacher, Parent"))]
         public async Task<IActionResult> PostRequest(CreateRequestViewModel createRequestViewModel)
         {
             try
@@ -99,7 +100,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin, Manager, Staff, Teacher, Parent"))]
         public async Task<IActionResult> PutRequest(UpdateRequestViewModel updateRequestViewModel)
         {
             try
@@ -121,7 +122,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin, Manager, Staff, Teacher, Parent"))]
         public async Task<IActionResult> DeleteRequest(Guid RequestId)
         {
             try
@@ -143,7 +144,7 @@ namespace KidProEdu.API.Controllers
         }
 
         [HttpPut("ChangeStatusRequest")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin, Manager, Staff, Teacher"))]
         public async Task<IActionResult> ChangeStatusRequest(ChangeStatusRequestViewModel changeStatusRequestViewModel)
         {
             try

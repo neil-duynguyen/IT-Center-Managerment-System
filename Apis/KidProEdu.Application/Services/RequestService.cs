@@ -52,13 +52,76 @@ namespace KidProEdu.Application.Services
             // nếu là request chuyển lịch thì khi ngày và lịch trùng nhau thì chỉ được tạo 1 request
             if (createRequestViewModel.RequestType == "Schedule")
             {
-                var requestSchedule = _unitOfWork.RequestRepository.GetAllAsync().Result
-                    .Where(x => x.TeachingDay == createRequestViewModel.TeachingDate
-                    && x.ScheduleId == createRequestViewModel.ScheduleId && x.IsDeleted == false).ToList();
-
-                if (requestSchedule.Count > 0)
+                if (createRequestViewModel.ScheduleId != null
+                    && createRequestViewModel.UserIds != null
+                    && createRequestViewModel.TeachingDate != null)
                 {
-                    throw new Exception("Bạn đã tạo yêu cầu đổi lịch với ngày và lịch này rồi");
+
+                    var requestSchedule = _unitOfWork.RequestRepository.GetAllAsync().Result
+                        .Where(x => x.TeachingDay == createRequestViewModel.TeachingDate
+                        && x.ScheduleId == createRequestViewModel.ScheduleId && x.IsDeleted == false).ToList();
+
+                    if (requestSchedule.Count > 0)
+                    {
+                        throw new Exception("Bạn đã tạo yêu cầu đổi lịch với ngày và lịch này rồi");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu dạy thay");
+                }
+            }
+            else if (createRequestViewModel.RequestType == "Class")
+            {
+                if (createRequestViewModel.UserIds.Count() == 0
+                    || createRequestViewModel.FromClassId == null
+                    || createRequestViewModel.ToClassId == null)
+                {
+                    throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu đổi chéo lớp với giáo viên");
+                }
+            }
+            else if (createRequestViewModel.RequestType == "Refund")
+            {
+                if (createRequestViewModel.ReceiverRefundId != null
+                    || createRequestViewModel.UserIds.Count() == 0
+                    || createRequestViewModel.ChildrenCode != null
+                    || createRequestViewModel.CourseCode != null)
+                {
+                    throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu hoàn tiền");
+                }
+            }
+            else if (createRequestViewModel.RequestType == "Leave")
+            {
+                if (createRequestViewModel.LeaveDate != null
+                    || createRequestViewModel.UserIds.Count() == 0)
+                {
+                    throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu nghỉ");
+                }
+            }
+            else if (createRequestViewModel.RequestType == "ChildrenClass")
+            {
+                if (createRequestViewModel.ChildrenCode != null
+                    || createRequestViewModel.FromClassId != null
+                    || createRequestViewModel.ToClassId != null
+                    || createRequestViewModel.UserIds.Count() == 0)
+                {
+                    throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu đổi lớp cho trẻ");
+                }
+            }
+            else if (createRequestViewModel.RequestType == "ChildrenReserve")
+            {
+                if (createRequestViewModel.ChildrenCode != null
+                    || createRequestViewModel.UserIds.Count() == 0)
+                {
+                    throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu bảo lưu");
+                }
+            }
+            else if (createRequestViewModel.RequestType == "Location")
+            {
+                if (createRequestViewModel.LocationId != null
+                    || createRequestViewModel.UserIds.Count() == 0)
+                {
+                    throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu chuyển cơ sở");
                 }
             }
 
@@ -344,7 +407,7 @@ namespace KidProEdu.Application.Services
                                           // nghỉ này là nghỉ luôn, nên nghỉ thì disable hoặc xóa account 
 
                                 var teacherAccount = await _unitOfWork.UserRepository.GetByIdAsync((Guid)request.CreatedBy);
-                                    teacherAccount.Status = Domain.Enums.StatusUser.Disable;
+                                teacherAccount.Status = Domain.Enums.StatusUser.Disable;
 
                                 _unitOfWork.UserRepository.Update(teacherAccount);
 
