@@ -191,7 +191,7 @@ namespace KidProEdu.Application.Services
                 logEquipment.RepairDate = _currentTime.GetCurrentTime().Date;
                 logEquipment.BorrowedDate = null;
                 logEquipment.ReturnedDate = null;
-                logEquipment.ReturnedDealine = equipmentRepairManagementViewModel.ReturnedDealine;
+                logEquipment.ReturnedDealine = null;
                 logEquipment.WarrantyPeriod = equipment.WarrantyPeriod;
                 logEquipment.PurchaseDate = equipment.PurchaseDate;
                 logEquipment.RoomId = equipmentRepairManagementViewModel.RoomId;
