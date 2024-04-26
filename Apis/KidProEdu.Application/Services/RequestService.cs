@@ -56,7 +56,7 @@ namespace KidProEdu.Application.Services
                     .Where(x => x.TeachingDay == createRequestViewModel.TeachingDate
                     && x.ScheduleId == createRequestViewModel.ScheduleId && x.IsDeleted == false).ToList();
 
-                if (requestSchedule.Count > 0) 
+                if (requestSchedule.Count > 0)
                 {
                     throw new Exception("Bạn đã tạo yêu cầu đổi lịch với ngày và lịch này rồi");
                 }
@@ -344,7 +344,7 @@ namespace KidProEdu.Application.Services
                                           // nghỉ này là nghỉ luôn, nên nghỉ thì disable hoặc xóa account 
 
                                 var teacherAccount = await _unitOfWork.UserRepository.GetByIdAsync((Guid)request.CreatedBy);
-                                teacherAccount.Status = Domain.Enums.StatusUser.Disable;
+                                    teacherAccount.Status = Domain.Enums.StatusUser.Disable;
 
                                 _unitOfWork.UserRepository.Update(teacherAccount);
 
