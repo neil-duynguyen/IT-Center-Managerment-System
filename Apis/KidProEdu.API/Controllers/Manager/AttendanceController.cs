@@ -3,6 +3,7 @@ using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.AttendanceViewModels;
 using KidProEdu.Application.ViewModels.SkillCertificateViewModels;
 using KidProEdu.Application.ViewModels.SkillViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,7 +64,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Teacher"))]
         public async Task<IActionResult> PostAttendance(List<CreateAttendanceViewModel> createAttendanceViewModel)
         {
             try
@@ -85,7 +86,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Teacher"))]
         public async Task<IActionResult> PutAttendance(List<UpdateAttendanceViewModel> updateAttendanceViewModels)
         {
             try
@@ -107,7 +108,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Teacher"))]
         public async Task<IActionResult> DeleteAttendance(Guid id)
         {
             try

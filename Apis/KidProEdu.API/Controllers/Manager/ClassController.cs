@@ -37,7 +37,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost]
-        /*[Authorize(Roles = "Manager")]*/
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> PostClass(CreateClassViewModel createClassViewModel)
         {
             try
@@ -59,7 +59,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPut]
-        /*[Authorize(Roles = "Manager")]*/
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> PutClass(UpdateClassViewModel updateClassViewModel)
         {
             try
@@ -81,7 +81,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> DeleteClass(Guid ClassId)
         {
             try
@@ -103,7 +103,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPut("ChangeStatusClass")]
-        /*[Authorize(Roles = "Manager")]*/
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> ChangeStatusClass(ChangeStatusClassViewModel changeStatusClassViewModel)
         {
             try

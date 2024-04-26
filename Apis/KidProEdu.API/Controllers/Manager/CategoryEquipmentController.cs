@@ -1,6 +1,7 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("CategoryEquipments")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        
         public async Task<IActionResult> CategoryEquipments()
         {
             return Ok(await _categoryEquipmentService.GetCategoryEquipments());
@@ -36,7 +37,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> PostCategoryEquipment(CreateCategoryEquipmentViewModel createCategoryEquipmentViewModel)
         {
             try
@@ -58,7 +59,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> PutCategoryEquipment(UpdateCategoryEquipmentViewModel updateCategoryEquipmentViewModel)
         {
             try
@@ -80,7 +81,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> DeleteCategoryEquipment(Guid id)
         {
             try

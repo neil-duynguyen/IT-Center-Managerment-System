@@ -17,6 +17,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpPost]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> CreateCourse(CreateCourseViewModel createCourseView)
         {
             try
@@ -30,6 +31,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpPost("CourseParent")]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> CreateCourseParent(CreateCourseParentViewModel createCourseParentViewModel)
         {
             try
@@ -42,6 +44,7 @@ namespace KidProEdu.API.Controllers.Admin
             }
         }
         [HttpPut]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> UpdateCourse(UpdateCourseViewModel updateCourseView)
         {
             try
@@ -55,6 +58,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpPut("CourseParent")]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> UpdateCourseParent(UpdateCourseParentViewModel updateCourseParentViewModel)
         {
             try
@@ -100,6 +104,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpDelete]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> DeleteCourse(Guid courseId)
         {
             try

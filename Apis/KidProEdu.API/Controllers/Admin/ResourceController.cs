@@ -2,6 +2,7 @@
 using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.ResourceViewModels;
 using KidProEdu.Application.ViewModels.SkillViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,7 +51,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> PostResource(CreateResourceViewModel createResourceViewModel)
         {
             try
@@ -72,7 +73,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> PutResource(UpdateResourceViewModel updateResourceViewModel)
         {
             try
@@ -94,7 +95,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> DeleteResource(Guid id)
         {
             try
