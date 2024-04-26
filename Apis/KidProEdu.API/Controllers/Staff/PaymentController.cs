@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers.Staff
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    //[Route("api/[controller]")]
+    //[ApiController]
     public class PaymentController : ControllerBase
     {
         private readonly IConfiguration _configuration;

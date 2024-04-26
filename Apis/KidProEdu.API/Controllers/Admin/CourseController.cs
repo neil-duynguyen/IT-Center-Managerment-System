@@ -78,6 +78,12 @@ namespace KidProEdu.API.Controllers.Admin
             return Ok(await _courseService.GetAllCourse());
         }
 
+        [HttpGet("CoursesInBlog")]
+        public async Task<IActionResult> GetAllCourseInBlog()
+        {
+            return Ok(await _courseService.GetAllCourseInBlog());
+        }
+
         [HttpGet("CoursesSingle")]
         public async Task<IActionResult> GetAllCourseSingle()
         {

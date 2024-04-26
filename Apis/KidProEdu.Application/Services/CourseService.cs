@@ -136,6 +136,14 @@ namespace KidProEdu.Application.Services
 
             return listCourseViewModel;
         }
+        public async Task<List<CourseViewModel>> GetAllCourseInBlog()
+        {
+            var resultt = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
+
+            var course = _mapper.Map<List<CourseViewModel>>(resultt);
+
+            return course;
+        }
 
         public async Task<List<CourseViewModel>> GetAllCourseSingle()
         {
@@ -294,7 +302,7 @@ namespace KidProEdu.Application.Services
                 var mapper = _mapper.Map(updateCourseParentViewModel, getCourse);
                 _unitOfWork.CourseRepository.Update(mapper);
             }
-            
+
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật khoá học thất bại");
         }
 
@@ -315,7 +323,7 @@ namespace KidProEdu.Application.Services
                         TotalClass = classes.Count(),
                         Percent = percent,
                         ClassList = _mapper.Map<List<ClassViewModel>>(classes)
-                        
+
                     };
 
                     classByCourseSummarise.Add(classByCourse);

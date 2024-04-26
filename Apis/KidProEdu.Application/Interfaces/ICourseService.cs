@@ -14,6 +14,7 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> UpdateCourseParentAsync(UpdateCourseParentViewModel updateCourseParentViewModel);
         Task<bool> UpdateCourseAsync(UpdateCourseViewModel updateCourseViewModel);
         public Task<List<CourseViewModel>> GetAllCourse();
+        Task<List<CourseViewModel>> GetAllCourseInBlog();
         Task<List<CourseViewModel>> GetAllCourseSingle();
         public Task<List<CourseViewModel>> GetAllCourseByChildId(Guid childId);
         public Task<CourseViewModelById> GetCourseById(Guid Id);

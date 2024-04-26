@@ -56,7 +56,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<Exam> CreateExamFinalPractice(CreateExamFinalPracticeViewModel createExamViewModel)
         {
-            /*var validator = new CreateExamViewModelValidator();
+            var validator = new CreateExamFinalPracticeViewModelValidator(_currentTime.GetCurrentTime());
             var validationResult = validator.Validate(createExamViewModel);
             if (!validationResult.IsValid)
             {
@@ -64,19 +64,19 @@ namespace KidProEdu.Application.Services
                 {
                     throw new Exception(error.ErrorMessage);
                 }
-            }*/
+            }
 
-            /*var exitResult = await _unitOfWork.ExamRepository.GetExamByTestName(createExamViewModel.TestName);
+            var exitResult = await _unitOfWork.ExamRepository.GetExamByTestName(createExamViewModel.TestName);
             if (exitResult != null)
             {
                 throw new Exception("Bài kiểm tra này đã tồn tại");
-            }*/
-           // var getClass = await _unitOfWork.ClassRepository.GetByIdAsync((Guid)createExamViewModel.ClassId);
+            }
 
             var getNumberExamByClassId = _unitOfWork.ExamRepository.GetAllAsync().Result.Where(x => x.ClassId == createExamViewModel.ClassId).ToList();
 
             var mapper = _mapper.Map<Exam>(createExamViewModel);
             mapper.TestCode = "EFP" + getNumberExamByClassId.Count + 1;
+            mapper.TestType = Domain.Enums.TestType.FinalPractice;
             await _unitOfWork.ExamRepository.AddAsync(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? mapper : throw new Exception("Tạo bài kiểm tra thất bại");
         }

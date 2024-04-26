@@ -11,9 +11,7 @@ namespace KidProEdu.Application.ViewModels.ExamViewModels
     {
         public Guid? ClassId { get; set; }
         public string TestName { get; set; }
-        public string TestCode { get; set; }
         public DateTime TestDate { get; set; }
         public int TestDuration { get; set; }
-        public TestType TestType { get; set; }
     }
 }

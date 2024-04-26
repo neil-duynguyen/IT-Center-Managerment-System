@@ -1,6 +1,7 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.OrderDetailViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers.Staff
@@ -24,6 +25,7 @@ namespace KidProEdu.API.Controllers.Staff
         }
 
         [HttpPut]
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> UpdateOrderDetail(List<UpdateOrderDetailViewModel> updateOrderDetailView)
         {
             try

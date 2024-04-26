@@ -76,6 +76,7 @@ namespace KidProEdu.API.Controllers.Staff
         }*/
 
         [HttpPost("CreatePayment")]
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> CreatePayment(Guid orderId)
         {
             try
