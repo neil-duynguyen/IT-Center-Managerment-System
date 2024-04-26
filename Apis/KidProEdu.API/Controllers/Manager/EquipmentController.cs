@@ -90,11 +90,11 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpPost("EquipmentBorrowedManagement")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> EquipmentBorrowedManagement(EquipmentWithLogEquipmentBorrowedViewModel equipmentWithLogEquipmentBorrowedViewModel)
+        public async Task<IActionResult> EquipmentBorrowedManagement(EquipmentBorrowedManagementViewModel equipmentBorrowedManagementViewModel)
         {
             try
             {
-                var result = await _equipmentService.EquipmentBorrowedManagement(equipmentWithLogEquipmentBorrowedViewModel);
+                var result = await _equipmentService.EquipmentBorrowedManagement(equipmentBorrowedManagementViewModel);
                 if (result)
                 {
                     return Ok("Mượn thiết bị thành công.");
@@ -112,11 +112,11 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpPost("EquipmentRepairManagement")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> EquipmentRepairManagement(EquipmentWithLogEquipmentRepairViewModel equipmentWithLogEquipmentRepairViewModel)
+        public async Task<IActionResult> EquipmentRepairManagement(EquipmentRepairManagementViewModel equipmentRepairManagementViewModel)
         {
             try
             {
-                var result = await _equipmentService.EquipmentRepairManagement(equipmentWithLogEquipmentRepairViewModel);
+                var result = await _equipmentService.EquipmentRepairManagement(equipmentRepairManagementViewModel);
                 if (result)
                 {
                     return Ok("Mang thiết bị đi bảo dưỡng thành công.");
@@ -134,11 +134,11 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpPost("EquipmentReturnedManagement")]
         /*[Authorize(Roles = ("Admin"))]*/
-        public async Task<IActionResult> EquipmentReturnedManagement(EquipmentWithLogEquipmentReturnedViewModel equipmentWithLogEquipmentReturnedViewModel)
+        public async Task<IActionResult> EquipmentReturnedManagement(EquipmentReturnedManagementViewModel equipmentReturnedManagementViewModel)
         {
             try
             {
-                var result = await _equipmentService.EquipmentReturnedManagement(equipmentWithLogEquipmentReturnedViewModel);
+                var result = await _equipmentService.EquipmentReturnedManagement(equipmentReturnedManagementViewModel);
                 if (result)
                 {
                     return Ok("Trả thiết bị thành công.");

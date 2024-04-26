@@ -82,10 +82,10 @@ namespace KidProEdu.API.Mappers
             CreateMap<ChildrenViewModel, ChildrenProfile>().ReverseMap();
             CreateMap<ChildrenProfile, ChildrenProfileViewModel>();
 
-            CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap().ForMember(des => des.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null));
+            CreateMap<CreateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<UpdateEquipmentViewModel, Equipment>().ReverseMap();
             CreateMap<Equipment, EquipmentViewModel>().ReverseMap();
-            CreateMap<Equipment, EquipmentViewModel2>()
+            CreateMap<Equipment, EquipmentByIdViewModel>()
                 .ForMember(dest => dest.UserAccountId, opt => opt.MapFrom(src => src.LogEquipments.FirstOrDefault().UserAccountId))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.LogEquipments.FirstOrDefault().UserAccount.UserName))
                 .ForMember(dest => dest.BorrowedDate, opt => opt.MapFrom(src => src.LogEquipments.FirstOrDefault().BorrowedDate))
@@ -163,10 +163,6 @@ namespace KidProEdu.API.Mappers
                 .ReverseMap();
             CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();
             CreateMap<UpdateLogEquipmentViewModel, LogEquipment>().ReverseMap();
-            CreateMap<LogEquipmentBorrowedManagementViewModel, LogEquipment>().ReverseMap();
-            CreateMap<LogEquipmentRepairManagementViewModel, LogEquipment>().ReverseMap();
-            CreateMap<LogEquipmentReturnedManagementViewModel, LogEquipment>().ReverseMap();
-
 
             CreateMap<TagViewModel, Tag>().ReverseMap().ForMember(des => des.TagType, src => src.MapFrom(x => x.TagType != null ? (string)x.TagType.ToString() : (string?)null)); ;
 

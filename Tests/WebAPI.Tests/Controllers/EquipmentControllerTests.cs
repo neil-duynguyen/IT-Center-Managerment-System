@@ -42,7 +42,7 @@ namespace WebAPI.Tests.Controllers
         public async void GetEquipmentById_ReturnEquipment()
         {
             //arr
-            var mocks = _fixture.Build<EquipmentViewModel2>().Create();
+            var mocks = _fixture.Build<EquipmentByIdViewModel>().Create();
             _equipmentServiceMock.Setup(x => x.GetEquipmentById(It.IsAny<Guid>())).ReturnsAsync(mocks);
 
             //act

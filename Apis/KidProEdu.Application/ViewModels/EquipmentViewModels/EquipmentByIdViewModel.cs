@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace KidProEdu.Application.ViewModels.EquipmentViewModels
 {
 
-    public class EquipmentViewModel2
+    public class EquipmentByIdViewModel
     {
         public Guid Id { get; set; }
         public Guid CategoryEquipmentId { get; set; }

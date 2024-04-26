@@ -38,7 +38,7 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Equipment>> GetListEquipmentByStatus(StatusOfEquipment status)
         {
-            var equipments = await _dbContext.Equipment
+            var equipments = await _dbContext.Equipment.AsNoTracking()
                  .Where(x => x.Status == status && x.IsDeleted == false)
                  .OrderByDescending(x => x.CreationDate)
                  .ToListAsync();

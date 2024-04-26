@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 namespace KidProEdu.Application.ViewModels.EquipmentViewModels
 {
 
-    public class LogEquipmentReturnedManagementViewModel
+    public class EquipmentRepairManagementViewModel
     {
+        public Guid EquipmentIdId { get; set; }
+        public Guid? RoomId { get; set; }
         public Guid? UserAccountId { get; set; }
+        public DateTime? ReturnedDealine { get; set; }
     }
 }

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace KidProEdu.Application.Validations.Equipments
 {
 
-    public class LogEquipmentReturnedManagementViewModelValidator : AbstractValidator<LogEquipmentReturnedManagementViewModel>
+    public class EquipmentReturnedManagementViewModelValidator : AbstractValidator<EquipmentReturnedManagementViewModel>
     {
-        public LogEquipmentReturnedManagementViewModelValidator()
+        public EquipmentReturnedManagementViewModelValidator()
         {
             RuleFor(x => x.UserAccountId).NotEmpty().WithMessage("Người trả thiết bị không được để trống.");
 

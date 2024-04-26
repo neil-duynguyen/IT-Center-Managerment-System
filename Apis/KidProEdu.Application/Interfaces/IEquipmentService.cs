@@ -17,11 +17,11 @@ namespace KidProEdu.Application.Interfaces
         Task<List<EquipmentViewModel>> GetListEquipmentByName(string name);
         Task<bool> CreateEquipment(CreateEquipmentViewModel createEquipmentViewModel);
         Task<bool> UpdateEquipment(UpdateEquipmentViewModel updateEquipmentViewModel);
-        Task<EquipmentViewModel2> GetEquipmentById(Guid id);
+        Task<EquipmentByIdViewModel> GetEquipmentById(Guid id);
         Task<bool> DeleteEquipment(Guid id);
-        Task<bool> EquipmentBorrowedManagement(EquipmentWithLogEquipmentBorrowedViewModel equipmentWithLogEquipmentBorrowedViewModel);
-        Task<bool> EquipmentRepairManagement(EquipmentWithLogEquipmentRepairViewModel equipmentWithLogEquipmentRepairViewModel);
-        Task<bool> EquipmentReturnedManagement(EquipmentWithLogEquipmentReturnedViewModel equipmentWithLogEquipmentReturnedViewModel);
+        Task<bool> EquipmentBorrowedManagement(EquipmentBorrowedManagementViewModel equipmentWithLogEquipmentBorrowedViewModel);
+        Task<bool> EquipmentRepairManagement(EquipmentRepairManagementViewModel equipmentWithLogEquipmentRepairViewModel);
+        Task<bool> EquipmentReturnedManagement(EquipmentReturnedManagementViewModel equipmentWithLogEquipmentReturnedViewModel);
         Task AutoCheckReturn();
     }
 }
