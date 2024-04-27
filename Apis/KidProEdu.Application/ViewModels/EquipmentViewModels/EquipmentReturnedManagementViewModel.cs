@@ -9,7 +9,7 @@ namespace KidProEdu.Application.ViewModels.EquipmentViewModels
 
     public class EquipmentReturnedManagementViewModel
     {
-        public Guid EquipmentIdId { get; set; }
+        public Guid EquipmentId { get; set; }
         public Guid? RoomId { get; set; }
         public Guid? UserAccountId { get; set; }
     }

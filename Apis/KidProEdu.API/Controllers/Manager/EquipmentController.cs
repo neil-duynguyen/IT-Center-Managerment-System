@@ -2,6 +2,7 @@
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,14 +19,14 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("Equipments")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> Equipments()
         {
             return Ok(await _equipmentService.GetEquipments());
         }
 
         [HttpGet("{id}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> Equipment(Guid id)
         {
             var equipment = await _equipmentService.GetEquipmentById(id);
@@ -37,7 +38,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("Equipments/{name}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> EquipmentByName(string name)
         {
             var equipments = await _equipmentService.GetListEquipmentByName(name);
@@ -49,7 +50,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("EquipmentsByStatus/{status}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> EquipmentsByStatus(StatusOfEquipment status)
         {
             try
@@ -67,7 +68,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> PostEquipment(CreateEquipmentViewModel createEquipmentViewModel)
         {
             try
@@ -89,7 +90,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost("EquipmentBorrowedManagement")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> EquipmentBorrowedManagement(EquipmentBorrowedManagementViewModel equipmentBorrowedManagementViewModel)
         {
             try
@@ -111,7 +112,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost("EquipmentRepairManagement")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> EquipmentRepairManagement(EquipmentRepairManagementViewModel equipmentRepairManagementViewModel)
         {
             try
@@ -133,7 +134,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost("EquipmentReturnedManagement")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> EquipmentReturnedManagement(EquipmentReturnedManagementViewModel equipmentReturnedManagementViewModel)
         {
             try
@@ -155,7 +156,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> PutEquipment(UpdateEquipmentViewModel updateEquipmentViewModel)
         {
             try
@@ -177,7 +178,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Manager"))]
         public async Task<IActionResult> DeleteEquipment(Guid id)
         {
             try

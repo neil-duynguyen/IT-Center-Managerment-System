@@ -157,7 +157,7 @@ namespace KidProEdu.Application.Services
                     throw new Exception(error.ErrorMessage);
                 }
             }
-            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentRepairManagementViewModel.EquipmentIdId);
+            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentRepairManagementViewModel.EquipmentId);
             //var logEquipment = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.EquipmentId == equipment.Id);
 
             if (equipment == null)
@@ -216,7 +216,7 @@ namespace KidProEdu.Application.Services
                     throw new Exception(error.ErrorMessage);
                 }
             }
-            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentReturnedManagementViewModel.EquipmentIdId);          
+            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentReturnedManagementViewModel.EquipmentId);          
             if (equipment == null)
             {
                 throw new Exception("Không tìm thấy thiết bị");

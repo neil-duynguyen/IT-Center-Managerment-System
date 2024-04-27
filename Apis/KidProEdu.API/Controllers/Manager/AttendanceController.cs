@@ -27,7 +27,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("ListAttendanceByClassIdAndDateAndScheduleId/{classId}/{date}/{scheduleId}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Teacher"))]
         public async Task<IActionResult> ListAttendanceByClassIdAndDateAndScheduleId(Guid classId, DateTime date, Guid scheduleId)
         {
             return Ok(await _attendanceService.GetListAttendanceByClassIdAndDateAndScheduleId(classId, date, scheduleId));
@@ -35,7 +35,7 @@ namespace KidProEdu.API.Controllers.Manager
 
 
         [HttpGet("Details/{courseId}/{childId}")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Parent"))]
         public async Task<IActionResult> AttendanceDetails(Guid courseId, Guid childId)
         {
             // Assuming _attendanceService is an instance of your service class that contains the GetAttendanceDetailsByCourseIdAndChildrenId method
