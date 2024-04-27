@@ -98,5 +98,17 @@ namespace KidProEdu.API.Controllers.Manager
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("GetContractByTeacher/{id}")]
+        /*[Authorize(Roles = ("Admin"))]*/
+        public async Task<IActionResult> GetContracByTeacherId(Guid id)
+        {
+            var result = await _ContractService.GetContractByTeacherId(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
     }
 }

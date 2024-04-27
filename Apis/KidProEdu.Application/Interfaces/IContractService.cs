@@ -14,5 +14,6 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> UpdateContract(UpdateContractViewModel updateContractViewModel);
         Task<ContractViewModel> GetContractById(Guid contractId);
         Task<bool> DeleteContract(Guid contractId);
+        Task<List<ContractViewModel>> GetContractByTeacherId(Guid teacherId);
     }
 }

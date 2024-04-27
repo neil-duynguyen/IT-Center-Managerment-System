@@ -11,6 +11,6 @@ namespace KidProEdu.Application.IRepositories
     public interface IContractRepository : IGenericRepository<Contract>
     {
         Task<List<Contract>> GetContractByCode(string code);
-
+        Task<List<Contract>> GetContractByTeacherId(Guid teacherId);
     }
 }
