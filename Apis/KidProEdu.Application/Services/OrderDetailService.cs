@@ -72,7 +72,7 @@ namespace KidProEdu.Application.Services
                                 Id = Guid.NewGuid(),
                                 OrderId = orderDetail.OrderId,
                                 CourseId = orderDetail.CourseId,
-                                Quantity = orderDetail.Quantity,
+                                Quantity = 1,
                                 UnitPrice = getPrice.Price,
                                 TotalPrice = getPrice.Price,
                                 ChildrenProfileId = orderDetail.ChildrenProfildId,
@@ -86,7 +86,7 @@ namespace KidProEdu.Application.Services
                         {
                             //update OrderDetail
                             getOrderDetail.ChildrenProfileId = orderDetail.ChildrenProfildId;
-                            getOrderDetail.Quantity = orderDetail.Quantity;
+                            getOrderDetail.Quantity = 1;
                             getOrderDetail.UnitPrice = getPrice.Price;
                             getOrderDetail.TotalPrice = getPrice.Price;
                             getOrderDetail.PayType = (Domain.Enums.PayType?)orderDetail.PayType;
