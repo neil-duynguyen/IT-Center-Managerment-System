@@ -168,6 +168,18 @@ namespace KidProEdu.WebAPI.Controllers
             }
         }
 
-
+        [HttpGet()]
+        [Route("GetTeacherFree")]
+        public async Task<IActionResult> GetTeacherFree()
+        {
+            try
+            {
+                return Ok(await _userService.GetTeacherFree());
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
     }
 }
