@@ -10,6 +10,7 @@ using KidProEdu.Application.ViewModels.UserViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
@@ -43,7 +44,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<LoginViewModel> LoginAsync(UserLoginViewModel userObject)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByUserNameAndPasswordHash(userObject.UserName, userObject.Password.Hash());         
+            var user = await _unitOfWork.UserRepository.GetUserByUserNameAndPasswordHash(userObject.UserName, userObject.Password.Hash());
 
             var token = user.GenerateJsonWebToken(_configuration["AppSettings:SecretKey"]);
 
@@ -84,9 +85,9 @@ namespace KidProEdu.Application.Services
                 await sv.CreateContract(userObject.createContractViewModel, newUser.Id);
             }
 
-            SendEmailUtil.SendEmail(newUser.Email, "Thông báo đăng kí tài khoản KidProEdu", 
+            SendEmailUtil.SendEmail(newUser.Email, "Thông báo đăng kí tài khoản KidProEdu",
                 "Thông tin tài khoản\n " +
-                "UserName: " + newUser.UserName+ 
+                "UserName: " + newUser.UserName +
                 "\nPassword: User@123");
 
 
@@ -254,9 +255,21 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trạng thái người dùng thất bại");
         }
 
-        public async Task<List<UserViewModel>> GetTeacherFreeAtSlot()
+        public async Task<List<UserViewModel>> GetTeacherFree()
         {
-            List<UserViewModel> listUser = new List<UserViewModel>();
+            List<UserViewModel> listUser = new();
+
+            var listTeacher = _unitOfWork.UserRepository.GetAllAsync().Result.Where(x => x.Role.Name == "Teacher").ToList();
+
+            foreach (var item in listTeacher)
+            {
+                var checkFree = await _unitOfWork.TeachingClassHistoryRepository.GetClassByTeacherId(item.Id);
+                if (checkFree.IsNullOrEmpty())
+                {
+                    listUser.Add(_mapper.Map<UserViewModel>(item));
+                }
+            }
+
             return listUser;
         }
     }
