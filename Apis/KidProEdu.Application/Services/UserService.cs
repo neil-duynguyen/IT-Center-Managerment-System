@@ -254,5 +254,10 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trạng thái người dùng thất bại");
         }
 
+        public async Task<List<UserViewModel>> GetTeacherFreeAtSlot()
+        {
+            List<UserViewModel> listUser = new List<UserViewModel>();
+            return listUser;
+        }
     }
 }

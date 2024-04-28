@@ -27,5 +27,14 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return contracts;
         }
+
+        public async Task<List<Contract>> GetContractByTeacherId(Guid teacherId)
+        {
+            var contracts = await _dbContext.Contract
+                .Where(x => x.UserId == teacherId && x.IsDeleted == false)
+                .ToListAsync();
+
+            return contracts;
+        }
     }
 }

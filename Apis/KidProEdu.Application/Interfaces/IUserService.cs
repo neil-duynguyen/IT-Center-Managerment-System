@@ -16,5 +16,6 @@ namespace KidProEdu.Application.Interfaces
         public Task<bool> UpdateUser(UpdateUserViewModel updateUserViewModel, params Expression<Func<UserAccount, object>>[] uniqueProperties);
         public Task<bool> DeleteUser(Guid id);
         public Task<bool> ChangeStatusUser(Guid[] listId);
+        Task<List<UserViewModel>> GetTeacherFreeAtSlot();
     }
 }

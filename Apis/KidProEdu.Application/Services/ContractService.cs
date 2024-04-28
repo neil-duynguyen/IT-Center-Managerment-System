@@ -111,5 +111,12 @@ namespace KidProEdu.Application.Services
             _unitOfWork.ContractRepository.Update(contract);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật hợp đồng thất bại");
         }
+
+        public async Task<List<ContractViewModel>> GetContractByTeacherId(Guid teacherId)
+        {
+            var result = await _unitOfWork.ContractRepository.GetContractByTeacherId(teacherId);
+            var mapper = _mapper.Map<List<ContractViewModel>>(result);
+            return mapper;
+        }
     }
 }
