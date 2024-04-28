@@ -395,7 +395,7 @@ namespace KidProEdu.Application.Services
                         _unitOfWork.OrderRepository.Update(getOrder);
                         await _unitOfWork.SaveChangeAsync();
 
-                        var createTransaction = await CreateTransaction(Guid.Parse(response.vnp_TxnRef), (double)response.vnp_Amount);
+                        var createTransaction = await CreateTransaction(Guid.Parse(response.vnp_TxnRef), (double)response.vnp_Amount / 100);
 
                         if (createTransaction)
                         {
@@ -492,6 +492,7 @@ namespace KidProEdu.Application.Services
                                     Id = Guid.NewGuid(),
                                     CourseName = item.Course.Name,
                                     TotalAmount = (double?)installmentPayments,
+                                    PayDate = i == 0 ? _currentTime.GetCurrentTime() : null,
                                     InstallmentPeriod = i == 0 ? _currentTime.GetCurrentTime() : _currentTime.GetCurrentTime().AddMonths(i),
                                     StatusTransaction = i == 0 ? Domain.Enums.StatusTransaction.Successfully : Domain.Enums.StatusTransaction.Pending,
                                     ParentsTransaction = transactionParent.Id
