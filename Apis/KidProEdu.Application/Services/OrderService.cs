@@ -273,7 +273,7 @@ namespace KidProEdu.Application.Services
         public async Task<bool> UpdateOrderWhenCash(Guid orderId)
         {
             var result = new BaseResult();
-            string returnUrl = _configuration["Vnpay:RedirectUrl"];
+            //string returnUrl = _configuration["Vnpay:RedirectUrl"];
             var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
             getOrder.PaymentStatus = Domain.Enums.StatusPayment.Paid;
             _unitOfWork.OrderRepository.Update(getOrder);
@@ -332,6 +332,8 @@ namespace KidProEdu.Application.Services
                             result = new BaseResult()
                             {
                                 Message = "Thanh toán thành công.",
+                                OrderNumber = getOrder.OrderNumber,
+                                Amount = response.amount,
                                 RedirectUrl = returnUrl
                             };
                         }
@@ -402,6 +404,8 @@ namespace KidProEdu.Application.Services
                             result = new BaseResult()
                             {
                                 Message = "Thanh toán thành công.",
+                                OrderNumber = getOrder.OrderNumber,
+                                Amount = (double)response.vnp_Amount / 100,
                                 RedirectUrl = returnUrl
                             };
                         }
@@ -565,6 +569,8 @@ namespace KidProEdu.Application.Services
     public class BaseResult
     {
         public string Message { get; set; }
+        public string OrderNumber { get; set; }
+        public double Amount { get; set; }
         public string RedirectUrl { get; set; }
     }
 }

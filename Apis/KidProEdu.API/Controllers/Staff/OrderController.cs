@@ -98,7 +98,7 @@ namespace KidProEdu.API.Controllers.Staff
         {
             var result = await _orderService.ProcessMomoPaymentReturnHandler(response);
 
-            var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}";
+            var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}&orderNumber={HttpUtility.UrlEncode(result.OrderNumber)}&amount={HttpUtility.UrlEncode(result.Amount.ToString())}";
             // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
             return Redirect(redirectUrlWithMessage);
         }
@@ -109,8 +109,7 @@ namespace KidProEdu.API.Controllers.Staff
         {
             var result = await _orderService.ProcessVnPaymentReturnHandler(response);
 
-            var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}";
-
+            var redirectUrlWithMessage = $"{result.RedirectUrl}?message={HttpUtility.UrlEncode(result.Message)}&orderNumber={HttpUtility.UrlEncode(result.OrderNumber)}&amount={HttpUtility.UrlEncode(result.Amount.ToString())}";
             // Trả về kết quả Redirect sang trang khác và cùng với thông báo giao dịch
             return Redirect(redirectUrlWithMessage);
         }
