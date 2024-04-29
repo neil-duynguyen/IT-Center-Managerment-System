@@ -237,6 +237,9 @@ namespace KidProEdu.Application.Services
 
             var getCourse = await _unitOfWork.CourseRepository.GetAllAsync();
 
+            var scoreEntrance = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result
+                 .Where(x => x.ChildrenProfileId == childrenId && x.Exam.TestType == TestType.Entrance).Sum(x => x.ScorePerQuestion);
+
             List<CourseViewModel> listCourseViewModel = new List<CourseViewModel>();
 
             foreach (var item in getCourse)
@@ -249,7 +252,9 @@ namespace KidProEdu.Application.Services
                 {
                     if (int.TryParse(matches[0].Value, out startAge) && int.TryParse(matches[1].Value, out endAge))
                     {
-                        if ((_currentTime.GetCurrentTime().Year - getAge.BirthDay.Year) >= startAge && (_currentTime.GetCurrentTime().Year - getAge.BirthDay.Year) <= endAge)
+                        if ((_currentTime.GetCurrentTime().Year - getAge.BirthDay.Year) >= startAge 
+                            && (_currentTime.GetCurrentTime().Year - getAge.BirthDay.Year) <= endAge 
+                            && item.EntryPoint  <= scoreEntrance)
                         {
                             listCourseViewModel.Add(_mapper.Map<CourseViewModel>(item));
                         }
