@@ -267,5 +267,16 @@ namespace KidProEdu.Application.Services
                          "</body></html>");
             }
         }
+
+        public async Task<List<AdviseRequestViewModel>> GetAdviseRequestByUserId(Guid id)
+        {
+            var adviseRequest = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByUserId(id);
+            foreach (var item in adviseRequest)
+            {
+                var mapper = _mapper.Map<AdviseRequest>(item);
+
+            }
+            return _mapper.Map<List<AdviseRequestViewModel>>(adviseRequest);
+        }
     }
 }
