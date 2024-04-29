@@ -8,6 +8,7 @@ namespace KidProEdu.Application.ViewModels.AttendanceViewModels
 {
     public class AttendanceDetailsViewModel
     {
+        public Guid CourseId { get; set; }
         public string CourseName { get; set; }
         public string CourseCode { get; set; }
         public DateTime Date { get; set; }

@@ -220,6 +220,7 @@ namespace KidProEdu.API.Mappers
                 })
                 .ForMember(des => des.StatusAttendance, src => src.MapFrom(x => x.StatusAttendance != null ? (string)x.StatusAttendance.ToString() : (string?)null)).ReverseMap();
             CreateMap<Attendance, AttendanceDetailsViewModel>()
+                .ForMember(dest => dest.CourseId, opt => opt.MapFrom(src => src.Schedule.Class.Course.Id))
                 .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Schedule.Class.Course.Name))
                 .ForMember(dest => dest.CourseCode, opt => opt.MapFrom(src => src.Schedule.Class.Course.CourseCode))
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))
