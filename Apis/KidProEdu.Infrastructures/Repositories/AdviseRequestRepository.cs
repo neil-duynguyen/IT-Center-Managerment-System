@@ -81,5 +81,12 @@ namespace KidProEdu.Infrastructures.Repositories
                     throw new ArgumentException($"Property {propertyName} is not supported.");
             }
         }
+
+        public async Task<List<AdviseRequest>> GetAdviseRequestByUserId(Guid id)
+        {
+            var adviseRequest = await _dbContext.AdviseRequest.Where(x => x.UserId == id && x.IsDeleted == false).ToListAsync();
+
+            return adviseRequest;
+        }
     }
 }

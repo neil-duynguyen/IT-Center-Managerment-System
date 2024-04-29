@@ -138,5 +138,20 @@ namespace KidProEdu.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("GetAdviseRequestByUserId")]
+        public async Task<IActionResult> GetAdviseRequestByUserId(Guid id)
+        {
+            try
+            {
+                var listRequest = await _adviseRequestService.GetAdviseRequestByUserId(id);
+
+                return Ok(listRequest);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

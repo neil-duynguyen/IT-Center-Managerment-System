@@ -11,6 +11,6 @@ namespace KidProEdu.Application.IRepositories
         Task<AdviseRequest> GetAdviseRequestByPhone(string phone);
         Task<List<AdviseRequest>> GetAdviseRequestByTestDate(DateTime testDate);
         Task<AdviseRequest> GetAdviseRequestByProperty(UpdateAdviseRequestViewModel updateAdviseRequestViewModel, Expression<Func<AdviseRequest, object>> property);
-
+        Task<List<AdviseRequest>> GetAdviseRequestByUserId(Guid id);
     }
 }
