@@ -106,7 +106,7 @@ namespace KidProEdu.API.Controllers
             }
         }
 
-        [HttpGet("CourseSuggestions/{id}")]
+        [HttpGet("CourseSuggestions/{childrenId}")]
         public async Task<IActionResult> CourseSuggestions(Guid childrenId)
         {
             try
