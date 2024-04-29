@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Security;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace KidProEdu.Application.Services
@@ -228,5 +229,42 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Error retrieving children summary information: " + ex.Message);
             }
         }
+
+        //gợi ý khoá học
+        public async Task<List<CourseViewModel>> CourseSuggestions(Guid childrenId)
+        {
+            var getAge = await _unitOfWork.ChildrenRepository.GetByIdAsync(childrenId);
+
+            var getCourse = await _unitOfWork.CourseRepository.GetAllAsync();
+
+            List<CourseViewModel> listCourseViewModel = new List<CourseViewModel>();
+
+            foreach (var item in getCourse)
+            {
+                MatchCollection matches = Regex.Matches(item.Description, @"\d+");
+
+                int startAge, endAge;
+
+                if (matches.Count >= 2)
+                {
+                    if (int.TryParse(matches[0].Value, out startAge) && int.TryParse(matches[1].Value, out endAge))
+                    {
+                        if ((_currentTime.GetCurrentTime().Year - getAge.BirthDay.Year) >= startAge && (_currentTime.GetCurrentTime().Year - getAge.BirthDay.Year) <= endAge)
+                        {
+                            listCourseViewModel.Add(_mapper.Map<CourseViewModel>(item));
+                        }
+                    }                   
+                }
+            }
+
+            if (listCourseViewModel.Count <= 0)
+            {
+                return _mapper.Map<List<CourseViewModel>>(getCourse);
+            }
+
+            return listCourseViewModel;
+        }
+
+
     }
 }

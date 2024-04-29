@@ -105,5 +105,18 @@ namespace KidProEdu.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("CourseSuggestions/{id}")]
+        public async Task<IActionResult> CourseSuggestions(Guid childrenId)
+        {
+            try
+            {
+                return Ok(await _childrenService.CourseSuggestions(childrenId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

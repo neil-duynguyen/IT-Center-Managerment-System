@@ -1,4 +1,5 @@
 ﻿using KidProEdu.Application.ViewModels.ChildrenViewModels;
+using KidProEdu.Application.ViewModels.CourseViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Domain.Entities;
 using System;
@@ -19,5 +20,6 @@ namespace KidProEdu.Application.Interfaces
         Task<ChildrenViewModel> GetChildrenById(Guid childrenId);
         Task<List<ChildrenViewModel>> GetChildrenByParentId(Guid Id);
         Task<ChildrenSummariseViewModel> GetChildrenSummariseViewModel(DateTime MonthAndYear);
+        Task<List<CourseViewModel>> CourseSuggestions(Guid childrenId);
     }
 }
