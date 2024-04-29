@@ -127,7 +127,7 @@ namespace KidProEdu.API.Controllers.Manager
         [HttpGet("ExportExcelFile/{classId}")]
         public async Task<IActionResult> ExportExcelFile(Guid classId) => File(await _classService.ExportExcelFileAsync(classId),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "Nhập điểm.xlsx");
+            "Nhập điểm.xls");
 
         [HttpPost("ImportScoreExcelFile")]
         public async Task<IActionResult> ImportScoreExcelFile(IFormFile formFile)

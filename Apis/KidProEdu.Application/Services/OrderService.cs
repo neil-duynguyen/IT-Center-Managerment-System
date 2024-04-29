@@ -279,7 +279,7 @@ namespace KidProEdu.Application.Services
             _unitOfWork.OrderRepository.Update(getOrder);
             await _unitOfWork.SaveChangeAsync();
 
-            var createTransaction = await CreateTransaction(orderId);
+            var createTransaction = await CreateTransaction(orderId, getOrder.TotalAmount);
 
             /*if (createTransaction)
             {
@@ -325,7 +325,7 @@ namespace KidProEdu.Application.Services
                         _unitOfWork.OrderRepository.Update(getOrder);
                         await _unitOfWork.SaveChangeAsync();
 
-                        var createTransaction = await CreateTransaction(Guid.Parse(response.orderId));
+                        var createTransaction = await CreateTransaction(Guid.Parse(response.orderId), response.amount);
 
                         if (createTransaction)
                         {
@@ -395,7 +395,7 @@ namespace KidProEdu.Application.Services
                         _unitOfWork.OrderRepository.Update(getOrder);
                         await _unitOfWork.SaveChangeAsync();
 
-                        var createTransaction = await CreateTransaction(Guid.Parse(response.vnp_TxnRef));
+                        var createTransaction = await CreateTransaction(Guid.Parse(response.vnp_TxnRef), (double)response.vnp_Amount / 100);
 
                         if (createTransaction)
                         {
@@ -447,7 +447,7 @@ namespace KidProEdu.Application.Services
         }
 
         //function này sẽ chạy sau khi thanh toán thành công
-        public async Task<bool> CreateTransaction(Guid orderId)
+        public async Task<bool> CreateTransaction(Guid orderId, double amount)
         {
             //sau khi check trạng thái thanh toán thành công thì cập nhật db và tạo transaction
             var getOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
@@ -472,6 +472,8 @@ namespace KidProEdu.Application.Services
                                 BankingNumber = "",
                                 BankName = "",
                                 CourseName = item.Course.Name,
+                                CourseQuantity = getOrderDetail.Count(),
+                                TotalAmount = amount,
                                 PayDate = _currentTime.GetCurrentTime(), //lấy thời gian thanh toán thành công
                                 InstallmentTerm = item.InstallmentTerm,
                                 InstallmentPeriod = _currentTime.GetCurrentTime(), //alow null
@@ -490,6 +492,7 @@ namespace KidProEdu.Application.Services
                                     Id = Guid.NewGuid(),
                                     CourseName = item.Course.Name,
                                     TotalAmount = (double?)installmentPayments,
+                                    PayDate = i == 0 ? _currentTime.GetCurrentTime() : null,
                                     InstallmentPeriod = i == 0 ? _currentTime.GetCurrentTime() : _currentTime.GetCurrentTime().AddMonths(i),
                                     StatusTransaction = i == 0 ? Domain.Enums.StatusTransaction.Successfully : Domain.Enums.StatusTransaction.Pending,
                                     ParentsTransaction = transactionParent.Id
@@ -507,6 +510,8 @@ namespace KidProEdu.Application.Services
                                 BankingNumber = "",
                                 BankName = "",
                                 CourseName = item.Course.Name,
+                                CourseQuantity = getOrderDetail.Count(),
+                                TotalAmount = amount,
                                 PayDate = _currentTime.GetCurrentTime(),
                                 InstallmentTerm = 0,
                                 InstallmentPeriod = _currentTime.GetCurrentTime(),
@@ -527,6 +532,8 @@ namespace KidProEdu.Application.Services
                             BankingNumber = "",
                             BankName = "",
                             CourseName = item.Course.Name,
+                            CourseQuantity = getOrderDetail.Count(),
+                            TotalAmount = amount,
                             PayDate = _currentTime.GetCurrentTime(),
                             InstallmentTerm = 0,
                             InstallmentPeriod = _currentTime.GetCurrentTime(),

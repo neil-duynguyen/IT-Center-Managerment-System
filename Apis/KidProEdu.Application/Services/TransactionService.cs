@@ -82,8 +82,7 @@ namespace KidProEdu.Application.Services
                
                 foreach (var course in courses)
                 {
-               
-                    var transactionsForCourse = transactionsByCourses.Where(t => t.OrderDetail.CourseId == course.Id).ToList();
+                    var transactionsForCourse = transactionsByCourses.Where(t => t.OrderDetail != null &&  t.OrderDetail.CourseId == course.Id).ToList();
 
              
                     double totalAmountForCourse = transactionsForCourse.Sum(t => t.TotalAmount ?? 0);
