@@ -84,7 +84,8 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<AdviseRequest>> GetAdviseRequestByUserId(Guid id)
         {
-            var adviseRequest = await _dbContext.AdviseRequest.Where(x => x.UserId == id && x.IsDeleted == false).ToListAsync();
+            var adviseRequest = await _dbContext.AdviseRequest.Where(x => x.UserId == id && x.IsDeleted == false)
+                .OrderByDescending(x => x.CreationDate).ToListAsync();
 
             return adviseRequest;
         }
