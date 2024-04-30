@@ -78,13 +78,13 @@ namespace KidProEdu.API.Controllers
             }
         }
 
-        [HttpGet("ChildrensByClassId")]
+        [HttpGet("ChildrensByOutOfClassId")]
         [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> ChildrensByClassId(Guid classId)
         {
             try
             {
-                var result = await _childrenService.GetListChildrenByClassId(classId);
+                var result = await _childrenService.GetListChildrenByOutClassId(classId);
                 return Ok(result);
             }
             catch (Exception ex)

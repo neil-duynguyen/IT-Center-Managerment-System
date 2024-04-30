@@ -11,7 +11,7 @@ namespace KidProEdu.Application.IRepositories
     public interface IChildrenRepository : IGenericRepository<ChildrenProfile>
     {
         Task<List<ChildrenProfile>> GetChildrenProfiles(DateTime year);
-        Task<List<ChildrenProfile>> GetListChildrenProfileByClassId(Guid classId);
+        Task<List<ChildrenProfile>> GetListChildrenProfileByOutClassId(Guid classId);
         Task<int> GetTotalChildrens(DateTime startDate, DateTime endDate);
     }
 }
