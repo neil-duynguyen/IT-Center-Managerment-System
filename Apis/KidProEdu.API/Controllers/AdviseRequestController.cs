@@ -139,7 +139,7 @@ namespace KidProEdu.API.Controllers
             }
         }
 
-        [HttpGet("GetAdviseRequestByUserId")]
+        [HttpGet("GetAdviseRequestByUserId/{id}")]
         public async Task<IActionResult> GetAdviseRequestByUserId(Guid id)
         {
             try

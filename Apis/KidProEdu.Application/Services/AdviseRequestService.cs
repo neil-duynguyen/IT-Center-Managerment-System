@@ -270,9 +270,20 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<AdviseRequestViewModel>> GetAdviseRequestByUserId(Guid id)
         {
-            var adviseRequest = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByUserId(id);
-            
-            return _mapper.Map<List<AdviseRequestViewModel>>(adviseRequest);
+            var adviseRequests = await _unitOfWork.AdviseRequestRepository.GetAdviseRequestByUserId(id);
+
+            List<AdviseRequestViewModel> list = new();
+            foreach (var item in adviseRequests)
+            {
+                var mapper = _mapper.Map<AdviseRequestViewModel>(item);
+                if (mapper.UserId != null)
+                {
+                    mapper.Staff = _mapper.Map<UserViewModel>(await _unitOfWork.UserRepository.GetByIdAsync((Guid)item.UserId));
+                }
+                list.Add(mapper);
+            }
+
+            return _mapper.Map<List<AdviseRequestViewModel>>(list);
         }
     }
 }

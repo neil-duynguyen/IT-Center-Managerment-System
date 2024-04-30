@@ -82,17 +82,17 @@ namespace KidProEdu.Application.Services
             }
             else if (createRequestViewModel.RequestType == "Refund")
             {
-                if (createRequestViewModel.ReceiverRefundId != null
+                if (createRequestViewModel.ReceiverRefundId == null
                     || createRequestViewModel.UserIds.Count() == 0
-                    || createRequestViewModel.ChildrenCode != null
-                    || createRequestViewModel.CourseCode != null)
+                    || createRequestViewModel.ChildrenCode == null
+                    || createRequestViewModel.CourseCode == null)
                 {
                     throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu hoàn tiền");
                 }
             }
             else if (createRequestViewModel.RequestType == "Leave")
             {
-                if (createRequestViewModel.LeaveDate != null
+                if (createRequestViewModel.LeaveDate == null
                     || createRequestViewModel.UserIds.Count() == 0)
                 {
                     throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu nghỉ");
@@ -100,9 +100,9 @@ namespace KidProEdu.Application.Services
             }
             else if (createRequestViewModel.RequestType == "ChildrenClass")
             {
-                if (createRequestViewModel.ChildrenCode != null
-                    || createRequestViewModel.FromClassId != null
-                    || createRequestViewModel.ToClassId != null
+                if (createRequestViewModel.ChildrenCode == null
+                    || createRequestViewModel.FromClassId == null
+                    || createRequestViewModel.ToClassId == null
                     || createRequestViewModel.UserIds.Count() == 0)
                 {
                     throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu đổi lớp cho trẻ");
@@ -110,7 +110,7 @@ namespace KidProEdu.Application.Services
             }
             else if (createRequestViewModel.RequestType == "ChildrenReserve")
             {
-                if (createRequestViewModel.ChildrenCode != null
+                if (createRequestViewModel.ChildrenCode == null
                     || createRequestViewModel.UserIds.Count() == 0)
                 {
                     throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu bảo lưu");
@@ -118,7 +118,7 @@ namespace KidProEdu.Application.Services
             }
             else if (createRequestViewModel.RequestType == "Location")
             {
-                if (createRequestViewModel.LocationId != null
+                if (createRequestViewModel.LocationId == null
                     || createRequestViewModel.UserIds.Count() == 0)
                 {
                     throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu chuyển cơ sở");
