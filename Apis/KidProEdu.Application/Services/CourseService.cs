@@ -55,7 +55,7 @@ namespace KidProEdu.Application.Services
 
             // check name exited
             var isExitedName = await _unitOfWork.CourseRepository.CheckNameExited(createCourseViewModel.Name) ? throw new Exception("Tên khoá học đã tồn tại.") : true;
-            var isExitedCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.CourseCode == createCourseViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
+            var isExitedCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.CourseCode == createCourseViewModel.CourseCode && !x.IsDeleted) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
 
             var getCourse = await _unitOfWork.CourseRepository.GetAllAsync();
             var mapper = _mapper.Map<Course>(createCourseViewModel);
@@ -87,7 +87,7 @@ namespace KidProEdu.Application.Services
 
             // check name exited
             var isExitedName = await _unitOfWork.CourseRepository.CheckNameExited(createCourseParentViewModel.Name) ? throw new Exception("Tên khoá học đã tồn tại.") : true;
-            var isExitedCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.CourseCode == createCourseParentViewModel.CourseCode) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
+            var isExitedCode = _unitOfWork.CourseRepository.GetAllAsync().Result.Any(x => x.CourseCode == createCourseParentViewModel.CourseCode && !x.IsDeleted) ? throw new Exception("Mã khoá học đã tồn tại.") : true;
 
             var mapper = _mapper.Map<Course>(createCourseParentViewModel);
 
