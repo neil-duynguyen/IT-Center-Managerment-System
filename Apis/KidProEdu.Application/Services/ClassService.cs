@@ -645,7 +645,7 @@ namespace KidProEdu.Application.Services
                     for (int row = 2; row <= rowCount; row++)
                     {
                         var col = 1;
-                        try
+                        try 
                         {
                             var mssv = worksheet.Cells[row, col++].Value.ToString()!.Trim();
                             var examCode = worksheet.Cells[row, ++col].Value.ToString()!.Trim();

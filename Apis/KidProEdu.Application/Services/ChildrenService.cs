@@ -86,7 +86,7 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<ChildrenViewModel>> GetChildrensByStaffId()
         {
-            var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.CreatedBy == _claimsService.GetCurrentUserId).ToList();
+            var getChildrens = _unitOfWork.ChildrenRepository.GetAllAsync().Result.Where(x => x.CreatedBy == _claimsService.GetCurrentUserId).OrderByDescending(x => x.CreationDate).ToList();
             return _mapper.Map<List<ChildrenViewModel>>(getChildrens);
         }
 
