@@ -272,9 +272,10 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<ChildrenViewModel>> GetListChildrenByOutClassId(Guid classId)
         {
-            var childs = await _unitOfWork.ChildrenRepository.GetListChildrenProfileByOutClassId(classId);
-
-            return _mapper.Map<List<ChildrenViewModel>>(childs);
+            var allChilds = await _unitOfWork.ChildrenRepository.GetAllAsync();
+            var childs = await _unitOfWork.ChildrenRepository.GetListChildrenProfileByClassId(classId);
+            var notEnrolledChildren = allChilds.Where(x => !childs.Select(e => e.Id).Contains(x.Id)).ToList();
+            return _mapper.Map<List<ChildrenViewModel>>(notEnrolledChildren); ;
         }
     }
 }
