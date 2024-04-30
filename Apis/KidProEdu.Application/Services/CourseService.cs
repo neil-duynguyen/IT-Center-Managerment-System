@@ -102,11 +102,26 @@ namespace KidProEdu.Application.Services
             var mapper = _mapper.Map<CourseViewModelById>(courseParent);
 
             var getList = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.ParentCourse == courseParent.Id && x.IsDeleted == false).ToList();
-            var classes = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.CourseId == Id && x.IsDeleted == false).ToList();
+            if (getList.Count > 0)
+            {
+                List<ClassViewModel> listClassViewModel = new List<ClassViewModel>();
+
+                foreach (var item in getList)
+                {
+                    var classes = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.CourseId == item.Id && x.IsDeleted == false).ToList();
+                    listClassViewModel.AddRange(_mapper.Map<List<ClassViewModel>>(classes));
+                }
+                mapper.Classes = _mapper.Map<List<ClassViewModel>>(listClassViewModel);
+            }
+            else
+            {
+                var classes = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.CourseId == Id && x.IsDeleted == false).ToList();
+                mapper.Classes = _mapper.Map<List<ClassViewModel>>(classes);
+            }
             var lessons = _unitOfWork.LessonRepository.GetAllAsync().Result.Where(x => x.CourseId == Id && x.IsDeleted == false).ToList();
 
             mapper.Courses = _mapper.Map<List<CourseViewModel>>(getList);
-            mapper.Classes = _mapper.Map<List<ClassViewModel>>(classes);
+
             mapper.Lessons = _mapper.Map<List<LessonViewModel>>(lessons);
 
             return mapper;
@@ -114,9 +129,9 @@ namespace KidProEdu.Application.Services
 
         public async Task<List<CourseViewModel>> GetAllCourse()
         {
-            var resultt = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
+            var result = _unitOfWork.CourseRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
 
-            var listCourseViewModel = new List<CourseViewModel>();
+            /*var listCourseViewModel = new List<CourseViewModel>();
 
             foreach (var item in resultt)
             {
@@ -132,9 +147,9 @@ namespace KidProEdu.Application.Services
                     var course = _mapper.Map<CourseViewModel>(item);
                     listCourseViewModel.Add(course);
                 }
-            }
-
-            return listCourseViewModel;
+            }*/
+            var mapper = _mapper.Map<List<CourseViewModel>>(result);
+            return mapper;
         }
         public async Task<List<CourseViewModel>> GetAllCourseInBlog()
         {

@@ -34,7 +34,7 @@ namespace KidProEdu.API.Controllers
 
 
         [HttpPut]
-        [Authorize(Roles = ("Staff"))]
+        [Authorize(Roles = ("Staff, Parent"))]
         public async Task<IActionResult> UpdateChildren(UpdateChildrenViewModel updateChildrenViewModel)
         {
             try

@@ -130,6 +130,7 @@ namespace KidProEdu.API.Controllers.Manager
             "InputScore.xlsx");
 
         [HttpPost("ImportScoreExcelFile")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> ImportScoreExcelFile(IFormFile formFile)
         {
             try

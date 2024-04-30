@@ -8,6 +8,7 @@ using KidProEdu.Application.ViewModels.ChildrenAnswerViewModels;
 using KidProEdu.Application.ViewModels.ExamViewModels;
 using KidProEdu.Application.ViewModels.QuestionViewModels;
 using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,10 +49,19 @@ namespace KidProEdu.Application.Services
 
             foreach (var item in createChildrenAnswerViewModel)
             {
-                if (!_unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result.Any(x => x.ChildrenProfileId == item.ChildrenProfileId && x.ExamId == item.ExamId))
+                var getChildrenAnswer = _unitOfWork.ChildrenAnswerRepository.GetAllAsync().Result.FirstOrDefault(x => x.ChildrenProfileId == item.ChildrenProfileId && x.ExamId == item.ExamId);
+                if (getChildrenAnswer is null)
                 {
+                    Question question = new Question() { Id = Guid.NewGuid(), Title = "Bài thi thực hành", Type = QuestionType.Course };
+                    await _unitOfWork.QuestionRepository.AddAsync(question);
+
                     var mapper = _mapper.Map<ChildrenAnswer>(item);
+                    mapper.QuestionId = question.Id;
                     await _unitOfWork.ChildrenAnswerRepository.AddAsync(mapper);
+                }
+                else {
+                    var mapper = _mapper.Map(item, getChildrenAnswer);
+                    _unitOfWork.ChildrenAnswerRepository.Update(mapper);
                 }
             }
 

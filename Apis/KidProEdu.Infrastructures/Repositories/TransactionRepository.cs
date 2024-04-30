@@ -66,7 +66,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<Transaction>> GetTransactionsByMonth(DateTime startDate, DateTime endDate)
         {
             var transactions = await _dbContext.Transaction
-               .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate >= startDate && x.PayDate <= endDate && !x.IsDeleted)
+               .Where(x => x.StatusTransaction == StatusTransaction.Successfully && x.PayDate.Value.Date >= startDate.Date && x.PayDate.Value.Date <= endDate.Date && !x.IsDeleted)
                .AsNoTracking()
                .ToListAsync();
             return transactions;

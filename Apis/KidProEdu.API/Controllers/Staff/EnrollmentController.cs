@@ -40,6 +40,7 @@ namespace KidProEdu.API.Controllers.Staff
         }
 
         [HttpPost]
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> PostEnrollment(CreateEnrollmentViewModel createEnrollmentViewModel)
         {
             try
@@ -61,7 +62,7 @@ namespace KidProEdu.API.Controllers.Staff
         }
 
         [HttpPut]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> PutEnrollment(UpdateEnrollmentViewModel updateEnrollmentViewModel)
         {
             try
@@ -83,7 +84,7 @@ namespace KidProEdu.API.Controllers.Staff
         }
 
         [HttpPut("EnrollmentStudying")]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> PutEnrollmentStudying(UpdateEnrollmentViewModel updateEnrollmentViewModel)
         {
             try
@@ -106,7 +107,7 @@ namespace KidProEdu.API.Controllers.Staff
 
 
         [HttpDelete]
-        /*[Authorize(Roles = ("Admin"))]*/
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> DeleteEnrolled(Guid classId, Guid childId)
         {
             try
@@ -128,6 +129,7 @@ namespace KidProEdu.API.Controllers.Staff
         }
 
         [HttpPost("ImportExcelFile")]
+        [Authorize(Roles = ("Staff"))]
         public async Task<IActionResult> ImportExcelFile(IFormFile formFile)
         {
             try

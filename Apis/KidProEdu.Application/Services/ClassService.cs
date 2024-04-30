@@ -627,9 +627,7 @@ namespace KidProEdu.Application.Services
         public async Task<bool> ImportScoreExcelFileAsync(IFormFile formFile)
         {
             //Create a List of ChildrenAnswer that Read from Excel File.
-            var childrenAnswerListFromFile = new List<CreateChildrenAnswerViewModel>();
-            Question question = new Question() { Id = Guid.NewGuid(), Title = "Bài thi thực hành", Type = QuestionType.Course};
-            await _unitOfWork.QuestionRepository.AddAsync(question);
+            var childrenAnswerListFromFile = new List<CreateChildrenAnswerViewModel>();            
             
             //ReadExcelFile
             using (var stream = new MemoryStream())
@@ -653,7 +651,6 @@ namespace KidProEdu.Application.Services
                             var foundExam = findExam.FirstOrDefault(x => x.TestCode.Equals(examCode)) ?? throw new Exception($"Không tìm thấy bài kiểm tra với mã {examCode}.");
 
                             childrenAnswerListFromFile.Add(new CreateChildrenAnswerViewModel() {ChildrenProfileId = findChildren.FirstOrDefault(x => x.ChildrenCode.Equals(mssv)).Id, 
-                                                                                                QuestionId = question.Id,
                                                                                                 ExamId = foundExam.Id,
                                                                                                 ScorePerQuestion = (double)scorePerQuestion });
                         }
@@ -665,7 +662,7 @@ namespace KidProEdu.Application.Services
                         catch (Exception ex)
                         {
                             await stream.DisposeAsync();
-                            throw new Exception(ex.Message);
+                            throw new Exception($"Lỗi tại dòng {row}, Tên cột: {worksheet.Cells[1, col].Value}, Lỗi: Ô này có giá trị trống hoặc giá trị không hợp lệ.");
                         }
                     }
                 }
