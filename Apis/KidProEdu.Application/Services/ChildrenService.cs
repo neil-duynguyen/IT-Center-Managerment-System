@@ -270,6 +270,11 @@ namespace KidProEdu.Application.Services
             return listCourseViewModel;
         }
 
+        public async Task<List<ChildrenViewModel>> GetListChildrenByClassId(Guid classId)
+        {
+            var childs = await _unitOfWork.ChildrenRepository.GetListChildrenProfileByClassId(classId);
 
+            return _mapper.Map<List<ChildrenViewModel>>(childs);
+        }
     }
 }

@@ -21,5 +21,7 @@ namespace KidProEdu.Application.Interfaces
         Task<List<ChildrenViewModel>> GetChildrenByParentId(Guid Id);
         Task<ChildrenSummariseViewModel> GetChildrenSummariseViewModel(DateTime MonthAndYear);
         Task<List<CourseViewModel>> CourseSuggestions(Guid childrenId);
+
+        Task<List<ChildrenViewModel>> GetListChildrenByClassId(Guid classId);
     }
 }

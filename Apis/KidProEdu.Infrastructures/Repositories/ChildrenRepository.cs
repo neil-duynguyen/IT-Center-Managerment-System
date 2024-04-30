@@ -50,6 +50,11 @@ namespace KidProEdu.Infrastructures.Repositories
             return totalChildrens == 0 ? 0 : totalChildrens;
         }
 
+        public async Task<List<ChildrenProfile>> GetListChildrenProfileByClassId(Guid classId)
+        {
+            var childs = await _dbContext.ChildrenProfile.AsNoTracking().Include(x => x.Enrollments).Where(x => x.Enrollments.Any(x => x.ClassId == classId) && !x.IsDeleted).ToListAsync();
+            return childs;
+        }
     }
 
 }
