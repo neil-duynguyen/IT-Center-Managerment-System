@@ -115,21 +115,26 @@ namespace KidProEdu.Application.Services
         {
             var listUser = await _unitOfWork.UserRepository.GetAllAsync();
 
-            var getCurrentUserId = _unitOfWork.UserRepository.GetByIdAsync(_claimsService.GetCurrentUserId).Result.Role.Name;
+            var getCurrentUserId = await _unitOfWork.UserRepository.GetByIdAsync(_claimsService.GetCurrentUserId);
 
             List<UserAccount> users = new List<UserAccount>();
 
-            if (getCurrentUserId.Equals("Admin"))
+            if (getCurrentUserId.Role.Name.Equals("Admin") && getCurrentUserId.UserName.Equals("Admin"))
             {
-                users = listUser.Where(x => x.Role.Name.Equals("Manager") || x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
+                users = listUser.Where(x => !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
             }
 
-            if (getCurrentUserId.Equals("Manager"))
+            if (getCurrentUserId.Role.Name.Equals("Admin") && !getCurrentUserId.UserName.Equals("Admin"))
+            {
+                users = listUser.Where(x => x.Role.Name.Equals("Manager") || x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") || x.Role.Name.Equals("Parent") && !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
+            }
+
+            if (getCurrentUserId.Role.Name.Equals("Manager"))
             {
                 users = listUser.Where(x => x.Role.Name.Equals("Teacher") || x.Role.Name.Equals("Staff") && !x.IsDeleted).OrderByDescending(x => x.CreationDate).ToList();
             }
 
-            if (getCurrentUserId.Equals("Staff"))
+            if (getCurrentUserId.Role.Name.Equals("Staff"))
             {
                 users = listUser.Where(x => x.Role.Name.Equals("Parent") && !x.IsDeleted && x.CreatedBy == _claimsService.GetCurrentUserId).OrderByDescending(x => x.CreationDate).ToList();
             }
