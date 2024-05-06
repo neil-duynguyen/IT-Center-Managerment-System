@@ -590,38 +590,39 @@ namespace KidProEdu.Application.Services
 
         public async Task<Stream> ExportExcelFileAsync(Guid classId)
         {
-            string[] columnNames = new string[] { "ChildrenCode", "FullName","ExamCode", "ScorePerQuestion" };
+            string[] columnNames = new string[] { "ClassCode", "ChildrenCode", "FullName", "ExamCode", "ScorePerQuestion" };
+            string header = string.Join(",", columnNames);
 
             var stream = new MemoryStream();
 
             using (var package = new ExcelPackage(stream))
             {
-                var worksheet = package.Workbook.Worksheets.Add("Nhập điểm");
+                var worksheet = package.Workbook.Worksheets.Add("InputScore");
+                worksheet.Cells.LoadFromText(header);
 
-                // Add header
                 for (int i = 0; i < columnNames.Length; i++)
                 {
                     worksheet.Cells[1, i + 1].Value = columnNames[i];
                 }
 
-                var getClassById = _unitOfWork.ClassRepository.GetAllAsync().Result.FirstOrDefault(x => x.Id == classId);
+                var getClassById = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
                 var getListChildren = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByClassId(getClassById.Id);
 
                 // Add data
                 for (int i = 0; i < getListChildren.Count; i++)
                 {
-                    worksheet.Cells[i + 2, 1].Value = getListChildren[i].ChildrenProfile.ChildrenCode;
-                    worksheet.Cells[i + 2, 2].Value = getListChildren[i].ChildrenProfile.FullName;
+                    worksheet.Cells[i + 2, 1].Value = getClassById.ClassCode;
+                    worksheet.Cells[i + 2, 2].Value = getListChildren[i].ChildrenProfile.ChildrenCode;
+                    worksheet.Cells[i + 2, 3].Value = getListChildren[i].ChildrenProfile.FullName;
                 }
-
                 await package.SaveAsync();
             }
 
             stream.Position = 0;
 
             return stream;
-
         }
+
 
         //function này dùng để nhâp điểm bằng file excel
         public async Task<bool> ImportScoreExcelFileAsync(IFormFile formFile)
@@ -642,7 +643,7 @@ namespace KidProEdu.Application.Services
                     var findExam = await _unitOfWork.ExamRepository.GetAllAsync();
                     for (int row = 2; row <= rowCount; row++)
                     {
-                        var col = 1;
+                        var col = 2;
                         try 
                         {
                             var mssv = worksheet.Cells[row, col++].Value.ToString()!.Trim();

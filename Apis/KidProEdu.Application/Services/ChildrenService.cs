@@ -73,10 +73,17 @@ namespace KidProEdu.Application.Services
                     throw new Exception(error.ErrorMessage);
                 }
             }
-
-            var mapper = _mapper.Map<ChildrenProfile>(updateChildrenViewModel);
-            _unitOfWork.ChildrenRepository.Update(mapper);
-            return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trẻ thất bại.");
+            var getChildern = await _unitOfWork.ChildrenRepository.GetByIdAsync(updateChildrenViewModel.Id);
+            if (getChildern is not null)
+            {
+                var mapper = _mapper.Map(updateChildrenViewModel, getChildern);
+                _unitOfWork.ChildrenRepository.Update(mapper);
+                return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật trẻ thất bại.");
+            }
+            else
+            {
+                throw new Exception("Cập nhật trẻ thất bại.");
+            }
         }
 
         public Task<bool> DeleteChildren(Guid childrenId)
