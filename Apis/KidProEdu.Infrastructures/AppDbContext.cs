@@ -367,6 +367,14 @@ namespace KidProEdu.Infrastructures
                 .HasMany(p => p.Blogs)
                 .WithMany(x => x.Tags);
 
+            builder.Entity<Lesson>()
+                .HasMany(p => p.Equipments)
+                .WithMany(x => x.Lessons);
+
+            builder.Entity<Equipment>()
+                .HasMany(p => p.Lessons)
+                .WithMany(x => x.Equipments);
+
             builder.Entity<ConfigPointMultiplier>().HasData(
                 new ConfigPointMultiplier
                 {

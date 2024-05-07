@@ -16,8 +16,8 @@ namespace KidProEdu.Domain.Entities
         public string? Description { get; set; }
         public int? Duration { get; set; }
         public string? Prerequisites { get; set; }
-
         public virtual Course Course { get; set; }
         public IList<Question> Questions { get; set; }
+        public IList<Equipment> Equipments { get; set; }
     }
 }
