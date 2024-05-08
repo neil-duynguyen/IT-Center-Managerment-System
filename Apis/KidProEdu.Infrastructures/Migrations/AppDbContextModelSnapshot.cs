@@ -1291,7 +1291,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int?>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupSize")
+                    b.Property<int?>("GroupSize")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -1309,7 +1309,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TypeOfPractice")
+                    b.Property<int?>("TypeOfPractice")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

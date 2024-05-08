@@ -42,5 +42,10 @@ namespace KidProEdu.Infrastructures.Repositories
             return totalCourses == 0 ? 0 : totalCourses;
         }
 
+        public override async Task<Course?> GetByIdAsync(Guid id)
+        {
+            return await _dbSet.Include(x => x.Lessons).FirstOrDefaultAsync(x => x.Id == id); ;
+        }
+
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240508043807_UpdateTableLessonAndEquimentMigration")]
+    [Migration("20240508064349_UpdateTableLessonAndEquimentMigration")]
     partial class UpdateTableLessonAndEquimentMigration
     {
         /// <inheritdoc />
@@ -1294,7 +1294,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int?>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupSize")
+                    b.Property<int?>("GroupSize")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -1312,7 +1312,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TypeOfPractice")
+                    b.Property<int?>("TypeOfPractice")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

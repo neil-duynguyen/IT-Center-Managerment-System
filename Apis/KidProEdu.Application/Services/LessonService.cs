@@ -2,6 +2,7 @@
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Lessons;
 using KidProEdu.Application.Validations.Ratings;
+using KidProEdu.Application.ViewModels.BlogViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.RatingViewModels;
@@ -42,13 +43,32 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var lesson = await _unitOfWork.LessonRepository.GetLessonByName(createLessonViewModel.Name);
+           /* var lesson = await _unitOfWork.LessonRepository.GetLessonByName(createLessonViewModel.Name);
             if (lesson != null)
+            {
+                throw new Exception("Bài học đã tồn tại ở khóa học khác");
+            }*/
+
+            var course = await _unitOfWork.CourseRepository.GetByIdAsync(createLessonViewModel.CourseId);
+            if (course.Lessons.FirstOrDefault(x => x.Name.ToLower() == createLessonViewModel.Name.ToLower() && !x.IsDeleted) != null)
             {
                 throw new Exception("Bài học đã tồn tại ở khóa học khác");
             }
 
             var mapper = _mapper.Map<Lesson>(createLessonViewModel);
+
+            IList<Equipment> equipments = new List<Equipment>();
+
+            if (createLessonViewModel.EquipmentId.Count != 0)
+            {
+                foreach (var equipment in createLessonViewModel.EquipmentId)
+                {
+                    equipments.Add(await _unitOfWork.EquipmentRepository.GetByIdAsync(equipment));
+                }
+                
+                mapper.Equipments = equipments;
+            }
+
             await _unitOfWork.LessonRepository.AddAsync(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo bài học thất bại");
         }
