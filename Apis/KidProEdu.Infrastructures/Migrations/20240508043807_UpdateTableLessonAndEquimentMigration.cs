@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KidProEdu.Infrastructures.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigration : Migration
+    public partial class UpdateTableLessonAndEquimentMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -41,6 +41,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    TypeCategoryEquipment = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -341,7 +344,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Duration = table.Column<int>(type: "int", nullable: true),
-                    Prerequisites = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TypeOfPractice = table.Column<int>(type: "int", nullable: false),
+                    GroupSize = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1054,6 +1058,30 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EquipmentLesson",
+                columns: table => new
+                {
+                    EquipmentsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LessonsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EquipmentLesson", x => new { x.EquipmentsId, x.LessonsId });
+                    table.ForeignKey(
+                        name: "FK_EquipmentLesson_Equipment_EquipmentsId",
+                        column: x => x.EquipmentsId,
+                        principalTable: "Equipment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EquipmentLesson_Lesson_LessonsId",
+                        column: x => x.LessonsId,
+                        principalTable: "Lesson",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LogEquipment",
                 columns: table => new
                 {
@@ -1463,9 +1491,11 @@ namespace KidProEdu.Infrastructures.Migrations
                 columns: new[] { "Id", "Address", "Avatar", "BankAccountName", "BankAccountNumber", "BankName", "CreatedBy", "CreationDate", "DateOfBirth", "DeleteBy", "DeletionDate", "Email", "FullName", "GenderType", "IsDeleted", "LocationId", "ModificationBy", "ModificationDate", "OTP", "PasswordHash", "Phone", "RoleId", "Status", "UserName" },
                 values: new object[,]
                 {
+                    { new Guid("434d275c-ff7d-35fa-84e3-bed5ecadca84"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979), null, null, "teacher@gmail.com", "Nguyen Minh Ngoc", null, false, null, null, null, null, "d041c3d3ca4ed64c5b54c5d807bd9a0bd2d6ae3609ecd2d06ac383db449360e1", "0356534796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a53"), 1, "Teacher" },
                     { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca82"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1976), null, null, "duynguyen@gmail.com", "NguyenVanDuy", null, false, null, null, null, null, "e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7", "0975844775", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a50"), 1, "Admin" },
                     { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca83"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1985), null, null, "dunghoang@gmail.com", "HoangQuocDung", null, false, null, null, null, null, "e8392925a98c9c22795d1fc5d0dfee5b9a6943f6b768ec5a2a0c077e5ed119cf", "0975844796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a51"), 1, "Manager" },
-                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca84"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979), null, null, "linhchi@gmail.com", "LinhChi", null, false, null, null, null, null, "dfd48f36338aa36228ebb9e204bba6b4e18db0b623e25c458901edc831fb18e9", "0356724796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"), 1, "Staff" }
+                    { new Guid("434d275c-ff7d-48fa-84e3-bed5ecadca84"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979), null, null, "linhchi@gmail.com", "LinhChi", null, false, null, null, null, null, "dfd48f36338aa36228ebb9e204bba6b4e18db0b623e25c458901edc831fb18e9", "0356724796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"), 1, "Staff" },
+                    { new Guid("434d275c-ff7d-72fa-84e3-bed5ecadca84"), null, null, null, null, null, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979), null, null, "minhtuan234@gmail.com", "Pham Minh Tuan", null, false, null, null, null, null, "02e213a1388234c768cd561c4114d124eaa9cca64cf9d8b118b52001c93952d7", "0398324796", new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a54"), 1, "Parent" }
                 });
 
             migrationBuilder.InsertData(
@@ -1612,6 +1642,11 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "IX_Equipment_RoomId",
                 table: "Equipment",
                 column: "RoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquipmentLesson_LessonsId",
+                table: "EquipmentLesson",
+                column: "LessonsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Exam_ClassId",
@@ -1805,6 +1840,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
             migrationBuilder.DropTable(
                 name: "Enrollment");
+
+            migrationBuilder.DropTable(
+                name: "EquipmentLesson");
 
             migrationBuilder.DropTable(
                 name: "Feedback");

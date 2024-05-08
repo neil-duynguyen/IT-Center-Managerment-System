@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KidProEdu.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -15,7 +16,8 @@ namespace KidProEdu.Domain.Entities
         public string? Name { get; set; }
         public string? Description { get; set; }
         public int? Duration { get; set; }
-        public string? Prerequisites { get; set; }
+        public TypeOfPractice TypeOfPractice { get; set; }
+        public int GroupSize { get; set; }
         public virtual Course Course { get; set; }
         public IList<Question> Questions { get; set; }
         public IList<Equipment> Equipments { get; set; }

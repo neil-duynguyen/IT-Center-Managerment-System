@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240423122535_InitMigration")]
-    partial class InitMigration
+    [Migration("20240508043807_UpdateTableLessonAndEquimentMigration")]
+    partial class UpdateTableLessonAndEquimentMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,21 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasIndex("TagsId");
 
                     b.ToTable("BlogTag");
+                });
+
+            modelBuilder.Entity("EquipmentLesson", b =>
+                {
+                    b.Property<Guid>("EquipmentsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LessonsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("EquipmentsId", "LessonsId");
+
+                    b.HasIndex("LessonsId");
+
+                    b.ToTable("EquipmentLesson");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.AdviseRequest", b =>
@@ -264,6 +279,9 @@ namespace KidProEdu.Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -292,6 +310,12 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypeCategoryEquipment")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1270,6 +1294,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<int?>("Duration")
                         .HasColumnType("int");
 
+                    b.Property<int>("GroupSize")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -1285,8 +1312,8 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Prerequisites")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TypeOfPractice")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2676,6 +2703,34 @@ namespace KidProEdu.Infrastructures.Migrations
                             RoleId = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a52"),
                             Status = 1,
                             UserName = "Staff"
+                        },
+                        new
+                        {
+                            Id = new Guid("434d275c-ff7d-35fa-84e3-bed5ecadca84"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
+                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979),
+                            Email = "teacher@gmail.com",
+                            FullName = "Nguyen Minh Ngoc",
+                            IsDeleted = false,
+                            PasswordHash = "d041c3d3ca4ed64c5b54c5d807bd9a0bd2d6ae3609ecd2d06ac383db449360e1",
+                            Phone = "0356534796",
+                            RoleId = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a53"),
+                            Status = 1,
+                            UserName = "Teacher"
+                        },
+                        new
+                        {
+                            Id = new Guid("434d275c-ff7d-72fa-84e3-bed5ecadca84"),
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
+                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(1979),
+                            Email = "minhtuan234@gmail.com",
+                            FullName = "Pham Minh Tuan",
+                            IsDeleted = false,
+                            PasswordHash = "02e213a1388234c768cd561c4114d124eaa9cca64cf9d8b118b52001c93952d7",
+                            Phone = "0398324796",
+                            RoleId = new Guid("d5fa55c7-315d-4634-9c73-08dbbc3f3a54"),
+                            Status = 1,
+                            UserName = "Parent"
                         });
                 });
 
@@ -2690,6 +2745,21 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.HasOne("KidProEdu.Domain.Entities.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EquipmentLesson", b =>
+                {
+                    b.HasOne("KidProEdu.Domain.Entities.Equipment", null)
+                        .WithMany()
+                        .HasForeignKey("EquipmentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KidProEdu.Domain.Entities.Lesson", null)
+                        .WithMany()
+                        .HasForeignKey("LessonsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
