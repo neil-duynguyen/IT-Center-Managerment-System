@@ -12,10 +12,10 @@ namespace KidProEdu.Application.Interfaces
 
     public interface ICategoryEquipmentService
     {
-        Task<List<CategoryEquipment>> GetCategoryEquipments();
+        Task<List<CategoryEquipmentViewModel>> GetCategoryEquipments();
         Task<bool> CreateCategoryEquipment(CreateCategoryEquipmentViewModel createCategoryEquipmentViewModel);
         Task<bool> UpdateCategoryEquipment(UpdateCategoryEquipmentViewModel updateCategoryEquipmentViewModel);
-        Task<CategoryEquipment> GetCategoryEquipmentById(Guid id);
+        Task<CategoryEquipmentViewModel> GetCategoryEquipmentById(Guid id);
         Task<bool> DeleteCategoryEquipment(Guid id);
     }
 }

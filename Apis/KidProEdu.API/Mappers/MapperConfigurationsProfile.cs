@@ -69,6 +69,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<UpdateSkillCertificateViewModel, SkillCertificate>().ReverseMap();
             CreateMap<SkillCertificate, SkillCertificateViewModel>().ReverseMap();
 
+            CreateMap<CategoryEquipment, CategoryEquipmentViewModel>().ReverseMap().ForMember(des => des.TypeCategoryEquipment, src => src.MapFrom(x => x.TypeCategoryEquipment != null ? (string)x.TypeCategoryEquipment.ToString() : (string?)null));
             CreateMap<CreateCategoryEquipmentViewModel, CategoryEquipment>().ReverseMap();
             CreateMap<UpdateCategoryEquipmentViewModel, CategoryEquipment>().ReverseMap();
 

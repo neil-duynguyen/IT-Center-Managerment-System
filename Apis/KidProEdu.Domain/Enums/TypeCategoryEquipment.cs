@@ -8,6 +8,7 @@ namespace KidProEdu.Domain.Enums
 {
     public enum TypeCategoryEquipment
     {
-
+        single = 1,
+        set = 2
     }
 }
