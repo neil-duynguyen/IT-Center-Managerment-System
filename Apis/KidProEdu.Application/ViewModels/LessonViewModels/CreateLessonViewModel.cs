@@ -12,10 +12,10 @@ namespace KidProEdu.Application.ViewModels.LessonViewModels
         public Guid CourseId { get; set; }
         public int? LessonNumber { get; set; }
         public string? Name { get; set; }
-        public string? Description { get; set; }
         public int? Duration { get; set; }
-        public TypeOfPractice TypeOfPractice { get; set; }
-        public int GroupSize { get; set; }
-        public IList<Guid> EquipmentId { get; set; }
+        public string? Description { get; set; }
+        public TypeOfPractice? TypeOfPractice { get; set; }
+        public int? GroupSize { get; set; }
+        public IList<Guid>? EquipmentId { get; set; }
     }
 }

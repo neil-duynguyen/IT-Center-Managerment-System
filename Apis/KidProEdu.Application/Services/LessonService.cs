@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Lessons;
 using KidProEdu.Application.Validations.Ratings;
@@ -7,6 +8,7 @@ using KidProEdu.Application.ViewModels.LessonViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Application.ViewModels.RatingViewModels;
 using KidProEdu.Domain.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -43,17 +45,16 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-           /* var lesson = await _unitOfWork.LessonRepository.GetLessonByName(createLessonViewModel.Name);
-            if (lesson != null)
-            {
-                throw new Exception("Bài học đã tồn tại ở khóa học khác");
-            }*/
+            var checkDuration = await _unitOfWork.CourseRepository.GetByIdAsync(createLessonViewModel.CourseId);
+            if (checkDuration == null) throw new InvalidOperationException("Không tìm thấy môn học.");
+
+            var sumDurationLesson = checkDuration.Lessons.Sum(x => x.Duration);
+            if (sumDurationLesson + createLessonViewModel.Duration > checkDuration.DurationTotal)
+                throw new Exception($"Thời gian (slot) phải <= {checkDuration.DurationTotal - sumDurationLesson}");
 
             var course = await _unitOfWork.CourseRepository.GetByIdAsync(createLessonViewModel.CourseId);
             if (course.Lessons.FirstOrDefault(x => x.Name.ToLower() == createLessonViewModel.Name.ToLower() && !x.IsDeleted) != null)
-            {
-                throw new Exception("Bài học đã tồn tại ở khóa học khác");
-            }
+                throw new Exception("Tên bài học đã tồn tại.");
 
             var mapper = _mapper.Map<Lesson>(createLessonViewModel);
 
@@ -65,7 +66,7 @@ namespace KidProEdu.Application.Services
                 {
                     equipments.Add(await _unitOfWork.EquipmentRepository.GetByIdAsync(equipment));
                 }
-                
+
                 mapper.Equipments = equipments;
             }
 

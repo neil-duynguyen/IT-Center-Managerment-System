@@ -23,11 +23,6 @@ namespace KidProEdu.Application.Validations.Lessons
             RuleFor(x => x.Description).NotEmpty().WithMessage("Mô tả không được để trống.");
 
             RuleFor(x => x.Duration).NotEmpty().WithMessage("Khoảng thời gian không được để trống.");
-
-            RuleFor(x => x.TypeOfPractice).NotEmpty().WithMessage("Phương thức thực hành không được để trống.");
-
-            RuleFor(x => x.GroupSize).NotEmpty().WithMessage("Số lượng thành viên trong nhóm không được để trống.")
-                .LessThanOrEqualTo(0).WithMessage("Số lượng thành viên trong nhóm không được nhỏ hơn hoặc bằng 0");
             
         }
     }

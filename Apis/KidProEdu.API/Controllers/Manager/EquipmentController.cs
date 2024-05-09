@@ -19,14 +19,14 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("Equipments")]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> Equipments()
         {
             return Ok(await _equipmentService.GetEquipments());
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> Equipment(Guid id)
         {
             var equipment = await _equipmentService.GetEquipmentById(id);
@@ -38,7 +38,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("Equipments/{name}")]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> EquipmentByName(string name)
         {
             var equipments = await _equipmentService.GetListEquipmentByName(name);
@@ -50,7 +50,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("EquipmentsByStatus/{status}")]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> EquipmentsByStatus(StatusOfEquipment status)
         {
             try
@@ -197,6 +197,22 @@ namespace KidProEdu.API.Controllers.Manager
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("GettEquipmentByDate/{date}")]
+        //[Authorize(Roles = ("Admin, Manager"))]
+        public async Task<IActionResult> GetClassByDate(DateOnly date)
+        {
+            var result = await _equipmentService.GetClassByDate(date);
+            return Ok(result);
+        }
+
+        [HttpGet("GetEquipmentByProgress/{classId}/{progress}")]
+        //[Authorize(Roles = ("Admin, Manager"))]
+        public async Task<IActionResult> GetEquipmentByProgress(Guid classId, int progress)
+        {
+            var result = await _equipmentService.GetEquipmentByProgress(classId, progress);
+            return Ok(result);
         }
     }
 }

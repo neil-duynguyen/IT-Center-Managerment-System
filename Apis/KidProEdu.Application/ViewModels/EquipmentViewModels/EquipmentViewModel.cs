@@ -19,4 +19,10 @@ namespace KidProEdu.Application.ViewModels.EquipmentViewModels
         public string? WarrantyPeriod { get; set; }
         public DateTime? PurchaseDate { get; set; }
     }
+
+    public class PrepareEquipmentViewModel
+    {
+        public string? Name { get; set; }
+        public int? Quantity { get; set; }
+    }
 }

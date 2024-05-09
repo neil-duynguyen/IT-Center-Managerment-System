@@ -27,14 +27,16 @@ namespace KidProEdu.Application.Services
         private readonly IClaimsService _claimsService;
         private readonly IMapper _mapper;
         private readonly QRCodeUtility _qrCodeUtility;
+        private readonly IAttendanceService _attendanceService;
 
-        public EquipmentService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, QRCodeUtility qrCodeUtility)
+        public EquipmentService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, QRCodeUtility qrCodeUtility, IAttendanceService attendanceService)
         {
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
             _claimsService = claimsService;
             _mapper = mapper;
             _qrCodeUtility = qrCodeUtility;
+            _attendanceService = attendanceService;
         }
 
         public async Task<bool> CreateEquipment(CreateEquipmentViewModel createEquipmentViewModel)
@@ -89,7 +91,7 @@ namespace KidProEdu.Application.Services
             {
                 throw new Exception("Không tìm thấy thiết bị");
             }
-            else if(equipment.Status == StatusOfEquipment.Borrowed)
+            else if (equipment.Status == StatusOfEquipment.Borrowed)
             {
                 throw new Exception("Thiết bị đang được cho mượn");
             }
@@ -104,7 +106,7 @@ namespace KidProEdu.Application.Services
             equipment.RoomId = equipmentBorrowedManagementViewModel.RoomId;
             _unitOfWork.EquipmentRepository.Update(equipment);
             var result = await _unitOfWork.SaveChangeAsync();
-            if(result > 0)
+            if (result > 0)
             {
                 var logEquipment = new LogEquipment();
                 logEquipment.EquipmentId = equipment.Id;
@@ -198,11 +200,11 @@ namespace KidProEdu.Application.Services
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
                 var result2 = await _unitOfWork.SaveChangeAsync();
                 if (result2 > 0)
-                {                  
+                {
                     return true;
                 }
             }
-            return false;        
+            return false;
         }
 
         public async Task<bool> EquipmentReturnedManagement(EquipmentReturnedManagementViewModel equipmentReturnedManagementViewModel)
@@ -216,7 +218,7 @@ namespace KidProEdu.Application.Services
                     throw new Exception(error.ErrorMessage);
                 }
             }
-            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentReturnedManagementViewModel.EquipmentId);          
+            var equipment = await _unitOfWork.EquipmentRepository.GetByIdAsync(equipmentReturnedManagementViewModel.EquipmentId);
             if (equipment == null)
             {
                 throw new Exception("Không tìm thấy thiết bị");
@@ -268,7 +270,7 @@ namespace KidProEdu.Application.Services
                     return true;
                 }
             }
-            return false;           
+            return false;
         }
 
         /*public async Task<bool> EquipmentManagement(EquipmentWithLogEquipmentBorrowedViewModel equipmentWithLogEquipmentView)
@@ -413,5 +415,94 @@ namespace KidProEdu.Application.Services
             var mapper = _mapper.Map<List<EquipmentViewModel>>(results);
             return mapper;
         }
+
+        //Hàm này dùng để lấy ra các lớp theo ngày
+        public async Task<List<LearningProgress>> GetClassByDate(DateOnly date)
+        {
+            //Lấy ra các lớp đang có status là Started
+            var listClass = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.StatusOfClass == StatusOfClass.Started).ToList();
+
+            //Lấy ra children ở mỗi lớp để xem tiến độ học
+            var listEnrollment = listClass.Select(x => x.Enrollments.FirstOrDefault()).Where(enrollment => enrollment != null).ToList();
+
+            //Check lịch dùng /api/Attendance/Details/{courseId}/{childId}
+
+            List<LearningProgress> learningProgress = new List<LearningProgress>();
+
+            foreach (var item in listEnrollment)
+            {
+                var listAttendance = await _attendanceService.GetAttendanceDetailsByCourseIdAndChildrenId(item.Class.CourseId, item.ChildrenProfileId);
+
+                if (listAttendance.Any(x => DateOnly.FromDateTime(x.Date) == date))
+                {
+                    int daysStudied = listAttendance.Count(x => DateOnly.FromDateTime(x.Date) <= date);
+
+                    learningProgress.Add(new LearningProgress { ClassId = item.ClassId, Progress = daysStudied });
+                }
+            }
+
+            return learningProgress;
+        }
+
+        //Get equipment theo ngày
+        public async Task<List<PrepareEquipmentViewModel>> GetEquipmentByProgress(Guid classId, int progress)
+        {
+            List<PrepareEquipmentViewModel> listPrepareEquipmentView = new List<PrepareEquipmentViewModel>();
+
+            var getClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
+            var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(getClass.CourseId);
+            int? duration = 0;
+
+            foreach (var item in getCourse.Lessons)
+            {
+                if (progress != 1)
+                {
+                    if (item.Duration + duration < progress)
+                    {
+                        duration += item.Duration;
+                    }
+                    else
+                    {
+                        var getLesson = await _unitOfWork.LessonRepository.GetByIdAsync(item.Id);
+
+                        await AddEquipmentToList(getLesson, getClass.Enrollments.Count, listPrepareEquipmentView, (TypeOfPractice)getLesson.TypeOfPractice);
+                        return listPrepareEquipmentView;
+                    }
+                }
+                else
+                {
+                    var getLesson = await _unitOfWork.LessonRepository.GetByIdAsync(item.Id);
+
+                    await AddEquipmentToList(getLesson, getClass.Enrollments.Count, listPrepareEquipmentView, (TypeOfPractice)getLesson.TypeOfPractice);
+                    return listPrepareEquipmentView;
+                }
+
+            }
+            return listPrepareEquipmentView;
+        }
+        private async Task AddEquipmentToList(Lesson getLesson, int enrollmentCount, List<PrepareEquipmentViewModel> listPrepareEquipmentView, TypeOfPractice typeOfPractice)
+        {
+            if (getLesson.TypeOfPractice == TypeOfPractice.Individual)
+            {
+                foreach (var equipment in getLesson.Equipments)
+                {
+                    listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Name = equipment.Name, Quantity = enrollmentCount });
+                }
+            }
+            else if (getLesson.TypeOfPractice == TypeOfPractice.Group)
+            {
+                foreach (var equipment in getLesson.Equipments)
+                {
+                    listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Name = equipment.Name, Quantity = (int)Math.Ceiling((double)(enrollmentCount / getLesson.GroupSize)) });
+                }
+            }
+        }
+
+    }
+
+    public class LearningProgress
+    {
+        public Guid ClassId { get; set; }
+        public int Progress { get; set; }
     }
 }
