@@ -22,7 +22,6 @@ namespace KidProEdu.Domain.Entities
         public DateTime? PurchaseDate { get; set; }
         public virtual CategoryEquipment CategoryEquipment { get; set; }
         public virtual Room? Room { get; set; }
-        public IList<LogEquipment> LogEquipments { get; set; }
-        public IList<Lesson> Lessons { get; set; }
+        public IList<LogEquipment> LogEquipments { get; set; }       
     }
 }

@@ -201,9 +201,9 @@ namespace KidProEdu.API.Controllers.Manager
 
         [HttpGet("GettEquipmentByDate/{date}")]
         //[Authorize(Roles = ("Admin, Manager"))]
-        public async Task<IActionResult> GetClassByDate(DateOnly date)
+        public async Task<IActionResult> GetEquipmentByDate(DateOnly date)
         {
-            var result = await _equipmentService.GetClassByDate(date);
+            var result = await _equipmentService.GetEquipmentByDate(date);
             return Ok(result);
         }
 

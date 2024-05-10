@@ -20,6 +20,6 @@ namespace KidProEdu.Domain.Entities
         public int? GroupSize { get; set; }
         public virtual Course Course { get; set; }
         public IList<Question> Questions { get; set; }
-        public IList<Equipment>? Equipments { get; set; }
+        public IList<CategoryEquipment> CategoryEquipments { get; set; }
     }
 }

@@ -58,16 +58,16 @@ namespace KidProEdu.Application.Services
 
             var mapper = _mapper.Map<Lesson>(createLessonViewModel);
 
-            IList<Equipment> equipments = new List<Equipment>();
+            IList<CategoryEquipment> equipments = new List<CategoryEquipment>();
 
             if (createLessonViewModel.EquipmentId.Count != 0)
             {
                 foreach (var equipment in createLessonViewModel.EquipmentId)
                 {
-                    equipments.Add(await _unitOfWork.EquipmentRepository.GetByIdAsync(equipment));
+                    equipments.Add(await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(equipment));
                 }
 
-                mapper.Equipments = equipments;
+                mapper.CategoryEquipments = equipments;
             }
 
             await _unitOfWork.LessonRepository.AddAsync(mapper);

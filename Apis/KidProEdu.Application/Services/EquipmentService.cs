@@ -417,7 +417,7 @@ namespace KidProEdu.Application.Services
         }
 
         //Hàm này dùng để lấy ra các lớp theo ngày
-        public async Task<List<LearningProgress>> GetClassByDate(DateOnly date)
+        public async Task<List<LearningProgress>> GetEquipmentByDate(DateOnly date)
         {
             //Lấy ra các lớp đang có status là Started
             var listClass = _unitOfWork.ClassRepository.GetAllAsync().Result.Where(x => x.StatusOfClass == StatusOfClass.Started).ToList();
@@ -437,7 +437,7 @@ namespace KidProEdu.Application.Services
                 {
                     int daysStudied = listAttendance.Count(x => DateOnly.FromDateTime(x.Date) <= date);
 
-                    learningProgress.Add(new LearningProgress { ClassId = item.ClassId, Progress = daysStudied });
+                    learningProgress.Add(new LearningProgress { ClassId = item.ClassId, ClassCode = item.Class.ClassCode, Progress = daysStudied });
                 }
             }
 
@@ -452,7 +452,7 @@ namespace KidProEdu.Application.Services
             var getClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
             var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(getClass.CourseId);
             int? duration = 0;
-
+            
             foreach (var item in getCourse.Lessons)
             {
                 if (progress != 1)
@@ -464,17 +464,22 @@ namespace KidProEdu.Application.Services
                     else
                     {
                         var getLesson = await _unitOfWork.LessonRepository.GetByIdAsync(item.Id);
-
-                        await AddEquipmentToList(getLesson, getClass.Enrollments.Count, listPrepareEquipmentView, (TypeOfPractice)getLesson.TypeOfPractice);
-                        return listPrepareEquipmentView;
+                        if (getLesson.TypeOfPractice != null)
+                        {
+                            await AddEquipmentToList(getLesson, getClass.Enrollments.Count, listPrepareEquipmentView, (TypeOfPractice)getLesson.TypeOfPractice);
+                            return listPrepareEquipmentView;
+                        }
                     }
                 }
                 else
                 {
                     var getLesson = await _unitOfWork.LessonRepository.GetByIdAsync(item.Id);
 
-                    await AddEquipmentToList(getLesson, getClass.Enrollments.Count, listPrepareEquipmentView, (TypeOfPractice)getLesson.TypeOfPractice);
-                    return listPrepareEquipmentView;
+                    if (getLesson.TypeOfPractice != null)
+                    {
+                        await AddEquipmentToList(getLesson, getClass.Enrollments.Count, listPrepareEquipmentView, (TypeOfPractice)getLesson.TypeOfPractice);
+                        return listPrepareEquipmentView;
+                    }
                 }
 
             }
@@ -484,16 +489,17 @@ namespace KidProEdu.Application.Services
         {
             if (getLesson.TypeOfPractice == TypeOfPractice.Individual)
             {
-                foreach (var equipment in getLesson.Equipments)
+                foreach (var equipment in getLesson.CategoryEquipments)
                 {
                     listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Name = equipment.Name, Quantity = enrollmentCount });
                 }
             }
             else if (getLesson.TypeOfPractice == TypeOfPractice.Group)
             {
-                foreach (var equipment in getLesson.Equipments)
+                foreach (var equipment in getLesson.CategoryEquipments)
                 {
-                    listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Name = equipment.Name, Quantity = (int)Math.Ceiling((double)(enrollmentCount / getLesson.GroupSize)) });
+                    var a = (int)Math.Ceiling((double)((double)(enrollmentCount) / getLesson.GroupSize));
+                    listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Name = equipment.Name, Quantity = a});
                 }
             }
         }
@@ -503,6 +509,7 @@ namespace KidProEdu.Application.Services
     public class LearningProgress
     {
         public Guid ClassId { get; set; }
+        public string ClassCode { get; set; }
         public int Progress { get; set; }
     }
 }

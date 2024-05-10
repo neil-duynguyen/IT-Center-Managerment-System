@@ -24,7 +24,7 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> EquipmentRepairManagement(EquipmentRepairManagementViewModel equipmentWithLogEquipmentRepairViewModel);
         Task<bool> EquipmentReturnedManagement(EquipmentReturnedManagementViewModel equipmentWithLogEquipmentReturnedViewModel);
         Task AutoCheckReturn();
-        Task<List<LearningProgress>> GetClassByDate(DateOnly date);
+        Task<List<LearningProgress>> GetEquipmentByDate(DateOnly date);
         Task<List<PrepareEquipmentViewModel>> GetEquipmentByProgress(Guid classId, int progress);
     }
 }
