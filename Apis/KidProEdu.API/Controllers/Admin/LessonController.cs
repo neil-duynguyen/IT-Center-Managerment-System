@@ -39,6 +39,10 @@ namespace KidProEdu.API.Controllers.Admin
                     return BadRequest("Bài học đã được tạo thất bại.");
                 }
             }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);

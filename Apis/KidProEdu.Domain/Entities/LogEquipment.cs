@@ -11,7 +11,9 @@ namespace KidProEdu.Domain.Entities
     public class LogEquipment : BaseEntity
     {
         [ForeignKey("Equipment")]
-        public Guid EquipmentId { get; set; }
+        public Guid? EquipmentId { get; set; }
+        [ForeignKey("CategoryEquipment")]
+        public Guid? CategoryEquipmentId { get; set; }
         [ForeignKey("UserAccount")]
         public Guid? UserAccountId { get; set; }
         public string? Name { get; set; }
@@ -25,7 +27,9 @@ namespace KidProEdu.Domain.Entities
         public DateTime? ReturnedDate { get; set; }
         public DateTime? ReturnedDealine { get; set; }
         public Guid? RoomId { get; set; }
-        public virtual Equipment Equipment { get; set; }
+        public int? Quantity { get; set; }
+        public virtual Equipment? Equipment { get; set; }
+        public virtual CategoryEquipment? CategoryEquipment { get; set; }
         public virtual UserAccount? UserAccount { get; set; }
     }
 }

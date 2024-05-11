@@ -15,6 +15,7 @@ namespace KidProEdu.Domain.Entities
         public TypeCategoryEquipment TypeCategoryEquipment { get; set; }
         public string? Code { get; set; }
         public IList<Equipment> Equipments { get; set; }
+        public IList<LogEquipment> LogEquipments { get; set; }
         public IList<Lesson> Lessons { get; set; }
     }
 }
