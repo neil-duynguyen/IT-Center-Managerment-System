@@ -1,4 +1,5 @@
 ﻿using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
+using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Domain.Entities;
 using System;
@@ -17,5 +18,8 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> UpdateCategoryEquipment(UpdateCategoryEquipmentViewModel updateCategoryEquipmentViewModel);
         Task<CategoryEquipmentViewModel> GetCategoryEquipmentById(Guid id);
         Task<bool> DeleteCategoryEquipment(Guid id);
+        Task<bool> BorrowCategoryEquipment(BorrowCategoryEquipmentViewModel borrowCategoryEquipmentViewModel);
+        Task<bool> BorrowAutoCategoryEquipment(BorrowAutoCategoryEquipmentViewModel borrowAutoCategoryEquipmentViewModel);
+        Task<bool> ReturnCategoryEquipment(ReturnCategoryEquipmentViewModel returnCategoryEquipmentViewModel);
     }
 }
