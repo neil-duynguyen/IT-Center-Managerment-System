@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KidProEdu.Infrastructures.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240508064349_UpdateTableLessonAndEquimentMigration")]
-    partial class UpdateTableLessonAndEquimentMigration
+    [Migration("20240512143250_UpdateRelationTableCateAndLog")]
+    partial class UpdateRelationTableCateAndLog
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,19 +40,19 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.ToTable("BlogTag");
                 });
 
-            modelBuilder.Entity("EquipmentLesson", b =>
+            modelBuilder.Entity("CategoryEquipmentLesson", b =>
                 {
-                    b.Property<Guid>("EquipmentsId")
+                    b.Property<Guid>("CategoryEquipmentsId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("LessonsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("EquipmentsId", "LessonsId");
+                    b.HasKey("CategoryEquipmentsId", "LessonsId");
 
                     b.HasIndex("LessonsId");
 
-                    b.ToTable("EquipmentLesson");
+                    b.ToTable("CategoryEquipmentLesson");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.AdviseRequest", b =>
@@ -1369,6 +1369,9 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("BorrowedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CategoryEquipmentId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
@@ -1384,7 +1387,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("EquipmentId")
+                    b.Property<Guid?>("EquipmentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
@@ -1404,6 +1407,9 @@ namespace KidProEdu.Infrastructures.Migrations
 
                     b.Property<DateTime?>("PurchaseDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("RepairDate")
                         .HasColumnType("datetime2");
@@ -1427,6 +1433,8 @@ namespace KidProEdu.Infrastructures.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryEquipmentId");
 
                     b.HasIndex("EquipmentId");
 
@@ -2749,11 +2757,11 @@ namespace KidProEdu.Infrastructures.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EquipmentLesson", b =>
+            modelBuilder.Entity("CategoryEquipmentLesson", b =>
                 {
-                    b.HasOne("KidProEdu.Domain.Entities.Equipment", null)
+                    b.HasOne("KidProEdu.Domain.Entities.CategoryEquipment", null)
                         .WithMany()
-                        .HasForeignKey("EquipmentsId")
+                        .HasForeignKey("CategoryEquipmentsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3040,15 +3048,19 @@ namespace KidProEdu.Infrastructures.Migrations
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.LogEquipment", b =>
                 {
+                    b.HasOne("KidProEdu.Domain.Entities.CategoryEquipment", "CategoryEquipment")
+                        .WithMany("LogEquipments")
+                        .HasForeignKey("CategoryEquipmentId");
+
                     b.HasOne("KidProEdu.Domain.Entities.Equipment", "Equipment")
                         .WithMany("LogEquipments")
-                        .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EquipmentId");
 
                     b.HasOne("KidProEdu.Domain.Entities.UserAccount", "UserAccount")
                         .WithMany("LogEquipments")
                         .HasForeignKey("UserAccountId");
+
+                    b.Navigation("CategoryEquipment");
 
                     b.Navigation("Equipment");
 
@@ -3264,6 +3276,8 @@ namespace KidProEdu.Infrastructures.Migrations
             modelBuilder.Entity("KidProEdu.Domain.Entities.CategoryEquipment", b =>
                 {
                     b.Navigation("Equipments");
+
+                    b.Navigation("LogEquipments");
                 });
 
             modelBuilder.Entity("KidProEdu.Domain.Entities.ChildrenProfile", b =>

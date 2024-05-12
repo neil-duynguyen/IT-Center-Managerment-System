@@ -68,7 +68,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> PostEquipment(CreateEquipmentViewModel createEquipmentViewModel)
         {
             try
@@ -112,7 +112,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost("EquipmentRepairManagement")]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> EquipmentRepairManagement(EquipmentRepairManagementViewModel equipmentRepairManagementViewModel)
         {
             try
@@ -134,7 +134,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost("EquipmentReturnedManagement")]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> EquipmentReturnedManagement(EquipmentReturnedManagementViewModel equipmentReturnedManagementViewModel)
         {
             try
@@ -156,7 +156,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPut]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> PutEquipment(UpdateEquipmentViewModel updateEquipmentViewModel)
         {
             try
@@ -178,7 +178,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpDelete]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> DeleteEquipment(Guid id)
         {
             try
@@ -200,7 +200,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("GettEquipmentByDate/{date}")]
-        //[Authorize(Roles = ("Admin, Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> GetEquipmentByDate(DateOnly date)
         {
             var result = await _equipmentService.GetEquipmentByDate(date);
@@ -208,7 +208,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("GetEquipmentByProgress/{classId}/{progress}")]
-        //[Authorize(Roles = ("Admin, Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> GetEquipmentByProgress(Guid classId, int progress)
         {
             var result = await _equipmentService.GetEquipmentByProgress(classId, progress);

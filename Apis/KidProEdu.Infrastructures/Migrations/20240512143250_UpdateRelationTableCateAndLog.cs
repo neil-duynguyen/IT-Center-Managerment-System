@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KidProEdu.Infrastructures.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateTableLessonAndEquimentMigration : Migration
+    public partial class UpdateRelationTableCateAndLog : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -547,6 +547,30 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CategoryEquipmentLesson",
+                columns: table => new
+                {
+                    CategoryEquipmentsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LessonsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryEquipmentLesson", x => new { x.CategoryEquipmentsId, x.LessonsId });
+                    table.ForeignKey(
+                        name: "FK_CategoryEquipmentLesson_CategoryEquipment_CategoryEquipmentsId",
+                        column: x => x.CategoryEquipmentsId,
+                        principalTable: "CategoryEquipment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryEquipmentLesson_Lesson_LessonsId",
+                        column: x => x.LessonsId,
+                        principalTable: "Lesson",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Question",
                 columns: table => new
                 {
@@ -1058,35 +1082,12 @@ namespace KidProEdu.Infrastructures.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EquipmentLesson",
-                columns: table => new
-                {
-                    EquipmentsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LessonsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EquipmentLesson", x => new { x.EquipmentsId, x.LessonsId });
-                    table.ForeignKey(
-                        name: "FK_EquipmentLesson_Equipment_EquipmentsId",
-                        column: x => x.EquipmentsId,
-                        principalTable: "Equipment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EquipmentLesson_Lesson_LessonsId",
-                        column: x => x.LessonsId,
-                        principalTable: "Lesson",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "LogEquipment",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EquipmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EquipmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CategoryEquipmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -1099,6 +1100,7 @@ namespace KidProEdu.Infrastructures.Migrations
                     ReturnedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ReturnedDealine = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1111,11 +1113,15 @@ namespace KidProEdu.Infrastructures.Migrations
                 {
                     table.PrimaryKey("PK_LogEquipment", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_LogEquipment_CategoryEquipment_CategoryEquipmentId",
+                        column: x => x.CategoryEquipmentId,
+                        principalTable: "CategoryEquipment",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_LogEquipment_Equipment_EquipmentId",
                         column: x => x.EquipmentId,
                         principalTable: "Equipment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_LogEquipment_UserAccount_UserAccountId",
                         column: x => x.UserAccountId,
@@ -1544,6 +1550,11 @@ namespace KidProEdu.Infrastructures.Migrations
                 column: "TagsId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CategoryEquipmentLesson_LessonsId",
+                table: "CategoryEquipmentLesson",
+                column: "LessonsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Certificate_ChildrenProfileId",
                 table: "Certificate",
                 column: "ChildrenProfileId");
@@ -1644,11 +1655,6 @@ namespace KidProEdu.Infrastructures.Migrations
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EquipmentLesson_LessonsId",
-                table: "EquipmentLesson",
-                column: "LessonsId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Exam_ClassId",
                 table: "Exam",
                 column: "ClassId");
@@ -1672,6 +1678,11 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "IX_Lesson_CourseId",
                 table: "Lesson",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LogEquipment_CategoryEquipmentId",
+                table: "LogEquipment",
+                column: "CategoryEquipmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LogEquipment_EquipmentId",
@@ -1815,6 +1826,9 @@ namespace KidProEdu.Infrastructures.Migrations
                 name: "BlogTag");
 
             migrationBuilder.DropTable(
+                name: "CategoryEquipmentLesson");
+
+            migrationBuilder.DropTable(
                 name: "Certificate");
 
             migrationBuilder.DropTable(
@@ -1840,9 +1854,6 @@ namespace KidProEdu.Infrastructures.Migrations
 
             migrationBuilder.DropTable(
                 name: "Enrollment");
-
-            migrationBuilder.DropTable(
-                name: "EquipmentLesson");
 
             migrationBuilder.DropTable(
                 name: "Feedback");

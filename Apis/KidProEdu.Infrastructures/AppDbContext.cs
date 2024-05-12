@@ -351,7 +351,7 @@ namespace KidProEdu.Infrastructures
                 .HasOne(x => x.CategoryEquipment)
                 .WithMany(x => x.LogEquipments)
                 .HasForeignKey(x => x.CategoryEquipmentId)
-                .OnDelete (DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<LogEquipment>()
                 .HasOne(x => x.Equipment)
