@@ -113,5 +113,12 @@ namespace KidProEdu.API.Controllers
             List<EnumViewModel> enums = ((TypeOfPractice[])Enum.GetValues(typeof(TypeOfPractice))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
             return Ok(enums);
         }
+
+        [HttpGet("TypeCategoryEquipment")]
+        public async Task<IActionResult> TypeCategoryEquipment()
+        {
+            List<EnumViewModel> enums = ((TypeCategoryEquipment[])Enum.GetValues(typeof(TypeCategoryEquipment))).Select(c => new EnumViewModel() { Value = (int)c, Display = c.ToString() }).ToList();
+            return Ok(enums);
+        }
     }
 }
