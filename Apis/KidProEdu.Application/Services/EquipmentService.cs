@@ -11,12 +11,14 @@ using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
 using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZXing;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KidProEdu.Application.Services
 {
@@ -451,9 +453,10 @@ namespace KidProEdu.Application.Services
 
             var getClass = await _unitOfWork.ClassRepository.GetByIdAsync(classId);
             var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(getClass.CourseId);
+            var filterLesson = getCourse.Lessons.Where(x => !x.IsDeleted).ToList();
             int? duration = 0;
             
-            foreach (var item in getCourse.Lessons)
+            foreach (var item in filterLesson)
             {
                 if (progress != 1)
                 {
@@ -469,6 +472,10 @@ namespace KidProEdu.Application.Services
                             await AddEquipmentToList(getLesson, getClass.Enrollments.Count, listPrepareEquipmentView, (TypeOfPractice)getLesson.TypeOfPractice);
                             return listPrepareEquipmentView;
                         }
+                        else
+                        {
+                            return listPrepareEquipmentView;
+                        }
                     }
                 }
                 else
@@ -478,6 +485,10 @@ namespace KidProEdu.Application.Services
                     if (getLesson.TypeOfPractice != null)
                     {
                         await AddEquipmentToList(getLesson, getClass.Enrollments.Count, listPrepareEquipmentView, (TypeOfPractice)getLesson.TypeOfPractice);
+                        return listPrepareEquipmentView;
+                    }
+                    else
+                    {
                         return listPrepareEquipmentView;
                     }
                 }
@@ -504,6 +515,42 @@ namespace KidProEdu.Application.Services
             }
         }
 
+        //xuất excel equipment theo ngày
+        public async Task<Stream> ExportExcelFileAsync(DateOnly date)
+        {
+            string[] columnNames = new string[] { "Equpment", "Quantity" };
+            string header = string.Join(",", columnNames);
+
+            var stream = new MemoryStream();
+
+            var listClass = await GetEquipmentByDate(date);
+            
+            using (var package = new ExcelPackage(stream))
+            {
+                foreach (var item in listClass)
+                {
+                    var listEquipment = await GetEquipmentByProgress(item.ClassId, item.Progress);
+                    var worksheet = package.Workbook.Worksheets.Add(item.ClassCode);
+                    worksheet.Cells.LoadFromText(header);
+
+                    for (int i = 0; i < columnNames.Length; i++)
+                    {
+                        worksheet.Cells[1, i + 1].Value = columnNames[i];
+                    }
+
+                    //Add data
+                    for (int i = 0; i < listEquipment.Count; i++)
+                    {
+                        worksheet.Cells[i + 2, 1].Value = listEquipment[i].Name;
+                        worksheet.Cells[i + 2, 2].Value = listEquipment[i].Quantity;
+                    }                  
+                }
+                await package.SaveAsync();
+            }
+            stream.Position = 0;
+
+            return stream;
+        }
     }
 
     public class LearningProgress

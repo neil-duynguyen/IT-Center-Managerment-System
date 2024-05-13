@@ -1,4 +1,5 @@
 ﻿using KidProEdu.Application.Interfaces;
+using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Domain.Enums;
@@ -214,5 +215,10 @@ namespace KidProEdu.API.Controllers.Manager
             var result = await _equipmentService.GetEquipmentByProgress(classId, progress);
             return Ok(result);
         }
+
+        [HttpGet("ExportExcelFile/{date}")]
+        public async Task<IActionResult> ExportExcelFile(DateOnly date) => File(await _equipmentService.ExportExcelFileAsync(date),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "PrepareEquipment.xlsx");
     }
 }
