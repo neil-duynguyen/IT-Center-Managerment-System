@@ -15,6 +15,7 @@ namespace KidProEdu.Application.ViewModels.LessonViewModels
         public string? Name { get; set; }
         public string? Description { get; set; }
         public int? Duration { get; set; }
-        public string? Prerequisites { get; set; }
+        public string? TypeOfPractice { get; set; }
+        public int? GroupSize { get; set; }
     }
 }
