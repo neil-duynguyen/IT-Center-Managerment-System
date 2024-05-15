@@ -46,9 +46,10 @@ namespace KidProEdu.Application.Services
             }
 
             var checkDuration = await _unitOfWork.CourseRepository.GetByIdAsync(createLessonViewModel.CourseId);
-            if (checkDuration == null) throw new InvalidOperationException("Không tìm thấy môn học.");
+            var filterLesson = checkDuration.Lessons.Where(x => !x.IsDeleted).ToList();
+            if (filterLesson == null) throw new InvalidOperationException("Không tìm thấy môn học.");
 
-            var sumDurationLesson = checkDuration.Lessons.Sum(x => x.Duration);
+            var sumDurationLesson = filterLesson.Sum(x => x.Duration);
             if (sumDurationLesson + createLessonViewModel.Duration > checkDuration.DurationTotal)
                 throw new Exception($"Thời gian (slot) phải <= {checkDuration.DurationTotal - sumDurationLesson}");
 
