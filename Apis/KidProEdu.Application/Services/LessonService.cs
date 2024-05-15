@@ -57,6 +57,7 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Tên bài học đã tồn tại.");
 
             var mapper = _mapper.Map<Lesson>(createLessonViewModel);
+            mapper.LessonNumber = course.Lessons.Where(x => !x.IsDeleted).Count() + 1;
 
             IList<CategoryEquipment> equipments = new List<CategoryEquipment>();
 
