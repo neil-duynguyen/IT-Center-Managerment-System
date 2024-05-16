@@ -63,7 +63,8 @@ namespace KidProEdu.API.Controllers.Manager
                 }
                 return Ok(equipments);
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -220,5 +221,12 @@ namespace KidProEdu.API.Controllers.Manager
         public async Task<IActionResult> ExportExcelFile(DateOnly date) => File(await _equipmentService.ExportExcelFileAsync(date),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "PrepareEquipment.xlsx");
+
+        [HttpPost("PostListEquipment/{quantity}")]
+        [Authorize(Roles = ("Admin, Manager"))]
+        public async Task PostListEquipment(CreateEquipmentViewModel createEquipmentViewModel, int quantity)
+        {
+            await _equipmentService.CreateListEquipment(createEquipmentViewModel, quantity);
+        }
     }
 }

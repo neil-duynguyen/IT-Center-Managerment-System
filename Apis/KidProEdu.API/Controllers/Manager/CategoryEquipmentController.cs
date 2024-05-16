@@ -39,7 +39,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPost]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> PostCategoryEquipment(CreateCategoryEquipmentViewModel createCategoryEquipmentViewModel)
         {
             try
@@ -127,7 +127,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpPut]
-        [Authorize(Roles = ("Manager"))]
+        [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> PutCategoryEquipment(UpdateCategoryEquipmentViewModel updateCategoryEquipmentViewModel)
         {
             try

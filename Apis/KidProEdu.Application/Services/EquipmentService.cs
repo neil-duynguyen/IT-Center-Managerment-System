@@ -61,6 +61,15 @@ namespace KidProEdu.Application.Services
 
         }
 
+        //Tạo list Equipment
+        public async Task CreateListEquipment(CreateEquipmentViewModel createEquipmentViewModel, int quantity)
+        {
+            for (int i = 0; i < quantity; i++)
+            {
+                await CreateEquipment(createEquipmentViewModel);
+            }
+        }
+
         public async Task<bool> DeleteEquipment(Guid id)
         {
             var result = await _unitOfWork.EquipmentRepository.GetByIdAsync(id);
@@ -455,7 +464,7 @@ namespace KidProEdu.Application.Services
             var getCourse = await _unitOfWork.CourseRepository.GetByIdAsync(getClass.CourseId);
             var filterLesson = getCourse.Lessons.Where(x => !x.IsDeleted).ToList();
             int? duration = 0;
-            
+
             foreach (var item in filterLesson)
             {
                 if (progress != 1)
@@ -510,7 +519,7 @@ namespace KidProEdu.Application.Services
                 foreach (var equipment in getLesson.CategoryEquipments)
                 {
                     var a = (int)Math.Ceiling((double)((double)(enrollmentCount) / getLesson.GroupSize));
-                    listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Name = equipment.Name, Quantity = a});
+                    listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Name = equipment.Name, Quantity = a });
                 }
             }
         }
@@ -524,7 +533,7 @@ namespace KidProEdu.Application.Services
             var stream = new MemoryStream();
 
             var listClass = await GetEquipmentByDate(date);
-            
+
             using (var package = new ExcelPackage(stream))
             {
                 foreach (var item in listClass)
@@ -543,7 +552,7 @@ namespace KidProEdu.Application.Services
                     {
                         worksheet.Cells[i + 2, 1].Value = listEquipment[i].Name;
                         worksheet.Cells[i + 2, 2].Value = listEquipment[i].Quantity;
-                    }                  
+                    }
                 }
                 await package.SaveAsync();
             }

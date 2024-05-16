@@ -27,5 +27,6 @@ namespace KidProEdu.Application.Interfaces
         Task<List<LearningProgress>> GetEquipmentByDate(DateOnly date);
         Task<List<PrepareEquipmentViewModel>> GetEquipmentByProgress(Guid classId, int progress);
         Task<Stream> ExportExcelFileAsync(DateOnly date);
+        Task CreateListEquipment(CreateEquipmentViewModel createEquipmentViewModel, int quantity);
     }
 }
