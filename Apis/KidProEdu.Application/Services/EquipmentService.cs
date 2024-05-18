@@ -177,10 +177,6 @@ namespace KidProEdu.Application.Services
             {
                 throw new Exception("Không tìm thấy thiết bị");
             }
-            else if (equipment.Status == StatusOfEquipment.Borrowed)
-            {
-                throw new Exception("Thiết bị đang được cho mượn không thể mang đi bảo dưỡng");
-            }
             else if (equipment.Status == StatusOfEquipment.Repair)
             {
                 throw new Exception("Thiết bị đang được bảo dưỡng rồi");
@@ -212,7 +208,17 @@ namespace KidProEdu.Application.Services
                 var result2 = await _unitOfWork.SaveChangeAsync();
                 if (result2 > 0)
                 {
-                    return true;
+                    var updateCategoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetCategoryEquipmentByEquipmentId(equipment.Id);
+                    if (updateCategoryEquipment != null)
+                    {
+                        updateCategoryEquipment.Quantity = updateCategoryEquipment.Quantity - 1;
+                        _unitOfWork.CategoryEquipmentRepository.Update(updateCategoryEquipment);
+                        var result3 = await _unitOfWork.SaveChangeAsync();
+                        if(result3 > 0)
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
             return false;
@@ -263,22 +269,32 @@ namespace KidProEdu.Application.Services
                 var result2 = await _unitOfWork.SaveChangeAsync();
                 if (result2 > 0)
                 {
-                    var teacher = await _unitOfWork.UserRepository.GetByIdAsync((Guid)equipmentReturnedManagementViewModel.UserAccountId);
-                    await SendEmailUtil.SendEmail(teacher.Email, "Xác nhận trả thiết bị",
-                    "KidProEdu thông báo, \n\n" +
-                    "Yêu cầu trả thiết bị  \n" +
-                    "   Thông tin:, \n" +
-                    "         Người trả: " + teacher.FullName + "\n" +
-                    "         Email: " + teacher.Email + "\n" +
-                    "         Sđt: " + teacher.Phone + "\n" +
-                    //"         Mã thiết bị: " + equipment.Code + "\n" +
-                    "         Tên thiết bị: " + equipment.Name + "\n" +
-                    //"         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
-                    "         Ngày trả: " + logEquipment.ReturnedDate + "\n" +
-                    "Xác nhận yêu cầu trả thành công, xin cảm ơn!. \n\n" +
-                    "Trân trọng, \n" +
-                    "KidPro Education!");
-                    return true;
+                    var updateCategoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetCategoryEquipmentByEquipmentId(equipment.Id);
+                    if (updateCategoryEquipment != null)
+                    {
+                        updateCategoryEquipment.Quantity = updateCategoryEquipment.Quantity + 1;
+                        _unitOfWork.CategoryEquipmentRepository.Update(updateCategoryEquipment);
+                        var result3 = await _unitOfWork.SaveChangeAsync();
+                        if (result3 > 0)
+                        {
+                            var teacher = await _unitOfWork.UserRepository.GetByIdAsync((Guid)equipmentReturnedManagementViewModel.UserAccountId);
+                            await SendEmailUtil.SendEmail(teacher.Email, "Xác nhận trả thiết bị",
+                            "KidProEdu thông báo, \n\n" +
+                            "Yêu cầu trả thiết bị  \n" +
+                            "   Thông tin:, \n" +
+                            "         Người trả: " + teacher.FullName + "\n" +
+                            "         Email: " + teacher.Email + "\n" +
+                            "         Sđt: " + teacher.Phone + "\n" +
+                            //"         Mã thiết bị: " + equipment.Code + "\n" +
+                            "         Tên thiết bị: " + equipment.Name + "\n" +
+                            //"         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
+                            "         Ngày trả: " + logEquipment.ReturnedDate + "\n" +
+                            "Xác nhận yêu cầu trả thành công, xin cảm ơn!. \n\n" +
+                            "Trân trọng, \n" +
+                            "KidPro Education!");
+                            return true;
+                        }
+                    }
                 }
             }
             return false;
