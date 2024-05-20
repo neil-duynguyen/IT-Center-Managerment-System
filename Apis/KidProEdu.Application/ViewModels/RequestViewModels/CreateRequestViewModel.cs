@@ -15,7 +15,10 @@ namespace KidProEdu.Application.ViewModels.RequestViewModels
         public string RequestType { get; set; }
         public DateTime? LeaveDate { get; set; }
         public DateTime? TeachingDate { get; set; }
-        public string? EquimentType { get; set; }
+        public Guid? CategoryEquimentId { get; set; }
+        public int? Quantity { get; set; }
+        public DateTime? ReturnDeadline { get; set; }
+        public Guid? RoomId { get; set; }
         public Guid? LocationId { get; set; }
         public Guid? FromClassId { get; set; }
         public Guid? ToClassId { get; set; }

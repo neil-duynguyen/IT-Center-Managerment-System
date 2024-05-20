@@ -124,6 +124,28 @@ namespace KidProEdu.Application.Services
                     throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu chuyển cơ sở");
                 }
             }
+            else if (createRequestViewModel.RequestType == "Equipment")
+            {
+                if (createRequestViewModel.CategoryEquimentId == null
+                    || createRequestViewModel.Quantity <= 0
+                    || createRequestViewModel.ReturnDeadline <= _currentTime.GetCurrentTime()
+                    || createRequestViewModel.UserIds.Count() == 0)
+                {
+                    throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu chuyển cơ sở");
+                }
+
+                if (createRequestViewModel.CategoryEquimentId != null)
+                {
+                    var eRequest = _unitOfWork.RequestRepository.GetAllAsync().Result
+                        .Where(x => x.IsDeleted == false && x.Status == Domain.Enums.StatusOfRequest.Pending
+                         && x.CreatedBy == _claimsService.GetCurrentUserId).ToList();
+
+                    if (eRequest != null)
+                    {
+                        throw new Exception("Bạn đã gửi request mượn thiết bị rồi");
+                    }
+                }
+            }
 
             var randomCode = "R" + ((await _unitOfWork.RequestRepository.GetAllAsync()).Count + 1);
             Request request = new()
@@ -132,7 +154,10 @@ namespace KidProEdu.Application.Services
                 RequestType = createRequestViewModel.RequestType,
                 LeaveDate = createRequestViewModel.LeaveDate,
                 TeachingDay = createRequestViewModel.TeachingDate,
-                EquimentType = createRequestViewModel.EquimentType,
+                Quantity = createRequestViewModel.Quantity,
+                ReturnDeadline = createRequestViewModel.ReturnDeadline,
+                RoomId = createRequestViewModel.RoomId,
+                CategoryEquipmentId = createRequestViewModel.CategoryEquimentId,
                 LocationId = createRequestViewModel.LocationId,
                 FromClassId = createRequestViewModel.FromClassId,
                 ToClassId = createRequestViewModel.ToClassId,

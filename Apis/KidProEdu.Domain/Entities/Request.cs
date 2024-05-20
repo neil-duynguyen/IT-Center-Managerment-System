@@ -14,7 +14,10 @@ namespace KidProEdu.Domain.Entities
         public string? RequestDescription { get; set; }
         public string? RequestType { get; set; }
         public DateTime? LeaveDate { get; set; }
-        public string? EquimentType { get; set; }
+        public int? Quantity { get; set; }
+        public Guid? CategoryEquipmentId { get; set; }
+        public DateTime? ReturnDeadline { get; set; }
+        public Guid? RoomId { get; set; }
         public Guid? LocationId { get; set; }
         public Guid? FromClassId { get; set; }
         public Guid? ToClassId { get; set; }
