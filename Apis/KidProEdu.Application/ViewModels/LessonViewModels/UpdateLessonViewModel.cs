@@ -11,7 +11,6 @@ namespace KidProEdu.Application.ViewModels.LessonViewModels
     {
         public Guid Id { get; set; }
         public Guid CourseId { get; set; }
-        public int? LessonNumber { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public int? Duration { get; set; }
