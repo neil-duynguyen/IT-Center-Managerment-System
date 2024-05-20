@@ -6,6 +6,7 @@ using KidProEdu.Application.ViewModels.RequestUserAccountViewModels;
 using KidProEdu.Application.ViewModels.RequestViewModels;
 using KidProEdu.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Asn1.Cmp;
 using System.Diagnostics;
 
@@ -126,25 +127,25 @@ namespace KidProEdu.Application.Services
             }
             else if (createRequestViewModel.RequestType == "Equipment")
             {
-                if (createRequestViewModel.CategoryEquimentId == null
+                /*if (createRequestViewModel.CategoryEquimentId == null
                     || createRequestViewModel.Quantity <= 0
                     || createRequestViewModel.ReturnDeadline <= _currentTime.GetCurrentTime()
                     || createRequestViewModel.UserIds.Count() == 0)
                 {
                     throw new Exception("Hãy điền đủ các dữ liệu cần thiết cho yêu cầu chuyển cơ sở");
-                }
+                }*/
 
-                if (createRequestViewModel.CategoryEquimentId != null)
+                /*if (createRequestViewModel.CategoryEquimentId != null)
+                {*/
+                var eRequest = _unitOfWork.RequestRepository.GetAllAsync().Result
+                    .Where(x => x.IsDeleted == false && x.Status == Domain.Enums.StatusOfRequest.Pending
+                     && x.CreatedBy == _claimsService.GetCurrentUserId).ToList();
+
+                if (!eRequest.IsNullOrEmpty())
                 {
-                    var eRequest = _unitOfWork.RequestRepository.GetAllAsync().Result
-                        .Where(x => x.IsDeleted == false && x.Status == Domain.Enums.StatusOfRequest.Pending
-                         && x.CreatedBy == _claimsService.GetCurrentUserId).ToList();
-
-                    if (eRequest != null)
-                    {
-                        throw new Exception("Bạn đã gửi request mượn thiết bị rồi");
-                    }
+                    throw new Exception("Bạn đã gửi yêu cầu mượn thiết bị rồi");
                 }
+                /*}*/
             }
 
             var randomCode = "R" + ((await _unitOfWork.RequestRepository.GetAllAsync()).Count + 1);
