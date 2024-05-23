@@ -45,5 +45,15 @@ namespace KidProEdu.Infrastructures.Repositories
 
             return equipments;
         }
+
+        public async Task<List<Equipment>> GetListEquipmentByCateId(Guid cateId)
+        {
+            var equipments = await _dbContext.Equipment.Include(x => x.CategoryEquipment)
+                 .Where(x => x.CategoryEquipmentId == cateId && x.IsDeleted == false)
+                 .OrderByDescending(x => x.CreationDate)
+                 .ToListAsync();
+
+            return equipments;
+        }
     }
 }

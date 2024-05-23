@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Wordprocessing;
 using FluentValidation;
 using KidProEdu.Application.Interfaces;
@@ -576,6 +577,13 @@ namespace KidProEdu.Application.Services
             stream.Position = 0;
 
             return stream;
+        }
+
+        public async Task<List<EquipmentViewModel>> GetListEquipmentByCateId(Guid cateId)
+        {
+            var result = await _unitOfWork.EquipmentRepository.GetListEquipmentByCateId(cateId);
+            var mapper = _mapper.Map<List<EquipmentViewModel>>(result);
+            return mapper;
         }
     }
 
