@@ -202,7 +202,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("GettEquipmentByDate/{date}")]
-        [Authorize(Roles = ("Admin, Manager"))]
+        [Authorize(Roles = ("Admin, Manager, Staff"))]
         public async Task<IActionResult> GetEquipmentByDate(DateOnly date)
         {
             var result = await _equipmentService.GetEquipmentByDate(date);
@@ -210,7 +210,7 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("GetEquipmentByProgress/{classId}/{progress}")]
-        [Authorize(Roles = ("Admin, Manager"))]
+        [Authorize(Roles = ("Admin, Manager, Staff"))]
         public async Task<IActionResult> GetEquipmentByProgress(Guid classId, int progress)
         {
             var result = await _equipmentService.GetEquipmentByProgress(classId, progress);
@@ -223,7 +223,7 @@ namespace KidProEdu.API.Controllers.Manager
             "PrepareEquipment.xlsx");
 
         [HttpPost("PostListEquipment/{quantity}")]
-        [Authorize(Roles = ("Admin, Manager"))]
+        [Authorize(Roles = ("Admin, Manager, Staff"))]
         public async Task PostListEquipment(CreateEquipmentViewModel createEquipmentViewModel, int quantity)
         {
             await _equipmentService.CreateListEquipment(createEquipmentViewModel, quantity);
