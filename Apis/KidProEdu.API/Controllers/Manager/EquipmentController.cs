@@ -69,6 +69,25 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
+        [HttpGet("EquipmentsByCategoryId/{cateId}")]
+        [Authorize(Roles = ("Admin, Manager"))]
+        public async Task<IActionResult> EquipmentsByCategoryId(Guid cateId)
+        {
+            try
+            {
+                var equipments = await _equipmentService.GetListEquipmentByCateId(cateId);
+                if (equipments == null)
+                {
+                    return NotFound();
+                }
+                return Ok(equipments);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> PostEquipment(CreateEquipmentViewModel createEquipmentViewModel)
