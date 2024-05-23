@@ -30,7 +30,7 @@ namespace KidProEdu.Infrastructures.Repositories
         public async Task<List<RequestUserAccount>> GetRequestUserByRecieverId(Guid recieverId)
         {
             var requestUser = await _dbContext.RequestUserAccount.Include(x => x.UserAccount).Include(x => x.Request)
-                .Where(x => x.IsDeleted == false && x.RecieverId == recieverId).ToListAsync();
+                .Where(x => x.IsDeleted == false && x.RecieverId == recieverId && x.Request.IsDeleted == false).ToListAsync();
             return requestUser;
         }
     }
