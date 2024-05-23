@@ -20,7 +20,7 @@ namespace KidProEdu.Application.Validations.Lessons
 
             RuleFor(x => x.Description).NotEmpty().WithMessage("Mô tả không được để trống.");
 
-            RuleFor(x => x.Duration).NotEmpty().WithMessage("Khoảng thời gian không được để trống.");
+            RuleFor(x => x.Duration).NotEmpty().WithMessage("Khoảng thời gian học không được để trống.").GreaterThan(0).WithMessage("Khoảng thời gian học không được bé hơn hoặc bằng 0.");
             
         }
     }
