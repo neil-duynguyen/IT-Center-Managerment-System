@@ -508,7 +508,12 @@ namespace KidProEdu.Application.Services
             foreach (var item in requestUsers)
             {
                 var request = await _unitOfWork.RequestRepository.GetByIdAsync(item.RequestId);
-                listRequest.Add(_mapper.Map<RequestViewModel>(request));
+                var user = await _unitOfWork.UserRepository.GetByIdAsync((Guid)item.CreatedBy);
+
+                var mapper = _mapper.Map<RequestViewModel>(request);
+                mapper.CreatorName = user.FullName;
+
+                listRequest.Add(mapper);
             }
 
             return _mapper.Map<List<RequestViewModel>>(listRequest);

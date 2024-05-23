@@ -128,7 +128,7 @@ namespace KidProEdu.API.Mappers
                 .ForMember(des => des.Type, src => src.MapFrom(x => x.Type != null ? (string)x.Type.ToString() : (string?)null));
 
             CreateMap<RequestViewModel, Request>().ReverseMap();
-                //.ForMember(des=>des.Status,src => src.MapFrom(x=>x.RequestUserAccounts.);
+                //.ForMember(des => des.CreatedBy, src => src.MapFrom(x => x.RequestUserAccounts.);
             //CreateMap<CreateRequestViewModel, Request>().ReverseMap();
             CreateMap<UpdateRequestViewModel, Request>().ReverseMap();
 
@@ -145,7 +145,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<CreateClassViewModel, Class>().ReverseMap();
             CreateMap<UpdateClassViewModel, Class>().ReverseMap();
             CreateMap<ClassForScheduleViewModel, Class>().ReverseMap();
-                                    //.ForMember(des => des.TotalDuration, src => src.MapFrom(x => x.Course.DurationTotal));
+            //.ForMember(des => des.TotalDuration, src => src.MapFrom(x => x.Course.DurationTotal));
 
             //CreateMap<RequestUserAccount, CreateRequestUserAccountViewModel>().ReverseMap();
 
@@ -259,7 +259,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<Feedback, FeedBackViewModel>().ReverseMap();
             CreateMap<CreateFeedBackViewModel, Feedback>().ReverseMap();
             CreateMap<UpdateFeedBackViewModel, Feedback>().ReverseMap();
-           
+
             CreateMap<TransactionViewModel, Transaction>().ReverseMap()
                                                 .ForMember(des => des.StatusTransaction, src => src.MapFrom(x => x.StatusTransaction != null ? (string)x.StatusTransaction.ToString() : (string?)null));
 

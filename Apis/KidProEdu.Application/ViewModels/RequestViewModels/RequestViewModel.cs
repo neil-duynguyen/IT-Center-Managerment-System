@@ -25,5 +25,6 @@ namespace KidProEdu.Application.ViewModels.RequestViewModels
         public Guid? ReceiverRefundId { get; set; }
         public DateTime CreationDate { get; set; }
         public Guid? CreatedBy { get; set; }
+        public string? CreatorName { get; set; }
     }
 }
