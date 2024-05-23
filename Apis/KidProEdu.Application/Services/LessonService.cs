@@ -152,6 +152,19 @@ namespace KidProEdu.Application.Services
             mapper.CourseId = updateLessonViewModel.CourseId;
             mapper.Name = updateLessonViewModel.Name;
             mapper.Description = updateLessonViewModel.Description;
+
+            IList<CategoryEquipment> equipments = new List<CategoryEquipment>();
+
+            if (updateLessonViewModel.EquipmentId.Count != 0)
+            {
+                foreach (var equipment in updateLessonViewModel.EquipmentId)
+                {
+                    equipments.Add(await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(equipment));
+                }
+
+                mapper.CategoryEquipments = equipments;
+            }
+
             _unitOfWork.LessonRepository.Update(mapper);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật bài học thất bại");
         }
