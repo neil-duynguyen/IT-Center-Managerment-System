@@ -1,4 +1,5 @@
-﻿using KidProEdu.Domain.Enums;
+﻿using KidProEdu.Domain.Entities;
+using KidProEdu.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,6 @@ namespace KidProEdu.Application.ViewModels.LessonViewModels
         public int? Duration { get; set; }
         public string? TypeOfPractice { get; set; }
         public int? GroupSize { get; set; }
+        public List<string> CategoryEquipmentsName { get; set; }
     }
 }

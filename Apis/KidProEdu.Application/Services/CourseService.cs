@@ -122,7 +122,9 @@ namespace KidProEdu.Application.Services
 
             mapper.Courses = _mapper.Map<List<CourseViewModel>>(getList);
 
-            mapper.Lessons = _mapper.Map<List<LessonViewModel>>(lessons);
+
+            var a = _mapper.Map<List<LessonViewModel>>(lessons);
+            mapper.Lessons = _mapper.Map<List<LessonViewModel>>(lessons);  
 
             return mapper;
         }

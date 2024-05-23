@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.ViewModels.ClassViewModels;
 using KidProEdu.Application.ViewModels.LessonViewModels;
+using KidProEdu.Domain.Entities;
 
 namespace KidProEdu.Application.ViewModels.CourseViewModels
 {

@@ -35,5 +35,10 @@ namespace KidProEdu.Infrastructures.Repositories
         {
             return await _dbSet.Include(x => x.CategoryEquipments).Where(x => !x.IsDeleted).FirstAsync(x => x.Id == id);
         }
+
+        public override async Task<List<Lesson>> GetAllAsync()
+        {
+            return await _dbSet.Include(x => x.CategoryEquipments).Where(x => !x.IsDeleted).ToListAsync();
+        }
     }
 }

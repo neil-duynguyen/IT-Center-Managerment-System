@@ -147,7 +147,7 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            var mapper = _mapper.Map<Lesson>(lesson);
+            var mapper = _mapper.Map(updateLessonViewModel, lesson);
             mapper.Duration = updateLessonViewModel.Duration;
             mapper.CourseId = updateLessonViewModel.CourseId;
             mapper.Name = updateLessonViewModel.Name;
