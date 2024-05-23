@@ -208,7 +208,15 @@ namespace KidProEdu.Application.Services
         public async Task<List<RequestViewModel>> GetRequests()
         {
             var requests = _unitOfWork.RequestRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
-            return _mapper.Map<List<RequestViewModel>>(requests);
+            var listViewModel = _mapper.Map<List<RequestViewModel>>(requests);
+
+            foreach (var request in listViewModel)
+            {
+                var user = await _unitOfWork.UserRepository.GetByIdAsync((Guid)request.CreatedBy);
+                request.CreatorName = user.FullName;
+            }
+
+            return listViewModel;
         }
 
         public async Task<bool> UpdateRequest(UpdateRequestViewModel updateRequestViewModel)
@@ -498,7 +506,15 @@ namespace KidProEdu.Application.Services
         {
             var requests = await _unitOfWork.RequestRepository.GetRequestByUser(userId);
 
-            return _mapper.Map<List<RequestViewModel>>(requests);
+            var listViewModel = _mapper.Map<List<RequestViewModel>>(requests);
+
+            foreach (var request in listViewModel)
+            {
+                var user = await _unitOfWork.UserRepository.GetByIdAsync((Guid)request.CreatedBy);
+                request.CreatorName = user.FullName;
+            }
+
+            return listViewModel;
         }
 
         public async Task<List<RequestViewModel>> GetRequestByReceiver(Guid userId)
@@ -508,7 +524,7 @@ namespace KidProEdu.Application.Services
             foreach (var item in requestUsers)
             {
                 var request = await _unitOfWork.RequestRepository.GetByIdAsync(item.RequestId);
-                var user = await _unitOfWork.UserRepository.GetByIdAsync((Guid)item.CreatedBy);
+                var user = await _unitOfWork.UserRepository.GetByIdAsync((Guid)request.CreatedBy);
 
                 var mapper = _mapper.Map<RequestViewModel>(request);
                 mapper.CreatorName = user.FullName;
