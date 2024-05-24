@@ -585,6 +585,13 @@ namespace KidProEdu.Application.Services
             var mapper = _mapper.Map<List<EquipmentViewModel>>(result);
             return mapper;
         }
+
+        public async Task<List<EquipmentViewModel>> GetListEquipmentByCateIdAndStatus(Guid cateId, StatusOfEquipment status)
+        {
+            var result = await _unitOfWork.EquipmentRepository.GetListEquipmentByCateIdAndStatus(cateId, status);
+            var mapper = _mapper.Map<List<EquipmentViewModel>>(result);
+            return mapper;
+        }
     }
 
     public class LearningProgress

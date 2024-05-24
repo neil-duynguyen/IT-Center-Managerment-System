@@ -14,6 +14,7 @@ namespace KidProEdu.Application.IRepositories
     {
         Task<List<Equipment>> GetListEquipmentByName(string name);
         Task<List<Equipment>> GetListEquipmentByCateId(Guid cateId);
+        Task<List<Equipment>> GetListEquipmentByCateIdAndStatus(Guid cateId, StatusOfEquipment status);
         Task<List<Equipment>> GetListEquipmentByStatus(StatusOfEquipment status);
     }
 }

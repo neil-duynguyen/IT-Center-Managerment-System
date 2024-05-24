@@ -48,10 +48,20 @@ namespace KidProEdu.Infrastructures.Repositories
 
         public async Task<List<Equipment>> GetListEquipmentByCateId(Guid cateId)
         {
-            var equipments = await _dbContext.Equipment.Include(x => x.CategoryEquipment)
+            var equipments = await _dbContext.Equipment
                  .Where(x => x.CategoryEquipmentId == cateId && x.IsDeleted == false)
                  .OrderByDescending(x => x.CreationDate)
                  .ToListAsync();
+
+            return equipments;
+        }
+
+        public async Task<List<Equipment>> GetListEquipmentByCateIdAndStatus(Guid cateId, StatusOfEquipment status)
+        {
+            var equipments = await _dbContext.Equipment.Include(x => x.CategoryEquipment)
+                  .Where(x => x.CategoryEquipmentId == cateId && x.Status == status && x.IsDeleted == false)
+                  .OrderByDescending(x => x.CreationDate)
+                  .ToListAsync();
 
             return equipments;
         }
