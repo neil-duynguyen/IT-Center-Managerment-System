@@ -138,14 +138,9 @@ namespace KidProEdu.Application.Services
                 throw new Exception("Không tìm thấy bài học");
             }
 
-            var existingLesson = await _unitOfWork.LessonRepository.GetLessonByName(updateLessonViewModel.Name);
-            if (existingLesson != null)
-            {
-                if (existingLesson.Id != updateLessonViewModel.Id)
-                {
-                    throw new Exception("Bài học đã tồn tại");
-                }
-            }
+            var course = await _unitOfWork.CourseRepository.GetByIdAsync(updateLessonViewModel.CourseId);
+            if (course.Lessons.FirstOrDefault(x => x.Name.ToLower() == updateLessonViewModel.Name.ToLower() && x.Id != updateLessonViewModel.Id && !x.IsDeleted) != null)
+                throw new Exception("Tên bài học đã tồn tại.");
 
             var mapper = _mapper.Map(updateLessonViewModel, lesson);
             mapper.Duration = updateLessonViewModel.Duration;
