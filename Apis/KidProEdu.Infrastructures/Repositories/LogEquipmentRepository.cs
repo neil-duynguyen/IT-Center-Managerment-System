@@ -1,4 +1,5 @@
-﻿using Infrastructures.Repositories;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Infrastructures.Repositories;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
 using KidProEdu.Domain.Entities;
@@ -95,7 +96,16 @@ namespace KidProEdu.Infrastructures.Repositories
             return await _dbContext.LogEquipment.Include(x => x.UserAccount).Where(x => !x.IsDeleted).ToListAsync();
         }
 
+        public async Task<List<LogEquipment>> GetLogEquipmentsByCateEquipmentId(Guid cateId)
+        {
+            var logEquipments = await _dbContext.LogEquipment
+                 .Include(x => x.UserAccount)
+                 .Where(x => x.CategoryEquipmentId == cateId && x.IsDeleted == false)
+                 .OrderByDescending(x => x.CreationDate)
+                 .ToListAsync();
 
+            return logEquipments;
+        }
     }
 }
 

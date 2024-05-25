@@ -24,5 +24,6 @@ namespace KidProEdu.Application.Interfaces
         Task<List<LogEquipmentViewModel>> GetLogEquipmentsByEquipmentId(Guid equipmentId);
         Task<List<LogEquipmentViewModel>> GetLogEquipmentsByCode(string code);
         Task<List<LogEquipmentViewModel>> GetLogEquipmentByStatus(StatusOfEquipment statusOfEquipment);
+        Task<List<LogEquipmentViewModel>> GetLogEquipmentsByCateEquipmentId(Guid cateId);
     }
 }

@@ -71,6 +71,18 @@ namespace KidProEdu.API.Controllers.Manager
             return Ok(result);
         }
 
+        [HttpGet("LogEquipmentsByCateEquipmentId/{cateId}")]
+        //[Authorize(Roles = ("Admin"))]
+        public async Task<IActionResult> LogEquipmentsByCateEquipmentId(Guid cateId)
+        {
+            var result = await _logEquipmentService.GetLogEquipmentsByCateEquipmentId(cateId);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
         [HttpGet("LogEquipmentsByUser/{userId}")]
         //[Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> LogEquipmentByUserId(Guid userId)

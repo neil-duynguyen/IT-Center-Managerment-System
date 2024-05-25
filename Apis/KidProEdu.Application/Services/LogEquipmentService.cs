@@ -69,6 +69,13 @@ namespace KidProEdu.Application.Services
             return mapper;
         }
 
+        public async Task<List<LogEquipmentViewModel>> GetLogEquipmentsByCateEquipmentId(Guid cateId)
+        {
+            var result = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentsByCateEquipmentId(cateId);
+            var mapper = _mapper.Map<List<LogEquipmentViewModel>>(result);
+            return mapper;
+        }
+
         public async Task<List<LogEquipmentViewModel>> GetLogEquipmentsByCode(string code)
         {
             var result = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByCode(code);

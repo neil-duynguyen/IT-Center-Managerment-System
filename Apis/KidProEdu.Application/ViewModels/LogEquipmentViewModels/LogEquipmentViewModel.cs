@@ -10,9 +10,10 @@ namespace KidProEdu.Application.ViewModels.LogEquipmentViewModels
 {
     public class LogEquipmentViewModel
     {
-        public Guid EquipmentId { get; set; }
-        public Guid? UserAccountId { get; set; }
         public string? FullName { get; set; }
+        public Guid? EquipmentId { get; set; }
+        public Guid? CategoryEquipmentId { get; set; }
+        public Guid? UserAccountId { get; set; }
         public string? Name { get; set; }
         public string? Code { get; set; }
         public double? Price { get; set; }
@@ -24,5 +25,6 @@ namespace KidProEdu.Application.ViewModels.LogEquipmentViewModels
         public DateTime? ReturnedDate { get; set; }
         public DateTime? ReturnedDealine { get; set; }
         public Guid? RoomId { get; set; }
+        public int? Quantity { get; set; }
     }
 }
