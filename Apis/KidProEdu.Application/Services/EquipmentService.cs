@@ -460,13 +460,16 @@ namespace KidProEdu.Application.Services
                 var listAttendance = await _attendanceService.GetAttendanceDetailsByCourseIdAndChildrenId(item.Class.CourseId, item.ChildrenProfileId);
 
                 //getTeacher
-                var teacherName = item.Class.TeachingClassHistories.OrderByDescending(x => x.CreationDate).FirstOrDefault().UserAccount.FullName;
+                var teacherName = item.Class.TeachingClassHistories.OrderByDescending(x => x.CreationDate).FirstOrDefault().UserAccount.FullName;            
 
                 if (listAttendance.Any(x => DateOnly.FromDateTime(x.Date) == date))
                 {
+                    //getRoom
+                    var roomName = item.Class.Schedules.FirstOrDefault(x => x.DayInWeek.Equals(date.DayOfWeek.ToString())).ScheduleRooms.OrderByDescending(x => x.CreationDate).FirstOrDefault().Room.Name;
+                    
                     int daysStudied = listAttendance.Count(x => DateOnly.FromDateTime(x.Date) <= date);
 
-                    learningProgress.Add(new LearningProgress { ClassId = item.ClassId, ClassCode = item.Class.ClassCode, Progress = daysStudied, NameTeacher = teacherName, Slot = item.Class.Schedules.FirstOrDefault().Slot.Name });
+                    learningProgress.Add(new LearningProgress { ClassId = item.ClassId, ClassCode = item.Class.ClassCode, Progress = daysStudied, NameTeacher = teacherName, Slot = item.Class.Schedules.FirstOrDefault().Slot.Name, RoomName = roomName });
                 }
             }
 
@@ -600,6 +603,7 @@ namespace KidProEdu.Application.Services
         public string ClassCode { get; set; }
         public int Progress { get; set; }
         public string NameTeacher { get; set; }
-        public string Slot { get;set; }
+        public string Slot { get; set; }
+        public string RoomName { get; set; }
     }
 }
