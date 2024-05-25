@@ -18,8 +18,8 @@ namespace KidProEdu.Application.Validations.CategoryEquipments
                 .MaximumLength(100).WithMessage("Tên không quá 100 ký tự.");
             RuleFor(x => x.Description).NotEmpty().WithMessage("Mô tả không được để trống.")
                 .MaximumLength(500).WithMessage("Mô tả không quá 500 ký tự.");
-            RuleFor(x => x.Quantity).NotNull().WithMessage("Số lượng không được để trống.")
-                .GreaterThanOrEqualTo(0).WithMessage("Số lượng phải lớn hơn hoặc bằng 0.");
+           // RuleFor(x => x.Quantity).NotNull().WithMessage("Số lượng không được để trống.")
+                //.GreaterThanOrEqualTo(0).WithMessage("Số lượng phải lớn hơn hoặc bằng 0.");
             //RuleFor(x => x.Code).NotEmpty().WithMessage("Code không được để trống.");
             RuleFor(x => x.TypeCategoryEquipment).NotEmpty().WithMessage("Thể loại không được để trống.");
         }

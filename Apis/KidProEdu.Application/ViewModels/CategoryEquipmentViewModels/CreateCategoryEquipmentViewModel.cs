@@ -12,7 +12,7 @@ namespace KidProEdu.Application.ViewModels.CategoryEquipmentViewModels
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Quantity { get; set; }
+        //public int Quantity { get; set; }
         public TypeCategoryEquipment TypeCategoryEquipment { get; set; }
         //public string? Code { get; set; }
     }

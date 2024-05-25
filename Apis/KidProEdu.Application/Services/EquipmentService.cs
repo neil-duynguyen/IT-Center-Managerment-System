@@ -58,6 +58,8 @@ namespace KidProEdu.Application.Services
             await _unitOfWork.EquipmentRepository.AddAsync(mapper);
             mapper.Code = _qrCodeUtility.GenerateQRCode($"{mapper.Id}");
             mapper.Status = StatusOfEquipment.Returned;
+            var cate = await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(createEquipmentViewModel.CategoryEquipmentId);
+            cate.Quantity = cate.Quantity + 1;
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo thiết bị thất bại");
 
         }
