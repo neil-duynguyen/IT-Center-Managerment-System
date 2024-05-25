@@ -218,6 +218,7 @@ namespace KidProEdu.Application.Services
             }
 
             var mapper = _mapper.Map<CategoryEquipment>(createCategoryEquipmentViewModel);
+            mapper.Quantity = 0;
             await _unitOfWork.CategoryEquipmentRepository.AddAsync(mapper);
             mapper.Code = _qrCodeUtility.GenerateQRCode($"{mapper.Id}");
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo danh mục thiết bị thất bại");
