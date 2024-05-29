@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿
+using FluentValidation;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,15 +10,17 @@ using System.Threading.Tasks;
 namespace KidProEdu.Application.Validations.CategoryEquipments
 {
 
-    public class BorrowCategoryEquipmentViewModelValidator : AbstractValidator<BorrowCategoryEquipmentViewModel>
+    public class BorrowForGoHomeCategoryEquipmentViewModelValidator : AbstractValidator<BorrowForGoHomeCategoryEquipmentViewModel>
     {
-        public BorrowCategoryEquipmentViewModelValidator()
+        public BorrowForGoHomeCategoryEquipmentViewModelValidator()
         {
             RuleFor(x => x.CategoryEquipmentId).NotEmpty().WithMessage("Thiết bị không được để trống.");
-            RuleFor(x => x.RoomId).NotEmpty().WithMessage("Phòng không được để trống.");
             RuleFor(x => x.UserAccountId).NotEmpty().WithMessage("Người mượn không được để trống.");
             RuleFor(x => x.Quantity).NotNull().WithMessage("Số lượng không được để trống.")
                 .GreaterThan(0).WithMessage("Số lượng phải lớn hơn 0.");
+            RuleFor(x => x.ReturnedDealine)
+                .NotEmpty().WithMessage("Ngày trả không được để trống.")
+                .GreaterThanOrEqualTo(DateTime.Today).WithMessage("Ngày trả phải lớn hơn hoặc bằng ngày hiện tại.");
         }
 
 

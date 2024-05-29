@@ -18,8 +18,9 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> UpdateCategoryEquipment(UpdateCategoryEquipmentViewModel updateCategoryEquipmentViewModel);
         Task<CategoryEquipmentViewModel> GetCategoryEquipmentById(Guid id);
         Task<bool> DeleteCategoryEquipment(Guid id);
-        Task<bool> BorrowCategoryEquipment(BorrowCategoryEquipmentViewModel borrowCategoryEquipmentViewModel);
-        Task<bool> BorrowAutoCategoryEquipment(BorrowAutoCategoryEquipmentViewModel borrowAutoCategoryEquipmentViewModel);
-        Task<bool> ReturnCategoryEquipment(ReturnCategoryEquipmentViewModel returnCategoryEquipmentViewModel);
+        Task<bool> BorrowWithStaffCategoryEquipment(List<BorrowCategoryEquipmentViewModel> borrowCategoryEquipmentViewModels);
+        Task<bool> BorrowCategoryEquipment(List<BorrowAutoCategoryEquipmentViewModel> borrowCategoryEquipmentViewModels);
+        Task<bool> ReturnCategoryEquipment(List<ReturnCategoryEquipmentViewModel> returnCategoryEquipmentViewModels);
+        Task<bool> BorrowForGoHomeCategoryEquipment(List<BorrowForGoHomeCategoryEquipmentViewModel> borrowForGoHomeCategoryEquipmentViewModels);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Utils;
 using KidProEdu.Application.Validations.CategoryEquipments;
@@ -37,165 +38,227 @@ namespace KidProEdu.Application.Services
             _qrCodeUtility = qrCodeUtility;
         }
 
-        public async Task<bool> BorrowAutoCategoryEquipment(BorrowAutoCategoryEquipmentViewModel borrowAutoCategoryEquipmentViewModel)
+        public async Task<bool> BorrowForGoHomeCategoryEquipment(List<BorrowForGoHomeCategoryEquipmentViewModel> borrowForGoHomeCategoryEquipmentViewModels)
         {
-            var validator = new BorrowAutoCategoryEquipmentViewModelValidator();
-            var validationResult = validator.Validate(borrowAutoCategoryEquipmentViewModel);
-            if (!validationResult.IsValid)
+            var validator = new BorrowForGoHomeCategoryEquipmentViewModelValidator();
+            var errorMessages = new List<string>();
+            foreach (var viewModel in borrowForGoHomeCategoryEquipmentViewModels)
             {
-                foreach (var error in validationResult.Errors)
+                var validationResult = validator.Validate(viewModel);
+                if (!validationResult.IsValid)
                 {
-                    throw new Exception(error.ErrorMessage);
+                    errorMessages.AddRange(validationResult.Errors.Select(error => error.ErrorMessage));
                 }
-            }
-            var categoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(borrowAutoCategoryEquipmentViewModel.CategoryEquipmentId);
-            //var logEquipment = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.EquipmentId == equipment.Id);
 
-            if (categoryEquipment == null)
-            {
-                throw new Exception("Không tìm thấy thiết bị");
-            }
+                var categoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(viewModel.CategoryEquipmentId);
+                if (categoryEquipment == null)
+                {
+                    errorMessages.Add($"Không tìm thấy thiết bị có category id là: {viewModel.CategoryEquipmentId}");
+                }
 
-            if (categoryEquipment.Quantity <= 0)
-            {
-                throw new Exception("Thiết bị trong kho đã được mượn hết");
-            }
 
-            if (categoryEquipment.Quantity < borrowAutoCategoryEquipmentViewModel.Quantity)
-            {
-                throw new Exception("Thiết bị trong kho đã không đủ số lượng bạn yêu cầu");
-            }
+                if (categoryEquipment.Quantity < viewModel.Quantity)
+                {
+                    errorMessages.Add($"Thiết bị {categoryEquipment.Name} trong kho đã không đủ số lượng bạn yêu cầu");
+                }
 
-            // Cập nhật trạng thái thiết bị
-
-            categoryEquipment.Quantity = categoryEquipment.Quantity - borrowAutoCategoryEquipmentViewModel.Quantity;
-            _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
-            var result = await _unitOfWork.SaveChangeAsync();
-            if (result > 0)
-            {
-                var logEquipment = new LogEquipment();
-                logEquipment.EquipmentId = null;
-                logEquipment.UserAccountId = borrowAutoCategoryEquipmentViewModel.UserAccountId;
-                logEquipment.Name = categoryEquipment.Name;
-                logEquipment.Code = categoryEquipment.Code;
-                logEquipment.Price = null;
-                logEquipment.Status = StatusOfEquipment.Borrowed;
-                logEquipment.RepairDate = null;
-                logEquipment.BorrowedDate = _currentTime.GetCurrentTime().Date;
-                logEquipment.ReturnedDate = null;
-                logEquipment.ReturnedDealine = borrowAutoCategoryEquipmentViewModel.ReturnedDealine;
-                logEquipment.WarrantyPeriod = null;
-                logEquipment.PurchaseDate = null;
-                logEquipment.RoomId = null;
-                logEquipment.CategoryEquipmentId = borrowAutoCategoryEquipmentViewModel.CategoryEquipmentId;
-                logEquipment.Quantity = borrowAutoCategoryEquipmentViewModel.Quantity;
+                categoryEquipment.Quantity -= viewModel.Quantity;
+                _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
+                var logEquipment = new LogEquipment
+                {
+                    EquipmentId = null,
+                    UserAccountId = viewModel.UserAccountId,
+                    Name = categoryEquipment.Name,
+                    Code = categoryEquipment.Code,
+                    Price = null,
+                    Status = StatusOfEquipment.Borrowed,
+                    RepairDate = null,
+                    BorrowedDate = _currentTime.GetCurrentTime().Date,
+                    ReturnedDate = null,
+                    ReturnedDealine = viewModel.ReturnedDealine,
+                    WarrantyPeriod = null,
+                    PurchaseDate = null,
+                    RoomId = null,
+                    CategoryEquipmentId = viewModel.CategoryEquipmentId,
+                    Quantity = viewModel.Quantity
+                };
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
-                var result2 = await _unitOfWork.SaveChangeAsync();
-                if (result2 > 0)
-                {
-                    var teacher = await _unitOfWork.UserRepository.GetByIdAsync((Guid)borrowAutoCategoryEquipmentViewModel.UserAccountId);
-                    await SendEmailUtil.SendEmail(teacher.Email, "Xác nhận yêu cầu mượn thiết bị",
-                    "KidProEdu thông báo, \n\n" +
-                    "Yêu cầu mượn thiết bị của bạn đã được xác nhận, \n" +
-                    "   Thông tin:, \n" +
-                    "         Người mượn: " + teacher.FullName + "\n" +
-                    "         Email: " + teacher.Email + "\n" +
-                    "         Sđt: " + teacher.Phone + "\n" +
-                    //"         Mã thiết bị: " + equipment.Code + "\n" +
-                    "         Tên thiết bị: " + categoryEquipment.Name + "\n" +
-                    "         Số lượng: " + borrowAutoCategoryEquipmentViewModel.Quantity + "\n" +
-                    //"         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
-                    "         Ngày hẹn trả: " + borrowAutoCategoryEquipmentViewModel.ReturnedDealine + "\n" +
-                    //"Nhân viên sẽ đưa thiết bị đến phòng" + borrowCategoryEquipmentViewModel.RoomId + "\n" +
-                    "Vui lòng trả thiết bị đúng trong thời hạn đã hẹn, xin cảm ơn!. \n\n" +
-                    "Trân trọng, \n" +
-                    "KidPro Education!");
-                    return true;
-                }
             }
-
-            return false;
+            if (errorMessages.Any())
+            {
+                return false;
+            }
+            else
+            {
+                await _unitOfWork.SaveChangeAsync();
+                return true;
+            }
         }
 
-        public async Task<bool> BorrowCategoryEquipment(BorrowCategoryEquipmentViewModel borrowCategoryEquipmentViewModel)
+        public async Task<bool> BorrowCategoryEquipment(List<BorrowAutoCategoryEquipmentViewModel> borrowCategoryEquipmentViewModels)
+        {
+            var validator = new BorrowAutoCategoryEquipmentViewModelValidator();
+            var errorMessages = new List<string>();
+            foreach (var viewModel in borrowCategoryEquipmentViewModels)
+            {
+                var validationResult = validator.Validate(viewModel);
+                if (!validationResult.IsValid)
+                {
+                    errorMessages.AddRange(validationResult.Errors.Select(error => error.ErrorMessage));
+                }
+
+                var categoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(viewModel.CategoryEquipmentId);
+                if (categoryEquipment == null)
+                {
+                    errorMessages.Add($"Không tìm thấy thiết bị có category id là: {viewModel.CategoryEquipmentId}");
+                }
+
+
+                if (categoryEquipment.Quantity < viewModel.Quantity)
+                {
+                    errorMessages.Add($"Thiết bị {categoryEquipment.Name} trong kho đã không đủ số lượng bạn yêu cầu");
+                }
+
+                categoryEquipment.Quantity -= viewModel.Quantity;
+                _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
+                var logEquipment = new LogEquipment
+                {
+                    EquipmentId = null,
+                    UserAccountId = viewModel.UserAccountId,
+                    Name = categoryEquipment.Name,
+                    Code = categoryEquipment.Code,
+                    Price = null,
+                    Status = StatusOfEquipment.Borrowed,
+                    RepairDate = null,
+                    BorrowedDate = _currentTime.GetCurrentTime().Date,
+                    ReturnedDate = null,
+                    ReturnedDealine = null,
+                    WarrantyPeriod = null,
+                    PurchaseDate = null,
+                    RoomId = null,
+                    CategoryEquipmentId = viewModel.CategoryEquipmentId,
+                    Quantity = viewModel.Quantity
+                };
+                await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
+            }
+            if (errorMessages.Any())
+            {
+                return false;
+            }
+            else
+            {
+                await _unitOfWork.SaveChangeAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> BorrowWithStaffCategoryEquipment(List<BorrowCategoryEquipmentViewModel> borrowCategoryEquipmentViewModels)
         {
             var validator = new BorrowCategoryEquipmentViewModelValidator();
-            var validationResult = validator.Validate(borrowCategoryEquipmentViewModel);
-            if (!validationResult.IsValid)
+            var errorMessages = new List<string>();
+            foreach (var viewModel in borrowCategoryEquipmentViewModels)
             {
-                foreach (var error in validationResult.Errors)
+                var validationResult = validator.Validate(viewModel);
+                if (!validationResult.IsValid)
                 {
-                    throw new Exception(error.ErrorMessage);
+                    errorMessages.AddRange(validationResult.Errors.Select(error => error.ErrorMessage));
                 }
-            }
-            var categoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(borrowCategoryEquipmentViewModel.CategoryEquipmentId);
-            //var logEquipment = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.EquipmentId == equipment.Id);
 
-            if (categoryEquipment == null)
-            {
-                throw new Exception("Không tìm thấy thiết bị");
-            }
+                var categoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(viewModel.CategoryEquipmentId);
+                if (categoryEquipment == null)
+                {
+                    errorMessages.Add($"Không tìm thấy thiết bị có category id là: {viewModel.CategoryEquipmentId}");
+                }
 
-            if (categoryEquipment.Quantity <= 0)
-            {
-                throw new Exception("Thiết bị trong kho đã được mượn hết");
-            }
 
-            if (categoryEquipment.Quantity < borrowCategoryEquipmentViewModel.Quantity)
-            {
-                throw new Exception("Thiết bị trong kho đã không đủ số lượng bạn yêu cầu");
-            }
+                if (categoryEquipment.Quantity < viewModel.Quantity)
+                {
+                    errorMessages.Add($"Thiết bị {categoryEquipment.Name} trong kho đã không đủ số lượng bạn yêu cầu");
+                }
 
-            // Cập nhật trạng thái thiết bị
-
-            categoryEquipment.Quantity = categoryEquipment.Quantity - borrowCategoryEquipmentViewModel.Quantity;
-            _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
-            var result = await _unitOfWork.SaveChangeAsync();
-            if (result > 0)
-            {
-                var logEquipment = new LogEquipment();
-                logEquipment.EquipmentId = null;
-                logEquipment.UserAccountId = borrowCategoryEquipmentViewModel.UserAccountId;
-                logEquipment.Name = categoryEquipment.Name;
-                logEquipment.Code = categoryEquipment.Code;
-                logEquipment.Price = null;
-                logEquipment.Status = StatusOfEquipment.Borrowed;
-                logEquipment.RepairDate = null;
-                logEquipment.BorrowedDate = _currentTime.GetCurrentTime().Date;
-                logEquipment.ReturnedDate = null;
-                logEquipment.ReturnedDealine = borrowCategoryEquipmentViewModel.ReturnedDealine;
-                logEquipment.WarrantyPeriod = null;
-                logEquipment.PurchaseDate = null;
-                logEquipment.RoomId = borrowCategoryEquipmentViewModel.RoomId;
-                logEquipment.CategoryEquipmentId = borrowCategoryEquipmentViewModel.CategoryEquipmentId;
-                logEquipment.Quantity = borrowCategoryEquipmentViewModel.Quantity;
+                categoryEquipment.Quantity -= viewModel.Quantity;
+                _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
+                var logEquipment = new LogEquipment
+                {
+                    EquipmentId = null,
+                    UserAccountId = viewModel.UserAccountId,
+                    Name = categoryEquipment.Name,
+                    Code = categoryEquipment.Code,
+                    Price = null,
+                    Status = StatusOfEquipment.Borrowed,
+                    RepairDate = null,
+                    BorrowedDate = _currentTime.GetCurrentTime().Date,
+                    ReturnedDate = null,
+                    ReturnedDealine = null,
+                    WarrantyPeriod = null,
+                    PurchaseDate = null,
+                    RoomId = viewModel.RoomId,
+                    CategoryEquipmentId = viewModel.CategoryEquipmentId,
+                    Quantity = viewModel.Quantity
+                };
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
-                var result2 = await _unitOfWork.SaveChangeAsync();
-                if (result2 > 0)
-                {
-                    var teacher = await _unitOfWork.UserRepository.GetByIdAsync((Guid)borrowCategoryEquipmentViewModel.UserAccountId);
-                    await SendEmailUtil.SendEmail(teacher.Email, "Xác nhận yêu cầu mượn thiết bị",
-                    "KidProEdu thông báo, \n\n" +
-                    "Yêu cầu mượn thiết bị của bạn đã được xác nhận, \n" +
-                    "   Thông tin:, \n" +
-                    "         Người mượn: " + teacher.FullName + "\n" +
-                    "         Email: " + teacher.Email + "\n" +
-                    "         Sđt: " + teacher.Phone + "\n" +
-                    //"         Mã thiết bị: " + equipment.Code + "\n" +
-                    "         Tên thiết bị: " + categoryEquipment.Name + "\n" +
-                    "         Số lượng: " + borrowCategoryEquipmentViewModel.Quantity + "\n" +
-                    //"         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
-                    "         Ngày hẹn trả: " + borrowCategoryEquipmentViewModel.ReturnedDealine + "\n" +
-                    "Nhân viên sẽ đưa thiết bị đến phòng" + borrowCategoryEquipmentViewModel.RoomId + "\n" +
-                    "Vui lòng trả thiết bị đúng trong thời hạn đã hẹn, xin cảm ơn!. \n\n" +
-                    "Trân trọng, \n" +
-                    "KidPro Education!");
-                    return true;
-                }
+            }
+            if (errorMessages.Any())
+            {
+                return false;
+            }
+            else
+            {
+                await _unitOfWork.SaveChangeAsync();
+                return true;
             }
 
-            return false;
+        }
 
+        public async Task<bool> ReturnCategoryEquipment(List<ReturnCategoryEquipmentViewModel> returnCategoryEquipmentViewModels)
+        {
+            var validator = new ReturnCategoryEquipmentViewModelValidator();
+            var errorMessages = new List<string>();
+            foreach (var viewModel in returnCategoryEquipmentViewModels)
+            {
+                var validationResult = validator.Validate(viewModel);
+                if (!validationResult.IsValid)
+                {
+                    errorMessages.AddRange(validationResult.Errors.Select(error => error.ErrorMessage));
+                }
+
+                var categoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(viewModel.CategoryEquipmentId);
+                if (categoryEquipment == null)
+                {
+                    errorMessages.Add($"Không tìm thấy thiết bị có category id là: {viewModel.CategoryEquipmentId}");
+                }
+
+                categoryEquipment.Quantity += viewModel.Quantity;
+                _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
+                var logEquipment = new LogEquipment
+                {
+                    EquipmentId = null,
+                    UserAccountId = viewModel.UserAccountId,
+                    Name = categoryEquipment.Name,
+                    Code = categoryEquipment.Code,
+                    Price = null,
+                    Status = StatusOfEquipment.Returned,
+                    RepairDate = null,
+                    BorrowedDate = null,
+                    ReturnedDate = _currentTime.GetCurrentTime().Date,
+                    ReturnedDealine = null,
+                    WarrantyPeriod = null,
+                    PurchaseDate = null,
+                    RoomId = null,
+                    CategoryEquipmentId = viewModel.CategoryEquipmentId,
+                    Quantity = viewModel.Quantity
+                };
+                await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
+            }
+            if (errorMessages.Any())
+            {
+                return false;
+            }
+            else
+            {
+                await _unitOfWork.SaveChangeAsync();
+                return true;
+            }
         }
 
 
@@ -223,7 +286,7 @@ namespace KidProEdu.Application.Services
             mapper.Code = _qrCodeUtility.GenerateQRCode($"{mapper.Id}");
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Tạo danh mục thiết bị thất bại");
         }
-       
+
 
         public async Task<bool> DeleteCategoryEquipment(Guid id)
         {
@@ -250,75 +313,6 @@ namespace KidProEdu.Application.Services
             var results = _unitOfWork.CategoryEquipmentRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
             var mappers = _mapper.Map<List<CategoryEquipmentViewModel>>(results);
             return mappers;
-        }
-
-        public async Task<bool> ReturnCategoryEquipment(ReturnCategoryEquipmentViewModel returnCategoryEquipmentViewModel)
-        {
-            var validator = new ReturnCategoryEquipmentViewModelValidator();
-            var validationResult = validator.Validate(returnCategoryEquipmentViewModel);
-            if (!validationResult.IsValid)
-            {
-                foreach (var error in validationResult.Errors)
-                {
-                    throw new Exception(error.ErrorMessage);
-                }
-            }
-            var categoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(returnCategoryEquipmentViewModel.CategoryEquipmentId);
-            //var logEquipment = _unitOfWork.LogEquipmentRepository.GetAllAsync().Result.OrderByDescending(x => x.CreationDate).FirstOrDefault(x => x.EquipmentId == equipment.Id);
-
-            if (categoryEquipment == null)
-            {
-                throw new Exception("Không tìm thấy thiết bị");
-            }
-            // Cập nhật trạng thái thiết bị
-
-            categoryEquipment.Quantity = categoryEquipment.Quantity + returnCategoryEquipmentViewModel.Quantity;
-            _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
-            var result = await _unitOfWork.SaveChangeAsync();
-            if (result > 0)
-            {
-                var logEquipment = new LogEquipment();
-                logEquipment.EquipmentId = null;
-                logEquipment.UserAccountId = returnCategoryEquipmentViewModel.UserAccountId;
-                logEquipment.Name = categoryEquipment.Name;
-                logEquipment.Code = categoryEquipment.Code;
-                logEquipment.Price = null;
-                logEquipment.Status = StatusOfEquipment.Returned;
-                logEquipment.RepairDate = null;
-                logEquipment.BorrowedDate = null;
-                logEquipment.ReturnedDate = _currentTime.GetCurrentTime().Date;
-                logEquipment.ReturnedDealine = null;
-                logEquipment.WarrantyPeriod = null;
-                logEquipment.PurchaseDate = null;
-                logEquipment.RoomId = null;
-                logEquipment.CategoryEquipmentId = returnCategoryEquipmentViewModel.CategoryEquipmentId;
-                logEquipment.Quantity = returnCategoryEquipmentViewModel.Quantity;
-                await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
-                var result2 = await _unitOfWork.SaveChangeAsync();
-                if (result2 > 0)
-                {
-                    var teacher = await _unitOfWork.UserRepository.GetByIdAsync((Guid)returnCategoryEquipmentViewModel.UserAccountId);
-                    await SendEmailUtil.SendEmail(teacher.Email, "Xác nhận yêu cầu trả thiết bị",
-                    "KidProEdu thông báo, \n\n" +
-                    "Yêu cầu trả thiết bị của bạn đã được xác nhận, \n" +
-                    "   Thông tin:, \n" +
-                    "         Người trả: " + teacher.FullName + "\n" +
-                    "         Email: " + teacher.Email + "\n" +
-                    "         Sđt: " + teacher.Phone + "\n" +
-                    //"         Mã thiết bị: " + equipment.Code + "\n" +
-                    "         Tên thiết bị: " + categoryEquipment.Name + "\n" +
-                    "         Số lượng: " + returnCategoryEquipmentViewModel.Quantity + "\n" +
-                    //"         Loại thiết bị: " + equipment.CategoryEquipment.Name + "\n" +
-                    "         Ngày trả: " + _currentTime.GetCurrentTime().Date + "\n" +
-                    //"Nhân viên sẽ đưa thiết bị đến phòng" + borrowCategoryEquipmentViewModel.RoomId + "\n" +
-                    "Xin cảm ơn!. \n\n" +
-                    "Trân trọng, \n" +
-                    "KidPro Education!");
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public async Task<bool> UpdateCategoryEquipment(UpdateCategoryEquipmentViewModel updateCategoryEquipmentViewModel)
@@ -357,5 +351,7 @@ namespace KidProEdu.Application.Services
             _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật danh mục thiết bị thất bại");
         }
+
+        
     }
 }

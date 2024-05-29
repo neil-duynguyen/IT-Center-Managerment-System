@@ -1,6 +1,7 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Services;
 using KidProEdu.Application.ViewModels.CategoryEquipmentViewModels;
+using KidProEdu.Application.ViewModels.EnrollmentViewModels;
 using KidProEdu.Application.ViewModels.EquipmentViewModels;
 using KidProEdu.Application.ViewModels.LocationViewModel;
 using Microsoft.AspNetCore.Authorization;
@@ -60,13 +61,36 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
-        [HttpPost("BorrowAutoEquipmentManagement")]
+        [HttpPost("BorrowEquipment")]
         //[Authorize(Roles = ("Manager"))]
-        public async Task<IActionResult> BorrowAutoEquipmentManagement(BorrowAutoCategoryEquipmentViewModel borrowAutoCategoryEquipmentViewModel)
+        public async Task<IActionResult> BorrowEquipment(List<BorrowAutoCategoryEquipmentViewModel> borrowCategoryEquipmentViewModels)
         {
             try
             {
-                var result = await _categoryEquipmentService.BorrowAutoCategoryEquipment(borrowAutoCategoryEquipmentViewModel);
+                var result = await _categoryEquipmentService.BorrowCategoryEquipment(borrowCategoryEquipmentViewModels);
+                if (result)
+                {
+                    return Ok("Mượn thiết bị thành công.");
+                }
+                else
+                {
+                    return BadRequest("Mượn thiết bị thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+  
+        }
+
+        [HttpPost("BorrowEquipmentWithStaff")]
+        //[Authorize(Roles = ("Manager"))]
+        public async Task<IActionResult> BorrowEquipmentWithStaff(List<BorrowCategoryEquipmentViewModel> borrowCategoryEquipmentViewModels)
+        {
+            try
+            {
+                var result = await _categoryEquipmentService.BorrowWithStaffCategoryEquipment(borrowCategoryEquipmentViewModels);
                 if (result)
                 {
                     return Ok("Mượn thiết bị thành công.");
@@ -82,13 +106,13 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
-        [HttpPost("BorrowEquipmentManagement")]
+        [HttpPost("BorrowEquipmentForGoHome")]
         //[Authorize(Roles = ("Manager"))]
-        public async Task<IActionResult> EquipmentBorrowedManagement(BorrowCategoryEquipmentViewModel borrowCategoryEquipmentViewModel)
+        public async Task<IActionResult> BorrowEquipmentForGoHome(List<BorrowForGoHomeCategoryEquipmentViewModel> borrowForGoHomeCategoryEquipmentViewModels)
         {
             try
             {
-                var result = await _categoryEquipmentService.BorrowCategoryEquipment(borrowCategoryEquipmentViewModel);
+                var result = await _categoryEquipmentService.BorrowForGoHomeCategoryEquipment(borrowForGoHomeCategoryEquipmentViewModels);
                 if (result)
                 {
                     return Ok("Mượn thiết bị thành công.");
@@ -104,13 +128,13 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
-        [HttpPost("ReturnEquipmentManagement")]
+        [HttpPost("ReturnEquipment")]
         //[Authorize(Roles = ("Manager"))]
-        public async Task<IActionResult> ReturnEquipmentManagement(ReturnCategoryEquipmentViewModel returnCategoryEquipmentViewModel)
+        public async Task<IActionResult> ReturnEquipmentManagement(List<ReturnCategoryEquipmentViewModel> returnCategoryEquipmentViewModels)
         {
             try
             {
-                var result = await _categoryEquipmentService.ReturnCategoryEquipment(returnCategoryEquipmentViewModel);
+                var result = await _categoryEquipmentService.ReturnCategoryEquipment(returnCategoryEquipmentViewModels);
                 if (result)
                 {
                     return Ok("Trả thiết bị thành công.");
