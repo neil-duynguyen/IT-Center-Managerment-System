@@ -243,16 +243,31 @@ namespace KidProEdu.API.Controllers.Manager
         [Authorize(Roles = ("Admin, Manager, Staff"))]
         public async Task<IActionResult> GetEquipmentByDate(DateOnly date)
         {
-            var result = await _equipmentService.GetEquipmentByDate(date);
-            return Ok(result);
+            try
+            {
+                var result = await _equipmentService.GetEquipmentByDate(date);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return NotFound("Không có lớp cần chuẩn bị.");
+            }
         }
 
         [HttpGet("GetEquipmentByProgress/{classId}/{progress}")]
         [Authorize(Roles = ("Admin, Manager, Staff"))]
         public async Task<IActionResult> GetEquipmentByProgress(Guid classId, int progress)
         {
-            var result = await _equipmentService.GetEquipmentByProgress(classId, progress);
-            return Ok(result);
+            try
+            {
+                var result = await _equipmentService.GetEquipmentByProgress(classId, progress);
+                return Ok(result);
+
+            }
+            catch (Exception)
+            {
+                return NotFound("Không có thiết bị cần chuẩn bị.");
+            }
         }
 
         [HttpGet("ExportExcelFile/{date}")]

@@ -193,6 +193,22 @@ namespace KidProEdu.API.Controllers.Manager
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("UpdateQuantityEquipment")]
+        [Authorize(Roles = ("Admin, Manager, Staff"))]
+        public async Task<IActionResult> UpdateQuantityEquipment(UpdateQuantityCategoryEquipment updateQuantityCategory)
+        {
+            try
+            {
+                await _categoryEquipmentService.UpdateQuantityEquipment(updateQuantityCategory);
+                return Ok("Xuất kho thành công.");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
 

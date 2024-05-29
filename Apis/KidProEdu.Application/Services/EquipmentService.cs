@@ -462,7 +462,7 @@ namespace KidProEdu.Application.Services
                 var listAttendance = await _attendanceService.GetAttendanceDetailsByCourseIdAndChildrenId(item.Class.CourseId, item.ChildrenProfileId);
 
                 //getTeacher
-                var teacherName = item.Class.TeachingClassHistories.OrderByDescending(x => x.CreationDate).FirstOrDefault().UserAccount.FullName;            
+                var teacher = item.Class.TeachingClassHistories.OrderByDescending(x => x.CreationDate).FirstOrDefault().UserAccount;            
 
                 if (listAttendance.Any(x => DateOnly.FromDateTime(x.Date) == date))
                 {
@@ -471,7 +471,8 @@ namespace KidProEdu.Application.Services
                     
                     int daysStudied = listAttendance.Count(x => DateOnly.FromDateTime(x.Date) <= date);
 
-                    learningProgress.Add(new LearningProgress { ClassId = item.ClassId, ClassCode = item.Class.ClassCode, Progress = daysStudied, NameTeacher = teacherName, Slot = item.Class.Schedules.FirstOrDefault().Slot.Name, RoomName = roomName });
+                    learningProgress.Add(new LearningProgress { ClassId = item.ClassId, ClassCode = item.Class.ClassCode, Progress = daysStudied, TeacherId = teacher.Id
+                                                            ,NameTeacher = teacher.FullName, Slot = item.Class.Schedules.FirstOrDefault().Slot.Name, RoomName = roomName });
                 }
             }
 
@@ -534,7 +535,7 @@ namespace KidProEdu.Application.Services
             {
                 foreach (var equipment in getLesson.CategoryEquipments)
                 {
-                    listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Name = equipment.Name, Quantity = enrollmentCount });
+                    listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Id = equipment.Id, Name = equipment.Name, Quantity = enrollmentCount });
                 }
             }
             else if (getLesson.TypeOfPractice == TypeOfPractice.Group)
@@ -542,7 +543,7 @@ namespace KidProEdu.Application.Services
                 foreach (var equipment in getLesson.CategoryEquipments)
                 {
                     var a = (int)Math.Ceiling((double)((double)(enrollmentCount) / getLesson.GroupSize));
-                    listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Name = equipment.Name, Quantity = a });
+                    listPrepareEquipmentView.Add(new PrepareEquipmentViewModel { Id = equipment.Id, Name = equipment.Name, Quantity = a });
                 }
             }
         }
@@ -604,6 +605,7 @@ namespace KidProEdu.Application.Services
         public Guid ClassId { get; set; }
         public string ClassCode { get; set; }
         public int Progress { get; set; }
+        public Guid TeacherId { get; set; }
         public string NameTeacher { get; set; }
         public string Slot { get; set; }
         public string RoomName { get; set; }

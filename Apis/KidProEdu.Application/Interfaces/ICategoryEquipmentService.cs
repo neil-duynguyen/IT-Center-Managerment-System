@@ -22,5 +22,6 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> BorrowCategoryEquipment(List<BorrowAutoCategoryEquipmentViewModel> borrowCategoryEquipmentViewModels);
         Task<bool> ReturnCategoryEquipment(List<ReturnCategoryEquipmentViewModel> returnCategoryEquipmentViewModels);
         Task<bool> BorrowForGoHomeCategoryEquipment(List<BorrowForGoHomeCategoryEquipmentViewModel> borrowForGoHomeCategoryEquipmentViewModels);
+        Task UpdateQuantityEquipment(UpdateQuantityCategoryEquipment updateQuantityCategory);
     }
 }

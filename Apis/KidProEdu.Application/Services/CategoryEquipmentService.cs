@@ -11,12 +11,14 @@ using KidProEdu.Application.ViewModels.LocationViewModel;
 using KidProEdu.Domain.Entities;
 using KidProEdu.Domain.Enums;
 using Microsoft.IdentityModel.Tokens;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZXing;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KidProEdu.Application.Services
 {
@@ -28,14 +30,16 @@ namespace KidProEdu.Application.Services
         private readonly IClaimsService _claimsService;
         private readonly IMapper _mapper;
         private readonly QRCodeUtility _qrCodeUtility;
+        private readonly IEquipmentService _equipmentService;
 
-        public CategoryEquipmentService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, QRCodeUtility qrCodeUtility)
+        public CategoryEquipmentService(IUnitOfWork unitOfWork, ICurrentTime currentTime, IClaimsService claimsService, IMapper mapper, QRCodeUtility qrCodeUtility, IEquipmentService equipmentService)
         {
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
             _claimsService = claimsService;
             _mapper = mapper;
             _qrCodeUtility = qrCodeUtility;
+            _equipmentService = equipmentService;
         }
 
         public async Task<bool> BorrowForGoHomeCategoryEquipment(List<BorrowForGoHomeCategoryEquipmentViewModel> borrowForGoHomeCategoryEquipmentViewModels)
@@ -92,6 +96,45 @@ namespace KidProEdu.Application.Services
             {
                 await _unitOfWork.SaveChangeAsync();
                 return true;
+            }
+        }
+
+        //Function update số lượng equipment trong kho
+        public async Task UpdateQuantityEquipment(UpdateQuantityCategoryEquipment updateQuantityCategory) {
+            
+            //check Teacher send request
+            var getRequest = await _unitOfWork.RequestRepository.GetAllAsync();
+            var checkRequest = getRequest.FirstOrDefault(x =>
+                                                            x.CreatedBy == updateQuantityCategory.TeacherId &&
+                                                            x.Status == StatusOfRequest.Pending &&
+                                                            x.RequestType == "Equipment" &&
+                                                            DateOnly.FromDateTime(x.CreationDate) == DateOnly.FromDateTime(_currentTime.GetCurrentTime()) &&
+                                                            !x.IsDeleted);
+            if (checkRequest != null)
+            {
+                checkRequest.Status = StatusOfRequest.Approved;
+                _unitOfWork.RequestRepository.Update(checkRequest);
+                await _unitOfWork.SaveChangeAsync();
+            }
+            else {
+                throw new Exception("Giáo viên chưa gửi yêu cầu mượn thiết bị.");
+            }
+
+            var getEquipment = await _equipmentService.GetEquipmentByProgress(updateQuantityCategory.ClassId, updateQuantityCategory.Progress);
+
+            var listEquipment = new List<BorrowAutoCategoryEquipmentViewModel>();
+
+            if (getEquipment.Count == 0)
+            {
+                foreach (var item in getEquipment)
+                {
+                    listEquipment.Add(new BorrowAutoCategoryEquipmentViewModel() { CategoryEquipmentId = item.Id, Quantity = (int)item.Quantity, UserAccountId = updateQuantityCategory.TeacherId });
+                }
+
+                await BorrowCategoryEquipment(listEquipment);
+            }
+            else {
+                throw new Exception("Xuất kho thất bại.");
             }
         }
 

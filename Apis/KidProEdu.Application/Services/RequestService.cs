@@ -532,7 +532,7 @@ namespace KidProEdu.Application.Services
                 listRequest.Add(mapper);
             }
 
-            return _mapper.Map<List<RequestViewModel>>(listRequest);
+            return _mapper.Map<List<RequestViewModel>>(listRequest.OrderByDescending(x => x.CreationDate));
         }
     }
 }
