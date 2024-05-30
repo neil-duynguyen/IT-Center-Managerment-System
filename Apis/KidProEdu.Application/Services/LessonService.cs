@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Hangfire.MemoryStorage.Utilities;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Validations.Lessons;
 using KidProEdu.Application.Validations.Ratings;
@@ -44,6 +45,8 @@ namespace KidProEdu.Application.Services
                     throw new Exception(error.ErrorMessage);
                 }
             }
+
+            if (createLessonViewModel.TypeOfPractice == Domain.Enums.TypeOfPractice.Group && createLessonViewModel.GroupSize < 2) throw new Exception("Nhóm không thể ít hơn 2 người");
 
             var checkDuration = await _unitOfWork.CourseRepository.GetByIdAsync(createLessonViewModel.CourseId);
             var filterLesson = checkDuration.Lessons.Where(x => !x.IsDeleted).ToList();
@@ -131,6 +134,7 @@ namespace KidProEdu.Application.Services
                     throw new Exception(error.ErrorMessage);
                 }
             }
+            if (updateLessonViewModel.TypeOfPractice == Domain.Enums.TypeOfPractice.Group && updateLessonViewModel.GroupSize < 2) throw new Exception("Nhóm không thể ít hơn 2 người");
 
             var lesson = await _unitOfWork.LessonRepository.GetByIdAsync(updateLessonViewModel.Id);
             if (lesson == null)
