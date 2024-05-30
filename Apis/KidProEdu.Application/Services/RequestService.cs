@@ -208,7 +208,7 @@ namespace KidProEdu.Application.Services
         public async Task<List<RequestViewModel>> GetRequests()
         {
             var requests = _unitOfWork.RequestRepository.GetAllAsync().Result.Where(x => x.IsDeleted == false).OrderByDescending(x => x.CreationDate).ToList();
-            var listViewModel = _mapper.Map<List<RequestViewModel>>(requests);
+            var listViewModel = _mapper.Map<List<RequestViewModel>>(requests.OrderByDescending(x => x.CreationDate));
 
             foreach (var request in listViewModel)
             {
@@ -506,7 +506,7 @@ namespace KidProEdu.Application.Services
         {
             var requests = await _unitOfWork.RequestRepository.GetRequestByUser(userId);
 
-            var listViewModel = _mapper.Map<List<RequestViewModel>>(requests);
+            var listViewModel = _mapper.Map<List<RequestViewModel>>(requests.OrderByDescending(x => x.CreationDate));
 
             foreach (var request in listViewModel)
             {

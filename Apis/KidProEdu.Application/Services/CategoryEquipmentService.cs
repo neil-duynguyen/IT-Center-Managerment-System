@@ -124,7 +124,7 @@ namespace KidProEdu.Application.Services
 
             var listEquipment = new List<BorrowAutoCategoryEquipmentViewModel>();
 
-            if (getEquipment.Count == 0)
+            if (getEquipment.Count != 0)
             {
                 foreach (var item in getEquipment)
                 {
@@ -395,6 +395,33 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật danh mục thiết bị thất bại");
         }
 
-        
+        public async Task<List<EquipmentReportViewModel>> EquipmentReport() {
+
+            var checkEquipment = await _unitOfWork.CategoryEquipmentRepository.GetAllAsync();
+
+            var listReport = new List<EquipmentReportViewModel>();
+
+            foreach (var item in checkEquipment)
+            {
+                var sortEquipment = item.Equipments.GroupBy(x => x.Status).ToList();
+
+                foreach (var group in sortEquipment)
+                {
+                    listReport.Add(new EquipmentReportViewModel() { Id = item.Id, Name = item.Name, Quantity = group.Count(), Status = group.Key.ToString() });
+                }
+
+            }
+
+            return listReport;
+        }
+
+        public class EquipmentReportViewModel
+        { 
+            public Guid Id { get; set; }
+            public string Name { get; set; }
+            public int Quantity { get; set; }
+            public string Status { get; set; }
+        }
+
     }
 }

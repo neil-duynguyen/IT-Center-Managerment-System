@@ -194,7 +194,7 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
-        [HttpGet("UpdateQuantityEquipment")]
+        [HttpPut("UpdateQuantityEquipment")]
         [Authorize(Roles = ("Admin, Manager, Staff"))]
         public async Task<IActionResult> UpdateQuantityEquipment(UpdateQuantityCategoryEquipment updateQuantityCategory)
         {
@@ -207,6 +207,20 @@ namespace KidProEdu.API.Controllers.Manager
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("EquipmentReport")]
+        public async Task<IActionResult> EquipmentReport()
+        {
+            try
+            {
+                return Ok(await _categoryEquipmentService.EquipmentReport());
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }

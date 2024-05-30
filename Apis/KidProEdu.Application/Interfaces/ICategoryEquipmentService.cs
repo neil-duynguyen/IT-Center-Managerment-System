@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static KidProEdu.Application.Services.CategoryEquipmentService;
 
 namespace KidProEdu.Application.Interfaces
 {
@@ -23,5 +24,6 @@ namespace KidProEdu.Application.Interfaces
         Task<bool> ReturnCategoryEquipment(List<ReturnCategoryEquipmentViewModel> returnCategoryEquipmentViewModels);
         Task<bool> BorrowForGoHomeCategoryEquipment(List<BorrowForGoHomeCategoryEquipmentViewModel> borrowForGoHomeCategoryEquipmentViewModels);
         Task UpdateQuantityEquipment(UpdateQuantityCategoryEquipment updateQuantityCategory);
+        Task<List<EquipmentReportViewModel>> EquipmentReport();
     }
 }

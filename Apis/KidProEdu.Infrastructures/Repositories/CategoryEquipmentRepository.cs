@@ -34,7 +34,10 @@ namespace KidProEdu.Infrastructures.Repositories
             return categoryEquipment;
         }
 
-     
+        public override async Task<List<CategoryEquipment>> GetAllAsync()
+        {
+            return await _dbSet.Include(x => x.Equipments).ThenInclude(x => x.LogEquipments).Where(x => !x.IsDeleted).ToListAsync();
+        }
 
 
     }
