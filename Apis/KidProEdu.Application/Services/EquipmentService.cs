@@ -476,7 +476,21 @@ namespace KidProEdu.Application.Services
                 }
             }
 
-            return learningProgress;
+            List<LearningProgress> itemsToAdd = new List<LearningProgress>();
+
+            foreach (var item in learningProgress)
+            {
+                var listEquipment = await GetEquipmentByProgress(item.ClassId, item.Progress);
+
+                if (listEquipment.Count() != 0)
+                {
+                    itemsToAdd.Add(item);
+                }
+            }
+
+            //learningProgress.AddRange(itemsToAdd);
+
+            return itemsToAdd;
         }
 
         //Get equipment theo ngày

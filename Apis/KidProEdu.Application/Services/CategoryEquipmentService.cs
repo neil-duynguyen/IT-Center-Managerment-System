@@ -100,8 +100,9 @@ namespace KidProEdu.Application.Services
         }
 
         //Function update số lượng equipment trong kho
-        public async Task UpdateQuantityEquipment(UpdateQuantityCategoryEquipment updateQuantityCategory) {
-            
+        public async Task UpdateQuantityEquipment(UpdateQuantityCategoryEquipment updateQuantityCategory)
+        {
+
             //check Teacher send request
             var getRequest = await _unitOfWork.RequestRepository.GetAllAsync();
             var checkRequest = getRequest.FirstOrDefault(x =>
@@ -116,7 +117,8 @@ namespace KidProEdu.Application.Services
                 _unitOfWork.RequestRepository.Update(checkRequest);
                 await _unitOfWork.SaveChangeAsync();
             }
-            else {
+            else
+            {
                 throw new Exception("Giáo viên chưa gửi yêu cầu mượn thiết bị.");
             }
 
@@ -133,7 +135,8 @@ namespace KidProEdu.Application.Services
 
                 await BorrowCategoryEquipment(listEquipment);
             }
-            else {
+            else
+            {
                 throw new Exception("Xuất kho thất bại.");
             }
         }
@@ -395,7 +398,8 @@ namespace KidProEdu.Application.Services
             return await _unitOfWork.SaveChangeAsync() > 0 ? true : throw new Exception("Cập nhật danh mục thiết bị thất bại");
         }
 
-        public async Task<List<EquipmentReportViewModel>> EquipmentReport() {
+        public async Task<List<EquipmentReportViewModel>> EquipmentReport()
+        {
 
             var checkEquipment = await _unitOfWork.CategoryEquipmentRepository.GetAllAsync();
 
@@ -403,12 +407,7 @@ namespace KidProEdu.Application.Services
 
             foreach (var item in checkEquipment)
             {
-                var sortEquipment = item.Equipments.GroupBy(x => x.Status).ToList();
-
-                foreach (var group in sortEquipment)
-                {
-                    listReport.Add(new EquipmentReportViewModel() { Id = item.Id, Name = item.Name, Quantity = group.Count(), Status = group.Key.ToString() });
-                }
+                listReport.Add(new EquipmentReportViewModel() { Id = item.Id, Name = item.Name, Quantity = item.Quantity });
 
             }
 
@@ -416,11 +415,10 @@ namespace KidProEdu.Application.Services
         }
 
         public class EquipmentReportViewModel
-        { 
+        {
             public Guid Id { get; set; }
             public string Name { get; set; }
             public int Quantity { get; set; }
-            public string Status { get; set; }
         }
 
     }
