@@ -407,7 +407,7 @@ namespace KidProEdu.Application.Services
 
             foreach (var item in checkEquipment)
             {
-                listReport.Add(new EquipmentReportViewModel() { Id = item.Id, Name = item.Name, Quantity = item.Quantity });
+                listReport.Add(new EquipmentReportViewModel() { Id = item.Id, Name = item.Name, Quantity = item.Quantity, Code = item.Code });
 
             }
 
@@ -419,6 +419,7 @@ namespace KidProEdu.Application.Services
             public Guid Id { get; set; }
             public string Name { get; set; }
             public int Quantity { get; set; }
+            public string? Code { get; set; }
         }
 
     }
