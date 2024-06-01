@@ -130,7 +130,7 @@ namespace KidProEdu.Application.Services
                 logEquipment.Price = equipment.Price;
                 logEquipment.Status = StatusOfEquipment.Borrowed;
                 logEquipment.RepairDate = null;
-                logEquipment.BorrowedDate = _currentTime.GetCurrentTime().Date;
+                logEquipment.BorrowedDate = _currentTime.GetCurrentTime();
                 logEquipment.ReturnedDate = null;
                 logEquipment.ReturnedDealine = equipmentBorrowedManagementViewModel.ReturnedDealine;
                 logEquipment.WarrantyPeriod = equipment.WarrantyPeriod;
@@ -202,7 +202,7 @@ namespace KidProEdu.Application.Services
                 logEquipment.Code = equipment.Code;
                 logEquipment.Price = equipment.Price;
                 logEquipment.Status = StatusOfEquipment.Repair;
-                logEquipment.RepairDate = _currentTime.GetCurrentTime().Date;
+                logEquipment.RepairDate = _currentTime.GetCurrentTime();
                 logEquipment.BorrowedDate = null;
                 logEquipment.ReturnedDate = null;
                 logEquipment.ReturnedDealine = null;
@@ -267,7 +267,7 @@ namespace KidProEdu.Application.Services
                 logEquipment.Status = StatusOfEquipment.Returned;
                 logEquipment.RepairDate = null;
                 logEquipment.BorrowedDate = null;
-                logEquipment.ReturnedDate = _currentTime.GetCurrentTime().Date;
+                logEquipment.ReturnedDate = _currentTime.GetCurrentTime();
                 logEquipment.ReturnedDealine = null;
                 logEquipment.WarrantyPeriod = equipment.WarrantyPeriod;
                 logEquipment.PurchaseDate = equipment.PurchaseDate;
