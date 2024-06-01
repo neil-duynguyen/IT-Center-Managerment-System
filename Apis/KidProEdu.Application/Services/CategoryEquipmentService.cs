@@ -180,7 +180,7 @@ namespace KidProEdu.Application.Services
                     RepairDate = null,
                     BorrowedDate = _currentTime.GetCurrentTime(),
                     ReturnedDate = null,
-                    ReturnedDealine = null,
+                    ReturnedDealine = _currentTime.GetCurrentTime(),
                     WarrantyPeriod = null,
                     PurchaseDate = null,
                     RoomId = null,
@@ -239,7 +239,7 @@ namespace KidProEdu.Application.Services
                     RepairDate = null,
                     BorrowedDate = _currentTime.GetCurrentTime(),
                     ReturnedDate = null,
-                    ReturnedDealine = null,
+                    ReturnedDealine = _currentTime.GetCurrentTime(),
                     WarrantyPeriod = null,
                     PurchaseDate = null,
                     RoomId = viewModel.RoomId,
@@ -286,6 +286,11 @@ namespace KidProEdu.Application.Services
                 var logEquipBorrow = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByEquipmentIdAndUserAccountIdAndLogTypeAtClass(viewModel.CategoryEquipmentId, (Guid)viewModel.UserAccountId, LogType.AtClass);
 
                 if(logEquipBorrow == null)
+                {
+                    throw new Exception("Giáo viên chưa mượn thiết bị nên không thể trả ");
+                }
+
+                if (logEquipBorrow.Status == StatusOfEquipment.Returned)
                 {
                     throw new Exception("Giáo viên chưa mượn thiết bị nên không thể trả ");
                 }
@@ -347,6 +352,11 @@ namespace KidProEdu.Application.Services
                 var logEquipBorrow = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByEquipmentIdAndUserAccountIdAndLogTypeAtHome(viewModel.CategoryEquipmentId, (Guid)viewModel.UserAccountId, LogType.AtHome);
 
                 if (logEquipBorrow == null)
+                {
+                    throw new Exception("Giáo viên chưa mượn thiết bị nên không thể trả ");
+                }
+
+                if (logEquipBorrow.Status == StatusOfEquipment.Returned)
                 {
                     throw new Exception("Giáo viên chưa mượn thiết bị nên không thể trả ");
                 }
