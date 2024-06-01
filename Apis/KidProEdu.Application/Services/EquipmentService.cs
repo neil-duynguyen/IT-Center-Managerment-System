@@ -187,12 +187,12 @@ namespace KidProEdu.Application.Services
 
             // Cập nhật trạng thái thiết bị
             equipment.Status = StatusOfEquipment.Repair;
-            equipment.RoomId = equipmentRepairManagementViewModel.RoomId;
             _unitOfWork.EquipmentRepository.Update(equipment);
 
             var result = await _unitOfWork.SaveChangeAsync();
             if (result > 0)
             {
+
                 var logEquipment = new LogEquipment();
                 logEquipment.EquipmentId = equipment.Id;
                 logEquipment.UserAccountId = equipmentRepairManagementViewModel.UserAccountId;
@@ -206,7 +206,9 @@ namespace KidProEdu.Application.Services
                 logEquipment.ReturnedDealine = null;
                 logEquipment.WarrantyPeriod = equipment.WarrantyPeriod;
                 logEquipment.PurchaseDate = equipment.PurchaseDate;
-                logEquipment.RoomId = equipmentRepairManagementViewModel.RoomId;
+                logEquipment.RoomId = null;
+                logEquipment.CategoryEquipmentId = null;
+                logEquipment.Quantity = 1;
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
                 var result2 = await _unitOfWork.SaveChangeAsync();
                 if (result2 > 0)
