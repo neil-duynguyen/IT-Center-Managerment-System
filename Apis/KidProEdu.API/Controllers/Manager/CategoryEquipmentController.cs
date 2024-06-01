@@ -150,6 +150,29 @@ namespace KidProEdu.API.Controllers.Manager
             }
         }
 
+        [HttpPost("ReturnEquipmentForHome")]
+        //[Authorize(Roles = ("Manager"))]
+        public async Task<IActionResult> ReturnEquipmentForHome(List<ReturnCategoryEquipmentViewModel> returnCategoryEquipmentViewModels)
+        {
+            try
+            {
+                var result = await _categoryEquipmentService.ReturnForHomeCategoryEquipment(returnCategoryEquipmentViewModels);
+                if (result)
+                {
+                    return Ok("Trả thiết bị thành công.");
+                }
+                else
+                {
+                    return BadRequest("Trả thiết bị thất bại.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPut]
         [Authorize(Roles = ("Admin, Manager"))]
         public async Task<IActionResult> PutCategoryEquipment(UpdateCategoryEquipmentViewModel updateCategoryEquipmentViewModel)
