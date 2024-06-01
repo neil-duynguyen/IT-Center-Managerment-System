@@ -28,6 +28,7 @@ namespace KidProEdu.Domain.Entities
         public DateTime? ReturnedDealine { get; set; }
         public Guid? RoomId { get; set; }
         public int? Quantity { get; set; }
+        public string? Note { get; set; }
         public virtual Equipment? Equipment { get; set; }
         public virtual CategoryEquipment? CategoryEquipment { get; set; }
         public virtual UserAccount? UserAccount { get; set; }
