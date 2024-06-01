@@ -285,7 +285,10 @@ namespace KidProEdu.Application.Services
 
                 var logEquipBorrow = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByEquipmentIdAndUserAccountIdAndLogTypeAtClass(viewModel.CategoryEquipmentId, (Guid)viewModel.UserAccountId, LogType.AtClass);
 
-
+                if(logEquipBorrow == null)
+                {
+                    throw new Exception("Giáo viên chưa mượn thiết bị nên không thể trả ");
+                }
 
                 var logEquipment = new LogEquipment
                 {
@@ -343,6 +346,10 @@ namespace KidProEdu.Application.Services
 
                 var logEquipBorrow = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByEquipmentIdAndUserAccountIdAndLogTypeAtHome(viewModel.CategoryEquipmentId, (Guid)viewModel.UserAccountId, LogType.AtHome);
 
+                if (logEquipBorrow == null)
+                {
+                    throw new Exception("Giáo viên chưa mượn thiết bị nên không thể trả ");
+                }
 
 
                 var logEquipment = new LogEquipment
