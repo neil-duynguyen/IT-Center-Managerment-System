@@ -136,6 +136,8 @@ namespace KidProEdu.Application.Services
                 logEquipment.WarrantyPeriod = equipment.WarrantyPeriod;
                 logEquipment.PurchaseDate = equipment.PurchaseDate;
                 logEquipment.RoomId = equipmentBorrowedManagementViewModel.RoomId;
+                logEquipment.Note = null;
+
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
                 var result2 = await _unitOfWork.SaveChangeAsync();
                 if (result2 > 0)
@@ -209,6 +211,7 @@ namespace KidProEdu.Application.Services
                 logEquipment.RoomId = null;
                 logEquipment.CategoryEquipmentId = null;
                 logEquipment.Quantity = 1;
+                logEquipment.Note = null;
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
                 var result2 = await _unitOfWork.SaveChangeAsync();
                 if (result2 > 0)
@@ -271,6 +274,8 @@ namespace KidProEdu.Application.Services
                 logEquipment.RoomId = null;
                 logEquipment.CategoryEquipmentId = null;
                 logEquipment.Quantity = 1;
+                logEquipment.Note = null;
+
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
                 var result2 = await _unitOfWork.SaveChangeAsync();
                 if (result2 > 0)

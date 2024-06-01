@@ -84,7 +84,8 @@ namespace KidProEdu.Application.Services
                     PurchaseDate = null,
                     RoomId = null,
                     CategoryEquipmentId = viewModel.CategoryEquipmentId,
-                    Quantity = viewModel.Quantity
+                    Quantity = viewModel.Quantity,
+                    Note = null,
                 };
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
             }
@@ -183,7 +184,8 @@ namespace KidProEdu.Application.Services
                     PurchaseDate = null,
                     RoomId = null,
                     CategoryEquipmentId = viewModel.CategoryEquipmentId,
-                    Quantity = viewModel.Quantity
+                    Quantity = viewModel.Quantity,
+                    Note = null,
                 };
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
             }
@@ -240,7 +242,8 @@ namespace KidProEdu.Application.Services
                     PurchaseDate = null,
                     RoomId = viewModel.RoomId,
                     CategoryEquipmentId = viewModel.CategoryEquipmentId,
-                    Quantity = viewModel.Quantity
+                    Quantity = viewModel.Quantity,
+                    Note = null,
                 };
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
             }
@@ -292,7 +295,8 @@ namespace KidProEdu.Application.Services
                     PurchaseDate = null,
                     RoomId = null,
                     CategoryEquipmentId = viewModel.CategoryEquipmentId,
-                    Quantity = viewModel.Quantity
+                    Quantity = viewModel.Quantity,
+                    Note = viewModel.Note,
                 };
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
             }
