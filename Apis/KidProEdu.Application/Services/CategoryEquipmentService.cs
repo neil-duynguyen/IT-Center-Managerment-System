@@ -66,6 +66,16 @@ namespace KidProEdu.Application.Services
                     errorMessages.Add($"Thiết bị {categoryEquipment.Name} trong kho đã không đủ số lượng bạn yêu cầu");
                 }
 
+                if(viewModel.Quantity > 5)
+                {
+                    throw new Exception("Bạn không được mượn quá 5 thiết bị");
+                }
+
+                if (viewModel.Quantity < 1)
+                {
+                    throw new Exception("Bạn không được nhập số lượng nhỏ hơn 0");
+                }
+
                 categoryEquipment.Quantity -= viewModel.Quantity;
                 _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
                 var logEquipment = new LogEquipment
@@ -165,6 +175,11 @@ namespace KidProEdu.Application.Services
                 if (categoryEquipment.Quantity < viewModel.Quantity)
                 {
                     errorMessages.Add($"Thiết bị {categoryEquipment.Name} trong kho đã không đủ số lượng bạn yêu cầu");
+                }
+
+                if (viewModel.Quantity < 1)
+                {
+                    throw new Exception("Bạn không được nhập số lượng nhỏ hơn 0");
                 }
 
                 categoryEquipment.Quantity -= viewModel.Quantity;
@@ -295,6 +310,16 @@ namespace KidProEdu.Application.Services
                     throw new Exception("Giáo viên chưa mượn thiết bị nên không thể trả ");
                 }
 
+                if (logEquipBorrow.Quantity < viewModel.Quantity)
+                {
+                    throw new Exception($"Bạn đã trả quá số lượng mượn của thiết bị {categoryEquipment.Name}");
+                }
+
+                if (viewModel.Quantity < 1)
+                {
+                    throw new Exception("Bạn không được nhập số lượng nhỏ hơn 0");
+                }
+
                 var logEquipment = new LogEquipment
                 {
                     EquipmentId = null,
@@ -359,6 +384,16 @@ namespace KidProEdu.Application.Services
                 if (logEquipBorrow.Status == StatusOfEquipment.Returned)
                 {
                     throw new Exception("Giáo viên chưa mượn thiết bị nên không thể trả ");
+                }
+
+                if (logEquipBorrow.Quantity < viewModel.Quantity)
+                {
+                    throw new Exception($"Bạn đã trả quá số lượng mượn của thiết bị {categoryEquipment.Name}");
+                }
+
+                if (viewModel.Quantity < 1)
+                {
+                    throw new Exception("Bạn không được nhập số lượng nhỏ hơn 0");
                 }
 
 
