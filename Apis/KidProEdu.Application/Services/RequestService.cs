@@ -139,7 +139,7 @@ namespace KidProEdu.Application.Services
                 {*/
                 var eRequest = _unitOfWork.RequestRepository.GetAllAsync().Result
                     .Where(x => x.IsDeleted == false && x.Status == Domain.Enums.StatusOfRequest.Pending
-                     && x.CreatedBy == _claimsService.GetCurrentUserId).ToList();
+                     && x.CreatedBy == _claimsService.GetCurrentUserId && x.RequestType == "Equipment").ToList();
 
                 if (!eRequest.IsNullOrEmpty())
                 {
