@@ -222,7 +222,7 @@ namespace KidProEdu.Application.Services
                         updateCategoryEquipment.Quantity = updateCategoryEquipment.Quantity - 1;
                         _unitOfWork.CategoryEquipmentRepository.Update(updateCategoryEquipment);
                         var result3 = await _unitOfWork.SaveChangeAsync();
-                        if(result3 > 0)
+                        if (result3 > 0)
                         {
                             return true;
                         }
@@ -455,17 +455,45 @@ namespace KidProEdu.Application.Services
                 var listAttendance = await _attendanceService.GetAttendanceDetailsByCourseIdAndChildrenId(item.Class.CourseId, item.ChildrenProfileId);
 
                 //getTeacher
-                var teacher = item.Class.TeachingClassHistories.OrderByDescending(x => x.CreationDate).FirstOrDefault().UserAccount;            
+                var teacher = item.Class.TeachingClassHistories.OrderByDescending(x => x.CreationDate).FirstOrDefault().UserAccount;
 
                 if (listAttendance.Any(x => DateOnly.FromDateTime(x.Date) == date))
                 {
                     //getRoom
                     var roomName = item.Class.Schedules.FirstOrDefault(x => x.DayInWeek.Equals(date.DayOfWeek.ToString())).ScheduleRooms.OrderByDescending(x => x.CreationDate).FirstOrDefault().Room.Name;
-                    
+
                     int daysStudied = listAttendance.Count(x => DateOnly.FromDateTime(x.Date) <= date);
 
-                    learningProgress.Add(new LearningProgress { ClassId = item.ClassId, ClassCode = item.Class.ClassCode, Progress = daysStudied, TeacherId = teacher.Id
-                                                            ,NameTeacher = teacher.FullName, Slot = item.Class.Schedules.FirstOrDefault().Slot.Name, RoomName = roomName });
+                    // Tạo một ánh xạ giữa tên slot và thời gian tương ứng
+                    Dictionary<string, string> slotTimeMap = new Dictionary<string, string>
+                        {
+                            { "Slot1", "7:00" },
+                            { "Slot2", "9:30" },
+                            { "Slot3", "12:30" },
+                            { "Slot4", "15:00" },
+                            { "Slot5", "19:00" }
+                        };
+
+                    // Lấy tên slot
+                    var getSlot = item.Class.Schedules.FirstOrDefault()?.Slot?.Name;
+
+                    // Kiểm tra xem slot có tồn tại trong ánh xạ không và gán thời gian tương ứng
+                    var slot = "";
+                    if (getSlot != null && slotTimeMap.ContainsKey(getSlot))
+                    {
+                        slot = getSlot + " (" + slotTimeMap[getSlot] + ")";
+                    }
+
+                    learningProgress.Add(new LearningProgress
+                    {
+                        ClassId = item.ClassId,
+                        ClassCode = item.Class.ClassCode,
+                        Progress = daysStudied,
+                        TeacherId = teacher.Id,
+                        NameTeacher = teacher.FullName,
+                        Slot = slot,
+                        RoomName = roomName
+                    });
                 }
             }
 
