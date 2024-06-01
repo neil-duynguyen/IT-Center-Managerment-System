@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Infrastructures.Repositories;
 using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.IRepositories;
@@ -105,6 +106,26 @@ namespace KidProEdu.Infrastructures.Repositories
                  .ToListAsync();
 
             return logEquipments;
+        }
+
+        public async Task<LogEquipment> GetLogEquipmentByEquipmentIdAndUserAccountIdAndLogTypeAtClass(Guid cateId, Guid UserId, LogType logType)
+        {
+            var logEquipment = await _dbContext.LogEquipment
+                 .Where(x => x.CategoryEquipmentId == cateId && x.UserAccountId == UserId && x.LogType == LogType.AtClass && x.IsDeleted == false)
+                 .OrderByDescending(x => x.CreationDate)
+                 .FirstOrDefaultAsync();
+
+            return logEquipment;
+        }
+
+        public async Task<LogEquipment> GetLogEquipmentByEquipmentIdAndUserAccountIdAndLogTypeAtHome(Guid cateId, Guid UserId, LogType logType)
+        {
+            var logEquipment = await _dbContext.LogEquipment
+                 .Where(x => x.CategoryEquipmentId == cateId && x.UserAccountId == UserId && x.LogType == LogType.AtHome && x.IsDeleted == false)
+                 .OrderByDescending(x => x.CreationDate)
+                 .FirstOrDefaultAsync();
+
+            return logEquipment;
         }
     }
 }

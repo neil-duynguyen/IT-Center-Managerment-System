@@ -86,6 +86,7 @@ namespace KidProEdu.Application.Services
                     CategoryEquipmentId = viewModel.CategoryEquipmentId,
                     Quantity = viewModel.Quantity,
                     Note = null,
+                    LogType = LogType.AtHome,
                 };
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
             }
@@ -186,6 +187,7 @@ namespace KidProEdu.Application.Services
                     CategoryEquipmentId = viewModel.CategoryEquipmentId,
                     Quantity = viewModel.Quantity,
                     Note = null,
+                    LogType = LogType.AtClass
                 };
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
             }
@@ -244,6 +246,7 @@ namespace KidProEdu.Application.Services
                     CategoryEquipmentId = viewModel.CategoryEquipmentId,
                     Quantity = viewModel.Quantity,
                     Note = null,
+                    LogType = LogType.AtClass
                 };
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
             }
@@ -279,6 +282,11 @@ namespace KidProEdu.Application.Services
 
                 categoryEquipment.Quantity += viewModel.Quantity;
                 _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
+
+                var logEquipBorrow = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByEquipmentIdAndUserAccountIdAndLogTypeAtClass(viewModel.CategoryEquipmentId, (Guid)viewModel.UserAccountId, LogType.AtClass);
+
+
+
                 var logEquipment = new LogEquipment
                 {
                     EquipmentId = null,
@@ -288,15 +296,16 @@ namespace KidProEdu.Application.Services
                     Price = null,
                     Status = StatusOfEquipment.Returned,
                     RepairDate = null,
-                    BorrowedDate = null,
+                    BorrowedDate = logEquipBorrow.BorrowedDate,
                     ReturnedDate = _currentTime.GetCurrentTime(),
-                    ReturnedDealine = null,
+                    ReturnedDealine = logEquipBorrow.BorrowedDate,
                     WarrantyPeriod = null,
                     PurchaseDate = null,
                     RoomId = null,
                     CategoryEquipmentId = viewModel.CategoryEquipmentId,
                     Quantity = viewModel.Quantity,
                     Note = viewModel.Note,
+                    LogType = LogType.AtClass
                 };
                 await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
             }
@@ -311,6 +320,63 @@ namespace KidProEdu.Application.Services
             }
         }
 
+        public async Task<bool> ReturnForHomeCategoryEquipment(List<ReturnCategoryEquipmentViewModel> returnCategoryEquipmentViewModels)
+        {
+            var validator = new ReturnCategoryEquipmentViewModelValidator();
+            var errorMessages = new List<string>();
+            foreach (var viewModel in returnCategoryEquipmentViewModels)
+            {
+                var validationResult = validator.Validate(viewModel);
+                if (!validationResult.IsValid)
+                {
+                    errorMessages.AddRange(validationResult.Errors.Select(error => error.ErrorMessage));
+                }
+
+                var categoryEquipment = await _unitOfWork.CategoryEquipmentRepository.GetByIdAsync(viewModel.CategoryEquipmentId);
+                if (categoryEquipment == null)
+                {
+                    errorMessages.Add($"Không tìm thấy thiết bị có category id là: {viewModel.CategoryEquipmentId}");
+                }
+
+                categoryEquipment.Quantity += viewModel.Quantity;
+                _unitOfWork.CategoryEquipmentRepository.Update(categoryEquipment);
+
+                var logEquipBorrow = await _unitOfWork.LogEquipmentRepository.GetLogEquipmentByEquipmentIdAndUserAccountIdAndLogTypeAtHome(viewModel.CategoryEquipmentId, (Guid)viewModel.UserAccountId, LogType.AtHome);
+
+
+
+                var logEquipment = new LogEquipment
+                {
+                    EquipmentId = null,
+                    UserAccountId = viewModel.UserAccountId,
+                    Name = categoryEquipment.Name,
+                    Code = categoryEquipment.Code,
+                    Price = null,
+                    Status = StatusOfEquipment.Returned,
+                    RepairDate = null,
+                    BorrowedDate = logEquipBorrow.BorrowedDate,
+                    ReturnedDate = _currentTime.GetCurrentTime(),
+                    ReturnedDealine = logEquipBorrow.ReturnedDealine,
+                    WarrantyPeriod = null,
+                    PurchaseDate = null,
+                    RoomId = null,
+                    CategoryEquipmentId = viewModel.CategoryEquipmentId,
+                    Quantity = viewModel.Quantity,
+                    Note = viewModel.Note,
+                    LogType = LogType.AtHome
+                };
+                await _unitOfWork.LogEquipmentRepository.AddAsync(logEquipment);
+            }
+            if (errorMessages.Any())
+            {
+                return false;
+            }
+            else
+            {
+                await _unitOfWork.SaveChangeAsync();
+                return true;
+            }
+        }
 
         public async Task<bool> CreateCategoryEquipment(CreateCategoryEquipmentViewModel createCategoryEquipmentViewModel)
         {
