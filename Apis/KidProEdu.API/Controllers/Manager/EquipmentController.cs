@@ -20,14 +20,14 @@ namespace KidProEdu.API.Controllers.Manager
         }
 
         [HttpGet("Equipments")]
-        [Authorize(Roles = ("Admin, Manager"))]
+        [Authorize(Roles = ("Admin, Manager, Staff"))]
         public async Task<IActionResult> Equipments()
         {
             return Ok(await _equipmentService.GetEquipments());
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = ("Admin, Manager"))]
+        [Authorize(Roles = ("Admin, Manager, Staff"))]
         public async Task<IActionResult> Equipment(Guid id)
         {
             var equipment = await _equipmentService.GetEquipmentById(id);
