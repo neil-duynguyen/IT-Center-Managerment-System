@@ -138,7 +138,7 @@ namespace KidProEdu.Application.Services
             }
             else
             {
-                throw new Exception("Xuất kho thất bại.");
+                throw new Exception("Cho mượn thất bại.");
             }
         }
 

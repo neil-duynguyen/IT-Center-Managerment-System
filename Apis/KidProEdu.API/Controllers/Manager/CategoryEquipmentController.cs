@@ -201,7 +201,7 @@ namespace KidProEdu.API.Controllers.Manager
             try
             {
                 await _categoryEquipmentService.UpdateQuantityEquipment(updateQuantityCategory);
-                return Ok("Xuất kho thành công.");
+                return Ok("Cho mượn thành công.");
 
             }
             catch (Exception ex)
