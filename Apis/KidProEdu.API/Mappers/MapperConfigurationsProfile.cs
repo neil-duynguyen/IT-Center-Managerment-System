@@ -161,6 +161,7 @@ namespace KidProEdu.API.Mappers
             CreateMap<LogEquipment, LogEquipmentViewModel>()
                 .ForMember(dest => dest.FullName, src => src.MapFrom(x => x.UserAccount.FullName))
                 .ForMember(dest => dest.Status, src => src.MapFrom(x => x.Status != null ? (string)x.Status.ToString() : (string?)null))
+                .ForMember(dest => dest.LogType, src => src.MapFrom(x => x.LogType != null ? (string)x.LogType.ToString() : (string?)null))
                 .ReverseMap();
             CreateMap<CreateLogEquipmentViewModel, LogEquipment>().ReverseMap();
             CreateMap<UpdateLogEquipmentViewModel, LogEquipment>().ReverseMap();

@@ -18,6 +18,7 @@ namespace KidProEdu.Application.ViewModels.LogEquipmentViewModels
         public string? Code { get; set; }
         public double? Price { get; set; }
         public string? Status { get; set; }
+        public string? LogType { get; set; }
         public DateTime? RepairDate { get; set; }
         public string? WarrantyPeriod { get; set; }
         public DateTime? PurchaseDate { get; set; }
