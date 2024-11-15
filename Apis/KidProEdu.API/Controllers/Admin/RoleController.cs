@@ -15,7 +15,7 @@ namespace KidProEdu.API.Controllers.Admin
         }
 
         [HttpGet]
-        //[Authorize(Roles = ("Admin"))]
+        [Authorize(Roles = ("Admin"))]
         public async Task<IActionResult> GetRole()
         {
             return Ok(await _roleService.GetRole());

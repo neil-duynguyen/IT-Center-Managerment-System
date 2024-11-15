@@ -17,6 +17,7 @@ namespace KidProEdu.API.Controllers.Manager
             _classService = classService;
         }
 
+        [AllowAnonymous]
         [HttpGet("Classes")]
         /*[Authorize(Roles = "Manager")]*/
         public async Task<IActionResult> Classes()

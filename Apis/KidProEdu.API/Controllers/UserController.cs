@@ -9,7 +9,7 @@ using System.Security.Cryptography.Xml;
 namespace KidProEdu.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -19,8 +19,7 @@ namespace KidProEdu.WebAPI.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
-        [Route("Login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync(UserLoginViewModel loginObject)
         {
             try

@@ -17,6 +17,8 @@ using KidProEdu.Application.Utils;
 using Hangfire;
 using HangfireBasicAuthenticationFilter;
 using KidProEdu.API.Controllers;
+using KidProEdu.Application.Middleware;
+
 
 namespace KidProEdu.API
 {
@@ -34,14 +36,14 @@ namespace KidProEdu.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR();
-            builder.Services.AddHangfire((sp, config) =>
+           /* builder.Services.AddHangfire((sp, config) =>
             {
                 var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Development");
                 config.UseSqlServerStorage(connectionString);
                 RecurringJob.AddOrUpdate<IAdviseRequestService>("send-email-job", x => x.AutoSendEmail(), "0 0 * * *");
                 RecurringJob.AddOrUpdate<IEquipmentService>("return-email-job", x => x.AutoCheckReturn(), "0 0 * * *");
             });
-            builder.Services.AddHangfireServer();
+            builder.Services.AddHangfireServer();*/
 
             //CORS
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -62,7 +64,7 @@ namespace KidProEdu.API
                                   });
             });
 
-            #region Configtoken
+            #region ConfigToken
             var secretKey = builder.Configuration["AppSettings:SecretKey"];
             var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
 
@@ -239,13 +241,16 @@ namespace KidProEdu.API
 
             app.UseRouting();
 
-            app.UseHttpsRedirection();
-
             app.UseAuthentication();
 
             app.UseAuthorization();
 
             app.UseStaticFiles();
+
+            app.UseMiddleware<AuthenticationMiddleware>();
+            app.UseMiddleware<AuthorizationMiddleware>();
+
+            app.UseHttpsRedirection();
 
             app.MapHub<NotificationHub>("/notificationHub");
             /*app.UseEndpoints(endpoints =>
@@ -253,7 +258,7 @@ namespace KidProEdu.API
                 endpoints.MapHub<NotificationHub>("/notificationHub");
             });*/
 
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+           /* app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
                 DashboardTitle = "KidPro's Education Dashboard",
                 Authorization = new[]
@@ -265,7 +270,7 @@ namespace KidProEdu.API
                     }
                 }
             });
-            app.UseHangfireServer();
+            app.UseHangfireServer();*/
 
             app.MapControllers();
 

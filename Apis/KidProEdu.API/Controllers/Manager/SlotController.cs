@@ -1,5 +1,6 @@
 ﻿using KidProEdu.Application.Interfaces;
 using KidProEdu.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidProEdu.API.Controllers.Manager
@@ -14,6 +15,7 @@ namespace KidProEdu.API.Controllers.Manager
             _slotService = slotService;
         }
 
+        [AllowAnonymous]
         [HttpGet("Slots")]
         /*[Authorize(Roles = ("Admin"))]*/
         public async Task<IActionResult> Slots()
